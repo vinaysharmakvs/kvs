@@ -62,7 +62,7 @@ inquiryForm.addEventListener("submit", (event) => {
   const message = encodeURIComponent(
     `Hello Kidsverse School, I want to book a school visit. Parent: ${data.get("name")}, Phone: ${data.get("phone")}, Child age: ${data.get("age")}, Program: ${data.get("program")}.`
   );
-  window.location.href = `https://wa.me/918826758881?text=${message}`;
+  window.open(`https://wa.me/918826758881?text=${message}`, "_blank", "noopener,noreferrer");
 });
 
 const observer = new IntersectionObserver(
