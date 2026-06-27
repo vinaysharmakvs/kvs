@@ -1,80 +1,85 @@
-const reviews = [
-  {
-    quote:
-      "Kidsverse feels like a second home for our child. The teachers are caring, patient, and genuinely invested in every milestone.",
-    parent: "Parent of Nursery student",
-  },
-  {
-    quote:
-      "We love the balance of play, discipline, communication, and creativity. Our child became more confident within weeks.",
-    parent: "Parent of L.K.G student",
-  },
-  {
-    quote:
-      "The school feels modern and safe, but also very personal. The team knows each child beautifully.",
-    parent: "Parent of Playway student",
-  },
-];
-
-let reviewIndex = 0;
-
-const reviewCard = document.querySelector("#reviewCard");
-const prevReview = document.querySelector("#prevReview");
-const nextReview = document.querySelector("#nextReview");
-const closeBanner = document.querySelector("#closeBanner");
-const admissionBanner = document.querySelector("#admissionBanner");
-const menuButton = document.querySelector("#menuButton");
+const menuButton = document.querySelector("[data-menu-button]");
 const siteHeader = document.querySelector(".site-header");
+const gradeButtons = document.querySelectorAll("[data-grade]");
+const gradeResult = document.querySelector("[data-grade-result]");
 const inquiryForm = document.querySelector(".inquiry-form");
+const kiyaWidget = document.querySelector("[data-kiya-widget]");
+const kiyaToggle = document.querySelector("[data-kiya-toggle]");
+const kiyaPanel = document.querySelector("[data-kiya-panel]");
+const kiyaClose = document.querySelector("[data-kiya-close]");
 
-function renderReview() {
-  const review = reviews[reviewIndex];
-  reviewCard.innerHTML = `<p>“${review.quote}”</p><strong>${review.parent}</strong>`;
+const gradeData = {
+  "1-3": {
+    label: "Foundation Support",
+    title: "Reading, writing, maths and homework rhythm.",
+    text: "For young school learners, we focus on daily study habits, neat work, concept clarity and confidence.",
+  },
+  "4-5": {
+    label: "Upper Primary Support",
+    title: "Concept clarity with stronger study discipline.",
+    text: "Students get support in core subjects, written practice, revision habits and communication confidence.",
+  },
+  "6-8": {
+    label: "Middle School Support",
+    title: "Deeper concepts, regular practice and confidence.",
+    text: "We help students manage subjects, assignments, projects, doubts and exam preparation in a structured way.",
+  },
+  "9-10": {
+    label: "Board Foundation Support",
+    title: "Focused academic support for higher classes.",
+    text: "For Grade 9 and 10, the focus moves toward subject clarity, disciplined practice, revision and exam confidence.",
+  },
+};
+
+function renderGrade(key) {
+  const data = gradeData[key] || gradeData["1-3"];
+  if (!gradeResult) return;
+  gradeResult.innerHTML = `<span>${data.label}</span><h3>${data.title}</h3><p>${data.text}</p>`;
 }
 
-function moveReview(direction) {
-  reviewIndex = (reviewIndex + direction + reviews.length) % reviews.length;
-  renderReview();
-}
-
-prevReview.addEventListener("click", () => moveReview(-1));
-nextReview.addEventListener("click", () => moveReview(1));
-
-closeBanner.addEventListener("click", () => {
-  admissionBanner.hidden = true;
-});
-
-menuButton.addEventListener("click", () => {
-  const isOpen = siteHeader.classList.toggle("is-open");
-  menuButton.textContent = isOpen ? "Close" : "Menu";
+menuButton?.addEventListener("click", () => {
+  const open = siteHeader.classList.toggle("is-open");
+  menuButton.textContent = open ? "Close" : "Menu";
 });
 
 document.querySelectorAll(".nav-links a").forEach((link) => {
   link.addEventListener("click", () => {
     siteHeader.classList.remove("is-open");
-    menuButton.textContent = "Menu";
+    if (menuButton) menuButton.textContent = "Menu";
   });
 });
 
-inquiryForm.addEventListener("submit", (event) => {
+gradeButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    gradeButtons.forEach((item) => item.classList.toggle("is-active", item === button));
+    renderGrade(button.dataset.grade);
+  });
+});
+
+inquiryForm?.addEventListener("submit", (event) => {
   event.preventDefault();
   const data = new FormData(inquiryForm);
   const message = encodeURIComponent(
-    `Hello Kidsverse School, I want to book a school visit. Parent: ${data.get("name")}, Phone: ${data.get("phone")}, Child age: ${data.get("age")}, Program: ${data.get("program")}.`
+    `Hello Kidsverse School Rehan, I want to enquire. Parent: ${data.get("name")}. Mobile: ${data.get("phone")}. Program: ${data.get("program")}. Child age/grade: ${data.get("age")}.`
   );
   window.open(`https://wa.me/918826758881?text=${message}`, "_blank", "noopener,noreferrer");
 });
 
-const observer = new IntersectionObserver(
-  (entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add("is-visible");
-        observer.unobserve(entry.target);
-      }
-    });
-  },
-  { threshold: 0.16 }
-);
+function setKiyaOpen(open) {
+  if (!kiyaWidget || !kiyaToggle || !kiyaPanel) return;
+  kiyaWidget.classList.toggle("is-open", open);
+  kiyaPanel.hidden = !open;
+  kiyaToggle.setAttribute("aria-expanded", String(open));
+}
 
-document.querySelectorAll(".reveal").forEach((element) => observer.observe(element));
+kiyaToggle?.addEventListener("click", () => {
+  setKiyaOpen(!kiyaWidget?.classList.contains("is-open"));
+});
+
+kiyaClose?.addEventListener("click", () => {
+  setKiyaOpen(false);
+});
+
+document.querySelectorAll(".kiya-links a").forEach((link) => {
+  link.addEventListener("click", () => setKiyaOpen(false));
+});
