@@ -1954,19 +1954,30 @@ h3 {
   color: #fff;
 }
 
+.admission-process > * {
+  min-width: 0;
+}
+
 .admission-process .eyebrow,
 .admission-process h2 {
   color: #fff;
 }
 
+.admission-process h2 {
+  font-size: clamp(1.85rem, 3.2vw, 2.85rem);
+  line-height: 1.06;
+}
+
 .process-steps {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
 }
 
 .process-steps article {
   border-color: rgba(255, 255, 255, 0.18);
   background: rgba(255, 255, 255, 0.12);
   box-shadow: none;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .process-steps h3,
@@ -2342,6 +2353,12 @@ h3 {
 
 .site-footer span {
   color: var(--muted);
+}
+
+@media (max-width: 1280px) {
+  .admission-process {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 1120px) {
