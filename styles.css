@@ -2587,11 +2587,40 @@ h3 {
   }
 
   .blog-cta {
+    grid-template-columns: 1fr;
     gap: 16px;
+    padding: 20px 18px;
+    border-radius: 22px;
+    background:
+      radial-gradient(circle at 12% 12%, rgba(255, 216, 111, 0.26), transparent 38%),
+      radial-gradient(circle at 92% 18%, rgba(39, 185, 167, 0.18), transparent 34%),
+      linear-gradient(145deg, #ffffff, #fff7e7);
+    text-align: left;
   }
 
   .blog-cta .primary-button {
     width: 100%;
+    min-height: 48px;
+  }
+
+  .blog-cta h2 {
+    font-size: clamp(1.65rem, 8vw, 2.25rem);
+    line-height: 1.08;
+  }
+
+  .blog-cta p:not(.eyebrow) {
+    margin-top: 10px;
+    font-size: 0.96rem;
+    line-height: 1.58;
+  }
+
+  .blog-cta .eyebrow {
+    display: inline-flex;
+    width: fit-content;
+    margin-bottom: 10px;
+    padding: 7px 10px;
+    border-radius: 999px;
+    background: #e8fbf6;
   }
 
   .blog-feature-card {
