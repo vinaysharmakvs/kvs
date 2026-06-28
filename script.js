@@ -40,12 +40,16 @@ function renderGrade(key) {
 menuButton?.addEventListener("click", () => {
   const open = siteHeader.classList.toggle("is-open");
   menuButton.textContent = open ? "Close" : "Menu";
+  menuButton.setAttribute("aria-expanded", String(open));
 });
 
 document.querySelectorAll(".nav-links a").forEach((link) => {
   link.addEventListener("click", () => {
     siteHeader.classList.remove("is-open");
-    if (menuButton) menuButton.textContent = "Menu";
+    if (menuButton) {
+      menuButton.textContent = "Menu";
+      menuButton.setAttribute("aria-expanded", "false");
+    }
   });
 });
 
