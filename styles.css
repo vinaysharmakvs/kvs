@@ -1825,6 +1825,93 @@ h3 {
   line-height: 1.62;
 }
 
+.contact-hero {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 0.82fr) minmax(320px, 0.6fr);
+  gap: clamp(24px, 5vw, 70px);
+  align-items: center;
+  padding: clamp(46px, 7vw, 86px) 0 42px;
+}
+
+.contact-hero-copy > p:not(.eyebrow) {
+  max-width: 720px;
+  margin-top: 18px;
+  color: var(--muted);
+  font-size: 1.1rem;
+  line-height: 1.72;
+}
+
+.contact-card-stack {
+  display: grid;
+  gap: 14px;
+}
+
+.contact-card-stack article,
+.contact-actions article {
+  display: grid;
+  gap: 10px;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.84);
+  box-shadow: 0 18px 48px rgba(31, 49, 66, 0.08);
+}
+
+.contact-card-stack span,
+.contact-actions span {
+  width: fit-content;
+  padding: 7px 10px;
+  color: #16453e;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--mint), var(--sun));
+  font-size: 0.78rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.contact-card-stack p,
+.contact-actions p {
+  color: var(--muted);
+  line-height: 1.62;
+}
+
+.contact-card-stack a {
+  color: var(--ink);
+}
+
+.map-frame {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  background: var(--white);
+  box-shadow: var(--shadow);
+}
+
+.map-frame iframe {
+  display: block;
+  width: 100%;
+  height: min(64vh, 520px);
+  min-height: 360px;
+  border: 0;
+}
+
+.contact-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.contact-actions a {
+  width: fit-content;
+  padding: 10px 13px;
+  color: var(--white);
+  border-radius: var(--radius);
+  background: var(--coral);
+  font-weight: 950;
+}
+
 .grade-ladder {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2236,6 +2323,8 @@ h3 {
   .blog-hero,
   .blog-body,
   .blog-feature-card,
+  .contact-hero,
+  .contact-actions,
   .about-story,
   .mission-vision,
   .event-promise,
@@ -2348,6 +2437,7 @@ h3 {
   .parent-hub-hero,
   .blog-hero,
   .blog-body,
+  .contact-hero,
   .section,
   .program-strip,
   .about-stat-band,
@@ -2498,6 +2588,39 @@ h3 {
   .afterschool-benefit-grid article {
     padding: 18px;
     border-radius: 20px;
+  }
+
+  .contact-hero {
+    gap: 20px;
+    padding: 34px 0 24px;
+  }
+
+  .contact-hero h1 {
+    font-size: clamp(2.1rem, 11vw, 3.1rem);
+  }
+
+  .contact-hero-copy > p:not(.eyebrow) {
+    font-size: 0.98rem;
+    line-height: 1.62;
+  }
+
+  .contact-card-stack article,
+  .contact-actions article {
+    padding: 18px;
+    border-radius: 20px;
+  }
+
+  .map-frame {
+    border-radius: 22px;
+  }
+
+  .map-frame iframe {
+    height: 360px;
+    min-height: 320px;
+  }
+
+  .contact-actions {
+    grid-template-columns: 1fr;
   }
 
   .parent-hub-visual,
