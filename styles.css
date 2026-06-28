@@ -1825,6 +1825,155 @@ h3 {
   line-height: 1.62;
 }
 
+.founder-section {
+  display: grid;
+  grid-template-columns: minmax(0, 0.78fr) minmax(360px, 0.82fr);
+  gap: clamp(24px, 5vw, 58px);
+  align-items: center;
+  padding: clamp(30px, 5vw, 54px);
+  border: 1px solid rgba(31, 49, 66, 0.08);
+  border-radius: 34px;
+  background:
+    radial-gradient(circle at 10% 12%, rgba(255, 216, 111, 0.28), transparent 30%),
+    radial-gradient(circle at 96% 10%, rgba(39, 185, 167, 0.22), transparent 32%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.94), rgba(255, 250, 241, 0.9));
+  box-shadow: 0 28px 76px rgba(31, 49, 66, 0.1);
+}
+
+.founder-copy > p:not(.eyebrow) {
+  margin-top: 16px;
+  color: var(--muted);
+  font-size: 1.06rem;
+  line-height: 1.72;
+}
+
+.founder-points {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.founder-points span {
+  padding: 9px 12px;
+  color: #16453e;
+  border: 1px solid rgba(22, 69, 62, 0.12);
+  border-radius: 999px;
+  background: rgba(232, 251, 246, 0.88);
+  font-size: 0.9rem;
+  font-weight: 900;
+}
+
+.founder-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.founder-grid article {
+  overflow: hidden;
+  border: 1px solid rgba(31, 49, 66, 0.08);
+  border-radius: 26px;
+  background: #fff;
+  box-shadow: 0 20px 52px rgba(31, 49, 66, 0.12);
+}
+
+.founder-grid img {
+  width: 100%;
+  height: 330px;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.founder-grid div {
+  display: grid;
+  gap: 3px;
+  padding: 16px;
+}
+
+.founder-grid strong {
+  color: #16453e;
+  font-family: "Baloo 2", "Nunito", system-ui, sans-serif;
+  font-size: 1.2rem;
+}
+
+.founder-grid span {
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.rehan-leader-section {
+  display: grid;
+  gap: 18px;
+}
+
+.leader-grid,
+.process-steps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.leader-grid article,
+.process-steps article {
+  display: grid;
+  gap: 10px;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 18px 48px rgba(31, 49, 66, 0.08);
+}
+
+.leader-grid strong,
+.process-steps span {
+  width: 42px;
+  height: 42px;
+  display: inline-grid;
+  place-items: center;
+  color: #16453e;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--sun), var(--mint));
+  font-weight: 950;
+}
+
+.leader-grid p,
+.process-steps p {
+  color: var(--muted);
+  line-height: 1.58;
+}
+
+.admission-process {
+  display: grid;
+  grid-template-columns: minmax(240px, 0.42fr) minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+  padding: clamp(26px, 4vw, 42px);
+  border-radius: 30px;
+  background: linear-gradient(135deg, #16453e, #0c756c);
+  color: #fff;
+}
+
+.admission-process .eyebrow,
+.admission-process h2 {
+  color: #fff;
+}
+
+.process-steps {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.process-steps article {
+  border-color: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: none;
+}
+
+.process-steps h3,
+.process-steps p {
+  color: #fff;
+}
+
 .contact-hero {
   width: min(1180px, calc(100% - 32px));
   margin: 0 auto;
@@ -2325,8 +2474,10 @@ h3 {
   .blog-feature-card,
   .contact-hero,
   .contact-actions,
+  .founder-section,
   .about-story,
   .mission-vision,
+  .admission-process,
   .event-promise,
   .event-reference,
   .celebration-flow,
@@ -2360,6 +2511,11 @@ h3 {
   }
 
   .afterschool-benefit-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .leader-grid,
+  .process-steps {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -2543,6 +2699,8 @@ h3 {
 
   .event-reference,
   .parent-hub-teaser,
+  .founder-section,
+  .admission-process,
   .blog-cta,
   .event-promise {
     padding: 22px;
@@ -2577,8 +2735,26 @@ h3 {
   .gallery-grid,
   .comparison-panel,
   .insight-grid,
+  .founder-grid,
+  .leader-grid,
+  .process-steps,
   .grade-ladder {
     grid-template-columns: 1fr;
+  }
+
+  .founder-section {
+    gap: 18px;
+    border-radius: 26px;
+  }
+
+  .founder-grid img {
+    height: 300px;
+  }
+
+  .founder-grid article,
+  .leader-grid article,
+  .process-steps article {
+    border-radius: 20px;
   }
 
   .afterschool-benefit-grid {
