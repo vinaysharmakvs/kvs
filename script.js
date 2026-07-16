@@ -9,6 +9,13 @@ const kiyaPanel = document.querySelector("[data-kiya-panel]");
 const kiyaClose = document.querySelector("[data-kiya-close]");
 const readinessForm = document.querySelector("[data-readiness-form]");
 const readinessResult = document.querySelector("[data-readiness-result]");
+const parentFeedbackForm = document.querySelector("[data-parent-feedback-form]");
+const feedbackPercent = document.querySelector("[data-feedback-percent]");
+const feedbackMood = document.querySelector("[data-feedback-mood]");
+const feedbackProgress = document.querySelector("[data-feedback-progress]");
+const feedbackSubmit = document.querySelector("[data-feedback-submit]");
+const feedbackValidation = document.querySelector("[data-feedback-validation]");
+const feedbackThankYou = document.querySelector("[data-feedback-thank-you]");
 const teacherLogin = document.querySelector("[data-teacher-login]");
 const teacherLock = document.querySelector("[data-teacher-lock]");
 const lockError = document.querySelector("[data-lock-error]");
@@ -304,6 +311,163 @@ if (cultureForm) {
   cultureForm.elements.date.valueAsDate = new Date();
   updateAutoScores();
   updateAssessmentValidation();
+}
+
+const feedbackCategories = [
+  { label: "Teacher", fields: ["teacherAttention", "teacherComfort", "teacherLearning"] },
+  { label: "Operations", fields: ["opsUpdates", "opsTechnology", "opsSafety"] },
+  { label: "Founders", fields: ["founderApproach", "founderListening", "founderTrust"] },
+  { label: "Transport", fields: ["transportTiming", "transportSafety", "transportCommunication"] },
+];
+const feedbackFields = feedbackCategories.flatMap((category) => category.fields);
+const feedbackGoogleFormEndpoint = "https://docs.google.com/forms/d/e/1FAIpQLSd_gtfABfJjeWceDpiXn8msu_oDY44XINnInovsIhdcwf67Kw/formResponse";
+const feedbackPendingKey = "kidsversePendingParentFeedback";
+const feedbackGoogleEntryMap = {
+  parentName: "entry.531725399",
+  parentPhone: "entry.1055010208",
+  studentName: "entry.30854622",
+  childClass: "entry.725294418",
+  teacherAttention: "entry.1232646832",
+  teacherComfort: "entry.1719162783",
+  teacherLearning: "entry.1940244171",
+  opsUpdates: "entry.1210229565",
+  opsTechnology: "entry.730050687",
+  opsSafety: "entry.1060265380",
+  founderApproach: "entry.1328171448",
+  founderListening: "entry.265137716",
+  founderTrust: "entry.1410430860",
+  transportTiming: "entry.1085153353",
+  transportSafety: "entry.489999209",
+  transportCommunication: "entry.1857715293",
+  suggestion: "entry.817929326",
+};
+
+function getFeedbackData() {
+  if (!parentFeedbackForm) return null;
+  const formData = new FormData(parentFeedbackForm);
+  const fieldValues = Object.fromEntries(
+    ["parentName", "parentPhone", "studentName", "childClass", ...feedbackFields, "suggestion"].map((field) => [
+      field,
+      String(formData.get(field) || "").trim(),
+    ])
+  );
+  const ratings = feedbackFields.map((field) => Number(formData.get(field) || 0));
+  const completedRatings = ratings.filter(Boolean);
+  const average = completedRatings.length ? completedRatings.reduce((sum, value) => sum + value, 0) / completedRatings.length : 0;
+  const percent = Math.round((average / 5) * 100);
+  const categories = feedbackCategories.map((category) => {
+    const values = category.fields.map((field) => Number(formData.get(field) || 0));
+    const completed = values.filter(Boolean);
+    const categoryAverage = completed.length ? completed.reduce((sum, value) => sum + value, 0) / completed.length : 0;
+    return {
+      label: category.label,
+      values,
+      score: categoryAverage ? Math.round((categoryAverage / 5) * 100) : 0,
+      average: categoryAverage ? categoryAverage.toFixed(1) : "0.0",
+    };
+  });
+  return {
+    ...fieldValues,
+    fieldValues,
+    ratings,
+    completedRatings,
+    categories,
+    percent,
+  };
+}
+
+function getFeedbackGooglePayload(data) {
+  const params = new URLSearchParams();
+  Object.entries(feedbackGoogleEntryMap).forEach(([field, entry]) => {
+    params.set(entry, data.fieldValues[field] || "");
+  });
+  return params;
+}
+
+async function submitFeedbackToGoogleForm(data) {
+  if (!feedbackGoogleFormEndpoint) return false;
+  const payload = getFeedbackGooglePayload(data);
+
+  if (window.location.protocol === "file:") {
+    try {
+      localStorage.setItem(feedbackPendingKey, payload.toString());
+    } catch (error) {
+      console.warn("Kidsverse feedback could not be saved for later submission.", error);
+    }
+    return false;
+  }
+
+  try {
+    await fetch(feedbackGoogleFormEndpoint, {
+      method: "POST",
+      mode: "no-cors",
+      body: payload,
+    });
+    return true;
+  } catch (error) {
+    console.warn("Kidsverse feedback Google Form submission failed", error);
+    return false;
+  }
+}
+
+function submitPendingFeedbackToGoogleForm() {
+  if (!feedbackGoogleFormEndpoint || window.location.protocol === "file:") return;
+  const pendingPayload = localStorage.getItem(feedbackPendingKey);
+  if (!pendingPayload) return;
+
+  fetch(feedbackGoogleFormEndpoint, {
+    method: "POST",
+    mode: "no-cors",
+    body: new URLSearchParams(pendingPayload),
+  })
+    .then(() => localStorage.removeItem(feedbackPendingKey))
+    .catch((error) => {
+      console.warn("Pending Kidsverse feedback could not be submitted.", error);
+    });
+}
+
+function getFeedbackMood(percent, complete) {
+  if (!complete) return "Please complete all parent happiness questions.";
+  if (percent >= 90) return "Excellent parent happiness";
+  if (percent >= 75) return "Good experience with room to improve";
+  if (percent >= 60) return "Needs focused improvement";
+  return "Needs immediate attention";
+}
+
+function updateFeedbackState() {
+  const data = getFeedbackData();
+  if (!data) return false;
+  const complete = Boolean(data.parentName && data.parentPhone && data.studentName && data.childClass && data.completedRatings.length === feedbackFields.length);
+  if (feedbackPercent) feedbackPercent.textContent = `${complete ? data.percent : 0}%`;
+  if (feedbackProgress) feedbackProgress.value = complete ? data.percent : 0;
+  if (feedbackMood) feedbackMood.textContent = getFeedbackMood(data.percent, complete);
+  if (feedbackSubmit) feedbackSubmit.disabled = !complete;
+  if (feedbackValidation) feedbackValidation.hidden = complete;
+  return complete;
+}
+
+parentFeedbackForm?.addEventListener("input", updateFeedbackState);
+parentFeedbackForm?.addEventListener("change", updateFeedbackState);
+
+parentFeedbackForm?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  if (!updateFeedbackState()) return;
+  const data = getFeedbackData();
+  if (!data) return;
+  const allGreat = data.ratings.every((rating) => rating === 5);
+  const submitted = await submitFeedbackToGoogleForm(data);
+  if (feedbackThankYou) {
+    feedbackThankYou.hidden = false;
+    feedbackThankYou.innerHTML = allGreat
+      ? `<strong>Thank you for sharing your valuable feedback.</strong><p>${submitted ? "Your feedback has been recorded." : "Your feedback has been saved and will sync when the website is opened online."} We will definitely work on making Kidsverse the best school for your child education.</p><a class="primary-button" href="https://share.google/QfAgg4Kxjz0bfF9SJ" target="_blank" rel="noopener noreferrer">Please rate us 5 star on Google</a>`
+      : `<strong>Thank you for sharing your valuable feedback.</strong><p>${submitted ? "Your feedback has been recorded." : "Your feedback has been saved and will sync when the website is opened online."} We will definitely work on making Kidsverse the best school for your child education.</p>`;
+    feedbackThankYou.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+});
+
+if (parentFeedbackForm) {
+  updateFeedbackState();
+  submitPendingFeedbackToGoogleForm();
 }
 
 readinessForm?.addEventListener("submit", (event) => {
