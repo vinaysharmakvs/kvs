@@ -459,7 +459,7 @@ parentFeedbackForm?.addEventListener("submit", async (event) => {
   if (feedbackThankYou) {
     feedbackThankYou.hidden = false;
     feedbackThankYou.innerHTML = allGreat
-      ? `<strong>Thank you for sharing your valuable feedback.</strong><p>${submitted ? "Your feedback has been recorded." : "Your feedback has been saved and will sync when the website is opened online."} We will definitely work on making Kidsverse the best school for your child education.</p><a class="primary-button" href="https://share.google/QfAgg4Kxjz0bfF9SJ" target="_blank" rel="noopener noreferrer">Please rate us 5 star on Google</a>`
+      ? `<strong>Thank you for sharing your valuable feedback.</strong><p>${submitted ? "Your feedback has been recorded." : "Your feedback has been saved and will sync when the website is opened online."} We will definitely work on making Kidsverse the best school for your child education.</p><a class="primary-button" href="https://g.co/kgs/Q9A7iHY" target="_blank" rel="noopener noreferrer">Please rate us 5 star on Google</a>`
       : `<strong>Thank you for sharing your valuable feedback.</strong><p>${submitted ? "Your feedback has been recorded." : "Your feedback has been saved and will sync when the website is opened online."} We will definitely work on making Kidsverse the best school for your child education.</p>`;
     feedbackThankYou.scrollIntoView({ behavior: "smooth", block: "center" });
   }
