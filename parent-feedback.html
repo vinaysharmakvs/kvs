@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Kidsverse School Rehan parent happiness feedback form for content, technology, communication, transport and suggestions."
+    />
+    <title>Parent Happiness Feedback | Kidsverse School Rehan</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="feedback-page">
+    <div class="top-strip">
+      <span>Parent Happiness Index</span>
+      <strong>Your feedback helps Kidsverse improve every week</strong>
+      <a href="index.html#top">Kidsverse Website</a>
+    </div>
+
+    <header class="site-header">
+      <a class="brand" href="index.html#top" aria-label="Kidsverse School home">
+        <img src="assets/logo.png" alt="Kidsverse School logo" />
+        <span><strong>Kidsverse</strong><small>School Rehan</small></span>
+      </a>
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="about.html">About</a>
+        <a href="activities.html">Activities</a>
+        <a href="index.html#programs">Programs</a>
+        <a href="parent-hub.html">Parent Hub</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+      <a class="header-cta" href="index.html#admissions">Visit First</a>
+      <button class="menu-button" type="button" aria-label="Open menu" data-menu-button>Menu</button>
+    </header>
+
+    <main id="top">
+      <section class="feedback-hero">
+        <div>
+          <p class="eyebrow">Kidsverse parent feedback</p>
+          <h1>How happy are you with your Kidsverse experience?</h1>
+          <p>
+            Please rate the key areas below. Your feedback helps us improve
+            learning quality, parent communication, technology support and daily
+            school experience.
+          </p>
+        </div>
+        <aside class="feedback-index-card" data-feedback-summary>
+          <span>Current Happiness Index</span>
+          <strong data-feedback-percent>0%</strong>
+          <p data-feedback-mood>Please complete all parent happiness questions.</p>
+          <progress max="100" value="0" data-feedback-progress></progress>
+        </aside>
+      </section>
+
+      <section class="feedback-shell">
+        <form class="parent-feedback-form" data-parent-feedback-form>
+          <div class="feedback-details">
+            <label>Parent name
+              <input type="text" name="parentName" placeholder="Your name" required />
+            </label>
+            <label>Parent contact number
+              <input type="tel" name="parentPhone" placeholder="+91" required />
+            </label>
+            <label>Student name
+              <input type="text" name="studentName" placeholder="Child name" required />
+            </label>
+            <label>Child class
+              <select name="childClass" required>
+                <option value="">Select class</option>
+                <option>Playway - Alpha</option>
+                <option>Playway - Beta</option>
+                <option>Playway - Gamma</option>
+                <option>Nursery - Alpha</option>
+                <option>Nursery - Beta</option>
+                <option>Nursery - Gamma</option>
+                <option>LKG - Alpha</option>
+                <option>LKG - Beta</option>
+                <option>LKG - Gamma</option>
+                <option>UKG - Alpha</option>
+                <option>UKG - Beta</option>
+                <option>UKG - Gamma</option>
+                <option>Grade 1 - Alpha</option>
+                <option>Grade 1 - Beta</option>
+                <option>Grade 1 - Gamma</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="rating-grid detailed-feedback-grid">
+            <fieldset class="rating-card detailed-rating-card" data-rating-card>
+              <legend>Teacher Experience</legend>
+              <p>How well does the class teacher support your child emotionally, socially and academically?</p>
+              <div class="question-rating"><span>Q1. Teacher gives personal attention to my child.</span><div class="rating-options"><label><input type="radio" name="teacherAttention" value="1" required /><span class="rating-face">😟<small>Poor</small></span></label><label><input type="radio" name="teacherAttention" value="2" /><span class="rating-face">🙁<small>Fair</small></span></label><label><input type="radio" name="teacherAttention" value="3" /><span class="rating-face">😐<small>Okay</small></span></label><label><input type="radio" name="teacherAttention" value="4" /><span class="rating-face">🙂<small>Good</small></span></label><label><input type="radio" name="teacherAttention" value="5" /><span class="rating-face">😊<small>Great</small></span></label></div></div>
+              <div class="question-rating"><span>Q2. My child feels happy, safe and comfortable with the teacher.</span><div class="rating-options"><label><input type="radio" name="teacherComfort" value="1" required /><span class="rating-face">😟<small>Poor</small></span></label><label><input type="radio" name="teacherComfort" value="2" /><span class="rating-face">🙁<small>Fair</small></span></label><label><input type="radio" name="teacherComfort" value="3" /><span class="rating-face">😐<small>Okay</small></span></label><label><input type="radio" name="teacherComfort" value="4" /><span class="rating-face">🙂<small>Good</small></span></label><label><input type="radio" name="teacherComfort" value="5" /><span class="rating-face">😊<small>Great</small></span></label></div></div>
+              <div class="question-rating"><span>Q3. Learning activities, rhymes, stories and classwork are age-appropriate.</span><div class="rating-options"><label><input type="radio" name="teacherLearning" value="1" required /><span class="rating-face">😟<small>Poor</small></span></label><label><input type="radio" name="teacherLearning" value="2" /><span class="rating-face">🙁<small>Fair</small></span></label><label><input type="radio" name="teacherLearning" value="3" /><span class="rating-face">😐<small>Okay</small></span></label><label><input type="radio" name="teacherLearning" value="4" /><span class="rating-face">🙂<small>Good</small></span></label><label><input type="radio" name="teacherLearning" value="5" /><span class="rating-face">😊<small>Great</small></span></label></div></div>
+            </fieldset>
+
+            <fieldset class="rating-card detailed-rating-card" data-rating-card>
+              <legend>Operations & Communication</legend>
+              <p>Tell us about daily school operations, communication and parent coordination.</p>
+              <div class="question-rating"><span>Q4. School updates and notices are clear and timely.</span><div class="rating-options"><label><input type="radio" name="opsUpdates" value="1" required /><span class="rating-face">😟<small>Poor</small></span></label><label><input type="radio" name="opsUpdates" value="2" /><span class="rating-face">🙁<small>Fair</small></span></label><label><input type="radio" name="opsUpdates" value="3" /><span class="rating-face">😐<small>Okay</small></span></label><label><input type="radio" name="opsUpdates" value="4" /><span class="rating-face">🙂<small>Good</small></span></label><label><input type="radio" name="opsUpdates" value="5" /><span class="rating-face">😊<small>Great</small></span></label></div></div>
+              <div class="question-rating"><span>Q5. School app / technology updates are useful for parents.</span><div class="rating-options"><label><input type="radio" name="opsTechnology" value="1" required /><span class="rating-face">😟<small>Poor</small></span></label><label><input type="radio" name="opsTechnology" value="2" /><span class="rating-face">🙁<small>Fair</small></span></label><label><input type="radio" name="opsTechnology" value="3" /><span class="rating-face">😐<small>Okay</small></span></label><label><input type="radio" name="opsTechnology" value="4" /><span class="rating-face">🙂<small>Good</small></span></label><label><input type="radio" name="opsTechnology" value="5" /><span class="rating-face">😊<small>Great</small></span></label></div></div>
+              <div class="question-rating"><span>Q6. Cleanliness, safety and daily routines are managed well.</span><div class="rating-options"><label><input type="radio" name="opsSafety" value="1" required /><span class="rating-face">😟<small>Poor</small></span></label><label><input type="radio" name="opsSafety" value="2" /><span class="rating-face">🙁<small>Fair</small></span></label><label><input type="radio" name="opsSafety" value="3" /><span class="rating-face">😐<small>Okay</small></span></label><label><input type="radio" name="opsSafety" value="4" /><span class="rating-face">🙂<small>Good</small></span></label><label><input type="radio" name="opsSafety" value="5" /><span class="rating-face">😊<small>Great</small></span></label></div></div>
+            </fieldset>
+
+            <fieldset class="rating-card detailed-rating-card" data-rating-card>
+              <legend>Founders & Management</legend>
+              <p>Rate your confidence in school leadership and parent-first support.</p>
+              <div class="question-rating"><span>Q7. Founders / management are approachable when parents need guidance.</span><div class="rating-options"><label><input type="radio" name="founderApproach" value="1" required /><span class="rating-face">😟<small>Poor</small></span></label><label><input type="radio" name="founderApproach" value="2" /><span class="rating-face">🙁<small>Fair</small></span></label><label><input type="radio" name="founderApproach" value="3" /><span class="rating-face">😐<small>Okay</small></span></label><label><input type="radio" name="founderApproach" value="4" /><span class="rating-face">🙂<small>Good</small></span></label><label><input type="radio" name="founderApproach" value="5" /><span class="rating-face">😊<small>Great</small></span></label></div></div>
+              <div class="question-rating"><span>Q8. School listens to parent concerns and takes feedback seriously.</span><div class="rating-options"><label><input type="radio" name="founderListening" value="1" required /><span class="rating-face">😟<small>Poor</small></span></label><label><input type="radio" name="founderListening" value="2" /><span class="rating-face">🙁<small>Fair</small></span></label><label><input type="radio" name="founderListening" value="3" /><span class="rating-face">😐<small>Okay</small></span></label><label><input type="radio" name="founderListening" value="4" /><span class="rating-face">🙂<small>Good</small></span></label><label><input type="radio" name="founderListening" value="5" /><span class="rating-face">😊<small>Great</small></span></label></div></div>
+              <div class="question-rating"><span>Q9. I trust Kidsverse's vision for my child's confidence and development.</span><div class="rating-options"><label><input type="radio" name="founderTrust" value="1" required /><span class="rating-face">😟<small>Poor</small></span></label><label><input type="radio" name="founderTrust" value="2" /><span class="rating-face">🙁<small>Fair</small></span></label><label><input type="radio" name="founderTrust" value="3" /><span class="rating-face">😐<small>Okay</small></span></label><label><input type="radio" name="founderTrust" value="4" /><span class="rating-face">🙂<small>Good</small></span></label><label><input type="radio" name="founderTrust" value="5" /><span class="rating-face">😊<small>Great</small></span></label></div></div>
+            </fieldset>
+
+            <fieldset class="rating-card detailed-rating-card" data-rating-card>
+              <legend>Transport Experience</legend>
+              <p>If you use transport, rate pickup/drop safety, timing and coordination.</p>
+              <div class="question-rating"><span>Q10. Pickup and drop timing is reliable.</span><div class="rating-options"><label><input type="radio" name="transportTiming" value="1" required /><span class="rating-face">😟<small>Poor</small></span></label><label><input type="radio" name="transportTiming" value="2" /><span class="rating-face">🙁<small>Fair</small></span></label><label><input type="radio" name="transportTiming" value="3" /><span class="rating-face">😐<small>Okay</small></span></label><label><input type="radio" name="transportTiming" value="4" /><span class="rating-face">🙂<small>Good</small></span></label><label><input type="radio" name="transportTiming" value="5" /><span class="rating-face">😊<small>Great</small></span></label></div></div>
+              <div class="question-rating"><span>Q11. Transport staff behaviour and child safety feel satisfactory.</span><div class="rating-options"><label><input type="radio" name="transportSafety" value="1" required /><span class="rating-face">😟<small>Poor</small></span></label><label><input type="radio" name="transportSafety" value="2" /><span class="rating-face">🙁<small>Fair</small></span></label><label><input type="radio" name="transportSafety" value="3" /><span class="rating-face">😐<small>Okay</small></span></label><label><input type="radio" name="transportSafety" value="4" /><span class="rating-face">🙂<small>Good</small></span></label><label><input type="radio" name="transportSafety" value="5" /><span class="rating-face">😊<small>Great</small></span></label></div></div>
+              <div class="question-rating"><span>Q12. Transport communication during delays or changes is clear.</span><div class="rating-options"><label><input type="radio" name="transportCommunication" value="1" required /><span class="rating-face">😟<small>Poor</small></span></label><label><input type="radio" name="transportCommunication" value="2" /><span class="rating-face">🙁<small>Fair</small></span></label><label><input type="radio" name="transportCommunication" value="3" /><span class="rating-face">😐<small>Okay</small></span></label><label><input type="radio" name="transportCommunication" value="4" /><span class="rating-face">🙂<small>Good</small></span></label><label><input type="radio" name="transportCommunication" value="5" /><span class="rating-face">😊<small>Great</small></span></label></div></div>
+            </fieldset>
+          </div>
+
+          <label class="suggestion-box">Suggestions for Kidsverse
+            <textarea name="suggestion" rows="6" placeholder="Please share what we are doing well and what we can improve."></textarea>
+          </label>
+
+          <div class="feedback-actions">
+            <button class="primary-button" type="submit" data-feedback-submit disabled>Submit Feedback</button>
+            <span data-feedback-validation>Please enter parent name, contact number, student name, child class and complete all feedback questions.</span>
+          </div>
+
+          <div class="feedback-thank-you" data-feedback-thank-you hidden></div>
+        </form>
+      </section>
+    </main>
+
+    <a class="whatsapp-float" href="https://wa.me/918826758881?text=Hello%20Kidsverse%20School%2C%20I%20want%20to%20share%20feedback" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+    <footer class="site-footer">
+      <strong>Kidsverse School Rehan</strong>
+      <span>Thank you for helping us build a happier, more parent-friendly school experience.</span>
+    </footer>
+    <script src="script.js"></script>
+  </body>
+</html>
