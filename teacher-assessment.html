@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Class Culture Assessment | Kidsverse Management</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="teacher-page is-locked">
+    <section class="teacher-lock" data-teacher-lock>
+      <form class="teacher-lock-card" data-teacher-login>
+        <img src="assets/logo.png" alt="Kidsverse School logo" />
+        <p class="eyebrow">Management access</p>
+        <h1>Teacher Assessment Login</h1>
+        <p>Enter the management passcode to open the Class Culture Assessment.</p>
+        <label>
+          Passcode
+          <input type="password" name="passcode" placeholder="Enter passcode" autocomplete="current-password" required />
+        </label>
+        <button class="primary-button" type="submit">Open Assessment</button>
+        <span class="lock-error" data-lock-error hidden>Incorrect passcode. Please try again.</span>
+      </form>
+    </section>
+
+    <header class="teacher-header">
+      <a class="brand" href="index.html#top" aria-label="Kidsverse School home">
+        <img src="assets/logo.png" alt="Kidsverse School logo" />
+        <span><strong>Kidsverse</strong><small>Management Tool</small></span>
+      </a>
+      <span class="teacher-private-badge">Hidden internal form</span>
+    </header>
+
+    <main class="teacher-assessment-shell">
+      <section class="teacher-hero">
+        <p class="eyebrow">Class Culture Assessment</p>
+        <h1>Observe habits, values and discipline with clarity.</h1>
+        <p>
+          Use this teacher-only form after classroom observations to generate an
+          overall class score, strengths, improvement areas, suggestions and
+          date-wise history.
+        </p>
+      </section>
+
+      <section class="assessment-layout">
+        <form class="culture-form" data-culture-form>
+          <div class="form-block">
+            <h2>Observation Details</h2>
+            <div class="teacher-form-grid">
+              <label>Observation date<input type="date" name="date" required /></label>
+              <label>Audit conducted by
+                <select name="observer" required>
+                  <option>Class Teacher</option>
+                </select>
+              </label>
+              <label>Class
+                <select name="className" required>
+                  <option value="">Select class</option>
+                  <option>Playway - Alpha</option>
+                  <option>Playway - Beta</option>
+                  <option>Playway - Gamma</option>
+                  <option>Nursery - Alpha</option>
+                  <option>Nursery - Beta</option>
+                  <option>Nursery - Gamma</option>
+                  <option>LKG - Alpha</option>
+                  <option>LKG - Beta</option>
+                  <option>LKG - Gamma</option>
+                  <option>UKG - Alpha</option>
+                  <option>UKG - Beta</option>
+                  <option>UKG - Gamma</option>
+                  <option>Grade 1 - Alpha</option>
+                  <option>Grade 1 - Beta</option>
+                  <option>Grade 1 - Gamma</option>
+                </select>
+              </label>
+              <label>Class Teacher
+                <select name="teacher" required>
+                  <option value="">Select teacher</option>
+                  <option>Ms Kajal</option>
+                  <option>Ms Meenakshi</option>
+                  <option>Ms Rubi</option>
+                  <option>Ms Puja</option>
+                  <option>Ms Priya</option>
+                  <option>Ms Diksha</option>
+                  <option>Ms Shikha</option>
+                  <option>Ms Neena</option>
+                  <option>Ms Rajinsh</option>
+                  <option>Ms Darshana</option>
+                </select>
+              </label>
+              <label>Notes<input type="text" name="notes" placeholder="Optional observation note" /></label>
+            </div>
+          </div>
+
+          <div class="form-block">
+            <div class="assessment-intro">
+              <h2>Areas to Observe</h2>
+              <p>Tick the habits you observed positively. Scores are calculated automatically for each area.</p>
+            </div>
+
+            <div class="culture-area-grid">
+              <fieldset class="culture-area" data-area-card data-area="greetings">
+                <legend>Respect & Greetings <span class="auto-score" data-auto-score>0/10</span></legend>
+                <label><input type="checkbox" /> Wishing teachers on entry</label>
+                <label><input type="checkbox" /> Greeting Director / Principal</label>
+                <label><input type="checkbox" /> Greeting visitors</label>
+                <label><input type="checkbox" /> Saying Good Morning</label>
+                <label><input type="checkbox" /> Standing up when teacher enters</label>
+              </fieldset>
+
+              <fieldset class="culture-area" data-area-card data-area="walking">
+                <legend>Walking Discipline <span class="auto-score" data-auto-score>0/10</span></legend>
+                <label><input type="checkbox" /> Hands folded behind the back</label>
+                <label><input type="checkbox" /> Walking quietly</label>
+                <label><input type="checkbox" /> Not pushing others</label>
+                <label><input type="checkbox" /> Walking in a straight line</label>
+                <label><input type="checkbox" /> Following class monitor</label>
+              </fieldset>
+
+              <fieldset class="culture-area" data-area-card data-area="water">
+                <legend>Water & Washroom Discipline <span class="auto-score" data-auto-score>0/10</span></legend>
+                <label><input type="checkbox" /> Taking permission</label>
+                <label><input type="checkbox" /> Walking calmly</label>
+                <label><input type="checkbox" /> Returning quietly</label>
+                <label><input type="checkbox" /> No unnecessary talking</label>
+                <label><input type="checkbox" /> Washing hands properly</label>
+              </fieldset>
+
+              <fieldset class="culture-area" data-area-card data-area="environment">
+                <legend>Environmental Awareness <span class="auto-score" data-auto-score>0/10</span></legend>
+                <label><input type="checkbox" /> Turning off lights</label>
+                <label><input type="checkbox" /> Turning off fans</label>
+                <label><input type="checkbox" /> Closing taps</label>
+                <label><input type="checkbox" /> Avoiding water waste</label>
+                <label><input type="checkbox" /> Keeping classroom clean</label>
+              </fieldset>
+
+              <fieldset class="culture-area" data-area-card data-area="classroom">
+                <legend>Classroom Behaviour <span class="auto-score" data-auto-score>0/10</span></legend>
+                <label><input type="checkbox" /> Sitting properly</label>
+                <label><input type="checkbox" /> Raising hands before speaking</label>
+                <label><input type="checkbox" /> Listening carefully</label>
+                <label><input type="checkbox" /> Following instructions</label>
+                <label><input type="checkbox" /> Maintaining silence</label>
+              </fieldset>
+
+              <fieldset class="culture-area" data-area-card data-area="property">
+                <legend>Respect for School Property <span class="auto-score" data-auto-score>0/10</span></legend>
+                <label><input type="checkbox" /> No writing on desks</label>
+                <label><input type="checkbox" /> Keeping books properly</label>
+                <label><input type="checkbox" /> Using dustbins</label>
+                <label><input type="checkbox" /> Caring for materials</label>
+              </fieldset>
+
+              <fieldset class="culture-area" data-area-card data-area="personal">
+                <legend>Personal Discipline <span class="auto-score" data-auto-score>0/10</span></legend>
+                <label><input type="checkbox" /> Proper uniform</label>
+                <label><input type="checkbox" /> Trimmed nails</label>
+                <label><input type="checkbox" /> Hair properly groomed</label>
+                <label><input type="checkbox" /> Clean shoes</label>
+                <label><input type="checkbox" /> ID card if applicable</label>
+              </fieldset>
+
+              <fieldset class="culture-area" data-area-card data-area="values">
+                <legend>Values <span class="auto-score" data-auto-score>0/10</span></legend>
+                <label><input type="checkbox" /> Helping classmates</label>
+                <label><input type="checkbox" /> Sharing materials</label>
+                <label><input type="checkbox" /> Respecting everyone</label>
+                <label><input type="checkbox" /> Speaking politely</label>
+                <label><input type="checkbox" /> Saying Thank You / Sorry / Please</label>
+              </fieldset>
+            </div>
+          </div>
+
+          <div class="teacher-actions">
+            <button class="primary-button" type="submit" data-assessment-action disabled>Get Analysis</button>
+            <button class="secondary-button" type="button" data-pdf-assessment data-assessment-action disabled>Download PDF Report</button>
+          </div>
+          <p class="assessment-validation" data-assessment-validation>Please select date, class, teacher, and at least one observed habit.</p>
+        </form>
+
+        <aside class="culture-report" data-culture-report aria-live="polite">
+          <div class="report-placeholder">
+            <p class="eyebrow">AI-style report</p>
+            <h2>Fill the form to generate analysis.</h2>
+            <p>The report will show score, grade, strengths, improvement areas, suggestions and monthly progress.</p>
+          </div>
+        </aside>
+      </section>
+
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
