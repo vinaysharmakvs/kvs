@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Free Kidsverse Nursery readiness check for parents: communication, social comfort, fine motor skills, routines and learning habits."
+    />
+    <title>Is Your Child Ready for Nursery? | Kidsverse Readiness Check</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="shortcut icon" href="favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="assets/favicon.png" />
+    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="top-strip">
+      <span>Nursery Readiness Check</span>
+      <strong>A 3-minute parent guide from Kidsverse</strong>
+      <a href="#readiness-check">Start Assessment</a>
+    </div>
+
+    <header class="site-header">
+      <a class="brand" href="index.html#top" aria-label="Kidsverse School home">
+        <img src="assets/logo.png" alt="Kidsverse School logo" />
+        <span><strong>Kidsverse</strong><small>School Rehan</small></span>
+      </a>
+      <nav class="nav-links" aria-label="Primary navigation"><a href="about.html">About</a><a href="activities.html">Activities</a>
+        <div class="nav-dropdown">
+          <a class="nav-parent" href="index.html#programs">Programs</a>
+          <div class="nav-menu">
+            <a href="playway.html">Playway</a>
+            <a href="nursery.html">Nursery</a>
+            <a href="lkg.html">LKG</a>
+            <a href="ukg.html">UKG</a>
+            <a href="grade-1.html">Grade 1</a>
+          </div>
+        </div>
+        <a href="after-school.html">After School</a>
+        <a href="reading-mission.html">Reading Mission</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+      <a class="header-cta" href="#readiness-check">Start Check</a>
+      <button class="menu-button" type="button" aria-label="Open menu" data-menu-button>Menu</button>
+    </header>
+
+    <main id="top">
+      <section class="about-hero">
+        <div class="about-hero-copy">
+          <p class="eyebrow">Free parent assessment</p>
+          <h1>Is your child ready for Nursery?</h1>
+          <p>
+            Answer a few simple questions about communication, independence, social comfort, fine motor skills and learning habits. You will receive a gentle readiness view, not a judgment.
+          </p>
+          <div class="hero-actions">
+            <a class="primary-button" href="#readiness-check">Start Readiness Check</a>
+            <a class="secondary-button" href="nursery.html">View Nursery Programme</a>
+          </div>
+        </div>
+        <div class="about-hero-visual">
+          <img src="assets/NurseryHero.png" alt="Kidsverse Nursery child readiness and activity learning" />
+        </div>
+      </section>
+
+      <section class="section readiness-tool-section" id="readiness-check">
+        <div class="section-heading">
+          <p class="eyebrow">Nursery readiness check</p>
+          <h2>A quick guide for parents.</h2>
+          <p>Select what feels closest to your child today. Children grow at different speeds, so this is meant to guide, not label.</p>
+        </div>
+        <form class="readiness-tool" data-readiness-form>
+          <div class="readiness-question">
+            <strong>Child name</strong>
+            <input type="text" name="childName" placeholder="Child name" required />
+          </div>
+          <div class="readiness-question">
+            <strong>Child age</strong>
+            <input type="text" name="childAge" placeholder="Example: 3 years" required />
+          </div>
+          <fieldset class="readiness-question">
+            <legend>Communication</legend>
+            <label><input type="radio" name="communication" value="3" required /> Speaks in short sentences and expresses needs</label>
+            <label><input type="radio" name="communication" value="2" /> Uses words and gestures with some help</label>
+            <label><input type="radio" name="communication" value="1" /> Needs more support to express needs</label>
+          </fieldset>
+          <fieldset class="readiness-question">
+            <legend>Social comfort</legend>
+            <label><input type="radio" name="social" value="3" required /> Plays near other children comfortably</label>
+            <label><input type="radio" name="social" value="2" /> Takes time but settles with encouragement</label>
+            <label><input type="radio" name="social" value="1" /> Mostly stays close to parent or teacher</label>
+          </fieldset>
+          <fieldset class="readiness-question">
+            <legend>Fine motor skills</legend>
+            <label><input type="radio" name="motor" value="3" required /> Scribbles, colors, tears or pastes with interest</label>
+            <label><input type="radio" name="motor" value="2" /> Tries hand activities for short periods</label>
+            <label><input type="radio" name="motor" value="1" /> Avoids pencil or hand activities often</label>
+          </fieldset>
+          <fieldset class="readiness-question">
+            <legend>Routine readiness</legend>
+            <label><input type="radio" name="routine" value="3" required /> Follows simple instructions and routines</label>
+            <label><input type="radio" name="routine" value="2" /> Follows routines with reminders</label>
+            <label><input type="radio" name="routine" value="1" /> Needs repeated help with routines</label>
+          </fieldset>
+          <fieldset class="readiness-question">
+            <legend>Learning habits</legend>
+            <label><input type="radio" name="learning" value="3" required /> Enjoys stories, rhymes, pictures or sorting games</label>
+            <label><input type="radio" name="learning" value="2" /> Joins learning activities when guided</label>
+            <label><input type="radio" name="learning" value="1" /> Attention is still very short</label>
+          </fieldset>
+          <button class="primary-button" type="submit">Generate Readiness View</button>
+        </form>
+        <div class="readiness-result" data-readiness-result hidden></div>
+      </section>
+    </main>
+
+    <a class="whatsapp-float" href="https://wa.me/918826758881?text=Hello%20Kidsverse%20School%2C%20I%20want%20to%20discuss%20Nursery%20readiness" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+    <footer class="site-footer"><strong>Kidsverse School Rehan</strong><span>Premium preschool, Grade 1 and after-school learning in Rehan.</span></footer>
+    <script src="script.js"></script>
+  </body>
+</html>
