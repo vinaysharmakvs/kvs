@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Monthly Student Assessment | Kidsverse Management</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="shortcut icon" href="favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="assets/favicon.png" />
+    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="teacher-page student-assessment-page is-locked">
+    <section class="teacher-lock" data-teacher-lock>
+      <form class="teacher-lock-card" data-teacher-login>
+        <img src="assets/logo.png" alt="Kidsverse School logo" />
+        <p class="eyebrow">Management access</p>
+        <h1>Student Report Login</h1>
+        <p>Enter the management passcode to open the Monthly Student Assessment tool.</p>
+        <label>
+          Passcode
+          <input type="password" name="passcode" placeholder="Enter passcode" autocomplete="current-password" required />
+        </label>
+        <button class="primary-button" type="submit">Open Student Tool</button>
+        <span class="lock-error" data-lock-error hidden>Incorrect passcode. Please try again.</span>
+      </form>
+    </section>
+
+    <header class="teacher-header">
+      <a class="brand" href="index.html#top" aria-label="Kidsverse School home">
+        <img src="assets/logo.png" alt="Kidsverse School logo" />
+        <span><strong>Kidsverse</strong><small>Student Report Tool</small></span>
+      </a>
+      <nav class="teacher-tool-links" aria-label="Teacher tools">
+        <a href="teacher-assessment.html">Class Culture</a>
+        <a href="student-assessment.html" aria-current="page">Student Reports</a>
+      </nav>
+      <span class="teacher-private-badge">Hidden internal form</span>
+    </header>
+
+    <main class="teacher-assessment-shell">
+      <section class="teacher-hero">
+        <p class="eyebrow">Monthly Student Assessment</p>
+        <h1>Generate a premium student progress report in under 2 minutes.</h1>
+        <p>
+          Rate 10 simple areas, add optional remarks, and create a parent-ready
+          report with strengths, improvement areas, home suggestions and teacher
+          recommendations.
+        </p>
+      </section>
+
+      <section class="assessment-layout student-report-layout">
+        <form class="culture-form student-report-form" data-student-report-form>
+          <div class="form-block">
+            <h2>Student Details</h2>
+            <div class="teacher-form-grid">
+              <label>Class
+                <select name="className" data-student-class-select required>
+                  <option value="">Select class</option>
+                  <option>Playway - Alpha</option>
+                  <option>Playway - Beta</option>
+                  <option>Playway - Gamma</option>
+                  <option>Nursery - Alpha</option>
+                  <option>Nursery - Beta</option>
+                  <option>Nursery - Gamma</option>
+                  <option>LKG - Alpha</option>
+                  <option>LKG - Beta</option>
+                  <option>LKG - Gamma</option>
+                  <option>UKG - Alpha</option>
+                  <option>UKG - Beta</option>
+                  <option>UKG - Gamma</option>
+                  <option>Grade 1 - Alpha</option>
+                  <option>Grade 1 - Beta</option>
+                  <option>Grade 1 - Gamma</option>
+                </select>
+              </label>
+              <label>Student name
+                <select name="studentName" data-student-name-select required disabled>
+                  <option value="">Select class first</option>
+                </select>
+              </label>
+              <label>Month<input type="month" name="month" required /></label>
+              <label>Class Teacher
+                <select name="teacher" data-student-teacher-select required disabled>
+                  <option value="">Teacher will appear after class selection</option>
+                </select>
+              </label>
+              <label class="student-photo-upload">Student photo
+                <input type="file" name="studentPhoto" accept="image/*" data-student-photo-input required />
+                <span>Required for report generation. This photo will appear in the generated report.</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-block">
+            <div class="assessment-intro">
+              <h2>Rate Each Parameter</h2>
+              <p>1 means needs support. 5 means excellent. Each row is designed for quick monthly completion.</p>
+            </div>
+
+            <div class="student-rating-list">
+              <fieldset class="student-rating-row" data-student-rating="academic">
+                <legend><strong>Academic Performance</strong><span>English, Maths, EVS and classroom concept clarity.</span></legend>
+                <div class="star-rating" role="radiogroup" aria-label="Academic Performance rating">
+                  <label><input type="radio" name="academic" value="1" required /><span>★<small>1</small></span></label>
+                  <label><input type="radio" name="academic" value="2" /><span>★<small>2</small></span></label>
+                  <label><input type="radio" name="academic" value="3" /><span>★<small>3</small></span></label>
+                  <label><input type="radio" name="academic" value="4" /><span>★<small>4</small></span></label>
+                  <label><input type="radio" name="academic" value="5" /><span>★<small>5</small></span></label>
+                </div>
+              </fieldset>
+
+              <fieldset class="student-rating-row" data-student-rating="readingWriting">
+                <legend><strong>Reading & Writing</strong><span>Reading, handwriting, written work and sentence formation.</span></legend>
+                <div class="star-rating" role="radiogroup" aria-label="Reading and Writing rating">
+                  <label><input type="radio" name="readingWriting" value="1" required /><span>★<small>1</small></span></label>
+                  <label><input type="radio" name="readingWriting" value="2" /><span>★<small>2</small></span></label>
+                  <label><input type="radio" name="readingWriting" value="3" /><span>★<small>3</small></span></label>
+                  <label><input type="radio" name="readingWriting" value="4" /><span>★<small>4</small></span></label>
+                  <label><input type="radio" name="readingWriting" value="5" /><span>★<small>5</small></span></label>
+                </div>
+              </fieldset>
+
+              <fieldset class="student-rating-row" data-student-rating="communication">
+                <legend><strong>Communication</strong><span>Speaking confidence, clarity and expression.</span></legend>
+                <div class="star-rating" role="radiogroup" aria-label="Communication rating">
+                  <label><input type="radio" name="communication" value="1" required /><span>★<small>1</small></span></label>
+                  <label><input type="radio" name="communication" value="2" /><span>★<small>2</small></span></label>
+                  <label><input type="radio" name="communication" value="3" /><span>★<small>3</small></span></label>
+                  <label><input type="radio" name="communication" value="4" /><span>★<small>4</small></span></label>
+                  <label><input type="radio" name="communication" value="5" /><span>★<small>5</small></span></label>
+                </div>
+              </fieldset>
+
+              <fieldset class="student-rating-row" data-student-rating="participation">
+                <legend><strong>Participation</strong><span>Class activities, curiosity, effort and involvement.</span></legend>
+                <div class="star-rating" role="radiogroup" aria-label="Participation rating">
+                  <label><input type="radio" name="participation" value="1" required /><span>★<small>1</small></span></label>
+                  <label><input type="radio" name="participation" value="2" /><span>★<small>2</small></span></label>
+                  <label><input type="radio" name="participation" value="3" /><span>★<small>3</small></span></label>
+                  <label><input type="radio" name="participation" value="4" /><span>★<small>4</small></span></label>
+                  <label><input type="radio" name="participation" value="5" /><span>★<small>5</small></span></label>
+                </div>
+              </fieldset>
+
+              <fieldset class="student-rating-row" data-student-rating="behaviour">
+                <legend><strong>Behaviour</strong><span>Discipline, manners, instructions and classroom routine.</span></legend>
+                <div class="star-rating" role="radiogroup" aria-label="Behaviour rating">
+                  <label><input type="radio" name="behaviour" value="1" required /><span>★<small>1</small></span></label>
+                  <label><input type="radio" name="behaviour" value="2" /><span>★<small>2</small></span></label>
+                  <label><input type="radio" name="behaviour" value="3" /><span>★<small>3</small></span></label>
+                  <label><input type="radio" name="behaviour" value="4" /><span>★<small>4</small></span></label>
+                  <label><input type="radio" name="behaviour" value="5" /><span>★<small>5</small></span></label>
+                </div>
+              </fieldset>
+
+              <fieldset class="student-rating-row" data-student-rating="responsibility">
+                <legend><strong>Responsibility</strong><span>Homework, belongings, cleanliness and good school habits.</span></legend>
+                <div class="star-rating" role="radiogroup" aria-label="Responsibility rating">
+                  <label><input type="radio" name="responsibility" value="1" required /><span>★<small>1</small></span></label>
+                  <label><input type="radio" name="responsibility" value="2" /><span>★<small>2</small></span></label>
+                  <label><input type="radio" name="responsibility" value="3" /><span>★<small>3</small></span></label>
+                  <label><input type="radio" name="responsibility" value="4" /><span>★<small>4</small></span></label>
+                  <label><input type="radio" name="responsibility" value="5" /><span>★<small>5</small></span></label>
+                </div>
+              </fieldset>
+
+              <fieldset class="student-rating-row" data-student-rating="social">
+                <legend><strong>Social Skills</strong><span>Sharing, teamwork, respect and cooperation with others.</span></legend>
+                <div class="star-rating" role="radiogroup" aria-label="Social Skills rating">
+                  <label><input type="radio" name="social" value="1" required /><span>★<small>1</small></span></label>
+                  <label><input type="radio" name="social" value="2" /><span>★<small>2</small></span></label>
+                  <label><input type="radio" name="social" value="3" /><span>★<small>3</small></span></label>
+                  <label><input type="radio" name="social" value="4" /><span>★<small>4</small></span></label>
+                  <label><input type="radio" name="social" value="5" /><span>★<small>5</small></span></label>
+                </div>
+              </fieldset>
+
+              <fieldset class="student-rating-row" data-student-rating="creativity">
+                <legend><strong>Creativity</strong><span>Art, projects, problem-solving and original expression.</span></legend>
+                <div class="star-rating" role="radiogroup" aria-label="Creativity rating">
+                  <label><input type="radio" name="creativity" value="1" required /><span>★<small>1</small></span></label>
+                  <label><input type="radio" name="creativity" value="2" /><span>★<small>2</small></span></label>
+                  <label><input type="radio" name="creativity" value="3" /><span>★<small>3</small></span></label>
+                  <label><input type="radio" name="creativity" value="4" /><span>★<small>4</small></span></label>
+                  <label><input type="radio" name="creativity" value="5" /><span>★<small>5</small></span></label>
+                </div>
+              </fieldset>
+
+              <fieldset class="student-rating-row" data-student-rating="attendance">
+                <legend><strong>Attendance</strong><span>Regularity, punctuality and readiness for school.</span></legend>
+                <div class="star-rating" role="radiogroup" aria-label="Attendance rating">
+                  <label><input type="radio" name="attendance" value="1" required /><span>★<small>1</small></span></label>
+                  <label><input type="radio" name="attendance" value="2" /><span>★<small>2</small></span></label>
+                  <label><input type="radio" name="attendance" value="3" /><span>★<small>3</small></span></label>
+                  <label><input type="radio" name="attendance" value="4" /><span>★<small>4</small></span></label>
+                  <label><input type="radio" name="attendance" value="5" /><span>★<small>5</small></span></label>
+                </div>
+              </fieldset>
+
+              <fieldset class="student-rating-row" data-student-rating="growth">
+                <legend><strong>Overall Growth</strong><span>Teacher's monthly impression of confidence and progress.</span></legend>
+                <div class="star-rating" role="radiogroup" aria-label="Overall Growth rating">
+                  <label><input type="radio" name="growth" value="1" required /><span>★<small>1</small></span></label>
+                  <label><input type="radio" name="growth" value="2" /><span>★<small>2</small></span></label>
+                  <label><input type="radio" name="growth" value="3" /><span>★<small>3</small></span></label>
+                  <label><input type="radio" name="growth" value="4" /><span>★<small>4</small></span></label>
+                  <label><input type="radio" name="growth" value="5" /><span>★<small>5</small></span></label>
+                </div>
+              </fieldset>
+            </div>
+          </div>
+
+          <div class="form-block">
+            <h2>Teacher Notes</h2>
+            <div class="teacher-form-grid">
+              <label>Teacher remarks<textarea name="remarks" rows="4" placeholder="Anything special this month?" required></textarea></label>
+              <label>Area to improve<textarea name="improvementNote" rows="4" placeholder="Any specific area to improve?" required></textarea></label>
+            </div>
+          </div>
+
+          <div class="teacher-actions">
+            <button class="primary-button" type="submit" data-student-report-action disabled>Generate Report</button>
+            <button class="secondary-button" type="button" data-student-report-pdf data-student-report-action disabled>Download PDF Report</button>
+          </div>
+          <p class="assessment-validation" data-student-report-validation>Please select class, student, teacher, month, upload photo, complete all 10 ratings, and add teacher remarks plus area to improve.</p>
+        </form>
+
+        <aside class="culture-report student-report-output" data-student-report-output aria-live="polite">
+          <div class="report-placeholder">
+            <p class="eyebrow">AI-style student report</p>
+            <h2>Rate the student to generate a monthly report.</h2>
+            <p>The report will include overall feedback, strengths, improvement areas, parent suggestions, teacher suggestions and grade.</p>
+          </div>
+        </aside>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
