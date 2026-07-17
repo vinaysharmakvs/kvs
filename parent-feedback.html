@@ -64,38 +64,6 @@
 
       <section class="feedback-shell">
         <form class="parent-feedback-form" data-parent-feedback-form>
-          <div class="feedback-details">
-            <label>Parent name
-              <input type="text" name="parentName" placeholder="Your name" required />
-            </label>
-            <label>Parent contact number
-              <input type="tel" name="parentPhone" placeholder="+91" required />
-            </label>
-            <label>Student name
-              <input type="text" name="studentName" placeholder="Child name" required />
-            </label>
-            <label>Child class
-              <select name="childClass" required>
-                <option value="">Select class</option>
-                <option>Playway - Alpha</option>
-                <option>Playway - Beta</option>
-                <option>Playway - Gamma</option>
-                <option>Nursery - Alpha</option>
-                <option>Nursery - Beta</option>
-                <option>Nursery - Gamma</option>
-                <option>LKG - Alpha</option>
-                <option>LKG - Beta</option>
-                <option>LKG - Gamma</option>
-                <option>UKG - Alpha</option>
-                <option>UKG - Beta</option>
-                <option>UKG - Gamma</option>
-                <option>Grade 1 - Alpha</option>
-                <option>Grade 1 - Beta</option>
-                <option>Grade 1 - Gamma</option>
-              </select>
-            </label>
-          </div>
-
           <div class="rating-grid detailed-feedback-grid">
             <fieldset class="rating-card detailed-rating-card" data-rating-card>
               <legend>Teacher Experience</legend>
@@ -134,9 +102,45 @@
             <textarea name="suggestion" rows="6" placeholder="Please share what we are doing well and what we can improve."></textarea>
           </label>
 
+          <div class="feedback-details feedback-details-final">
+            <div class="feedback-details-heading">
+              <span>Almost done</span>
+              <strong>Where should we tag this feedback?</strong>
+            </div>
+            <label>Parent name
+              <input type="text" name="parentName" placeholder="Your name" required />
+            </label>
+            <label>Parent contact number
+              <input type="tel" name="parentPhone" placeholder="+91" required />
+            </label>
+            <label>Student name
+              <input type="text" name="studentName" placeholder="Child name" required />
+            </label>
+            <label>Child class
+              <select name="childClass" required>
+                <option value="">Select class</option>
+                <option>Playway - Alpha</option>
+                <option>Playway - Beta</option>
+                <option>Playway - Gamma</option>
+                <option>Nursery - Alpha</option>
+                <option>Nursery - Beta</option>
+                <option>Nursery - Gamma</option>
+                <option>LKG - Alpha</option>
+                <option>LKG - Beta</option>
+                <option>LKG - Gamma</option>
+                <option>UKG - Alpha</option>
+                <option>UKG - Beta</option>
+                <option>UKG - Gamma</option>
+                <option>Grade 1 - Alpha</option>
+                <option>Grade 1 - Beta</option>
+                <option>Grade 1 - Gamma</option>
+              </select>
+            </label>
+          </div>
+
           <div class="feedback-actions">
             <button class="primary-button" type="submit" data-feedback-submit disabled>Submit Feedback</button>
-            <span data-feedback-validation>Please enter parent name, contact number, student name, child class and complete all feedback questions.</span>
+            <span data-feedback-validation>Please complete all feedback questions and add parent details at the end.</span>
           </div>
 
           <div class="feedback-thank-you" data-feedback-thank-you hidden></div>
