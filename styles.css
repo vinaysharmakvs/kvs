@@ -5020,6 +5020,30 @@ body:has(.about-hero) .about-hero::before {
   gap: 16px;
 }
 
+.feedback-details-heading {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 4px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, rgba(255, 215, 111, 0.28), rgba(43, 183, 168, 0.12));
+}
+
+.feedback-details-heading span {
+  color: var(--green);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.feedback-details-heading strong {
+  color: var(--ink);
+  font-family: "Baloo 2", "Nunito", system-ui, sans-serif;
+  font-size: 1.25rem;
+  line-height: 1.1;
+}
+
 .feedback-details label,
 .suggestion-box {
   display: grid;
@@ -5214,17 +5238,25 @@ body:has(.about-hero) .about-hero::before {
 }
 
 @media (max-width: 520px) {
+  .rating-options {
+    gap: 5px;
+  }
+
   .rating-options span {
-    min-height: 54px;
-    border-radius: 12px;
+    min-height: 58px;
+    border-radius: 10px;
+    padding: 6px 2px;
   }
 
   .rating-face {
-    font-size: 1.15rem;
+    font-size: 1.05rem;
   }
 
   .rating-face small {
-    display: none;
+    display: block;
+    margin-top: 5px;
+    font-size: 0.56rem;
+    line-height: 1;
   }
 
   .question-rating {
