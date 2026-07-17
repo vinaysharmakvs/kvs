@@ -127,6 +127,311 @@ const cultureReport = document.querySelector("[data-culture-report]");
 const pdfAssessmentButton = document.querySelector("[data-pdf-assessment]");
 const assessmentActionButtons = document.querySelectorAll("[data-assessment-action]");
 const assessmentValidation = document.querySelector("[data-assessment-validation]");
+const studentReportForm = document.querySelector("[data-student-report-form]");
+const studentReportOutput = document.querySelector("[data-student-report-output]");
+const studentReportButtons = document.querySelectorAll("[data-student-report-action]");
+const studentReportValidation = document.querySelector("[data-student-report-validation]");
+const studentReportPdf = document.querySelector("[data-student-report-pdf]");
+const studentPhotoInput = document.querySelector("[data-student-photo-input]");
+const studentClassSelect = document.querySelector("[data-student-class-select]");
+const studentNameSelect = document.querySelector("[data-student-name-select]");
+const studentTeacherSelect = document.querySelector("[data-student-teacher-select]");
+let studentPhotoDataUrl = "";
+const studentRosters = {
+  "Playway - Alpha": {
+    teacher: "Ms Kajal",
+    students: [
+      "Harshiv Dhiman",
+      "Aariv Choudhary",
+      "Daksh Manhas",
+      "Kiyansh Bhardwaj",
+      "Kriday Sharma",
+      "Rivaan Sharma",
+      "Smarth Thakur",
+      "Navikaa Dhiman",
+    ],
+  },
+  "Nursery - Alpha": {
+    teacher: "Ms Diksha",
+    students: [
+      "Prashi Dhiman",
+      "Kaviya Sharma",
+      "Raghavan Kashyap",
+      "Kashvi",
+      "Rudraksh Divya Sharma",
+      "Wamika Singh",
+      "Kashvi",
+      "Samayra",
+      "Taksh Sharma",
+      "Tarish Sharma",
+      "Nivisha Sharma",
+      "Manya",
+      "Suryansh",
+      "Diyansh bhardwaj",
+      "Anaya Choudhary",
+      "Rudraditya Singh Rana",
+      "Vanya Sharma",
+      "Aarvik narang",
+      "Tysha Naharwaria",
+      "Shreyansh Rana Rajput",
+      "Rabhya Thakur",
+      "Agastya Sharma",
+      "Rabnoor",
+      "Kashvi Modgil",
+    ],
+  },
+  "Nursery - Beta": {
+    teacher: "Ms Rubi",
+    students: [
+      "Prisha Dhiman",
+      "Radhika",
+      "Aabid Khan",
+      "Aadil Khan",
+      "Aarav Singh",
+      "Naira Sharma",
+      "Divyam Sharma",
+      "Harnoor Kaur",
+      "Samarth Awasti",
+      "Gurpreet kaur",
+      "Ayaan Sharma",
+      "Sanvi Sharma",
+      "Shiv Pathania",
+      "Manraj Singh",
+      "Lakshit Mankotia",
+      "Manvik Singh",
+      "Vedaant",
+      "PranaV Panjla",
+      "Vedansh",
+      "Samayra",
+      "Manvi Sharma",
+      "Gunvit Singh",
+      "Aarav",
+      "Suryansh Sharma",
+    ],
+  },
+  "Nursery - Gamma": {
+    teacher: "Ms Meenakshi",
+    students: [
+      "Advay Pakhreria",
+      "Advay Pakhreria",
+      "Vedansh Kutlehria",
+      "Parineeta",
+      "Parineeti",
+      "Aashvi Thakur",
+      "Shivansh Sharma",
+      "Vriha Sharma",
+      "Trinaj Kaushal",
+      "Hardik Pathania",
+      "Amayra Sharma",
+      "Saisha Sharma",
+      "Aadish",
+      "Nyra Thakur",
+      "Pranav Pathania",
+      "Riyansh Koundal",
+      "Agastya Choudhary",
+      "Shambhavi Sharma",
+      "Kiara Sharma",
+      "Manya Sharma",
+      "Yadunandan Sharma",
+      "Vidushi",
+      "Rudraksh",
+      "Aadil Sharma",
+      "Kavish Choudhary",
+      "Mitaksh Pathania",
+      "Yashmit Mankotia",
+      "Aadhya Singh",
+      "Shivansh Guleria",
+      "Shinoy Bhardwaj",
+    ],
+  },
+  "LKG - Alpha": {
+    teacher: "Ms Darshana",
+    students: [
+      "Barleen Kaur",
+      "Arpit pathania",
+      "dhruvit sharma",
+      "Aradhya",
+      "Prathyush",
+      "Atharv mankotia",
+      "Anaya",
+      "Dhruv Sapehia",
+      "KAVISH THAKUR",
+      "SHIRIN",
+      "KRISHIV RANA",
+      "Bhavika",
+      "Rushant Guleria",
+      "Aarush Singh",
+      "Aadvik Samkaria",
+      "Anaya",
+      "Jasmine Pathania",
+      "Rushita Koundal",
+      "Jashvi Rana",
+      "Rubab Rana",
+      "Dhriti Sharma",
+      "Krishiv Sharma",
+      "Naira",
+      "Kashvi",
+    ],
+  },
+  "LKG - Beta": {
+    teacher: "Ms Neena",
+    students: [
+      "Smayra Dhiman",
+      "ishan rana",
+      "Akshit pathania",
+      "Saket",
+      "Kairav Sharma",
+      "Kanishk",
+      "Krishav Thakur",
+      "Harleen kaur",
+      "Sahibpreet Singh",
+      "Shivansh sharma",
+      "Jasveen kaur",
+      "krishaa thakur",
+      "Saransh Guleria",
+      "Arindham Bhardwaj",
+      "Rounak",
+      "Mitansh Thakur",
+      "tanishka sandhu",
+      "samaira sharma",
+      "mishika dhiman",
+      "Kiara Dadwal",
+      "shivaansh bhardwaj",
+      "Gitansh sharma",
+      "Samaira Choudhary",
+      "Rihan Gaidher",
+      "Hitika Kalia",
+      "Agamjot Singh",
+      "Avyukt Sharma",
+    ],
+  },
+  "LKG - Gamma": {
+    teacher: "Ms Puja",
+    students: [
+      "Mahir Gautam",
+      "Atharv Pandit",
+      "Chahat Thakur",
+      "Dhriti rana",
+      "Trishika Guleria",
+      "Ekansh",
+      "Aashutosh Sharma",
+      "Arshveer",
+      "Advik pathania",
+      "Aaira Sharma",
+      "Kridham",
+      "Siromani Gandharvika",
+      "Daksh rana",
+      "Ojasvi thakur",
+      "Atharva pathania",
+      "Manvik Singh",
+      "Yuvik pathania",
+      "Aashvi sharma",
+      "Keerat",
+      "Aashvi",
+      "Hetal",
+      "Shanaya naryal",
+      "Krisha pathania",
+      "Parnika Rajput",
+      "Swastika Koundal",
+      "Avnish choudhary",
+      "Saanvi Bhatia",
+    ],
+  },
+  "UKG - Alpha": {
+    teacher: "Ms Rajnish",
+    students: [
+      "Lavit Minahas",
+      "Gourish Bhandari",
+      "Kartik",
+      "Akarsh Singh Mankotia",
+      "Inayat Sharma",
+      "Navish Sharma",
+      "Raghavi",
+      "Aadvik Bhardwaj",
+      "Mankirat Singh",
+      "Sunali Thakur",
+      "Aashita Sharma",
+      "Parv Dhiman",
+      "Aavya Sharma",
+      "Rihan Sharma",
+      "Aadhvika Sharma",
+      "Shivank Sharma",
+      "Jasnoor Kaur",
+      "Anaya Thakur",
+      "Anandit Sandhu",
+      "Aahana Pathania",
+      "Dipansh",
+      "Anayra Rajput",
+      "Ayush pathania",
+      "Aashvik Dhiman",
+      "Viransh",
+      "Atharv Rana",
+      "Suryansh",
+      "Aashvi Singh",
+    ],
+  },
+  "UKG - Beta": {
+    teacher: "Ms Priya",
+    students: [
+      "Aayra Sharma",
+      "Abira",
+      "Riyansh sharma",
+      "Ennayat Kaushal",
+      "Shouvik",
+      "Anayra Sharma",
+      "Avyansh Sharma",
+      "Sharvil Dhiman",
+      "prabhleen kaur",
+      "Aditi mankotia",
+      "Abhyuday Singh",
+      "navika katoch",
+      "Parneet kaur sandhu",
+      "avnoor singh",
+      "Divyanshi",
+      "Aarav Guleria",
+      "Saira Sharma",
+      "Viraaj veer Sharma",
+      "Geetanshi Kutlehria",
+      "Mannat",
+      "Avni Pathania",
+      "Samraat Pathania",
+      "Ashita Bhatia",
+      "Aadhvik sharma",
+      "Kavyansh Dhiman",
+      "Sehajleen Kaur",
+      "Rudvika",
+      "Riyanshi Dhiman",
+      "Ritika",
+      "Vivan",
+    ],
+  },
+  "Grade 1 - Alpha": {
+    teacher: "Ms Shikha",
+    students: [
+      "Kairav Patiyal",
+      "Harshida",
+      "Arabjot Singh",
+      "Adhira Rana",
+      "Abir Sharma",
+      "Amyra Bhardwaj",
+      "Rutakshya",
+      "Twisha",
+      "Anaya",
+      "Naman Choudhary",
+      "Mokshita Sharma",
+      "Vansh Rana",
+      "Devarsh Pathania",
+      "Rutvin Sapehia",
+      "Yamya Singh",
+      "Ashvik Dhiman",
+      "Abhinandan Sharma",
+      "Swastik Sharma",
+      "Rudraksh Bhardwaj",
+      "Mitansh Nangla",
+      "Anav Pathania",
+    ],
+  },
+};
 const cultureAreas = [
   { key: "greetings", label: "Respect & Greetings", strength: "Students greet teachers and visitors confidently.", improve: "Practice daily greeting routines and standing response." },
   { key: "walking", label: "Walking Discipline", strength: "Students move in lines with good control.", improve: "Improve silent walking, line formation and monitor-led movement." },
@@ -311,6 +616,367 @@ if (cultureForm) {
   cultureForm.elements.date.valueAsDate = new Date();
   updateAutoScores();
   updateAssessmentValidation();
+}
+
+const studentAssessmentAreas = [
+  {
+    key: "academic",
+    label: "Academic Performance",
+    strength: "shows strong classroom understanding and concept clarity",
+    improve: "revise classroom concepts through short daily practice",
+    parent: "Please ask one simple question daily from the topic covered in class.",
+    teacher: "Use quick recap questions before moving to the next concept.",
+  },
+  {
+    key: "readingWriting",
+    label: "Reading & Writing",
+    strength: "is developing good reading and written expression",
+    improve: "strengthen reading fluency, handwriting and sentence formation",
+    parent: "Encourage 10-15 minutes of reading aloud and neat writing practice at home.",
+    teacher: "Give guided reading turns and short copy-writing support during class.",
+  },
+  {
+    key: "communication",
+    label: "Communication",
+    strength: "communicates with confidence and clarity",
+    improve: "speak more confidently during class conversations",
+    parent: "Invite the child to describe their school day in 3-4 complete sentences.",
+    teacher: "Offer small speaking opportunities through show-and-tell or question rounds.",
+  },
+  {
+    key: "participation",
+    label: "Participation",
+    strength: "participates actively in classroom activities",
+    improve: "take more initiative during group tasks and class activities",
+    parent: "Appreciate every attempt to answer or participate, even when the answer is not perfect.",
+    teacher: "Use partner activities to increase comfortable participation.",
+  },
+  {
+    key: "behaviour",
+    label: "Behaviour",
+    strength: "follows classroom rules and maintains good discipline",
+    improve: "follow instructions more consistently during routines",
+    parent: "Reinforce polite words, listening habits and simple routines at home.",
+    teacher: "Use gentle reminders and visual routine cues during transitions.",
+  },
+  {
+    key: "responsibility",
+    label: "Responsibility",
+    strength: "shows responsibility with belongings, homework and school habits",
+    improve: "build stronger responsibility for belongings, homework and cleanliness",
+    parent: "Let the child pack their bag with a small checklist.",
+    teacher: "Assign small classroom responsibilities to build ownership.",
+  },
+  {
+    key: "social",
+    label: "Social Skills",
+    strength: "shares, cooperates and works well with classmates",
+    improve: "practice sharing, teamwork and respectful peer interaction",
+    parent: "Encourage turn-taking games and polite sharing at home.",
+    teacher: "Pair the child with supportive peers for cooperative activities.",
+  },
+  {
+    key: "creativity",
+    label: "Creativity",
+    strength: "shows creativity during activities and projects",
+    improve: "express ideas more freely through art, stories and play",
+    parent: "Provide simple drawing, craft or storytelling time without pressure.",
+    teacher: "Use open-ended prompts where there is more than one correct answer.",
+  },
+  {
+    key: "attendance",
+    label: "Attendance",
+    strength: "maintains good attendance and school readiness",
+    improve: "improve punctuality and regular attendance",
+    parent: "Keep a consistent sleep and morning routine for school readiness.",
+    teacher: "Monitor attendance patterns and support settling when the child returns after absence.",
+  },
+  {
+    key: "growth",
+    label: "Overall Growth",
+    strength: "has shown positive overall growth this month",
+    improve: "continue building steady progress across learning and confidence",
+    parent: "Celebrate small improvements and keep practice light but regular.",
+    teacher: "Set one small weekly goal and acknowledge visible progress.",
+  },
+];
+
+function getStudentReportData() {
+  if (!studentReportForm) return null;
+  const formData = new FormData(studentReportForm);
+  const scores = studentAssessmentAreas.map((area) => ({
+    ...area,
+    score: Number(formData.get(area.key) || 0),
+  }));
+  const total = scores.reduce((sum, area) => sum + area.score, 0);
+  const max = scores.length * 5;
+  const percent = Math.round((total / max) * 100);
+  const average = total / scores.length;
+  const grade = average >= 4.5 ? "Excellent" : average >= 3.7 ? "Very Good" : average >= 3 ? "Good" : average >= 2.2 ? "Needs Support" : "Needs Focused Attention";
+  return {
+    studentName: String(formData.get("studentName") || "").trim(),
+    className: String(formData.get("className") || "").trim(),
+    month: String(formData.get("month") || "").trim(),
+    teacher: String(formData.get("teacher") || "").trim(),
+    remarks: String(formData.get("remarks") || "").trim(),
+    improvementNote: String(formData.get("improvementNote") || "").trim(),
+    studentPhoto: studentPhotoDataUrl,
+    scores,
+    total,
+    max,
+    percent,
+    average,
+    grade,
+  };
+}
+
+function formatStudentMonth(value) {
+  if (!value) return "Month not selected";
+  const [year, month] = value.split("-");
+  const date = new Date(Number(year), Number(month) - 1, 1);
+  return date.toLocaleDateString("en-IN", { month: "long", year: "numeric" });
+}
+
+function getStudentReportTone(data) {
+  if (data.average >= 4.5) return "excellent progress";
+  if (data.average >= 3.7) return "very good progress";
+  if (data.average >= 3) return "steady progress";
+  return "developing progress with focused support";
+}
+
+function getTeacherNoteKeywords(text) {
+  const value = String(text || "").toLowerCase();
+  return {
+    learning: /learn|learing|study|academic|concept|understand/.test(value),
+    reading: /read|phonics|book/.test(value),
+    writing: /writ|handwriting|copy|sentence/.test(value),
+    maths: /math|number|count/.test(value),
+    communication: /speak|talk|communication|confidence|answer/.test(value),
+    behaviour: /behav|discipline|listen|rule|manners/.test(value),
+    participation: /participat|activity|group|class/.test(value),
+    work: /work|practice|focus|improve|need|weak/.test(value),
+    positive: /good|very good|excellent|nice|better|improv|progress/.test(value),
+  };
+}
+
+function rewriteTeacherObservation(text, firstName) {
+  const keywords = getTeacherNoteKeywords(text);
+  const strengths = [];
+  if (keywords.learning) strengths.push("learning progress");
+  if (keywords.reading) strengths.push("reading readiness");
+  if (keywords.writing) strengths.push("written work");
+  if (keywords.maths) strengths.push("number concepts");
+  if (keywords.communication) strengths.push("classroom communication");
+  if (keywords.behaviour) strengths.push("classroom behaviour");
+  if (keywords.participation) strengths.push("class participation");
+
+  if (strengths.length) {
+    return `${firstName} is showing positive development in ${strengths.slice(0, 2).join(" and ")}. The teacher has observed steady effort and encouraging progress during classroom activities.`;
+  }
+
+  if (keywords.positive) {
+    return `${firstName} is showing good progress this month and is responding well to classroom routines and learning activities.`;
+  }
+
+  return `${firstName} is making steady progress this month. The teacher has noted areas that can be supported through regular guidance and encouragement.`;
+}
+
+function rewriteImprovementFocus(text, firstName) {
+  const keywords = getTeacherNoteKeywords(text);
+  const focus = [];
+  if (keywords.reading) focus.push("reading practice");
+  if (keywords.writing) focus.push("neat written work");
+  if (keywords.maths) focus.push("number practice");
+  if (keywords.communication) focus.push("speaking confidence");
+  if (keywords.behaviour) focus.push("listening and classroom routines");
+  if (keywords.participation) focus.push("active class participation");
+  if (keywords.learning && !focus.length) focus.push("concept revision");
+  if (keywords.work && !focus.length) focus.push("consistent practice");
+
+  if (focus.length) {
+    return `${firstName} will benefit from focused support in ${focus.slice(0, 2).join(" and ")}. Short daily practice and gentle encouragement will help build stronger confidence next month.`;
+  }
+
+  return `${firstName} should continue receiving guided practice and positive reinforcement so progress remains steady in the coming month.`;
+}
+
+function isStudentReportValid() {
+  if (!studentReportForm) return false;
+  const data = getStudentReportData();
+  if (!data) return false;
+  return Boolean(
+    data.studentName &&
+      data.className &&
+      data.month &&
+      data.teacher &&
+      data.remarks &&
+      data.improvementNote &&
+      data.studentPhoto &&
+      data.scores.every((area) => area.score > 0)
+  );
+}
+
+function updateStudentReportValidation() {
+  const valid = isStudentReportValid();
+  studentReportButtons.forEach((button) => {
+    button.disabled = !valid;
+  });
+  if (studentReportValidation) studentReportValidation.hidden = valid;
+  return valid;
+}
+
+function updateStudentStarVisuals() {
+  document.querySelectorAll(".star-rating").forEach((group) => {
+    const selected = Number(group.querySelector("input:checked")?.value || 0);
+    Array.from(group.querySelectorAll("label")).forEach((label, index) => {
+      label.classList.toggle("is-filled", index < selected);
+    });
+  });
+}
+
+function applyStudentRosterTags() {
+  if (!studentReportForm || !studentClassSelect || !studentNameSelect || !studentTeacherSelect) return;
+  const selectedClass = studentClassSelect.value;
+  const roster = studentRosters[selectedClass];
+  const previousStudent = studentNameSelect.value;
+
+  studentNameSelect.innerHTML = "";
+  studentTeacherSelect.innerHTML = "";
+
+  if (!selectedClass) {
+    studentNameSelect.disabled = true;
+    studentTeacherSelect.disabled = true;
+    studentNameSelect.append(new Option("Select class first", ""));
+    studentTeacherSelect.append(new Option("Teacher will appear after class selection", ""));
+    return;
+  }
+
+  if (!roster) {
+    studentNameSelect.disabled = true;
+    studentTeacherSelect.disabled = true;
+    studentNameSelect.append(new Option("No student roster added for this class yet", ""));
+    studentTeacherSelect.append(new Option("No teacher tagged for this class yet", ""));
+    return;
+  }
+
+  studentNameSelect.disabled = false;
+  studentTeacherSelect.disabled = false;
+  studentNameSelect.append(new Option("Select student", ""));
+  roster.students.forEach((student) => {
+    studentNameSelect.append(new Option(student, student));
+  });
+  if (roster.students.includes(previousStudent)) {
+    studentNameSelect.value = previousStudent;
+  }
+
+  studentTeacherSelect.append(new Option(roster.teacher, roster.teacher));
+  studentTeacherSelect.value = roster.teacher;
+}
+
+function renderStudentReport(data) {
+  if (!studentReportOutput || !data) return;
+  const topAreas = [...data.scores].sort((a, b) => b.score - a.score).slice(0, 3);
+  const focusAreas = [...data.scores].sort((a, b) => a.score - b.score).slice(0, 3);
+  const stars = "★★★★★".slice(0, Math.max(1, Math.round(data.average)));
+  const gradeClass = data.average >= 4.5 ? "excellent" : data.average >= 3.7 ? "good" : data.average >= 3 ? "needs" : "attention";
+  const firstName = data.studentName.split(" ")[0] || "The student";
+  const teacherRemark = data.remarks ? `<p><strong>Teacher observation:</strong> ${rewriteTeacherObservation(data.remarks, firstName)}</p>` : "";
+  const improvementRemark = data.improvementNote ? `<p><strong>Focus for next month:</strong> ${rewriteImprovementFocus(data.improvementNote, firstName)}</p>` : "";
+  const photoMarkup = data.studentPhoto
+    ? `<img class="student-report-photo" src="${data.studentPhoto}" alt="${data.studentName} photo" />`
+    : `<div class="student-report-photo is-placeholder"><span>${firstName.charAt(0).toUpperCase()}</span></div>`;
+
+  studentReportOutput.innerHTML = `
+    <div class="report-card report-dashboard student-monthly-report">
+      <div class="report-topline">
+        <div class="student-report-title">
+          ${photoMarkup}
+          <div>
+            <p class="eyebrow">Monthly student report</p>
+            <h2>${data.studentName} - ${formatStudentMonth(data.month)}</h2>
+            <p>${data.className} · ${data.teacher}</p>
+          </div>
+        </div>
+        <div class="score-ring ${gradeClass}"><strong>${data.percent}%</strong><span>${data.grade}</span></div>
+      </div>
+
+      <div class="report-stat-grid">
+        <article><span>Overall Grade</span><strong>${data.grade}</strong><small>${stars}</small></article>
+        <article><span>Total Score</span><strong>${data.total}/${data.max}</strong><small>${data.average.toFixed(1)}/5 average</small></article>
+        <article><span>Top Strength</span><strong>${topAreas[0]?.label || "Not available"}</strong><small>${topAreas[0]?.score || 0}/5</small></article>
+        <article><span>Focus Area</span><strong>${focusAreas[0]?.label || "Not available"}</strong><small>${focusAreas[0]?.score || 0}/5</small></article>
+      </div>
+
+      <section class="report-panel student-feedback-panel">
+        <h3>Overall Feedback</h3>
+        <p>${data.studentName} has shown ${getStudentReportTone(data)} this month. ${firstName} is strongest in ${topAreas.map((area) => area.label.toLowerCase()).join(", ")}. With continued support in ${focusAreas[0]?.label.toLowerCase() || "key learning habits"}, ${firstName} can build stronger confidence and consistency in the coming month.</p>
+        ${teacherRemark}
+        ${improvementRemark}
+      </section>
+
+      <h3>Area-wise Ratings</h3>
+      <div class="score-bars">
+        ${data.scores.map((area) => `<div class="score-bar-row"><div><strong>${area.label}</strong><small>${area.score}/5 rating</small></div><span>${"★★★★★".slice(0, area.score)}</span><progress max="5" value="${area.score}"></progress></div>`).join("")}
+      </div>
+
+      <div class="report-columns">
+        <section class="report-panel strengths-panel"><h3>Strengths</h3><ul>${topAreas.map((area) => `<li>${firstName} ${area.strength}.</li>`).join("")}</ul></section>
+        <section class="report-panel improvement-panel"><h3>Areas of Improvement</h3><ul>${focusAreas.map((area) => `<li>${area.improve}.</li>`).join("")}</ul></section>
+      </div>
+
+      <div class="report-columns">
+        <section class="report-panel suggestion-panel"><h3>Parent Suggestions</h3><ul>${focusAreas.map((area) => `<li>${area.parent}</li>`).join("")}</ul></section>
+        <section class="report-panel teacher-suggestion-panel"><h3>Teacher Suggestions</h3><ul>${focusAreas.map((area) => `<li>${area.teacher}</li>`).join("")}</ul></section>
+      </div>
+    </div>
+  `;
+}
+
+studentReportForm?.addEventListener("input", () => {
+  applyStudentRosterTags();
+  updateStudentReportValidation();
+});
+studentReportForm?.addEventListener("change", () => {
+  applyStudentRosterTags();
+  updateStudentStarVisuals();
+  updateStudentReportValidation();
+});
+
+studentPhotoInput?.addEventListener("change", () => {
+  const file = studentPhotoInput.files?.[0];
+  if (!file) {
+    studentPhotoDataUrl = "";
+    updateStudentReportValidation();
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.addEventListener("load", () => {
+    studentPhotoDataUrl = String(reader.result || "");
+    updateStudentReportValidation();
+  });
+  reader.readAsDataURL(file);
+});
+
+studentReportForm?.addEventListener("submit", (event) => {
+  event.preventDefault();
+  if (!updateStudentReportValidation()) return;
+  renderStudentReport(getStudentReportData());
+});
+
+studentReportPdf?.addEventListener("click", () => {
+  const data = getStudentReportData();
+  if (!data || !updateStudentReportValidation()) return;
+  renderStudentReport(data);
+  window.print();
+});
+
+if (studentReportForm) {
+  const now = new Date();
+  studentReportForm.elements.month.value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+  applyStudentRosterTags();
+  updateStudentStarVisuals();
+  updateStudentReportValidation();
 }
 
 const feedbackCategories = [
