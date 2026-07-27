@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Interactive Kidsverse English Learning Lab for Past Tense with timelines, examples, games, sentence transformer and quiz."
+    />
+    <title>Master the Past Tense | Kidsverse English Learning Lab</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="shortcut icon" href="../favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="../assets/favicon.png" />
+    <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png" />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body class="learning-lab-page past-tense-page">
+    <div class="top-strip">
+      <span>English Learning Lab</span>
+      <strong>Past tense through timelines, stories and games</strong>
+      <a href="#tense-challenge">Take the Challenge</a>
+    </div>
+
+    <header class="site-header">
+      <a class="brand" href="../index.html#top" aria-label="Kidsverse School home">
+        <img src="../assets/logo.png" alt="Kidsverse School logo" />
+        <span><strong>Kidsverse</strong><small>School Rehan</small></span>
+      </a>
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="../about.html">About</a>
+        <a href="../activities.html">Activities</a>
+        <div class="nav-dropdown">
+          <a class="nav-parent" href="../index.html#programs">Programs</a>
+          <div class="nav-menu">
+            <a href="../playway.html">Playway</a>
+            <a href="../nursery.html">Nursery</a>
+            <a href="../lkg.html">LKG</a>
+            <a href="../ukg.html">UKG</a>
+            <a href="../grade-1.html">Grade 1</a>
+          </div>
+        </div>
+        <div class="nav-dropdown">
+          <a class="nav-parent" href="../after-school.html">After School</a>
+          <div class="nav-menu">
+            <a href="../after-school.html">After School Overview</a>
+            <a class="nav-menu-label" href="present-tense.html">English Learning Lab</a>
+            <a class="nav-sub-link" href="present-tense.html">Present Tense</a>
+            <a class="nav-sub-link" href="past-tense.html">Past Tense</a>
+            <a class="nav-sub-link" href="future-tense.html">Future Tense</a>
+            <a class="nav-sub-link" href="daily-routine-verbs.html">Daily Routine Verbs</a>
+            <a class="nav-sub-link" href="reading-fluency.html">Reading Fluency</a>
+          </div>
+        </div>
+        <div class="nav-dropdown">
+          <a class="nav-parent" href="../parent-hub.html">Parent Hub</a>
+          <div class="nav-menu">
+            <a href="../parent-hub.html">Parent Hub</a>
+            <a href="../reading-mission.html">Reading Mission</a>
+            <a href="../nursery-readiness.html">Nursery Readiness</a>
+            <a href="../why-parents-trust-kidsverse.html">Why Parents Trust</a>
+            <a href="../faq.html">Parent FAQ</a>
+          </div>
+        </div>
+        <a href="../contact.html">Contact</a>
+      </nav>
+      <a class="header-cta" href="#practice">Start Learning</a>
+      <button class="menu-button" type="button" aria-label="Open menu" data-menu-button>Menu</button>
+    </header>
+
+    <main id="top">
+      <section class="tense-hero">
+        <div class="tense-hero-copy">
+          <p class="eyebrow">Master the Past Tense</p>
+          <h1>Learn through timelines, stories, examples and games.</h1>
+          <p>
+            Understand Past Tense without memorising rules. Students learn where an action happens on the timeline, choose the correct tense and receive instant feedback.
+          </p>
+          <div class="hero-actions">
+            <a class="primary-button" href="#practice">Start Learning</a>
+            <a class="secondary-button" href="#final-quiz">Take the Past Challenge</a>
+          </div>
+        </div>
+        <div class="tense-hero-board" aria-label="Past tense learning preview">
+          <span>Time Road</span>
+          <div class="time-road">
+            <b>Past</b><i></i><strong>Now</strong><i></i><b>Future</b>
+          </div>
+          <div class="hero-sentence-card">
+            <small>Try this sentence</small>
+            <strong>Rahul was playing football yesterday.</strong>
+            <em>Happening then</em>
+          </div>
+        </div>
+      </section>
+
+      <section class="section tense-road-section">
+        <div class="section-heading">
+          <p class="eyebrow">Time Road</p>
+          <h2>Every English sentence happens somewhere on the time road.</h2>
+          <p>Past tenses tell whether an action finished, was happening, happened earlier, or continued before a past time.</p>
+        </div>
+        <div class="big-time-road" aria-label="Past now future timeline">
+          <span>Past</span>
+          <div><i></i><strong>Now</strong></div>
+          <span>Future</span>
+        </div>
+      </section>
+
+      <section class="section tense-cards-section" id="practice" data-tense-lab>
+        <div class="section-heading">
+          <p class="eyebrow">Tap a tense card</p>
+          <h2>Four past tenses. Four different stories.</h2>
+        </div>
+        <div class="tense-card-grid" aria-label="Past tense cards">
+          <button type="button" class="is-active" data-tense-card="simple">
+            <span>Past Simple</span>
+            <strong>Finished past action</strong>
+            <code>PAST ● -------- NOW</code>
+            <em>I played football yesterday.</em>
+          </button>
+          <button type="button" data-tense-card="continuous">
+            <span>Past Continuous</span>
+            <strong>Was happening then</strong>
+            <code>PAST █████ when... ---- NOW</code>
+            <em>I was reading at 7 pm.</em>
+          </button>
+          <button type="button" data-tense-card="perfect">
+            <span>Past Perfect</span>
+            <strong>Finished before another past action</strong>
+            <code>PAST ● ---- before ---- ●</code>
+            <em>I had completed homework before dinner.</em>
+          </button>
+          <button type="button" data-tense-card="perfectContinuous">
+            <span>Past Perfect Continuous</span>
+            <strong>Continued before a past time</strong>
+            <code>PAST █████ ---- before ---- ●</code>
+            <em>I had been studying for two hours.</em>
+          </button>
+        </div>
+        <article class="tense-detail-panel" data-tense-detail aria-live="polite"></article>
+      </section>
+
+      <section class="section tense-tool-section" id="tense-challenge">
+        <div>
+          <p class="eyebrow">Choose the right tense</p>
+          <h2>What story is the sentence telling?</h2>
+          <p class="tense-situation" data-tense-situation>Rahul played football yesterday.</p>
+        </div>
+        <div class="tense-choice-tool" data-tense-choice-tool>
+          <button type="button" data-choice="habit">Finished past action</button>
+          <button type="button" data-choice="now">Was happening then</button>
+          <button type="button" data-choice="finished">Finished before another past action</button>
+          <button type="button" data-choice="continuing">Continued before a past time</button>
+          <p data-choice-feedback>Choose one meaning to reveal the tense.</p>
+        </div>
+      </section>
+
+      <section class="section sentence-transformer-section">
+        <div class="section-heading">
+          <p class="eyebrow">Sentence Transformer</p>
+          <h2>One action can change meaning.</h2>
+          <p>Action: <strong>Play football</strong></p>
+        </div>
+        <div class="sentence-transformer" data-transformer>
+          <div class="transformer-buttons">
+            <button class="is-active" type="button" data-transform="habit">Finished past</button>
+            <button type="button" data-transform="now">Happening then</button>
+            <button type="button" data-transform="finished">Earlier past</button>
+            <button type="button" data-transform="continuing">Continued before past</button>
+          </div>
+          <article>
+            <span data-transform-label>Habit</span>
+            <strong data-transform-sentence>Rahul plays football.</strong>
+            <p data-transform-note>Use Present Simple when the action is a habit or routine.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section tense-practice-section" data-tense-practice>
+        <div class="section-heading">
+          <p class="eyebrow">Practice Box</p>
+          <h2>Write your own past tense sentence.</h2>
+          <p>Choose the past meaning first, then type a sentence. Kidsverse checks the pattern while you write.</p>
+        </div>
+        <div class="tense-practice-lab">
+          <div class="practice-intent-buttons" aria-label="Choose sentence meaning">
+            <button class="is-active" type="button" data-practice-intent="simple">Finished past</button>
+            <button type="button" data-practice-intent="continuous">Happening then</button>
+            <button type="button" data-practice-intent="perfect">Earlier past</button>
+            <button type="button" data-practice-intent="perfectContinuous">Continued before past</button>
+          </div>
+          <label class="practice-writing-box">
+            <span>Type your sentence</span>
+            <textarea data-practice-input rows="4" placeholder="Example: She played yesterday."></textarea>
+          </label>
+          <article class="practice-feedback-card" data-practice-feedback aria-live="polite">
+            <span>Ready to check</span>
+            <strong>Start with a clear subject and action.</strong>
+            <p>Example: She played yesterday.</p>
+          </article>
+          <div class="practice-rule-meter" aria-label="Sentence check points">
+            <span data-practice-rule="subject">Subject</span>
+            <span data-practice-rule="verb">Verb pattern</span>
+            <span data-practice-rule="signal">Meaning clue</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section tense-rules-section">
+        <div class="section-heading">
+          <p class="eyebrow">Rules and Structures</p>
+          <h2>Open only the rule you need.</h2>
+        </div>
+        <div class="tense-rule-list">
+          <details open><summary>Past Simple</summary><code>Subject + V2<br />OR Subject + was/were + noun/adjective/place</code><p>Use it for finished past actions, past facts and past states.</p></details>
+          <details><summary>Past Continuous</summary><code>Subject + was/were + Verb-ing</code><p>Use it for actions that were happening at a past time.</p></details>
+          <details><summary>Past Perfect</summary><code>Subject + had + V3</code><p>Use it when one past action happened before another past action.</p></details>
+          <details><summary>Past Perfect Continuous</summary><code>Subject + had been + Verb-ing</code><p>Use it when an action continued before a past time.</p></details>
+        </div>
+      </section>
+
+      <section class="section final-tense-quiz" id="final-quiz" data-tense-quiz>
+        <div class="section-heading">
+          <p class="eyebrow">Final Quiz</p>
+          <h2>Complete the Past Tense Learning Lab.</h2>
+          <p>Answer 10 past-tense questions with instant feedback and progress.</p>
+        </div>
+        <div class="quiz-shell">
+          <progress value="0" max="10" data-quiz-progress></progress>
+          <article data-quiz-card></article>
+          <div class="quiz-actions">
+            <button class="secondary-button" type="button" data-quiz-retry>Retry Quiz</button>
+            <span data-quiz-score>Score: 0/10</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section tense-next-section" aria-label="Continue English Learning Lab">
+        <div class="section-heading">
+          <p class="eyebrow">Continue Learning</p>
+          <h2>Move to another tense without breaking the flow.</h2>
+        </div>
+        <div class="tense-next-grid">
+          <a href="present-tense.html"><span>01</span><strong>Present Tense</strong><p>Review actions connected with now.</p></a>
+          <a class="is-current" href="past-tense.html"><span>02</span><strong>Past Tense</strong><p>You are here now.</p></a>
+          <a href="future-tense.html"><span>03</span><strong>Future Tense</strong><p>Learn plans, promises and future timelines.</p></a>
+          <a href="reading-fluency.html"><span>04</span><strong>Reading Fluency</strong><p>Read paragraphs aloud and improve accuracy.</p></a>
+        </div>
+      </section>
+
+      <section class="section lab-cta-section">
+        <div>
+          <p class="eyebrow">Need More Practice?</p>
+          <h2>Join the Kidsverse After School English Program.</h2>
+          <p>Improve grammar, reading, vocabulary, spoken English, sentence formation and communication skills with friendly guided practice.</p>
+        </div>
+        <div class="lab-cta-card">
+          <span>Grammar</span><span>Reading</span><span>Vocabulary</span><span>Spoken English</span><span>Sentence formation</span><span>Communication skills</span>
+          <a class="primary-button" href="../after-school.html#admissions">Book a Trial Class</a>
+          <a class="secondary-button" href="../after-school.html">Explore After School Programs</a>
+        </div>
+      </section>
+    </main>
+
+    <section class="kiya-widget" data-kiya-widget aria-label="Kiya AI parent assistant">
+      <button class="kiya-toggle" type="button" data-kiya-toggle aria-expanded="false" aria-controls="kiya-panel">
+        <span class="kiya-avatar" aria-hidden="true"></span>
+      </button>
+      <div class="kiya-panel" id="kiya-panel" data-kiya-panel hidden>
+        <div class="kiya-head">
+          <div><strong>Kiya AI</strong><span>Your Kidsverse parent guide</span></div>
+          <button type="button" data-kiya-close aria-label="Close Kiya AI chat">Close</button>
+        </div>
+        <div class="kiya-body">
+          <p>Namaste. I can help you quickly open admission, programme, activity and parent-support pages.</p>
+          <div class="kiya-links" aria-label="Kidsverse quick links">
+            <a href="../index.html#top">Home</a>
+            <a href="../after-school.html">After School UKG-10</a>
+            <a href="present-tense.html">Present Tense Lab</a>
+            <a href="past-tense.html">Past Tense Lab</a>
+            <a href="future-tense.html">Future Tense Lab</a>
+            <a href="daily-routine-verbs.html">Daily Routine Verbs</a>
+            <a href="reading-fluency.html">Reading Fluency</a>
+            <a href="../parent-hub.html">Parent Hub</a>
+            <a href="../faq.html">Parent FAQ</a>
+            <a href="../contact.html">Contact</a>
+          </div>
+          <a class="kiya-whatsapp" href="https://wa.me/918826758881?text=Hello%20Kidsverse%20School%2C%20I%20need%20help%20with%20English%20Learning%20Lab" target="_blank" rel="noopener noreferrer">Ask on WhatsApp</a>
+        </div>
+      </div>
+    </section>
+
+    <a class="whatsapp-float" href="https://wa.me/918826758881?text=Hello%20Kidsverse%20School%2C%20I%20want%20to%20know%20about%20the%20After%20School%20English%20Program" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+    <footer class="site-footer">
+      <strong>Kidsverse School Rehan</strong>
+      <span>English Learning Lab for after-school grammar, reading and communication practice.</span>
+      <span class="powered-by-tivoro"><a href="https://tivoro.in" target="_blank" rel="noopener noreferrer">Powered by Tivoro - Your digital growth partner</a></span>
+    </footer>
+    <script src="../script.js"></script>
+  </body>
+</html>

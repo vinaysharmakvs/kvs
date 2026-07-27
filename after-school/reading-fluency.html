@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Kidsverse Reading Fluency Lab helps children listen, read aloud, check missed words and improve English reading confidence."
+    />
+    <title>Reading Fluency Lab | Kidsverse English Learning Lab</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="shortcut icon" href="../favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="../assets/favicon.png" />
+    <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png" />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body class="learning-lab-page reading-fluency-page">
+    <div class="top-strip">
+      <span>English Learning Lab</span>
+      <strong>Read aloud, listen again and improve fluency</strong>
+      <a href="#reading-practice">Start Reading</a>
+    </div>
+
+    <header class="site-header">
+      <a class="brand" href="../index.html#top" aria-label="Kidsverse School home">
+        <img src="../assets/logo.png" alt="Kidsverse School logo" />
+        <span><strong>Kidsverse</strong><small>School Rehan</small></span>
+      </a>
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="../about.html">About</a>
+        <a href="../activities.html">Activities</a>
+        <div class="nav-dropdown">
+          <a class="nav-parent" href="../index.html#programs">Programs</a>
+          <div class="nav-menu">
+            <a href="../playway.html">Playway</a>
+            <a href="../nursery.html">Nursery</a>
+            <a href="../lkg.html">LKG</a>
+            <a href="../ukg.html">UKG</a>
+            <a href="../grade-1.html">Grade 1</a>
+          </div>
+        </div>
+        <div class="nav-dropdown">
+          <a class="nav-parent" href="../after-school.html">After School</a>
+          <div class="nav-menu">
+            <a href="../after-school.html">After School Overview</a>
+            <a class="nav-menu-label" href="present-tense.html">English Learning Lab</a>
+            <a class="nav-sub-link" href="present-tense.html">Present Tense</a>
+            <a class="nav-sub-link" href="past-tense.html">Past Tense</a>
+            <a class="nav-sub-link" href="future-tense.html">Future Tense</a>
+            <a class="nav-sub-link" href="daily-routine-verbs.html">Daily Routine Verbs</a>
+            <a class="nav-sub-link" href="reading-fluency.html">Reading Fluency</a>
+          </div>
+        </div>
+        <div class="nav-dropdown">
+          <a class="nav-parent" href="../parent-hub.html">Parent Hub</a>
+          <div class="nav-menu">
+            <a href="../parent-hub.html">Parent Hub</a>
+            <a href="../reading-mission.html">Reading Mission</a>
+            <a href="../nursery-readiness.html">Nursery Readiness</a>
+            <a href="../why-parents-trust-kidsverse.html">Why Parents Trust</a>
+            <a href="../faq.html">Parent FAQ</a>
+          </div>
+        </div>
+        <a href="../contact.html">Contact</a>
+      </nav>
+      <a class="header-cta" href="#reading-practice">Start Reading</a>
+      <button class="menu-button" type="button" aria-label="Open menu" data-menu-button>Menu</button>
+    </header>
+
+    <main id="top">
+      <section class="tense-hero reading-hero">
+        <div class="tense-hero-copy">
+          <p class="eyebrow">Reading Fluency Lab</p>
+          <h1>Read aloud and see where to improve.</h1>
+          <p>
+            Students listen first, read the paragraph aloud, then receive a friendly reading score with missed words, extra words and small practice tips.
+          </p>
+          <div class="hero-actions">
+            <a class="primary-button" href="#reading-practice">Start Reading</a>
+            <a class="secondary-button" href="#word-helper">Practice Words</a>
+          </div>
+        </div>
+        <div class="tense-hero-board reading-hero-board" aria-label="Reading fluency preview">
+          <span>Listen - Read - Improve</span>
+          <div class="reading-wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="hero-sentence-card">
+            <small>Reading helper</small>
+            <strong>Pause after full stops. Read clearly. Try again with confidence.</strong>
+            <em>Gentle feedback for better fluency.</em>
+          </div>
+        </div>
+      </section>
+
+      <section class="section reading-level-section" id="reading-practice" data-reading-lab>
+        <div class="section-heading">
+          <p class="eyebrow">Choose Reading Level</p>
+          <h2>Start small, then grow into longer paragraphs.</h2>
+          <p>Each level changes the paragraph length, vocabulary and reading challenge.</p>
+        </div>
+        <div class="reading-level-tabs" role="tablist" aria-label="Reading levels">
+          <button class="is-active" type="button" data-reading-level="beginner">Beginner</button>
+          <button type="button" data-reading-level="explorer">Explorer</button>
+          <button type="button" data-reading-level="confident">Confident Reader</button>
+          <button type="button" data-reading-level="challenge">Challenge Mode</button>
+        </div>
+
+        <div class="reading-lab-shell">
+          <article class="reading-passage-card">
+            <div class="reading-card-top">
+              <span data-reading-level-label>Beginner</span>
+              <strong data-reading-title>My Morning</strong>
+            </div>
+            <p class="reading-passage" data-reading-passage>
+              I wake up early. I brush my teeth. I eat breakfast. Then I go to school with a happy smile.
+            </p>
+            <div class="reading-controls">
+              <button class="tense-audio-button" type="button" data-reading-listen>Listen first</button>
+              <button class="primary-button" type="button" data-reading-start>Start Reading</button>
+              <button class="secondary-button" type="button" data-reading-stop hidden>Stop</button>
+              <button class="secondary-button" type="button" data-reading-next>Next paragraph</button>
+            </div>
+            <p class="reading-support-note" data-reading-support>Use Chrome for the best microphone reading check.</p>
+          </article>
+
+          <aside class="reading-result-panel" aria-live="polite">
+            <div class="reading-score-card">
+              <span>Reading Accuracy</span>
+              <strong data-reading-score>--</strong>
+              <progress value="0" max="100" data-reading-progress></progress>
+            </div>
+            <div class="reading-transcript-card">
+              <span>What we heard</span>
+              <p data-reading-transcript>Click Start Reading and read the paragraph aloud.</p>
+            </div>
+            <div class="reading-feedback-grid">
+              <article>
+                <span>Missed words</span>
+                <p data-reading-missed>Words will appear here after reading.</p>
+              </article>
+              <article>
+                <span>Extra words</span>
+                <p data-reading-extra>Extra spoken words will appear here.</p>
+              </article>
+              <article>
+                <span>Practice tip</span>
+                <p data-reading-tip>Listen once, then read slowly and clearly.</p>
+              </article>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="section word-helper-section" id="word-helper">
+        <div class="section-heading">
+          <p class="eyebrow">Word Helper</p>
+          <h2>Tap a word before reading the paragraph.</h2>
+          <p>Children understand the word first, then read with more confidence.</p>
+        </div>
+        <div class="word-helper-grid" data-word-helper>
+          <button type="button" data-word="routine"><strong>routine</strong><span>Things you do every day.</span></button>
+          <button type="button" data-word="carefully"><strong>carefully</strong><span>Doing something with attention.</span></button>
+          <button type="button" data-word="confidence"><strong>confidence</strong><span>Feeling ready to try.</span></button>
+          <button type="button" data-word="responsible"><strong>responsible</strong><span>Doing your work properly.</span></button>
+        </div>
+      </section>
+
+      <section class="section reading-question-section" data-reading-questions>
+        <div class="section-heading">
+          <p class="eyebrow">Quick Understanding Check</p>
+          <h2>Answer two small questions after reading.</h2>
+        </div>
+        <div class="reading-question-card">
+          <p data-reading-question-count>Question 1 of 2</p>
+          <strong data-reading-question>What does the child do first?</strong>
+          <div class="reading-answer-grid" data-reading-answers></div>
+          <span data-reading-question-feedback></span>
+        </div>
+      </section>
+
+      <section class="section tense-next-section" aria-label="Continue English Learning Lab">
+        <div class="section-heading">
+          <p class="eyebrow">Continue Learning</p>
+          <h2>Keep the English practice connected.</h2>
+        </div>
+        <div class="tense-next-grid">
+          <a href="present-tense.html"><span>01</span><strong>Present Tense</strong><p>Use reading sentences in present tense.</p></a>
+          <a href="daily-routine-verbs.html"><span>02</span><strong>Daily Routine Verbs</strong><p>Build words for everyday speaking.</p></a>
+          <a class="is-current" href="reading-fluency.html"><span>03</span><strong>Reading Fluency</strong><p>You are here now.</p></a>
+        </div>
+      </section>
+
+      <section class="section lab-cta-section">
+        <div>
+          <p class="eyebrow">Need More Reading Practice?</p>
+          <h2>Join the Kidsverse After School English Program.</h2>
+          <p>Children practise reading aloud, vocabulary, comprehension, spoken English and sentence confidence with guided support.</p>
+        </div>
+        <div class="lab-cta-card">
+          <span>Reading fluency</span><span>Vocabulary</span><span>Pronunciation</span><span>Comprehension</span><span>Spoken English</span>
+          <a class="primary-button" href="../after-school.html#admissions">Book a Trial Class</a>
+          <a class="secondary-button" href="../after-school.html">Explore After School Programs</a>
+        </div>
+      </section>
+    </main>
+
+    <section class="kiya-widget" data-kiya-widget aria-label="Kiya AI parent assistant">
+      <button class="kiya-toggle" type="button" data-kiya-toggle aria-expanded="false" aria-controls="kiya-panel">
+        <span class="kiya-avatar" aria-hidden="true"></span>
+      </button>
+      <div class="kiya-panel" id="kiya-panel" data-kiya-panel hidden>
+        <div class="kiya-head">
+          <div><strong>Kiya AI</strong><span>Your Kidsverse parent guide</span></div>
+          <button type="button" data-kiya-close aria-label="Close Kiya AI chat">Close</button>
+        </div>
+        <div class="kiya-body">
+          <p>Namaste. I can help you quickly open admission, programme, activity and parent-support pages.</p>
+          <div class="kiya-links" aria-label="Kidsverse quick links">
+            <a href="../index.html#top">Home</a>
+            <a href="../after-school.html">After School UKG-10</a>
+            <a href="present-tense.html">Present Tense Lab</a>
+            <a href="past-tense.html">Past Tense Lab</a>
+            <a href="future-tense.html">Future Tense Lab</a>
+            <a href="daily-routine-verbs.html">Daily Routine Verbs</a>
+            <a href="reading-fluency.html">Reading Fluency</a>
+            <a href="../contact.html">Contact</a>
+          </div>
+          <a class="kiya-whatsapp" href="https://wa.me/918826758881?text=Hello%20Kidsverse%20School%2C%20I%20need%20help%20with%20reading%20practice" target="_blank" rel="noopener noreferrer">Ask on WhatsApp</a>
+        </div>
+      </div>
+    </section>
+
+    <a class="whatsapp-float" href="https://wa.me/918826758881?text=Hello%20Kidsverse%20School%2C%20I%20want%20to%20know%20about%20reading%20practice" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+    <footer class="site-footer">
+      <strong>Kidsverse School Rehan</strong>
+      <span>English Learning Lab for reading fluency, vocabulary and spoken confidence.</span>
+      <span class="powered-by-tivoro"><a href="https://tivoro.in" target="_blank" rel="noopener noreferrer">Powered by Tivoro - Your digital growth partner</a></span>
+    </footer>
+    <script src="../script.js"></script>
+  </body>
+</html>
