@@ -51,6 +51,43 @@ function renderGrade(key) {
   gradeResult.innerHTML = `<span>${data.label}</span><h3>${data.title}</h3><p>${data.text}</p>`;
 }
 
+function getRootPath() {
+  return window.location.pathname.includes("/after-school/") ? "../" : "";
+}
+
+function enhanceAfterSchoolMenu() {
+  document.querySelectorAll(".nav-links").forEach((nav) => {
+    const hasAfterSchoolDropdown = [...nav.querySelectorAll(".nav-dropdown .nav-parent")].some(
+      (link) => link.textContent.trim().toLowerCase() === "after school"
+    );
+    if (hasAfterSchoolDropdown) return;
+
+    const afterSchoolLink = [...nav.children].find(
+      (child) => child.matches?.("a") && child.textContent.trim().toLowerCase() === "after school"
+    );
+    if (!afterSchoolLink) return;
+
+    const root = getRootPath();
+    const dropdown = document.createElement("div");
+    dropdown.className = "nav-dropdown after-school-nav-dropdown";
+    dropdown.innerHTML = `
+      <a class="nav-parent" href="${root}after-school.html">After School</a>
+      <div class="nav-menu nav-menu-learning">
+        <a href="${root}after-school.html">After School Overview</a>
+        <a class="nav-menu-label" href="${root}after-school/present-tense.html">English Learning Lab</a>
+        <a class="nav-sub-link" href="${root}after-school/present-tense.html">Present Tense</a>
+        <a class="nav-sub-link" href="${root}after-school/past-tense.html">Past Tense</a>
+        <a class="nav-sub-link" href="${root}after-school/future-tense.html">Future Tense</a>
+        <a class="nav-sub-link" href="${root}after-school/daily-routine-verbs.html">Daily Routine Verbs</a>
+        <a class="nav-sub-link" href="${root}after-school/reading-fluency.html">Reading Fluency</a>
+      </div>
+    `;
+    afterSchoolLink.replaceWith(dropdown);
+  });
+}
+
+enhanceAfterSchoolMenu();
+
 menuButton?.addEventListener("click", () => {
   const open = siteHeader.classList.toggle("is-open");
   menuButton.textContent = open ? "Close" : "Menu";
@@ -97,6 +134,36 @@ kiyaToggle?.addEventListener("click", () => {
 kiyaClose?.addEventListener("click", () => {
   setKiyaOpen(false);
 });
+
+function enhanceKiyaLearningLinks() {
+  document.querySelectorAll(".kiya-links").forEach((links) => {
+    const labRoot = window.location.pathname.includes("/after-school/") ? "" : "after-school/";
+    const learningLinks = [
+      { href: `${labRoot}present-tense.html`, label: "Present Tense Lab" },
+      { href: `${labRoot}past-tense.html`, label: "Past Tense Lab" },
+      { href: `${labRoot}future-tense.html`, label: "Future Tense Lab" },
+      { href: `${labRoot}daily-routine-verbs.html`, label: "Daily Routine Verbs" },
+      { href: `${labRoot}reading-fluency.html`, label: "Reading Fluency" },
+    ];
+
+    learningLinks.forEach((item) => {
+      const alreadyExists = [...links.querySelectorAll("a")].some((link) => link.getAttribute("href") === item.href || link.textContent.trim() === item.label);
+      if (alreadyExists) return;
+      const link = document.createElement("a");
+      link.href = item.href;
+      link.textContent = item.label;
+      links.appendChild(link);
+    });
+  });
+
+  document.querySelectorAll(".kiya-body > p").forEach((intro) => {
+    if (intro.dataset.learningUpdated) return;
+    intro.textContent = "Namaste. I can help you open admission, programmes, English grammar labs, daily verbs and reading fluency practice.";
+    intro.dataset.learningUpdated = "true";
+  });
+}
+
+enhanceKiyaLearningLinks();
 
 document.querySelectorAll(".kiya-links a").forEach((link) => {
   link.addEventListener("click", () => setKiyaOpen(false));
@@ -1173,3 +1240,1359 @@ readinessForm?.addEventListener("submit", (event) => {
   `;
   readinessResult.scrollIntoView({ behavior: "smooth", block: "center" });
 });
+
+const tenseDetails = {
+  simple: {
+    title: "Present Simple",
+    story: "Habit, routine or fact",
+    structure: "Subject + V1 / V1+s or es<br />OR Subject + am/is/are + noun/adjective/place",
+    examples: ["I go to school every day.", "She reads before bedtime.", "The sun rises in the east."],
+    activity: "Look for habits, routines, facts, general truths and present states.",
+  },
+  continuous: {
+    title: "Present Continuous",
+    story: "Happening right now",
+    structure: "Subject + am/is/are + Verb-ing",
+    examples: ["I am going to school now.", "She is reading a story.", "They are playing outside."],
+    activity: "Look for now, right now, at this moment or actions happening while we speak.",
+  },
+  perfect: {
+    title: "Present Perfect",
+    story: "Finished, but connected with now",
+    structure: "Subject + has/have + V3",
+    examples: ["I have completed my homework.", "She has finished the book.", "They have cleaned the room."],
+    activity: "Look for a finished action that still matters now, like homework completed or a result visible today.",
+  },
+  perfectContinuous: {
+    title: "Present Perfect Continuous",
+    story: "Started earlier and still continuing",
+    structure: "Subject + has/have been + Verb-ing",
+    examples: ["I have been studying for two hours.", "She has been reading since morning.", "They have been practising daily."],
+    activity: "Look for since or for. The action began earlier and is still connected to now.",
+  },
+};
+
+let activeTenseSpeech = null;
+let activeTenseSpeechButton = null;
+
+function resetTenseAudioButton(button) {
+  if (!button) return;
+  if (button.dataset.audioOriginalHtml) {
+    button.innerHTML = button.dataset.audioOriginalHtml;
+    delete button.dataset.audioOriginalHtml;
+  } else {
+    button.textContent = button.dataset.audioDefaultText || "Read examples";
+  }
+  button.classList.remove("is-reading");
+  button.setAttribute("aria-pressed", "false");
+}
+
+function stopTenseReading() {
+  if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+  if (activeTenseSpeechButton) resetTenseAudioButton(activeTenseSpeechButton);
+  activeTenseSpeech = null;
+  activeTenseSpeechButton = null;
+}
+
+function renderTenseDetail(key) {
+  const panel = document.querySelector("[data-tense-detail]");
+  const data = getActiveTenseLab().details[key];
+  if (!panel || !data) return;
+  stopTenseReading();
+  panel.innerHTML = `
+    <div>
+      <p class="eyebrow">${data.story}</p>
+      <h3>${data.title}</h3>
+      <code>${data.structure}</code>
+    </div>
+    <div>
+      <p>${data.activity}</p>
+      <ul>${data.examples.map((example) => `<li>${example}</li>`).join("")}</ul>
+      <button class="tense-audio-button" type="button" data-read-tense="${key}" aria-pressed="false">Read examples</button>
+    </div>
+  `;
+}
+
+function readTenseExamples(key, button) {
+  const data = getActiveTenseLab().details[key];
+  if (!data || !("speechSynthesis" in window) || !("SpeechSynthesisUtterance" in window)) {
+    if (button) button.textContent = "Audio not supported";
+    return;
+  }
+
+  if (button?.classList.contains("is-reading")) {
+    stopTenseReading();
+    return;
+  }
+
+  window.speechSynthesis.cancel();
+  if (activeTenseSpeechButton && activeTenseSpeechButton !== button) {
+    resetTenseAudioButton(activeTenseSpeechButton);
+  }
+  const text = `${data.title}. ${data.story}. ${data.activity} Examples. ${data.examples.join(" ")}`;
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = "en-IN";
+  utterance.rate = 0.86;
+  utterance.pitch = 1.08;
+  activeTenseSpeech = utterance;
+  activeTenseSpeechButton = button;
+  if (button) {
+    button.dataset.audioDefaultText = "Read examples";
+    button.textContent = "Stop reading";
+    button.classList.add("is-reading");
+    button.setAttribute("aria-pressed", "true");
+  }
+  utterance.onend = () => {
+    if (activeTenseSpeech === utterance) stopTenseReading();
+  };
+  utterance.onerror = () => {
+    if (button) {
+      resetTenseAudioButton(button);
+      button.textContent = "Try again";
+    }
+    activeTenseSpeech = null;
+    activeTenseSpeechButton = null;
+  };
+  window.speechSynthesis.speak(utterance);
+}
+
+function initTenseCards() {
+  const cards = document.querySelectorAll("[data-tense-card]");
+  const panel = document.querySelector("[data-tense-detail]");
+  if (!cards.length) return;
+  renderTenseDetail(cards[0].dataset.tenseCard);
+  cards.forEach((card) => {
+    card.addEventListener("click", () => {
+      cards.forEach((item) => item.classList.toggle("is-active", item === card));
+      renderTenseDetail(card.dataset.tenseCard);
+    });
+  });
+  panel?.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-read-tense]");
+    if (!button) return;
+    readTenseExamples(button.dataset.readTense, button);
+  });
+}
+
+function initTenseChoiceTool() {
+  const tool = document.querySelector("[data-tense-choice-tool]");
+  const feedback = document.querySelector("[data-choice-feedback]");
+  if (!tool || !feedback) return;
+  const choiceData = getActiveTenseLab().choice;
+  tool.querySelectorAll("[data-choice]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const correct = button.dataset.choice === choiceData.correct;
+      feedback.classList.toggle("is-correct", correct);
+      feedback.classList.toggle("is-wrong", !correct);
+      feedback.innerHTML = correct ? choiceData.correctText : choiceData.wrongText;
+    });
+  });
+}
+
+const transformerData = {
+  habit: {
+    label: "Habit",
+    sentence: "Rahul plays football.",
+    note: "Use Present Simple when the action is a habit or routine.",
+  },
+  now: {
+    label: "Happening now",
+    sentence: "Rahul is playing football.",
+    note: "Use Present Continuous when the action is happening right now.",
+  },
+  finished: {
+    label: "Finished",
+    sentence: "Rahul has played football.",
+    note: "Use Present Perfect when the action is finished but still connects with now.",
+  },
+  continuing: {
+    label: "Continuing",
+    sentence: "Rahul has been playing football for an hour.",
+    note: "Use Present Perfect Continuous when the action started earlier and is still continuing.",
+  },
+};
+
+function initSentenceTransformer() {
+  const transformer = document.querySelector("[data-transformer]");
+  if (!transformer) return;
+  const label = transformer.querySelector("[data-transform-label]");
+  const sentence = transformer.querySelector("[data-transform-sentence]");
+  const note = transformer.querySelector("[data-transform-note]");
+  function renderTransform(key) {
+    const data = getActiveTenseLab().transformer[key];
+    if (!data) return;
+    label.textContent = data.label;
+    sentence.textContent = data.sentence;
+    note.textContent = data.note;
+  }
+  renderTransform(transformer.querySelector(".is-active")?.dataset.transform || "habit");
+  transformer.querySelectorAll("[data-transform]").forEach((button) => {
+    button.addEventListener("click", () => {
+      transformer.querySelectorAll("[data-transform]").forEach((item) => item.classList.toggle("is-active", item === button));
+      renderTransform(button.dataset.transform);
+    });
+  });
+}
+
+const practiceIntentData = {
+  simple: {
+    title: "Present Simple",
+    example: "She reads every day.",
+    success: "Good. This looks like Present Simple because it shows a habit, fact or current state.",
+    guide: "For Present Simple, write a habit, fact or current state: She reads every day. The sun rises. I am happy.",
+  },
+  continuous: {
+    title: "Present Continuous",
+    example: "She is reading now.",
+    success: "Good. This looks like Present Continuous because it uses am/is/are with a verb ending in ing.",
+    guide: "For Present Continuous, use I am, he/she/it is, we/you/they are + verb-ing.",
+  },
+  perfect: {
+    title: "Present Perfect",
+    example: "She has finished the book.",
+    success: "Good. This looks like Present Perfect because it uses has/have with a completed action.",
+    guide: "For Present Perfect, use he/she/it has or I/we/you/they have + V3.",
+  },
+  perfectContinuous: {
+    title: "Present Perfect Continuous",
+    example: "She has been reading for two hours.",
+    success: "Good. This looks like Present Perfect Continuous because it uses has/have been + verb-ing with a time clue.",
+    guide: "For Present Perfect Continuous, use he/she/it has been or I/we/you/they have been + verb-ing with for or since.",
+  },
+};
+
+const simpleSignalWords = /\b(always|usually|often|sometimes|never|daily|every|on mondays|on sundays|at night|in the morning)\b/i;
+const continuousSignalWords = /\b(now|right now|currently|at this moment|today)\b/i;
+const perfectSignalWords = /\b(already|just|yet|ever|never|recently|so far)\b/i;
+const perfectContinuousSignalWords = /\b(for|since|all day|all morning|all week)\b/i;
+const commonV3Words = /\b(done|gone|eaten|written|read|seen|made|taken|given|known|finished|completed|played|studied|learned|learnt|cleaned|checked|watched|visited|opened|closed)\b/i;
+
+function hasSubject(sentence) {
+  return /\b(i|we|you|they|he|she|it|[A-Z][a-z]+)\b/.test(sentence.trim());
+}
+
+function getSubjectType(sentence) {
+  const firstWord = sentence.trim().split(/\s+/)[0]?.replace(/[^a-z]/gi, "").toLowerCase();
+  if (!firstWord) return "unknown";
+  if (firstWord === "i") return "i";
+  if (["he", "she", "it"].includes(firstWord)) return "singular";
+  if (["we", "you", "they"].includes(firstWord)) return "plural";
+  return "singular";
+}
+
+function hasCorrectBeHelper(sentence) {
+  const lower = sentence.toLowerCase();
+  const subjectType = getSubjectType(sentence);
+  if (subjectType === "i") return /\bi\s+am\b/.test(lower);
+  if (subjectType === "singular") return /\b(he|she|it|[a-z]+)\s+is\b/.test(lower);
+  if (subjectType === "plural") return /\b(we|you|they)\s+are\b/.test(lower);
+  return false;
+}
+
+function hasCorrectPerfectHelper(sentence) {
+  const lower = sentence.toLowerCase();
+  const subjectType = getSubjectType(sentence);
+  if (subjectType === "singular") return /\b(he|she|it|[a-z]+)\s+has\b/.test(lower);
+  if (subjectType === "i" || subjectType === "plural") return /\b(i|we|you|they)\s+have\b/.test(lower);
+  return false;
+}
+
+function getPracticeChecks(sentence, intent) {
+  const normalized = sentence.trim().replace(/\s+/g, " ");
+  const lower = normalized.toLowerCase();
+  const hasWords = normalized.split(" ").filter(Boolean).length >= 3;
+  const subject = hasSubject(normalized);
+  const checks = { subject, verb: false, signal: false };
+  const mode = getTenseLabMode();
+  const correctBeHelper = hasCorrectBeHelper(normalized);
+  const correctPerfectHelper = hasCorrectPerfectHelper(normalized);
+  const beFactPattern = correctBeHelper && !/\b(am|is|are)\s+\w+ing\b/.test(lower);
+  const perfectContinuousPattern = /\b(has|have)\s+been\s+\w+ing\b/.test(lower);
+
+  if (mode === "past") {
+    const pastSimpleVerb = /\b(was|were|went|played|read|wrote|ate|studied|visited|finished|completed|made|saw|took|gave|did|had)\b/.test(lower);
+    if (intent === "simple") {
+      checks.verb = hasWords && pastSimpleVerb && !/\b(was|were)\s+\w+ing\b/.test(lower);
+      checks.signal = /\b(yesterday|last|ago|in 202|in 201|before)\b/.test(lower) || checks.verb;
+    }
+    if (intent === "continuous") {
+      checks.verb = /\b(was|were)\s+\w+ing\b/.test(lower);
+      checks.signal = /\b(when|while|at that time|yesterday|last)\b/.test(lower) || checks.verb;
+    }
+    if (intent === "perfect") {
+      checks.verb = /\bhad\s+\w+(ed|en|ne|wn)\b/.test(lower) || /\bhad\s+/.test(lower) && commonV3Words.test(lower);
+      checks.signal = /\b(before|already|after|by the time)\b/.test(lower) || checks.verb;
+    }
+    if (intent === "perfectContinuous") {
+      checks.verb = /\bhad\s+been\s+\w+ing\b/.test(lower);
+      checks.signal = /\b(for|since|before|when)\b/.test(lower);
+    }
+    return checks;
+  }
+
+  if (mode === "future") {
+    const beGoingTo = correctBeHelper && /\bgoing\s+to\s+\w+\b/.test(lower);
+    if (intent === "simple") {
+      checks.verb = /\bwill\s+\w+\b/.test(lower) || beGoingTo;
+      checks.signal = /\b(tomorrow|next|soon|later|tonight|in the future)\b/.test(lower) || checks.verb;
+    }
+    if (intent === "continuous") {
+      checks.verb = /\bwill\s+be\s+\w+ing\b/.test(lower) || /\b(am|is|are)\s+going\s+to\s+be\s+\w+ing\b/.test(lower);
+      checks.signal = /\b(at|this time|tomorrow|next|later)\b/.test(lower) || checks.verb;
+    }
+    if (intent === "perfect") {
+      checks.verb = /\bwill\s+have\s+\w+(ed|en|ne|wn)\b/.test(lower) || /\bwill\s+have\s+/.test(lower) && commonV3Words.test(lower);
+      checks.signal = /\b(by|before|by then|by tomorrow|by next)\b/.test(lower) || checks.verb;
+    }
+    if (intent === "perfectContinuous") {
+      checks.verb = /\bwill\s+have\s+been\s+\w+ing\b/.test(lower);
+      checks.signal = /\b(for|since|by|before)\b/.test(lower);
+    }
+    return checks;
+  }
+
+  if (intent === "simple") {
+    const actionPattern =
+      !/\b(am|is|are|has|have)\s+\w+/.test(lower) &&
+      /\b(go|goes|read|reads|play|plays|write|writes|eat|eats|study|studies|come|comes|like|likes|work|works|learn|learns)\b/.test(lower);
+    checks.verb =
+      hasWords &&
+      (actionPattern || beFactPattern);
+    checks.signal = actionPattern || simpleSignalWords.test(lower) || beFactPattern;
+  }
+
+  if (intent === "continuous") {
+    checks.verb = correctBeHelper && /\b(am|is|are)\s+\w+ing\b/.test(lower);
+    checks.signal = continuousSignalWords.test(lower) || checks.verb;
+  }
+
+  if (intent === "perfect") {
+    checks.verb = correctPerfectHelper && !perfectContinuousPattern && (/\b(has|have)\s+\w+(ed|en|ne|wn)\b/.test(lower) || commonV3Words.test(lower));
+    checks.signal = perfectSignalWords.test(lower) || checks.verb;
+  }
+
+  if (intent === "perfectContinuous") {
+    checks.verb = correctPerfectHelper && perfectContinuousPattern;
+    checks.signal = perfectContinuousSignalWords.test(lower);
+  }
+
+  return checks;
+}
+
+function initTensePracticeBox() {
+  const practice = document.querySelector("[data-tense-practice]");
+  if (!practice) return;
+  const input = practice.querySelector("[data-practice-input]");
+  const feedback = practice.querySelector("[data-practice-feedback]");
+  const intentButtons = practice.querySelectorAll("[data-practice-intent]");
+  const ruleBadges = practice.querySelectorAll("[data-practice-rule]");
+  let intent = "simple";
+  let typingLetter = 0;
+  let typingForward = true;
+
+  function updatePlaceholder() {
+    input.placeholder = `Example: ${getActiveTenseLab().practice[intent].example}`;
+  }
+
+  function validatePractice() {
+    const sentence = input.value.trim();
+    const data = getActiveTenseLab().practice[intent];
+    const checks = getPracticeChecks(sentence, intent);
+    const passed = checks.subject && checks.verb && checks.signal;
+    const hasText = sentence.length > 0;
+
+    ruleBadges.forEach((badge) => {
+      badge.classList.toggle("is-met", Boolean(checks[badge.dataset.practiceRule]));
+    });
+
+    feedback.classList.toggle("is-good", passed);
+    feedback.classList.toggle("is-guide", hasText && !passed);
+
+    if (!hasText) {
+      feedback.innerHTML = `
+        <span>${data.title}</span>
+        <strong>Start with a clear subject and action.</strong>
+        <p>Example: ${data.example}</p>
+      `;
+      return;
+    }
+
+    if (passed) {
+      feedback.innerHTML = `
+        <span>${data.title}</span>
+        <strong>Sentence pattern looks correct.</strong>
+        <p>${data.success}</p>
+      `;
+      return;
+    }
+
+    const missing = [];
+    if (!checks.subject) missing.push("a clear subject");
+    if (!checks.verb) missing.push("the right verb pattern");
+    if (!checks.signal) missing.push("a time clue or meaning clue");
+    feedback.innerHTML = `
+      <span>${data.title}</span>
+      <strong>Almost there. Add ${missing.join(", ")}.</strong>
+      <p>${data.guide}</p>
+    `;
+  }
+
+  intentButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      intent = button.dataset.practiceIntent;
+      typingLetter = 0;
+      typingForward = true;
+      intentButtons.forEach((item) => item.classList.toggle("is-active", item === button));
+      updatePlaceholder();
+      validatePractice();
+    });
+  });
+
+  input.addEventListener("input", validatePractice);
+  input.addEventListener("focus", () => input.classList.remove("is-auto-typing"));
+  input.addEventListener("blur", () => {
+    if (!input.value) input.classList.add("is-auto-typing");
+  });
+  input.classList.add("is-auto-typing");
+  window.setInterval(() => {
+    if (input.value || document.activeElement === input) return;
+    const examples = Object.values(getActiveTenseLab().practice).map((item) => item.example);
+    const activeIndex = Math.max(0, [...intentButtons].findIndex((button) => button.dataset.practiceIntent === intent));
+    const example = examples[activeIndex] || examples[0];
+    typingLetter += typingForward ? 1 : -1;
+    input.placeholder = example.slice(0, typingLetter);
+    if (typingLetter >= example.length + 14) typingForward = false;
+    if (typingLetter <= 0) {
+      typingForward = true;
+      typingLetter = 0;
+    }
+  }, 55);
+  updatePlaceholder();
+  validatePractice();
+}
+
+const tenseQuizQuestions = [
+  {
+    prompt: "She writes in her diary every night.",
+    options: ["Present Simple", "Present Continuous", "Present Perfect", "Present Perfect Continuous"],
+    answer: "Present Simple",
+    explanation: "Every night shows a routine, so we use Present Simple.",
+  },
+  {
+    prompt: "They are watching a science video now.",
+    options: ["Present Simple", "Present Continuous", "Present Perfect", "Present Perfect Continuous"],
+    answer: "Present Continuous",
+    explanation: "Now shows the action is happening at this moment.",
+  },
+  {
+    prompt: "I have finished my worksheet.",
+    options: ["Present Simple", "Present Continuous", "Present Perfect", "Present Perfect Continuous"],
+    answer: "Present Perfect",
+    explanation: "The worksheet is finished, and the result matters now.",
+  },
+  {
+    prompt: "We have been waiting for ten minutes.",
+    options: ["Present Simple", "Present Continuous", "Present Perfect", "Present Perfect Continuous"],
+    answer: "Present Perfect Continuous",
+    explanation: "For ten minutes shows an action that started earlier and continues until now.",
+  },
+  {
+    prompt: "My brother plays chess on Sundays.",
+    options: ["Present Simple", "Present Continuous", "Present Perfect", "Present Perfect Continuous"],
+    answer: "Present Simple",
+    explanation: "On Sundays tells us this is a regular activity.",
+  },
+  {
+    prompt: "Riya is drawing a flower.",
+    options: ["Present Simple", "Present Continuous", "Present Perfect", "Present Perfect Continuous"],
+    answer: "Present Continuous",
+    explanation: "Is drawing shows the action is going on right now.",
+  },
+  {
+    prompt: "The teacher has checked the notebooks.",
+    options: ["Present Simple", "Present Continuous", "Present Perfect", "Present Perfect Continuous"],
+    answer: "Present Perfect",
+    explanation: "Has checked shows a completed action connected with the present.",
+  },
+  {
+    prompt: "He has been learning English since April.",
+    options: ["Present Simple", "Present Continuous", "Present Perfect", "Present Perfect Continuous"],
+    answer: "Present Perfect Continuous",
+    explanation: "Since April shows the learning started earlier and is still continuing.",
+  },
+  {
+    prompt: "The bus arrives at 8 o'clock.",
+    options: ["Present Simple", "Present Continuous", "Present Perfect", "Present Perfect Continuous"],
+    answer: "Present Simple",
+    explanation: "A timetable or fixed routine uses Present Simple.",
+  },
+  {
+    prompt: "The children are practising for the show.",
+    options: ["Present Simple", "Present Continuous", "Present Perfect", "Present Perfect Continuous"],
+    answer: "Present Continuous",
+    explanation: "Are practising shows the action is happening around this time.",
+  },
+];
+
+const pastTenseDetails = {
+  simple: {
+    title: "Past Simple",
+    story: "Finished action in the past",
+    structure: "Subject + V2<br />OR Subject + was/were + noun/adjective/place",
+    examples: ["I played football yesterday.", "She visited her grandmother.", "They were happy."],
+    activity: "Look for a finished past action, past state or clues like yesterday, last week and ago.",
+  },
+  continuous: {
+    title: "Past Continuous",
+    story: "Was happening at a past time",
+    structure: "Subject + was/were + Verb-ing",
+    examples: ["I was reading at 7 pm.", "They were playing when it rained.", "She was writing a story."],
+    activity: "Use it when an action was in progress at a past moment or when another action happened.",
+  },
+  perfect: {
+    title: "Past Perfect",
+    story: "Finished before another past action",
+    structure: "Subject + had + V3",
+    examples: ["I had completed my homework before dinner.", "She had finished the book.", "They had left before I arrived."],
+    activity: "Use it for the earlier past action when two past actions are connected.",
+  },
+  perfectContinuous: {
+    title: "Past Perfect Continuous",
+    story: "Continued before a past time",
+    structure: "Subject + had been + Verb-ing",
+    examples: ["I had been studying for two hours.", "She had been reading before lunch.", "They had been practising since morning."],
+    activity: "Use it when an action continued for some time before another past moment.",
+  },
+};
+
+const futureTenseDetails = {
+  simple: {
+    title: "Future Simple",
+    story: "Will happen later",
+    structure: "Subject + will + V1<br />OR Subject + am/is/are going to + V1",
+    examples: ["I will play football tomorrow.", "She is going to read a book.", "They will visit us next week."],
+    activity: "Look for actions planned, expected or decided for a later time.",
+  },
+  continuous: {
+    title: "Future Continuous",
+    story: "Will be happening at a future time",
+    structure: "Subject + will be + Verb-ing",
+    examples: ["I will be studying at 8 pm.", "She will be reading tomorrow morning.", "They will be travelling next week."],
+    activity: "Use it when an action will be in progress at a future moment.",
+  },
+  perfect: {
+    title: "Future Perfect",
+    story: "Will be finished before a future time",
+    structure: "Subject + will have + V3",
+    examples: ["I will have completed my homework by evening.", "She will have finished the book.", "They will have reached by noon."],
+    activity: "Use it for an action that will be complete before a future deadline.",
+  },
+  perfectContinuous: {
+    title: "Future Perfect Continuous",
+    story: "Will have continued until a future time",
+    structure: "Subject + will have been + Verb-ing",
+    examples: ["I will have been studying for two hours by 8 pm.", "She will have been reading since morning.", "They will have been practising for a month."],
+    activity: "Use it when an action will continue up to a future point.",
+  },
+};
+
+const pastTransformerData = {
+  habit: {
+    label: "Finished past",
+    sentence: "Rahul played football yesterday.",
+    note: "Use Past Simple when the action is finished in the past.",
+  },
+  now: {
+    label: "Happening then",
+    sentence: "Rahul was playing football at 5 pm.",
+    note: "Use Past Continuous when the action was going on at a past time.",
+  },
+  finished: {
+    label: "Earlier past",
+    sentence: "Rahul had played football before dinner.",
+    note: "Use Past Perfect when one past action happened before another past action.",
+  },
+  continuing: {
+    label: "Continuing before past",
+    sentence: "Rahul had been playing football for an hour.",
+    note: "Use Past Perfect Continuous when an action continued before a past moment.",
+  },
+};
+
+const futureTransformerData = {
+  habit: {
+    label: "Later action",
+    sentence: "Rahul will play football tomorrow.",
+    note: "Use Future Simple when the action will happen later.",
+  },
+  now: {
+    label: "Happening later",
+    sentence: "Rahul will be playing football at 5 pm.",
+    note: "Use Future Continuous when the action will be going on at a future time.",
+  },
+  finished: {
+    label: "Finished by then",
+    sentence: "Rahul will have played football by evening.",
+    note: "Use Future Perfect when the action will be complete before a future time.",
+  },
+  continuing: {
+    label: "Continuing until then",
+    sentence: "Rahul will have been playing football for an hour.",
+    note: "Use Future Perfect Continuous when the action will continue up to a future point.",
+  },
+};
+
+const pastPracticeIntentData = {
+  simple: {
+    title: "Past Simple",
+    example: "She played yesterday.",
+    success: "Good. This looks like Past Simple because it shows a finished past action or state.",
+    guide: "For Past Simple, use V2 or was/were: She played yesterday. They were ready.",
+  },
+  continuous: {
+    title: "Past Continuous",
+    example: "She was reading at 7 pm.",
+    success: "Good. This looks like Past Continuous because it uses was/were + verb-ing.",
+    guide: "For Past Continuous, use was/were + verb-ing: She was reading. They were playing.",
+  },
+  perfect: {
+    title: "Past Perfect",
+    example: "She had finished the book.",
+    success: "Good. This looks like Past Perfect because it uses had + V3.",
+    guide: "For Past Perfect, use had + V3: She had finished the book.",
+  },
+  perfectContinuous: {
+    title: "Past Perfect Continuous",
+    example: "She had been reading for two hours.",
+    success: "Good. This looks like Past Perfect Continuous because it uses had been + verb-ing.",
+    guide: "For Past Perfect Continuous, use had been + verb-ing with for, since, before or when.",
+  },
+};
+
+const futurePracticeIntentData = {
+  simple: {
+    title: "Future Simple",
+    example: "She will read tomorrow.",
+    success: "Good. This looks like Future Simple because it shows an action that will happen later.",
+    guide: "For Future Simple, use will + V1 or am/is/are going to + V1.",
+  },
+  continuous: {
+    title: "Future Continuous",
+    example: "She will be reading at 7 pm.",
+    success: "Good. This looks like Future Continuous because it uses will be + verb-ing.",
+    guide: "For Future Continuous, use will be + verb-ing: She will be reading at 7 pm.",
+  },
+  perfect: {
+    title: "Future Perfect",
+    example: "She will have finished the book by evening.",
+    success: "Good. This looks like Future Perfect because it uses will have + V3.",
+    guide: "For Future Perfect, use will have + V3 with a future deadline like by evening.",
+  },
+  perfectContinuous: {
+    title: "Future Perfect Continuous",
+    example: "She will have been reading for two hours.",
+    success: "Good. This looks like Future Perfect Continuous because it uses will have been + verb-ing.",
+    guide: "For Future Perfect Continuous, use will have been + verb-ing with for, since or by.",
+  },
+};
+
+const pastTenseQuizQuestions = [
+  { prompt: "She visited her aunt yesterday.", options: ["Past Simple", "Past Continuous", "Past Perfect", "Past Perfect Continuous"], answer: "Past Simple", explanation: "Visited and yesterday show a finished past action." },
+  { prompt: "They were watching a movie at 8 pm.", options: ["Past Simple", "Past Continuous", "Past Perfect", "Past Perfect Continuous"], answer: "Past Continuous", explanation: "Were watching shows an action in progress at a past time." },
+  { prompt: "I had finished my work before dinner.", options: ["Past Simple", "Past Continuous", "Past Perfect", "Past Perfect Continuous"], answer: "Past Perfect", explanation: "Had finished shows an action completed before another past time." },
+  { prompt: "We had been waiting for ten minutes.", options: ["Past Simple", "Past Continuous", "Past Perfect", "Past Perfect Continuous"], answer: "Past Perfect Continuous", explanation: "Had been waiting shows an action continuing before a past moment." },
+  { prompt: "He wrote a letter last night.", options: ["Past Simple", "Past Continuous", "Past Perfect", "Past Perfect Continuous"], answer: "Past Simple", explanation: "Wrote and last night show a completed past action." },
+  { prompt: "Riya was drawing when I entered.", options: ["Past Simple", "Past Continuous", "Past Perfect", "Past Perfect Continuous"], answer: "Past Continuous", explanation: "Was drawing was happening when another past action occurred." },
+  { prompt: "The teacher had checked the notebooks.", options: ["Past Simple", "Past Continuous", "Past Perfect", "Past Perfect Continuous"], answer: "Past Perfect", explanation: "Had checked shows completion before a past reference point." },
+  { prompt: "He had been learning English since April.", options: ["Past Simple", "Past Continuous", "Past Perfect", "Past Perfect Continuous"], answer: "Past Perfect Continuous", explanation: "Had been learning with since shows continued action before a past time." },
+  { prompt: "The bus arrived at 8 o'clock.", options: ["Past Simple", "Past Continuous", "Past Perfect", "Past Perfect Continuous"], answer: "Past Simple", explanation: "Arrived is a completed past action." },
+  { prompt: "The children were practising for the show.", options: ["Past Simple", "Past Continuous", "Past Perfect", "Past Perfect Continuous"], answer: "Past Continuous", explanation: "Were practising shows a past action in progress." },
+];
+
+const futureTenseQuizQuestions = [
+  { prompt: "She will write in her diary tomorrow.", options: ["Future Simple", "Future Continuous", "Future Perfect", "Future Perfect Continuous"], answer: "Future Simple", explanation: "Will write shows an action that will happen later." },
+  { prompt: "They will be watching a science video at 8 pm.", options: ["Future Simple", "Future Continuous", "Future Perfect", "Future Perfect Continuous"], answer: "Future Continuous", explanation: "Will be watching shows an action in progress at a future time." },
+  { prompt: "I will have finished my worksheet by evening.", options: ["Future Simple", "Future Continuous", "Future Perfect", "Future Perfect Continuous"], answer: "Future Perfect", explanation: "Will have finished shows completion before a future deadline." },
+  { prompt: "We will have been waiting for ten minutes by then.", options: ["Future Simple", "Future Continuous", "Future Perfect", "Future Perfect Continuous"], answer: "Future Perfect Continuous", explanation: "Will have been waiting shows continuation up to a future point." },
+  { prompt: "My brother will play chess on Sunday.", options: ["Future Simple", "Future Continuous", "Future Perfect", "Future Perfect Continuous"], answer: "Future Simple", explanation: "Will play shows a future action." },
+  { prompt: "Riya will be drawing during the art class.", options: ["Future Simple", "Future Continuous", "Future Perfect", "Future Perfect Continuous"], answer: "Future Continuous", explanation: "Will be drawing shows an action going on at a future time." },
+  { prompt: "The teacher will have checked the notebooks by noon.", options: ["Future Simple", "Future Continuous", "Future Perfect", "Future Perfect Continuous"], answer: "Future Perfect", explanation: "Will have checked shows the action will be complete by noon." },
+  { prompt: "He will have been learning English for one year.", options: ["Future Simple", "Future Continuous", "Future Perfect", "Future Perfect Continuous"], answer: "Future Perfect Continuous", explanation: "Will have been learning shows continued action up to a future point." },
+  { prompt: "The bus will arrive at 8 o'clock.", options: ["Future Simple", "Future Continuous", "Future Perfect", "Future Perfect Continuous"], answer: "Future Simple", explanation: "Will arrive shows a future event." },
+  { prompt: "The children will be practising tomorrow morning.", options: ["Future Simple", "Future Continuous", "Future Perfect", "Future Perfect Continuous"], answer: "Future Continuous", explanation: "Will be practising shows future action in progress." },
+];
+
+function getTenseLabMode() {
+  if (document.body.classList.contains("past-tense-page")) return "past";
+  if (document.body.classList.contains("future-tense-page")) return "future";
+  return "present";
+}
+
+function getActiveTenseLab() {
+  const labs = {
+    present: {
+      details: tenseDetails,
+      transformer: transformerData,
+      practice: practiceIntentData,
+      quiz: tenseQuizQuestions,
+      completionTitle: "Excellent. You have completed the Present Tense Learning Lab.",
+      choice: {
+        correct: "habit",
+        correctText: "Correct. This is <strong>Present Simple</strong> because it describes Rahul's routine.",
+        wrongText: "Almost. The words <strong>every evening</strong> show a routine, so this is Present Simple.",
+      },
+    },
+    past: {
+      details: pastTenseDetails,
+      transformer: pastTransformerData,
+      practice: pastPracticeIntentData,
+      quiz: pastTenseQuizQuestions,
+      completionTitle: "Excellent. You have completed the Past Tense Learning Lab.",
+      choice: {
+        correct: "habit",
+        correctText: "Correct. This is <strong>Past Simple</strong> because the action finished yesterday.",
+        wrongText: "Almost. The word <strong>yesterday</strong> shows a finished past action, so this is Past Simple.",
+      },
+    },
+    future: {
+      details: futureTenseDetails,
+      transformer: futureTransformerData,
+      practice: futurePracticeIntentData,
+      quiz: futureTenseQuizQuestions,
+      completionTitle: "Excellent. You have completed the Future Tense Learning Lab.",
+      choice: {
+        correct: "habit",
+        correctText: "Correct. This is <strong>Future Simple</strong> because the action will happen tomorrow.",
+        wrongText: "Almost. The word <strong>tomorrow</strong> points to a future action, so this is Future Simple.",
+      },
+    },
+  };
+  return labs[getTenseLabMode()];
+}
+
+function initTenseQuiz() {
+  const quiz = document.querySelector("[data-tense-quiz]");
+  if (!quiz) return;
+  const quizQuestions = getActiveTenseLab().quiz;
+  const completionTitle = getActiveTenseLab().completionTitle;
+  const card = quiz.querySelector("[data-quiz-card]");
+  const progress = quiz.querySelector("[data-quiz-progress]");
+  const retry = quiz.querySelector("[data-quiz-retry]");
+  const scoreText = quiz.querySelector("[data-quiz-score]");
+  let index = 0;
+  let score = 0;
+
+  function updateScore() {
+    if (scoreText) scoreText.textContent = `Score: ${score}/${quizQuestions.length}`;
+    if (progress) progress.value = index;
+  }
+
+  function renderQuestion() {
+    const question = quizQuestions[index];
+    updateScore();
+    if (!card || !question) {
+      if (card) {
+        card.innerHTML = `
+          <h3>${completionTitle}</h3>
+          <p class="quiz-explanation">Final score: ${score}/${quizQuestions.length}. You can retry the quiz or continue practising in the learning lab.</p>
+        `;
+      }
+      if (progress) progress.value = quizQuestions.length;
+      return;
+    }
+
+    card.innerHTML = `
+      <span class="eyebrow">Question ${index + 1} of ${quizQuestions.length}</span>
+      <h3>${question.prompt}</h3>
+      <div class="quiz-options">
+        ${question.options.map((option) => `<button class="quiz-option" type="button" data-option="${option}">${option}</button>`).join("")}
+      </div>
+      <p class="quiz-explanation" hidden></p>
+    `;
+
+    const explanation = card.querySelector(".quiz-explanation");
+    card.querySelectorAll("[data-option]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const correct = button.dataset.option === question.answer;
+        if (correct) score += 1;
+        card.querySelectorAll("[data-option]").forEach((optionButton) => {
+          optionButton.disabled = true;
+          optionButton.classList.toggle("is-correct", optionButton.dataset.option === question.answer);
+          optionButton.classList.toggle("is-wrong", optionButton === button && !correct);
+        });
+        explanation.hidden = false;
+        explanation.innerHTML = `${correct ? "Correct." : "Good try."} ${question.explanation}`;
+        const nextButton = document.createElement("button");
+        nextButton.className = "primary-button";
+        nextButton.type = "button";
+        nextButton.textContent = index === quizQuestions.length - 1 ? "Show Result" : "Next Question";
+        nextButton.addEventListener("click", () => {
+          index += 1;
+          renderQuestion();
+        });
+        card.appendChild(nextButton);
+        updateScore();
+      });
+    });
+  }
+
+  retry?.addEventListener("click", () => {
+    index = 0;
+    score = 0;
+    renderQuestion();
+  });
+
+  renderQuestion();
+}
+
+initTenseCards();
+initTenseChoiceTool();
+initSentenceTransformer();
+initTensePracticeBox();
+initTenseQuiz();
+
+const routinePrompts = [
+  {
+    prompt: "Tell me three things you do in the morning.",
+    example: "I wake up early. I brush my teeth. I eat breakfast.",
+  },
+  {
+    prompt: "Tell me two things you do after school.",
+    example: "I play outside. I study in the evening.",
+  },
+  {
+    prompt: "Tell me what you do before sleeping.",
+    example: "I read a story. I sleep early at night.",
+  },
+  {
+    prompt: "Tell me what you do to get ready for school.",
+    example: "I bathe. I wear my uniform. I go to school.",
+  },
+  {
+    prompt: "Tell me your full day in five short sentences.",
+    example: "I wake up early. I brush my teeth. I go to school. I play after school. I sleep at night.",
+  },
+];
+
+function speakRoutineText(text, button) {
+  if (!("speechSynthesis" in window) || !("SpeechSynthesisUtterance" in window)) {
+    if (button) button.textContent = "Audio not supported";
+    return;
+  }
+
+  if (button?.classList.contains("is-reading")) {
+    stopTenseReading();
+    return;
+  }
+
+  stopTenseReading();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = "en-IN";
+  utterance.rate = 0.86;
+  utterance.pitch = 1.08;
+  activeTenseSpeech = utterance;
+  activeTenseSpeechButton = button;
+  if (button) {
+    if ((button.dataset.routineSpeak || button.children.length) && !button.dataset.audioOriginalHtml) {
+      button.dataset.audioOriginalHtml = button.innerHTML;
+    } else {
+      button.dataset.audioDefaultText = button.textContent;
+    }
+    button.textContent = "Stop reading";
+    button.classList.add("is-reading");
+    button.setAttribute("aria-pressed", "true");
+  }
+  utterance.onend = () => {
+    if (activeTenseSpeech === utterance) stopTenseReading();
+  };
+  utterance.onerror = () => {
+    if (button) resetTenseAudioButton(button);
+    activeTenseSpeech = null;
+    activeTenseSpeechButton = null;
+  };
+  window.speechSynthesis.speak(utterance);
+}
+
+function getRoutineVerb(action, subject) {
+  const verbMap = {
+    "brush my teeth": "brushes her teeth",
+    "wake up early": "wakes up early",
+    "eat breakfast": "eats breakfast",
+    "go to school": "goes to school",
+    "study English": "studies English",
+    "read a story": "reads a story",
+    "play outside": "plays outside",
+  };
+  if (subject === "He" || subject === "She") return verbMap[action] || action;
+  return action;
+}
+
+function initRoutineBuilder() {
+  const builder = document.querySelector("[data-routine-builder]");
+  if (!builder) return;
+  const subject = builder.querySelector("[data-routine-subject]");
+  const action = builder.querySelector("[data-routine-action]");
+  const time = builder.querySelector("[data-routine-time]");
+  const output = builder.querySelector("[data-routine-sentence]");
+  const readButton = builder.querySelector("[data-routine-read-built]");
+
+  function renderSentence() {
+    const sentence = `${subject.value} ${getRoutineVerb(action.value, subject.value)} ${time.value}.`;
+    output.textContent = sentence;
+    resetTenseAudioButton(readButton);
+    readButton.textContent = "Read sentence";
+  }
+
+  [subject, action, time].forEach((field) => field.addEventListener("change", renderSentence));
+  readButton?.addEventListener("click", () => speakRoutineText(output.textContent, readButton));
+  renderSentence();
+}
+
+function initRoutineVerbs() {
+  document.querySelectorAll("[data-routine-speak]").forEach((button) => {
+    button.addEventListener("click", () => speakRoutineText(button.dataset.routineSpeak, button));
+  });
+}
+
+function initRoutinePrompts() {
+  const promptCard = document.querySelector("[data-routine-prompts]");
+  if (!promptCard) return;
+  const count = promptCard.querySelector("[data-routine-prompt-count]");
+  const prompt = promptCard.querySelector("[data-routine-prompt]");
+  const example = promptCard.querySelector("[data-routine-prompt-example]");
+  const readButton = promptCard.querySelector("[data-routine-read-prompt]");
+  const nextButton = promptCard.querySelector("[data-routine-next-prompt]");
+  let index = 0;
+
+  function renderPrompt() {
+    const data = routinePrompts[index];
+    count.textContent = `Prompt ${index + 1} of ${routinePrompts.length}`;
+    prompt.textContent = data.prompt;
+    example.textContent = `Example: ${data.example}`;
+    resetTenseAudioButton(readButton);
+    readButton.textContent = "Read Prompt";
+  }
+
+  readButton?.addEventListener("click", () => {
+    const data = routinePrompts[index];
+    speakRoutineText(`${data.prompt} ${data.example}`, readButton);
+  });
+  nextButton?.addEventListener("click", () => {
+    index = (index + 1) % routinePrompts.length;
+    stopTenseReading();
+    renderPrompt();
+  });
+  renderPrompt();
+}
+
+function initRoutinePractice() {
+  const practice = document.querySelector("[data-routine-practice]");
+  if (!practice) return;
+  const input = practice.querySelector("[data-routine-practice-input]");
+  const feedback = practice.querySelector("[data-routine-practice-feedback]");
+  const rules = practice.querySelectorAll("[data-routine-rule]");
+  const typingExamples = [
+    "I wake up early. I brush my teeth. I eat breakfast. I go to school. I sleep early at night.",
+    "I study in the evening. I read a story at night. I help my mother. I play after school. I drink water.",
+    "She wakes up early. She wears her uniform. She goes to school. She writes neatly. She sleeps at night.",
+  ];
+  let typingIndex = 0;
+  let typingLetter = 0;
+  let typingForward = true;
+  const verbWords = /\b(wake|brush|bathe|eat|drink|wear|go|study|read|write|play|help|sleep|wakes|brushes|bathes|eats|drinks|wears|goes|studies|reads|writes|plays|helps|sleeps)\b/gi;
+  const timeWords = /\b(morning|afternoon|evening|night|daily|usually|every day|every morning|after school|before school|before sleeping|at night)\b/i;
+
+  function validateRoutine() {
+    const value = input.value.trim();
+    const sentences = value.split(/[.!?]+/).map((item) => item.trim()).filter(Boolean);
+    const verbs = value.match(verbWords) || [];
+    const checks = {
+      sentences: sentences.length >= 5,
+      verbs: new Set(verbs.map((verb) => verb.toLowerCase())).size >= 4,
+      time: timeWords.test(value),
+    };
+    const passed = checks.sentences && checks.verbs && checks.time;
+
+    rules.forEach((rule) => rule.classList.toggle("is-met", Boolean(checks[rule.dataset.routineRule])));
+    feedback.classList.toggle("is-good", passed);
+    feedback.classList.toggle("is-guide", value.length > 0 && !passed);
+
+    if (!value) {
+      feedback.innerHTML = `<span>Ready to practise</span><strong>Write your daily routine in simple sentences.</strong><p>Try to include five action words.</p>`;
+      return;
+    }
+
+    if (passed) {
+      feedback.innerHTML = `<span>Speaking ready</span><strong>Good routine paragraph.</strong><p>Now read it aloud slowly and clearly.</p>`;
+      return;
+    }
+
+    const missing = [];
+    if (!checks.sentences) missing.push("five short sentences");
+    if (!checks.verbs) missing.push("more action verbs");
+    if (!checks.time) missing.push("routine time words");
+    feedback.innerHTML = `<span>Almost there</span><strong>Add ${missing.join(", ")}.</strong><p>Use words like morning, after school, evening, night or every day.</p>`;
+  }
+
+  input.addEventListener("input", validateRoutine);
+  input.addEventListener("focus", () => input.classList.remove("is-auto-typing"));
+  input.addEventListener("blur", () => {
+    if (!input.value) input.classList.add("is-auto-typing");
+  });
+  input.classList.add("is-auto-typing");
+  window.setInterval(() => {
+    if (input.value || document.activeElement === input) return;
+    const example = typingExamples[typingIndex];
+    typingLetter += typingForward ? 1 : -1;
+    input.placeholder = example.slice(0, typingLetter);
+    if (typingLetter >= example.length + 18) typingForward = false;
+    if (typingLetter <= 0) {
+      typingForward = true;
+      typingIndex = (typingIndex + 1) % typingExamples.length;
+    }
+  }, 55);
+  validateRoutine();
+}
+
+initRoutineVerbs();
+initRoutineBuilder();
+initRoutinePrompts();
+initRoutinePractice();
+
+const readingLevels = {
+  beginner: [
+    {
+      label: "Beginner",
+      title: "My Morning",
+      text: "I wake up early. I brush my teeth. I eat breakfast. Then I go to school with a happy smile.",
+      questions: [
+        { question: "What does the child do first?", options: ["Wake up early", "Play outside", "Sleep late"], answer: "Wake up early" },
+        { question: "Where does the child go?", options: ["To school", "To the market", "To the park"], answer: "To school" },
+      ],
+    },
+    {
+      label: "Beginner",
+      title: "My Pet Cat",
+      text: "My cat is small and soft. She drinks milk. She sits near me when I read my book.",
+      questions: [
+        { question: "What does the cat drink?", options: ["Milk", "Juice", "Watermelon"], answer: "Milk" },
+        { question: "When does the cat sit near the child?", options: ["When the child reads", "When the child sleeps", "When the child runs"], answer: "When the child reads" },
+      ],
+    },
+  ],
+  explorer: [
+    {
+      label: "Explorer",
+      title: "A Helpful Friend",
+      text: "Riya saw a new student in class. The student looked quiet, so Riya shared her book and explained the activity carefully.",
+      questions: [
+        { question: "Who helped the new student?", options: ["Riya", "The driver", "The doctor"], answer: "Riya" },
+        { question: "How did Riya explain the activity?", options: ["Carefully", "Angrily", "Silently"], answer: "Carefully" },
+      ],
+    },
+    {
+      label: "Explorer",
+      title: "Garden Duty",
+      text: "Every Saturday, Arjun waters the plants in his garden. He removes dry leaves and feels responsible for keeping the garden clean.",
+      questions: [
+        { question: "When does Arjun water the plants?", options: ["Every Saturday", "Every Monday", "Every night"], answer: "Every Saturday" },
+        { question: "What does Arjun remove?", options: ["Dry leaves", "School bags", "Old toys"], answer: "Dry leaves" },
+      ],
+    },
+  ],
+  confident: [
+    {
+      label: "Confident Reader",
+      title: "The Library Monitor",
+      text: "Naman became the library monitor for his class. He arranged the story books, guided younger children and reminded everyone to return books on time.",
+      questions: [
+        { question: "What role did Naman get?", options: ["Library monitor", "Sports captain", "Class artist"], answer: "Library monitor" },
+        { question: "What did he remind everyone to do?", options: ["Return books on time", "Eat lunch quickly", "Run in the corridor"], answer: "Return books on time" },
+      ],
+    },
+    {
+      label: "Confident Reader",
+      title: "Practice Before Stage",
+      text: "Before the school assembly, Meera practised her speech slowly. She paused after each sentence and spoke with confidence in front of everyone.",
+      questions: [
+        { question: "What did Meera practise?", options: ["Her speech", "A dance step", "A maths sum"], answer: "Her speech" },
+        { question: "How did she speak?", options: ["With confidence", "Without sound", "Very angrily"], answer: "With confidence" },
+      ],
+    },
+  ],
+  challenge: [
+    {
+      label: "Challenge Mode",
+      title: "The Science Exhibition",
+      text: "During the science exhibition, Kabir presented a working model of rainwater harvesting. He explained the idea clearly, answered questions patiently and encouraged his friends to save water at home.",
+      questions: [
+        { question: "What model did Kabir present?", options: ["Rainwater harvesting", "Traffic lights", "A toy train"], answer: "Rainwater harvesting" },
+        { question: "What did Kabir encourage his friends to do?", options: ["Save water at home", "Waste paper", "Skip homework"], answer: "Save water at home" },
+      ],
+    },
+    {
+      label: "Challenge Mode",
+      title: "A Responsible Team",
+      text: "The class prepared for cleanliness day by making posters, dividing duties and speaking politely to visitors. Their teacher praised the team for planning the work without confusion.",
+      questions: [
+        { question: "What did the class make?", options: ["Posters", "Kites", "Lunch boxes"], answer: "Posters" },
+        { question: "Why did the teacher praise them?", options: ["They planned without confusion", "They shouted loudly", "They forgot their duties"], answer: "They planned without confusion" },
+      ],
+    },
+  ],
+};
+
+function normalizeReadingWords(text) {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9\s']/g, " ")
+    .split(/\s+/)
+    .filter(Boolean);
+}
+
+function uniqueWordList(words) {
+  return [...new Set(words)].slice(0, 12);
+}
+
+function initReadingFluencyLab() {
+  const lab = document.querySelector("[data-reading-lab]");
+  if (!lab) return;
+
+  const levelButtons = lab.querySelectorAll("[data-reading-level]");
+  const levelLabel = lab.querySelector("[data-reading-level-label]");
+  const title = lab.querySelector("[data-reading-title]");
+  const passage = lab.querySelector("[data-reading-passage]");
+  const listenButton = lab.querySelector("[data-reading-listen]");
+  const startButton = lab.querySelector("[data-reading-start]");
+  const stopButton = lab.querySelector("[data-reading-stop]");
+  const nextButton = lab.querySelector("[data-reading-next]");
+  const support = lab.querySelector("[data-reading-support]");
+  const score = lab.querySelector("[data-reading-score]");
+  const progress = lab.querySelector("[data-reading-progress]");
+  const transcript = lab.querySelector("[data-reading-transcript]");
+  const missed = lab.querySelector("[data-reading-missed]");
+  const extra = lab.querySelector("[data-reading-extra]");
+  const tip = lab.querySelector("[data-reading-tip]");
+  const questionWrap = document.querySelector("[data-reading-questions]");
+  const questionCount = questionWrap?.querySelector("[data-reading-question-count]");
+  const questionText = questionWrap?.querySelector("[data-reading-question]");
+  const answerGrid = questionWrap?.querySelector("[data-reading-answers]");
+  const questionFeedback = questionWrap?.querySelector("[data-reading-question-feedback]");
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  let level = "beginner";
+  let passageIndex = 0;
+  let questionIndex = 0;
+  let recognition = null;
+  const micSessionKey = "kidsverseReadingMicPermission";
+
+  function activePassage() {
+    return readingLevels[level][passageIndex];
+  }
+
+  function renderQuestion() {
+    if (!questionWrap || !answerGrid) return;
+    const data = activePassage();
+    const question = data.questions[questionIndex];
+    questionCount.textContent = `Question ${questionIndex + 1} of ${data.questions.length}`;
+    questionText.textContent = question.question;
+    questionFeedback.textContent = "";
+    answerGrid.innerHTML = question.options
+      .map((option) => `<button type="button" data-reading-answer="${option}">${option}</button>`)
+      .join("");
+    answerGrid.querySelectorAll("[data-reading-answer]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const correct = button.dataset.readingAnswer === question.answer;
+        answerGrid.querySelectorAll("button").forEach((item) => {
+          item.disabled = true;
+          item.classList.toggle("is-correct", item.dataset.readingAnswer === question.answer);
+          item.classList.toggle("is-wrong", item === button && !correct);
+        });
+        questionFeedback.textContent = correct ? "Correct. Good understanding." : `Good try. Correct answer: ${question.answer}.`;
+        window.setTimeout(() => {
+          questionIndex = (questionIndex + 1) % data.questions.length;
+          renderQuestion();
+        }, 1300);
+      });
+    });
+  }
+
+  function renderPassage() {
+    const data = activePassage();
+    stopTenseReading();
+    recognition?.abort();
+    levelLabel.textContent = data.label;
+    title.textContent = data.title;
+    passage.textContent = data.text;
+    score.textContent = "--";
+    progress.value = 0;
+    transcript.textContent = "Click Start Reading and read the paragraph aloud.";
+    missed.textContent = "Words will appear here after reading.";
+    extra.textContent = "Extra spoken words will appear here.";
+    tip.textContent = "Listen once, then read slowly and clearly.";
+    questionIndex = 0;
+    stopButton.hidden = true;
+    startButton.disabled = false;
+    renderQuestion();
+  }
+
+  function showReadingResult(spokenText) {
+    const expectedWords = normalizeReadingWords(activePassage().text);
+    const spokenWords = normalizeReadingWords(spokenText);
+    const spokenPool = [...spokenWords];
+    let correct = 0;
+    const missedWords = [];
+
+    expectedWords.forEach((word) => {
+      const foundIndex = spokenPool.indexOf(word);
+      if (foundIndex >= 0) {
+        correct += 1;
+        spokenPool.splice(foundIndex, 1);
+      } else {
+        missedWords.push(word);
+      }
+    });
+
+    const accuracy = expectedWords.length ? Math.round((correct / expectedWords.length) * 100) : 0;
+    score.textContent = `${accuracy}%`;
+    progress.value = accuracy;
+    transcript.textContent = spokenText || "We could not hear enough words. Please try again close to the microphone.";
+    missed.textContent = missedWords.length ? uniqueWordList(missedWords).join(", ") : "Great. No important missing words found.";
+    extra.textContent = spokenPool.length ? uniqueWordList(spokenPool).join(", ") : "No extra words found.";
+    if (accuracy >= 90) {
+      tip.textContent = "Excellent reading. Now practise expression and clear pauses.";
+    } else if (accuracy >= 70) {
+      tip.textContent = "Good reading. Try the missed words once, then read again slowly.";
+    } else {
+      tip.textContent = "Listen once more, read one sentence at a time and try again.";
+    }
+  }
+
+  function getSavedMicPermission() {
+    try {
+      return sessionStorage.getItem(micSessionKey);
+    } catch {
+      return "";
+    }
+  }
+
+  function saveMicPermission(value) {
+    try {
+      sessionStorage.setItem(micSessionKey, value);
+    } catch {
+      /* Session storage can be blocked in private modes; reading still works without it. */
+    }
+  }
+
+  async function getCurrentMicPermission() {
+    if (!navigator.permissions?.query) return getSavedMicPermission();
+    try {
+      const status = await navigator.permissions.query({ name: "microphone" });
+      saveMicPermission(status.state);
+      status.onchange = () => saveMicPermission(status.state);
+      return status.state;
+    } catch {
+      return getSavedMicPermission();
+    }
+  }
+
+  levelButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      level = button.dataset.readingLevel;
+      passageIndex = 0;
+      levelButtons.forEach((item) => item.classList.toggle("is-active", item === button));
+      renderPassage();
+    });
+  });
+
+  listenButton?.addEventListener("click", () => speakRoutineText(activePassage().text, listenButton));
+
+  nextButton?.addEventListener("click", () => {
+    passageIndex = (passageIndex + 1) % readingLevels[level].length;
+    renderPassage();
+  });
+
+  startButton?.addEventListener("click", async () => {
+    if (!SpeechRecognition) {
+      support.textContent = "Microphone reading check is not supported in this browser. Please open this page in Chrome.";
+      support.classList.add("is-warning");
+      return;
+    }
+
+    const permission = await getCurrentMicPermission();
+    if (permission === "denied") {
+      support.textContent = "Microphone is blocked for this page. Please allow microphone access from Chrome site settings, then try again.";
+      support.classList.add("is-warning");
+      return;
+    }
+
+    stopTenseReading();
+    recognition?.abort();
+    recognition = new SpeechRecognition();
+    recognition.lang = "en-IN";
+    recognition.interimResults = true;
+    recognition.continuous = false;
+    let finalText = "";
+    let readingFailed = false;
+
+    startButton.disabled = true;
+    stopButton.hidden = false;
+    transcript.textContent = "Listening now. Read the paragraph clearly.";
+    support.textContent =
+      permission === "granted" ? "Listening. Microphone is ready." : "Listening. Please allow microphone access if Chrome asks.";
+    support.classList.remove("is-warning");
+
+    recognition.onstart = () => {
+      saveMicPermission("granted");
+      support.textContent = "Listening. Microphone is ready for this practice session.";
+    };
+
+    recognition.onresult = (event) => {
+      let interimText = "";
+      for (let index = event.resultIndex; index < event.results.length; index += 1) {
+        const text = event.results[index][0].transcript;
+        if (event.results[index].isFinal) {
+          finalText += ` ${text}`;
+        } else {
+          interimText += ` ${text}`;
+        }
+      }
+      transcript.textContent = `${finalText} ${interimText}`.trim() || "Listening now...";
+    };
+
+    recognition.onerror = () => {
+      readingFailed = true;
+      startButton.disabled = false;
+      stopButton.hidden = true;
+      getCurrentMicPermission().then((state) => {
+        support.textContent =
+          state === "denied" ? "Microphone is blocked for this page. Please allow access from Chrome site settings." : "Could not hear clearly. Please try again near the microphone.";
+      });
+      support.classList.add("is-warning");
+    };
+
+    recognition.onend = () => {
+      startButton.disabled = false;
+      stopButton.hidden = true;
+      if (readingFailed) return;
+      showReadingResult(transcript.textContent);
+    };
+
+    recognition.start();
+  });
+
+  stopButton?.addEventListener("click", () => recognition?.stop());
+  renderPassage();
+}
+
+function initReadingWordHelper() {
+  document.querySelectorAll("[data-word]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const word = button.querySelector("strong")?.textContent || button.dataset.word;
+      const meaning = button.querySelector("span")?.textContent || "";
+      speakRoutineText(`${word}. ${meaning}`, button);
+    });
+  });
+}
+
+initReadingFluencyLab();
+initReadingWordHelper();
