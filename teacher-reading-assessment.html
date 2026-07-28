@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Teacher Reading Self Assessment | Kidsverse School</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="shortcut icon" href="favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="assets/favicon.png" />
+    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+    <link rel="stylesheet" href="styles.css" />
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-0ZT634EM99"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-0ZT634EM99');
+  </script>
+</head>
+  <body class="teacher-page teacher-reading-page is-locked">
+    <section class="teacher-lock" data-teacher-lock>
+      <form class="teacher-lock-card" data-teacher-login>
+        <img src="assets/logo.png" alt="Kidsverse School logo" />
+        <p class="eyebrow">Teacher self check</p>
+        <h1>Reading Self Assessment Login</h1>
+        <p>Enter the passcode to open your teacher reading self assessment.</p>
+        <label>
+          Passcode
+          <input type="password" name="passcode" placeholder="Enter passcode" autocomplete="current-password" required />
+        </label>
+        <button class="primary-button" type="submit">Open Reading Test</button>
+        <span class="lock-error" data-lock-error hidden>Incorrect passcode. Please try again.</span>
+      </form>
+    </section>
+
+    <header class="teacher-header">
+      <a class="brand" href="index.html#top" aria-label="Kidsverse School home">
+        <img src="assets/logo.png" alt="Kidsverse School logo" />
+        <span><strong>Kidsverse</strong><small>Teacher Self Assessment</small></span>
+      </a>
+      <nav class="teacher-tool-links" aria-label="Teacher tools">
+        <a href="teacher-assessment.html">Class Culture</a>
+        <a href="student-assessment.html">Student Reports</a>
+        <a href="teacher-reading-assessment.html" aria-current="page">Teacher Reading</a>
+      </nav>
+      <span class="teacher-private-badge">Hidden internal form</span>
+    </header>
+
+    <main class="teacher-assessment-shell">
+      <section class="teacher-hero">
+        <p class="eyebrow">Teacher Reading Self Assessment</p>
+        <h1>Check your reading clarity before submitting to school.</h1>
+        <p>
+          Select your name, capture your photo, complete five read-aloud passages
+          and generate your readiness report. Submit it to school only when your
+          score is up to mark.
+        </p>
+      </section>
+
+      <section class="assessment-layout teacher-reading-layout">
+        <form class="culture-form teacher-reading-form" data-teacher-reading-form>
+          <div class="form-block">
+            <h2>Teacher Details</h2>
+            <div class="teacher-form-grid">
+              <label>Assessment date<input type="date" name="date" required /></label>
+              <label>Teacher name
+                <select name="teacherName" data-teacher-reading-name required>
+                  <option value="">Select teacher</option>
+                  <option>Ms Kajal</option>
+                  <option>Ms Meenakshi</option>
+                  <option>Ms Rubi</option>
+                  <option>Ms Puja</option>
+                  <option>Ms Priya</option>
+                  <option>Ms Diksha</option>
+                  <option>Ms Shikha</option>
+                  <option>Ms Neena</option>
+                  <option>Ms Rajnish</option>
+                  <option>Ms Darshana</option>
+                  <option>Ms Meena</option>
+                  <option>Ms Rambha</option>
+                  <option>Ms Shivani</option>
+                  <option value="__other">Name not listed</option>
+                </select>
+              </label>
+              <label data-teacher-reading-other-wrap hidden>New teacher name
+                <input type="text" name="otherTeacherName" placeholder="Add teacher name here" data-teacher-reading-other />
+                <span class="field-helper">If the name is not in the list, add it here before generating the report.</span>
+              </label>
+              <label>Submitted to<input type="text" name="observer" value="Kidsverse School" required /></label>
+              <label class="student-photo-upload">Teacher photo
+                <input type="file" name="teacherPhoto" accept="image/*" capture="user" data-teacher-reading-photo required />
+                <span>Open camera or upload a photo. The photo will appear in the report.</span>
+              </label>
+            </div>
+            <div class="teacher-reading-photo-preview" data-teacher-reading-photo-preview hidden></div>
+          </div>
+
+          <div class="form-block">
+            <div class="assessment-intro">
+              <h2>Five Reading Passages</h2>
+              <p>Read each paragraph clearly. The system will auto-score your reading from the microphone transcript.</p>
+            </div>
+            <div class="teacher-reading-passages" data-teacher-reading-passages></div>
+          </div>
+
+          <div class="teacher-actions">
+            <button class="primary-button" type="submit">Check My Readiness</button>
+            <button class="secondary-button" type="button" data-teacher-reading-print>Download / Print Report</button>
+          </div>
+          <p class="assessment-validation" data-teacher-reading-validation>Please complete teacher details, photo and all five readings.</p>
+        </form>
+
+        <aside class="culture-report teacher-reading-report" data-teacher-reading-report aria-live="polite">
+          <div class="report-placeholder">
+            <p class="eyebrow">Reading report</p>
+            <h2>Complete the self assessment to generate report.</h2>
+            <p>The report will show whether your reading score is ready to submit to school.</p>
+          </div>
+        </aside>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
