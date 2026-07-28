@@ -2840,6 +2840,58 @@ function uniqueWordList(words) {
   return [...new Set(words)].slice(0, 12);
 }
 
+function cleanReadingTranscript(text) {
+  const words = text.replace(/\s+/g, " ").trim().split(" ").filter(Boolean);
+  if (!words.length) return "";
+  const sameChunk = (startA, startB, size) => {
+    for (let offset = 0; offset < size; offset += 1) {
+      if (words[startA + offset].toLowerCase() !== words[startB + offset].toLowerCase()) return false;
+    }
+    return true;
+  };
+  const cleaned = [];
+  let index = 0;
+  while (index < words.length) {
+    let repeatSize = 0;
+    const maxSize = Math.min(8, Math.floor((words.length - index) / 2));
+    for (let size = maxSize; size >= 1; size -= 1) {
+      if (sameChunk(index, index + size, size)) {
+        repeatSize = size;
+        break;
+      }
+    }
+    if (!repeatSize) {
+      cleaned.push(words[index]);
+      index += 1;
+      continue;
+    }
+    cleaned.push(...words.slice(index, index + repeatSize));
+    index += repeatSize;
+    while (index + repeatSize <= words.length && sameChunk(index - repeatSize, index, repeatSize)) {
+      index += repeatSize;
+    }
+  }
+  return cleaned.join(" ");
+}
+
+function mergeReadingTranscript(baseText, nextText) {
+  const baseWords = cleanReadingTranscript(baseText).split(/\s+/).filter(Boolean);
+  const nextWords = cleanReadingTranscript(nextText).split(/\s+/).filter(Boolean);
+  if (!baseWords.length) return nextWords.join(" ");
+  if (!nextWords.length) return baseWords.join(" ");
+  let overlap = 0;
+  const maxOverlap = Math.min(baseWords.length, nextWords.length);
+  for (let size = maxOverlap; size > 0; size -= 1) {
+    const baseChunk = baseWords.slice(baseWords.length - size).map((word) => word.toLowerCase()).join(" ");
+    const nextChunk = nextWords.slice(0, size).map((word) => word.toLowerCase()).join(" ");
+    if (baseChunk === nextChunk) {
+      overlap = size;
+      break;
+    }
+  }
+  return [...baseWords, ...nextWords.slice(overlap)].join(" ");
+}
+
 function getReadingPatienceTiming(grade, expectedWordCount) {
   const gradeNumber = grade === "ukg" ? 0 : Number(grade);
   const wordsPerMinute = gradeNumber === 0 ? 18 : gradeNumber === 1 ? 34 : gradeNumber <= 3 ? 55 : gradeNumber <= 5 ? 70 : gradeNumber <= 8 ? 85 : 95;
@@ -2909,8 +2961,9 @@ function initReadingFluencyLab() {
   }
 
   function showReadingResult(spokenText) {
+    const cleanSpokenText = cleanReadingTranscript(spokenText);
     const expectedWords = normalizeReadingWords(activePassage().text);
-    const spokenWords = normalizeReadingWords(spokenText);
+    const spokenWords = normalizeReadingWords(cleanSpokenText);
     const spokenPool = [...spokenWords];
     let correct = 0;
     const missedWords = [];
@@ -2928,7 +2981,7 @@ function initReadingFluencyLab() {
     const accuracy = expectedWords.length ? Math.round((correct / expectedWords.length) * 100) : 0;
     score.textContent = `${accuracy}%`;
     progress.value = accuracy;
-    transcript.textContent = spokenText || "We could not hear enough words. Please try again close to the microphone.";
+    transcript.textContent = cleanSpokenText || "We could not hear enough words. Please try again close to the microphone.";
     missed.textContent = missedWords.length ? uniqueWordList(missedWords).join(", ") : "Great. No important missing words found.";
     extra.textContent = spokenPool.length ? uniqueWordList(spokenPool).join(", ") : "No extra words found.";
     if (accuracy >= 90) {
@@ -3007,6 +3060,7 @@ function initReadingFluencyLab() {
     window.clearTimeout(readingTimer);
     let finalText = "";
     let latestTranscript = "";
+    let committedText = "";
     let readingFailed = false;
     let manualStop = false;
     let restartCount = 0;
@@ -3049,16 +3103,18 @@ function initReadingFluencyLab() {
 
       recognition.onresult = (event) => {
         if (sessionId !== readingSessionId) return;
-        let interimText = "";
-        for (let index = event.resultIndex; index < event.results.length; index += 1) {
+        const finalParts = [];
+        const interimParts = [];
+        for (let index = 0; index < event.results.length; index += 1) {
           const text = event.results[index][0].transcript;
           if (event.results[index].isFinal) {
-            finalText += ` ${text}`;
+            finalParts.push(text);
           } else {
-            interimText += ` ${text}`;
+            interimParts.push(text);
           }
         }
-        latestTranscript = `${finalText} ${interimText}`.trim();
+        finalText = mergeReadingTranscript(committedText, finalParts.join(" "));
+        latestTranscript = mergeReadingTranscript(finalText, interimParts.join(" "));
         transcript.textContent = latestTranscript || "Listening now. You can begin when ready.";
       };
 
@@ -3100,6 +3156,7 @@ function initReadingFluencyLab() {
         const heardEnough = heardWords >= Math.max(grade === "ukg" ? 1 : 2, Math.ceil(expectedWordCount * timing.heardEnoughRatio));
         if (!heardEnough && elapsed < timing.minBeforeJudgingMs && restartCount < timing.restartLimit) {
           restartCount += 1;
+          committedText = finalText;
           support.textContent = "Still listening. Take your time and start again.";
           beginRecognition();
           return;
