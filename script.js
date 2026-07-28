@@ -203,7 +203,18 @@ const studentPhotoInput = document.querySelector("[data-student-photo-input]");
 const studentClassSelect = document.querySelector("[data-student-class-select]");
 const studentNameSelect = document.querySelector("[data-student-name-select]");
 const studentTeacherSelect = document.querySelector("[data-student-teacher-select]");
+const teacherReadingForm = document.querySelector("[data-teacher-reading-form]");
+const teacherReadingName = document.querySelector("[data-teacher-reading-name]");
+const teacherReadingOtherWrap = document.querySelector("[data-teacher-reading-other-wrap]");
+const teacherReadingOther = document.querySelector("[data-teacher-reading-other]");
+const teacherReadingPhotoInput = document.querySelector("[data-teacher-reading-photo]");
+const teacherReadingPhotoPreview = document.querySelector("[data-teacher-reading-photo-preview]");
+const teacherReadingPassageWrap = document.querySelector("[data-teacher-reading-passages]");
+const teacherReadingReport = document.querySelector("[data-teacher-reading-report]");
+const teacherReadingValidation = document.querySelector("[data-teacher-reading-validation]");
+const teacherReadingPrint = document.querySelector("[data-teacher-reading-print]");
 let studentPhotoDataUrl = "";
+let teacherReadingPhotoDataUrl = "";
 const studentRosters = {
   "Playway - Alpha": {
     teacher: "Ms Kajal",
@@ -1046,6 +1057,290 @@ if (studentReportForm) {
   updateStudentReportValidation();
 }
 
+const teacherReadingPassages = [
+  "A good early years classroom is calm, warm and purposeful. Children learn better when the teacher speaks clearly, gives simple instructions and uses patient encouragement.",
+  "Reading aloud is not only about speed. A strong reader uses correct pronunciation, natural pauses, clear voice and expression so that children can understand the meaning.",
+  "When a child struggles with a word, the teacher should slow down, break the sound gently and help the child try again with confidence instead of pressure.",
+  "Stories help young learners build imagination, vocabulary and listening habits. A teacher who reads with expression can make even a simple paragraph feel interesting.",
+  "In a caring school environment, teachers observe every child closely. They notice confidence, comfort, participation and progress before deciding the next learning step.",
+];
+
+const teacherReadingState = teacherReadingPassages.map(() => ({ transcript: "", accuracy: 0, attempted: false, missed: [], extra: [] }));
+
+function scoreTeacherReading(expectedText, spokenText) {
+  const expectedWords = normalizeReadingWords(expectedText);
+  const spokenWords = normalizeReadingWords(spokenText);
+  const spokenPool = [...spokenWords];
+  let correct = 0;
+  const missed = [];
+
+  expectedWords.forEach((word) => {
+    const index = spokenPool.indexOf(word);
+    if (index >= 0) {
+      correct += 1;
+      spokenPool.splice(index, 1);
+    } else {
+      missed.push(word);
+    }
+  });
+
+  return {
+    accuracy: expectedWords.length ? Math.round((correct / expectedWords.length) * 100) : 0,
+    missed: uniqueWordList(missed),
+    extra: uniqueWordList(spokenPool),
+  };
+}
+
+function renderTeacherReadingPassages() {
+  if (!teacherReadingPassageWrap) return;
+  teacherReadingPassageWrap.innerHTML = teacherReadingPassages
+    .map(
+      (text, index) => `
+        <article class="teacher-reading-passage-card" data-teacher-reading-card="${index}">
+          <div>
+            <span>Passage ${index + 1} of 5</span>
+            <p>${text}</p>
+          </div>
+          <div class="teacher-reading-card-actions">
+            <button class="tense-audio-button" type="button" data-teacher-reading-listen="${index}">Listen sample</button>
+            <button class="primary-button" type="button" data-teacher-reading-start="${index}">Start reading</button>
+            <button class="secondary-button" type="button" data-teacher-reading-stop="${index}" hidden>Stop</button>
+          </div>
+          <div class="reading-listening-indicator" data-teacher-reading-indicator="${index}" hidden><i aria-hidden="true"></i><span>I am listening. Read slowly.</span></div>
+          <div class="teacher-reading-live-result">
+            <strong data-teacher-reading-score="${index}">Not attempted</strong>
+            <p data-teacher-reading-transcript="${index}">Transcript will appear here.</p>
+          </div>
+        </article>
+      `
+    )
+    .join("");
+}
+
+function updateTeacherReadingValidation() {
+  if (!teacherReadingForm || !teacherReadingValidation) return false;
+  const formData = new FormData(teacherReadingForm);
+  const teacherValue = String(formData.get("teacherName") || "");
+  const otherName = String(formData.get("otherTeacherName") || "").trim();
+  const teacherOk = teacherValue && (teacherValue !== "__other" || otherName);
+  const valid = Boolean(formData.get("date") && teacherOk && formData.get("observer") && teacherReadingPhotoDataUrl && teacherReadingState.every((item) => item.attempted));
+  teacherReadingValidation.hidden = valid;
+  return valid;
+}
+
+function getTeacherReadingName() {
+  const selected = teacherReadingName?.value || "";
+  if (selected === "__other") return teacherReadingOther?.value.trim() || "";
+  return selected;
+}
+
+function getTeacherReadingGrade(percent) {
+  if (percent >= 90) return "Excellent";
+  if (percent >= 78) return "Strong";
+  if (percent >= 65) return "Developing";
+  return "Needs Support";
+}
+
+function getTeacherReadingSubmitStatus(percent) {
+  if (percent >= 78) {
+    return {
+      label: "Ready to submit",
+      text: "Your reading score is up to mark. You can download or print this report and submit it to school.",
+      className: "is-ready",
+    };
+  }
+  return {
+    label: "Practise before submission",
+    text: "Please practise the focus areas and retake the self assessment before submitting it to school.",
+    className: "is-practice",
+  };
+}
+
+function renderTeacherReadingReport() {
+  if (!teacherReadingReport || !teacherReadingForm) return;
+  const formData = new FormData(teacherReadingForm);
+  const name = getTeacherReadingName();
+  const micAverage = Math.round(teacherReadingState.reduce((sum, item) => sum + item.accuracy, 0) / teacherReadingState.length);
+  const bestScore = Math.max(...teacherReadingState.map((item) => item.accuracy));
+  const lowestScore = Math.min(...teacherReadingState.map((item) => item.accuracy));
+  const consistencyScore = Math.max(0, 100 - (bestScore - lowestScore));
+  const completionScore = teacherReadingState.every((item) => item.attempted) ? 100 : 0;
+  const finalScore = Math.round(micAverage * 0.8 + consistencyScore * 0.15 + completionScore * 0.05);
+  const grade = getTeacherReadingGrade(finalScore);
+  const submitStatus = getTeacherReadingSubmitStatus(finalScore);
+  const needs = [];
+  if (teacherReadingState.some((item) => item.accuracy < 75)) needs.push("pronunciation clarity");
+  if (consistencyScore < 78) needs.push("reading consistency");
+  if (lowestScore < 65) needs.push("difficult word practice");
+  if (micAverage < 78) needs.push("fluency and clear pauses");
+  const photoMarkup = teacherReadingPhotoDataUrl ? `<img class="student-report-photo" src="${teacherReadingPhotoDataUrl}" alt="${name} photo" />` : "";
+
+  teacherReadingReport.innerHTML = `
+    <div class="report-card report-dashboard teacher-reading-report-card">
+      <div class="report-topline">
+        <div class="student-report-title">
+          ${photoMarkup}
+          <div>
+            <p class="eyebrow">Teacher reading assessment</p>
+            <h2>${name}</h2>
+            <p>${formData.get("date")} · Self assessment for ${formData.get("observer")}</p>
+          </div>
+        </div>
+        <div class="score-ring ${finalScore >= 90 ? "excellent" : finalScore >= 78 ? "good" : finalScore >= 65 ? "needs" : "attention"}"><strong>${finalScore}%</strong><span>${grade}</span></div>
+      </div>
+      <section class="report-panel teacher-submit-status ${submitStatus.className}">
+        <h3>${submitStatus.label}</h3>
+        <p>${submitStatus.text}</p>
+      </section>
+      <div class="report-stat-grid">
+        <article><span>Reading Accuracy</span><strong>${micAverage}%</strong><small>5 passage average</small></article>
+        <article><span>Consistency</span><strong>${consistencyScore}%</strong><small>Stability across all passages</small></article>
+        <article><span>Best Passage</span><strong>${bestScore}%</strong><small>Highest read-aloud match</small></article>
+        <article><span>Focus</span><strong>${needs[0] || "Expression"}</strong><small>Next improvement area</small></article>
+      </div>
+      <section class="report-panel">
+        <h3>Overall Reading Feedback</h3>
+        <p>${name} has completed the reading self assessment and achieved a ${grade.toLowerCase()} reading profile. This result is auto-calculated from five microphone-based passage checks, reading accuracy and consistency across passages.</p>
+      </section>
+      <h3>Passage-wise Accuracy</h3>
+      <div class="score-bars">
+        ${teacherReadingState.map((item, index) => `<div class="score-bar-row"><div><strong>Passage ${index + 1}</strong><small>${item.missed?.length ? `Missed: ${item.missed.join(", ")}` : "No major missed words"}</small></div><span>${item.accuracy}%</span><progress max="100" value="${item.accuracy}"></progress></div>`).join("")}
+      </div>
+      <div class="report-columns">
+        <section class="report-panel strengths-panel"><h3>Strengths</h3><ul><li>Completed all five read-aloud passages.</li><li>Demonstrated classroom reading readiness.</li><li>Manual observation supports a balanced reading profile.</li></ul></section>
+        <section class="report-panel improvement-panel"><h3>Improvement Plan</h3><ul>${(needs.length ? needs : ["natural pauses", "expression"]).map((item) => `<li>Practise ${item} through 5-minute daily read-aloud sessions.</li>`).join("")}</ul></section>
+      </div>
+    </div>
+  `;
+}
+
+function initTeacherReadingAssessment() {
+  if (!teacherReadingForm || !teacherReadingPassageWrap) return;
+  renderTeacherReadingPassages();
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (teacherReadingForm.elements.date && !teacherReadingForm.elements.date.value) {
+    teacherReadingForm.elements.date.valueAsDate = new Date();
+  }
+
+  teacherReadingName?.addEventListener("change", () => {
+    const isOther = teacherReadingName.value === "__other";
+    if (teacherReadingOtherWrap) teacherReadingOtherWrap.hidden = !isOther;
+    if (teacherReadingOther) teacherReadingOther.required = isOther;
+    updateTeacherReadingValidation();
+  });
+
+  teacherReadingPhotoInput?.addEventListener("change", () => {
+    const file = teacherReadingPhotoInput.files?.[0];
+    if (!file) {
+      teacherReadingPhotoDataUrl = "";
+      if (teacherReadingPhotoPreview) teacherReadingPhotoPreview.hidden = true;
+      updateTeacherReadingValidation();
+      return;
+    }
+    const reader = new FileReader();
+    reader.addEventListener("load", () => {
+      teacherReadingPhotoDataUrl = String(reader.result || "");
+      if (teacherReadingPhotoPreview) {
+        teacherReadingPhotoPreview.hidden = false;
+        teacherReadingPhotoPreview.innerHTML = `<img src="${teacherReadingPhotoDataUrl}" alt="Teacher preview" />`;
+      }
+      updateTeacherReadingValidation();
+    });
+    reader.readAsDataURL(file);
+  });
+
+  teacherReadingPassageWrap.addEventListener("click", (event) => {
+    const listenButton = event.target.closest("[data-teacher-reading-listen]");
+    const startButton = event.target.closest("[data-teacher-reading-start]");
+    const stopButton = event.target.closest("[data-teacher-reading-stop]");
+    if (listenButton) {
+      const index = Number(listenButton.dataset.teacherReadingListen);
+      speakRoutineText(teacherReadingPassages[index], listenButton);
+      return;
+    }
+    if (stopButton?._recognition) {
+      stopButton._recognition.stop();
+      return;
+    }
+    if (!startButton) return;
+    const index = Number(startButton.dataset.teacherReadingStart);
+    const card = teacherReadingPassageWrap.querySelector(`[data-teacher-reading-card="${index}"]`);
+    const passageStop = card?.querySelector(`[data-teacher-reading-stop="${index}"]`);
+    const indicator = card?.querySelector(`[data-teacher-reading-indicator="${index}"]`);
+    const transcriptEl = card?.querySelector(`[data-teacher-reading-transcript="${index}"]`);
+    const scoreEl = card?.querySelector(`[data-teacher-reading-score="${index}"]`);
+
+    if (!SpeechRecognition) {
+      if (transcriptEl) transcriptEl.textContent = "Microphone scoring is not supported in this browser. Please use Chrome.";
+      return;
+    }
+
+    stopTenseReading();
+    const recognition = new SpeechRecognition();
+    recognition.lang = "en-IN";
+    recognition.interimResults = true;
+    recognition.continuous = true;
+    let finalText = "";
+    let latestText = "";
+    startButton.disabled = true;
+    if (passageStop) {
+      passageStop.hidden = false;
+      passageStop._recognition = recognition;
+    }
+    if (indicator) indicator.hidden = false;
+    if (transcriptEl) transcriptEl.textContent = "Listening. Read slowly and clearly.";
+
+    recognition.onresult = (speechEvent) => {
+      let interim = "";
+      for (let resultIndex = speechEvent.resultIndex; resultIndex < speechEvent.results.length; resultIndex += 1) {
+        const text = speechEvent.results[resultIndex][0].transcript;
+        if (speechEvent.results[resultIndex].isFinal) finalText += ` ${text}`;
+        else interim += ` ${text}`;
+      }
+      latestText = `${finalText} ${interim}`.trim();
+      if (transcriptEl) transcriptEl.textContent = latestText || "Listening...";
+    };
+
+    recognition.onend = () => {
+      startButton.disabled = false;
+      if (passageStop) passageStop.hidden = true;
+      if (indicator) indicator.hidden = true;
+      const result = scoreTeacherReading(teacherReadingPassages[index], latestText || finalText);
+      teacherReadingState[index] = { ...result, transcript: latestText || finalText, attempted: Boolean(latestText || finalText) };
+      if (scoreEl) scoreEl.textContent = teacherReadingState[index].attempted ? `${result.accuracy}% accuracy` : "Try again";
+      if (transcriptEl) transcriptEl.textContent = latestText || "No clear reading captured. Please try again close to the microphone.";
+      updateTeacherReadingValidation();
+    };
+
+    recognition.onerror = () => {
+      startButton.disabled = false;
+      if (passageStop) passageStop.hidden = true;
+      if (indicator) indicator.hidden = true;
+      if (transcriptEl) transcriptEl.textContent = "Could not hear clearly. Please try again in a quiet place.";
+    };
+
+    recognition.start();
+  });
+
+  teacherReadingForm.addEventListener("input", updateTeacherReadingValidation);
+  teacherReadingForm.addEventListener("change", updateTeacherReadingValidation);
+  teacherReadingForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    if (!updateTeacherReadingValidation()) return;
+    renderTeacherReadingReport();
+  });
+
+  teacherReadingPrint?.addEventListener("click", () => {
+    if (!updateTeacherReadingValidation()) return;
+    renderTeacherReadingReport();
+    window.print();
+  });
+
+  updateTeacherReadingValidation();
+}
+
+initTeacherReadingAssessment();
+
 const feedbackCategories = [
   { label: "Teacher", fields: ["teacherAttention", "teacherComfort", "teacherLearning"] },
   { label: "Operations", fields: ["opsUpdates", "opsTechnology", "opsSafety"] },
@@ -1277,8 +1572,9 @@ let activeTenseSpeechButton = null;
 
 function resetTenseAudioButton(button) {
   if (!button) return;
-  if (button.dataset.audioOriginalHtml) {
-    button.innerHTML = button.dataset.audioOriginalHtml;
+  const restoreHtml = button.dataset.audioOriginalHtml || button.dataset.audioRestoreHtml;
+  if (restoreHtml) {
+    button.innerHTML = restoreHtml;
     delete button.dataset.audioOriginalHtml;
   } else {
     button.textContent = button.dataset.audioDefaultText || "Read examples";
@@ -2093,8 +2389,9 @@ function speakRoutineText(text, button) {
   activeTenseSpeech = utterance;
   activeTenseSpeechButton = button;
   if (button) {
-    if ((button.dataset.routineSpeak || button.children.length) && !button.dataset.audioOriginalHtml) {
-      button.dataset.audioOriginalHtml = button.innerHTML;
+    if ((button.dataset.routineSpeak || button.dataset.word || button.children.length) && !button.dataset.audioOriginalHtml) {
+      if (!button.dataset.audioRestoreHtml) button.dataset.audioRestoreHtml = button.innerHTML;
+      button.dataset.audioOriginalHtml = button.dataset.audioRestoreHtml;
     } else {
       button.dataset.audioDefaultText = button.textContent;
     }
@@ -2874,6 +3171,7 @@ function initReadingFluencyLab() {
 
 function initReadingWordHelper() {
   document.querySelectorAll("[data-word]").forEach((button) => {
+    button.dataset.audioRestoreHtml = button.innerHTML;
     button.addEventListener("click", () => {
       const word = button.querySelector("strong")?.textContent || button.dataset.word;
       const meaning = button.querySelector("span")?.textContent || "";
