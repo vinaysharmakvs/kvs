@@ -3895,6 +3895,13 @@ body:has(.about-hero) .about-hero::before {
   line-height: 1.48;
 }
 
+.reading-transcript-card p {
+  max-height: 4.5em;
+  overflow: auto;
+  overflow-wrap: anywhere;
+  overscroll-behavior: contain;
+}
+
 .reading-feedback-grid {
   display: grid;
   gap: 10px;
