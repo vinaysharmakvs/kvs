@@ -2362,6 +2362,175 @@ const readingLevels = {
   ],
 };
 
+const readingGradeLabels = {
+  ukg: "UKG",
+  1: "Grade 1",
+  2: "Grade 2",
+  3: "Grade 3",
+  4: "Grade 4",
+  5: "Grade 5",
+  6: "Grade 6",
+  7: "Grade 7",
+  8: "Grade 8",
+  9: "Grade 9",
+  10: "Grade 10",
+};
+
+const readingLevelLabels = {
+  beginner: "Beginner",
+  explorer: "Explorer",
+  confident: "Confident Reader",
+  challenge: "Challenge Mode",
+};
+
+const ukgWordSets = [
+  ["cat", "bat", "mat", "hat", "rat"],
+  ["sun", "run", "fun", "bun", "cup"],
+  ["red", "bed", "pen", "hen", "ten"],
+  ["dog", "log", "fog", "box", "fox"],
+  ["bag", "tag", "rag", "cap", "map"],
+  ["pin", "tin", "win", "sit", "hit"],
+  ["top", "hop", "mop", "pot", "hot"],
+  ["jam", "ram", "yam", "van", "fan"],
+  ["fish", "dish", "ship", "shop", "shell"],
+  ["ball", "bell", "doll", "duck", "door"],
+  ["apple", "ant", "arrow", "arm", "ask"],
+  ["book", "bag", "bus", "boy", "box"],
+  ["cake", "cup", "cat", "car", "cap"],
+  ["milk", "moon", "mat", "man", "map"],
+  ["leaf", "lamp", "lion", "leg", "log"],
+  ["tree", "toy", "tap", "top", "ten"],
+  ["rain", "rose", "red", "rat", "run"],
+  ["kite", "king", "key", "kid", "kit"],
+  ["star", "sit", "sun", "sock", "seed"],
+  ["home", "hand", "hat", "hen", "hill"],
+];
+
+const gradeOneTopics = [
+  ["My Daily Routine", "I wake up early. I brush my teeth. I eat breakfast. I go to school happily.", "What does the child do after waking up?", "Brush teeth"],
+  ["My School", "My school is clean and bright. I learn, play and read with my friends.", "Where does the child learn and play?", "School"],
+  ["My Friend", "My friend sits with me in class. We share pencils and help each other.", "Who sits with the child?", "Friend"],
+  ["My Favorite Color", "My favorite color is blue. I like blue sky, blue flowers and my blue bag.", "What is the favorite color?", "Blue"],
+  ["My Family", "I love my family. We eat dinner together and talk about our day.", "Who does the child love?", "Family"],
+  ["My Lunch Box", "My lunch box has roti and fruit. I eat slowly and keep it clean.", "What is in the lunch box?", "Roti and fruit"],
+  ["My Toy", "I have a small toy car. I keep it safely after playing.", "What toy does the child have?", "Toy car"],
+  ["My Teacher", "My teacher helps me read new words. She smiles when I try again.", "Who helps the child read?", "Teacher"],
+  ["My Birthday", "On my birthday, I wear new clothes. My friends sing a happy song.", "What do friends sing?", "A happy song"],
+  ["My Garden", "I see flowers in my garden. I water the plants in the evening.", "What does the child water?", "Plants"],
+  ["My Book", "I read my book at night. The story has a brave child.", "When does the child read?", "At night"],
+  ["My Pet", "My pet dog runs fast. He plays with a red ball.", "What does the dog play with?", "Red ball"],
+  ["My Classroom", "Our classroom has charts and books. We keep it neat every day.", "What is in the classroom?", "Charts and books"],
+  ["My Uniform", "I wear my uniform to school. I keep my shoes clean.", "What does the child wear?", "Uniform"],
+  ["My Morning Walk", "I walk with my father in the morning. We see trees and birds.", "Who walks with the child?", "Father"],
+  ["My Pencil Box", "My pencil box has pencils, eraser and sharpener. I keep it inside my bag.", "What is inside the pencil box?", "Pencils, eraser and sharpener"],
+  ["My Playground", "I play on the playground after class. I run and laugh with friends.", "Where does the child play?", "Playground"],
+  ["My Favorite Fruit", "My favorite fruit is mango. It is sweet, yellow and juicy.", "Which fruit is favorite?", "Mango"],
+  ["My Raincoat", "It rains today. I wear my raincoat and walk carefully.", "What does the child wear?", "Raincoat"],
+  ["My Bedtime", "At bedtime, I keep my toys away. I say good night and sleep.", "What does the child say?", "Good night"],
+];
+
+const readingGradeThemes = {
+  2: ["helping at home", "clean classroom", "school garden", "library visit", "kind words", "healthy lunch", "rainy day", "festival card", "sports practice", "reading partner"],
+  3: ["science corner", "community helper", "team chart", "plant growth", "good habits", "water saving", "story circle", "class monitor", "nature walk", "morning assembly"],
+  4: ["responsible leader", "cleanliness drive", "school exhibition", "reading challenge", "helpful neighbour", "traffic safety", "healthy routine", "garden project", "library monitor", "art competition"],
+  5: ["study plan", "environment project", "public speaking", "team responsibility", "historical place", "science fair", "newspaper reading", "problem solving", "honest choice", "community visit"],
+  6: ["time management", "digital safety", "water conservation", "team leadership", "creative writing", "exam preparation", "health awareness", "school newsletter", "science model", "peer support"],
+  7: ["climate action", "debate preparation", "responsible technology", "entrepreneurship idea", "research habits", "social responsibility", "reading reflection", "career curiosity", "innovation lab", "public service"],
+  8: ["leadership in groups", "financial awareness", "cyber safety", "scientific thinking", "sustainable living", "community research", "critical reading", "presentation skills", "problem analysis", "future planning"],
+  9: ["career exploration", "digital discipline", "environment policy", "communication skills", "project research", "personal responsibility", "exam strategy", "social impact", "technology ethics", "leadership decisions"],
+  10: ["board exam planning", "career readiness", "responsible AI", "public speaking", "research-based projects", "time ownership", "mental focus", "digital portfolio", "social innovation", "future goals"],
+};
+
+const readingLevelPatterns = {
+  beginner: {
+    intro: "This passage uses clear sentences for early reading practice.",
+    detail: "Read slowly and pause after each full stop.",
+  },
+  explorer: {
+    intro: "This passage adds more detail and connects ideas.",
+    detail: "Notice the action, reason and result while reading.",
+  },
+  confident: {
+    intro: "This passage uses richer vocabulary and longer sentence flow.",
+    detail: "Read with expression and keep the meaning clear.",
+  },
+  challenge: {
+    intro: "This passage asks the reader to handle mature ideas with confidence.",
+    detail: "Use steady pace, clear pauses and thoughtful expression.",
+  },
+};
+
+function titleCaseReadingTopic(topic) {
+  return topic.replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
+
+function buildUkgReadingLevels() {
+  return Object.fromEntries(
+    Object.entries(readingLevelLabels).map(([levelKey, label]) => [
+      levelKey,
+      ukgWordSets.map((words, index) => {
+        const levelWords =
+          levelKey === "beginner"
+            ? words.slice(0, 3)
+            : levelKey === "explorer"
+              ? words.slice(0, 4)
+              : levelKey === "confident"
+                ? words
+                : [...words, "read", "say"];
+        return makeReadingItem(label, `Word Reading ${index + 1}`, levelWords.join(". ") + ".", "Which word should the child read first?", levelWords[0], "school", "garden");
+      }),
+    ])
+  );
+}
+
+function buildGradeOneReadingLevels() {
+  return Object.fromEntries(
+    Object.entries(readingLevelLabels).map(([levelKey, label]) => [
+      levelKey,
+      gradeOneTopics.map(([title, baseText, question, answer]) => {
+        const text =
+          levelKey === "beginner"
+            ? baseText
+            : levelKey === "explorer"
+              ? `${baseText} I read the words again and speak clearly.`
+              : levelKey === "confident"
+                ? `${baseText} I answer one small question and tell the idea in my own words.`
+                : `${baseText} I practise the paragraph twice, use clear pauses and explain the main idea confidently.`;
+        return makeReadingItem(label, title, text, question, answer, "Lunch box", "Playground");
+      }),
+    ])
+  );
+}
+
+function buildHigherGradeReadingLevels(grade) {
+  const themes = readingGradeThemes[grade] || readingGradeThemes[2];
+  return Object.fromEntries(
+    Object.entries(readingLevelLabels).map(([levelKey, label]) => [
+      levelKey,
+      Array.from({ length: 20 }, (_, index) => {
+        const topic = themes[index % themes.length];
+        const title = `${titleCaseReadingTopic(topic)} ${index + 1}`;
+        const pattern = readingLevelPatterns[levelKey];
+        const text =
+          levelKey === "beginner"
+            ? `Students read about ${topic}. ${pattern.intro} The child understands the main idea and says one clear sentence about it.`
+            : levelKey === "explorer"
+              ? `Students explore ${topic} through a short classroom situation. ${pattern.intro} The reader finds what happened, why it mattered and how the student responded.`
+              : levelKey === "confident"
+                ? `${titleCaseReadingTopic(topic)} becomes part of confident learning. ${pattern.intro} The student connects details, explains the purpose and reads the paragraph with natural expression.`
+                : `This challenge passage presents ${topic} as a real-life thinking task. ${pattern.intro} The reader must keep a steady pace, understand the message and explain the outcome clearly.`;
+        return makeReadingItem(label, title, text, "What is the passage mainly about?", topic, "a picnic menu", "a lost pencil");
+      }),
+    ])
+  );
+}
+
+function getReadingLevelsForGrade(grade) {
+  if (grade === "ukg") return buildUkgReadingLevels();
+  if (grade === "1") return buildGradeOneReadingLevels();
+  return buildHigherGradeReadingLevels(Number(grade));
+}
+
 function normalizeReadingWords(text) {
   return text
     .toLowerCase()
@@ -2374,10 +2543,24 @@ function uniqueWordList(words) {
   return [...new Set(words)].slice(0, 12);
 }
 
+function getReadingPatienceTiming(grade, expectedWordCount) {
+  const gradeNumber = grade === "ukg" ? 0 : Number(grade);
+  const wordsPerMinute = gradeNumber === 0 ? 18 : gradeNumber === 1 ? 34 : gradeNumber <= 3 ? 55 : gradeNumber <= 5 ? 70 : gradeNumber <= 8 ? 85 : 95;
+  const estimatedMs = Math.ceil((expectedWordCount / wordsPerMinute) * 60000);
+  return {
+    maxListenMs: Math.min(Math.max(estimatedMs + (gradeNumber === 0 ? 18000 : 10000), gradeNumber === 0 ? 42000 : 22000), 90000),
+    minBeforeJudgingMs: gradeNumber === 0 ? 16000 : gradeNumber === 1 ? 11000 : gradeNumber <= 4 ? 7500 : 6000,
+    restartLimit: gradeNumber === 0 ? 4 : gradeNumber <= 2 ? 2 : 1,
+    heardEnoughRatio: gradeNumber === 0 ? 0.08 : gradeNumber <= 2 ? 0.16 : 0.22,
+    earlyHeardRatio: gradeNumber === 0 ? 0.06 : 0.18,
+  };
+}
+
 function initReadingFluencyLab() {
   const lab = document.querySelector("[data-reading-lab]");
   if (!lab) return;
 
+  const gradeButtons = lab.querySelectorAll("[data-reading-grade]");
   const levelButtons = lab.querySelectorAll("[data-reading-level]");
   const levelLabel = lab.querySelector("[data-reading-level-label]");
   const title = lab.querySelector("[data-reading-title]");
@@ -2386,6 +2569,7 @@ function initReadingFluencyLab() {
   const startButton = lab.querySelector("[data-reading-start]");
   const stopButton = lab.querySelector("[data-reading-stop]");
   const nextButton = lab.querySelector("[data-reading-next]");
+  const listeningIndicator = lab.querySelector("[data-reading-listening]");
   const support = lab.querySelector("[data-reading-support]");
   const score = lab.querySelector("[data-reading-score]");
   const progress = lab.querySelector("[data-reading-progress]");
@@ -2399,14 +2583,18 @@ function initReadingFluencyLab() {
   const answerGrid = questionWrap?.querySelector("[data-reading-answers]");
   const questionFeedback = questionWrap?.querySelector("[data-reading-question-feedback]");
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  let grade = "ukg";
   let level = "beginner";
   let passageIndex = 0;
   let questionIndex = 0;
   let recognition = null;
+  let currentReadingLevels = getReadingLevelsForGrade(grade);
+  let readingTimer = null;
+  let readingSessionId = 0;
   const micSessionKey = "kidsverseReadingMicPermission";
 
   function activePassage() {
-    return readingLevels[level][passageIndex];
+    return currentReadingLevels[level][passageIndex];
   }
 
   function renderQuestion() {
@@ -2439,8 +2627,10 @@ function initReadingFluencyLab() {
   function renderPassage() {
     const data = activePassage();
     stopTenseReading();
+    readingSessionId += 1;
     recognition?.abort();
-    levelLabel.textContent = data.label;
+    window.clearTimeout(readingTimer);
+    levelLabel.textContent = `${readingGradeLabels[grade]} - ${data.label}`;
     title.textContent = data.title;
     passage.textContent = data.text;
     score.textContent = "--";
@@ -2451,6 +2641,7 @@ function initReadingFluencyLab() {
     tip.textContent = "Listen once, then read slowly and clearly.";
     questionIndex = 0;
     stopButton.hidden = true;
+    if (listeningIndicator) listeningIndicator.hidden = true;
     startButton.disabled = false;
     renderQuestion();
   }
@@ -2524,10 +2715,21 @@ function initReadingFluencyLab() {
     });
   });
 
+  gradeButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      grade = button.dataset.readingGrade;
+      passageIndex = 0;
+      questionIndex = 0;
+      currentReadingLevels = getReadingLevelsForGrade(grade);
+      gradeButtons.forEach((item) => item.classList.toggle("is-active", item === button));
+      renderPassage();
+    });
+  });
+
   listenButton?.addEventListener("click", () => speakRoutineText(activePassage().text, listenButton));
 
   nextButton?.addEventListener("click", () => {
-    passageIndex = (passageIndex + 1) % readingLevels[level].length;
+    passageIndex = (passageIndex + 1) % currentReadingLevels[level].length;
     renderPassage();
   });
 
@@ -2547,60 +2749,126 @@ function initReadingFluencyLab() {
 
     stopTenseReading();
     recognition?.abort();
-    recognition = new SpeechRecognition();
-    recognition.lang = "en-IN";
-    recognition.interimResults = true;
-    recognition.continuous = false;
+    window.clearTimeout(readingTimer);
     let finalText = "";
+    let latestTranscript = "";
     let readingFailed = false;
+    let manualStop = false;
+    let restartCount = 0;
+    let startedAt = 0;
+    const expectedWordCount = normalizeReadingWords(activePassage().text).length;
+    const timing = getReadingPatienceTiming(grade, expectedWordCount);
+    readingSessionId += 1;
+    const sessionId = readingSessionId;
 
     startButton.disabled = true;
     stopButton.hidden = false;
-    transcript.textContent = "Listening now. Read the paragraph clearly.";
+    transcript.textContent = "Listening now. Read slowly. Take your time.";
     support.textContent =
       permission === "granted" ? "Listening. Microphone is ready." : "Listening. Please allow microphone access if Chrome asks.";
     support.classList.remove("is-warning");
+    if (listeningIndicator) listeningIndicator.hidden = false;
 
-    recognition.onstart = () => {
-      saveMicPermission("granted");
-      support.textContent = "Listening. Microphone is ready for this practice session.";
-    };
+    function finishReading() {
+      if (sessionId !== readingSessionId) return;
+      window.clearTimeout(readingTimer);
+      startButton.disabled = false;
+      stopButton.hidden = true;
+      if (listeningIndicator) listeningIndicator.hidden = true;
+      showReadingResult(latestTranscript || finalText);
+    }
 
-    recognition.onresult = (event) => {
-      let interimText = "";
-      for (let index = event.resultIndex; index < event.results.length; index += 1) {
-        const text = event.results[index][0].transcript;
-        if (event.results[index].isFinal) {
-          finalText += ` ${text}`;
-        } else {
-          interimText += ` ${text}`;
+    function beginRecognition() {
+      if (sessionId !== readingSessionId) return;
+      recognition = new SpeechRecognition();
+      recognition.lang = "en-IN";
+      recognition.interimResults = true;
+      recognition.continuous = true;
+      startedAt = Date.now();
+
+      recognition.onstart = () => {
+        if (sessionId !== readingSessionId) return;
+        saveMicPermission("granted");
+        support.textContent = "Listening patiently. Slow reading is okay.";
+      };
+
+      recognition.onresult = (event) => {
+        if (sessionId !== readingSessionId) return;
+        let interimText = "";
+        for (let index = event.resultIndex; index < event.results.length; index += 1) {
+          const text = event.results[index][0].transcript;
+          if (event.results[index].isFinal) {
+            finalText += ` ${text}`;
+          } else {
+            interimText += ` ${text}`;
+          }
         }
-      }
-      transcript.textContent = `${finalText} ${interimText}`.trim() || "Listening now...";
-    };
+        latestTranscript = `${finalText} ${interimText}`.trim();
+        transcript.textContent = latestTranscript || "Listening now. You can begin when ready.";
+      };
 
-    recognition.onerror = () => {
-      readingFailed = true;
-      startButton.disabled = false;
-      stopButton.hidden = true;
-      getCurrentMicPermission().then((state) => {
-        support.textContent =
-          state === "denied" ? "Microphone is blocked for this page. Please allow access from Chrome site settings." : "Could not hear clearly. Please try again near the microphone.";
-      });
-      support.classList.add("is-warning");
-    };
+      recognition.onerror = (event) => {
+        if (sessionId !== readingSessionId) return;
+        const elapsed = Date.now() - startedAt;
+        const heardEnough = normalizeReadingWords(latestTranscript || finalText).length >= Math.max(grade === "ukg" ? 1 : 2, Math.ceil(expectedWordCount * timing.earlyHeardRatio));
+        if ((event.error === "no-speech" || event.error === "audio-capture") && elapsed < timing.minBeforeJudgingMs && restartCount < timing.restartLimit) {
+          restartCount += 1;
+          support.textContent = "Still listening. Start slowly when ready.";
+          return;
+        }
+        readingFailed = true;
+        startButton.disabled = false;
+        stopButton.hidden = true;
+        if (listeningIndicator) listeningIndicator.hidden = true;
+        getCurrentMicPermission().then((state) => {
+          support.textContent =
+            state === "denied"
+              ? "Microphone is blocked for this page. Please allow access from Chrome site settings."
+              : heardEnough
+                ? "We heard some words. Press Start Reading again when the child is ready to continue."
+                : "We could not hear clearly yet. Let the child sit close to the microphone and try again slowly.";
+        });
+        support.classList.add("is-warning");
+      };
 
-    recognition.onend = () => {
-      startButton.disabled = false;
-      stopButton.hidden = true;
-      if (readingFailed) return;
-      showReadingResult(transcript.textContent);
-    };
+      recognition.onend = () => {
+        if (sessionId !== readingSessionId) return;
+        window.clearTimeout(readingTimer);
+        if (manualStop) {
+          finishReading();
+          return;
+        }
+        if (readingFailed) return;
 
-    recognition.start();
+        const elapsed = Date.now() - startedAt;
+        const heardWords = normalizeReadingWords(latestTranscript || finalText).length;
+        const heardEnough = heardWords >= Math.max(grade === "ukg" ? 1 : 2, Math.ceil(expectedWordCount * timing.heardEnoughRatio));
+        if (!heardEnough && elapsed < timing.minBeforeJudgingMs && restartCount < timing.restartLimit) {
+          restartCount += 1;
+          support.textContent = "Still listening. Take your time and start again.";
+          beginRecognition();
+          return;
+        }
+        finishReading();
+      };
+
+      readingTimer = window.setTimeout(() => {
+        support.textContent = "Good effort. Checking what was read so far.";
+        if (listeningIndicator) listeningIndicator.hidden = true;
+        recognition?.stop();
+      }, timing.maxListenMs);
+
+      recognition.start();
+    }
+
+    beginRecognition();
+
+    stopButton.onclick = () => {
+      manualStop = true;
+      if (listeningIndicator) listeningIndicator.hidden = true;
+      recognition?.stop();
+    };
   });
-
-  stopButton?.addEventListener("click", () => recognition?.stop());
   renderPassage();
 }
 
