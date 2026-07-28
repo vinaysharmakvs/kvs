@@ -19,7 +19,16 @@
     <link rel="icon" type="image/png" sizes="512x512" href="../assets/favicon.png" />
     <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png" />
     <link rel="stylesheet" href="../styles.css" />
-  </head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-0ZT634EM99"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-0ZT634EM99');
+  </script>
+</head>
   <body class="learning-lab-page reading-fluency-page">
     <div class="top-strip">
       <span>English Learning Lab</span>
@@ -100,8 +109,21 @@
       <section class="section reading-level-section" id="reading-practice" data-reading-lab>
         <div class="section-heading">
           <p class="eyebrow">Choose Reading Level</p>
-          <h2>Start small, then grow into longer paragraphs.</h2>
-          <p>Each level changes the paragraph length, vocabulary and reading challenge.</p>
+          <h2>Select grade first, then choose the reading challenge.</h2>
+          <p>UKG starts with word reading. Grade 1 begins with familiar sentences, and higher grades move toward richer paragraphs.</p>
+        </div>
+        <div class="reading-grade-tabs" role="tablist" aria-label="Student grade">
+          <button class="is-active" type="button" data-reading-grade="ukg">UKG</button>
+          <button type="button" data-reading-grade="1">Grade 1</button>
+          <button type="button" data-reading-grade="2">Grade 2</button>
+          <button type="button" data-reading-grade="3">Grade 3</button>
+          <button type="button" data-reading-grade="4">Grade 4</button>
+          <button type="button" data-reading-grade="5">Grade 5</button>
+          <button type="button" data-reading-grade="6">Grade 6</button>
+          <button type="button" data-reading-grade="7">Grade 7</button>
+          <button type="button" data-reading-grade="8">Grade 8</button>
+          <button type="button" data-reading-grade="9">Grade 9</button>
+          <button type="button" data-reading-grade="10">Grade 10</button>
         </div>
         <div class="reading-level-tabs" role="tablist" aria-label="Reading levels">
           <button class="is-active" type="button" data-reading-level="beginner">Beginner</button>
@@ -124,6 +146,10 @@
               <button class="primary-button" type="button" data-reading-start>Start Reading</button>
               <button class="secondary-button" type="button" data-reading-stop hidden>Stop</button>
               <button class="secondary-button" type="button" data-reading-next>Next paragraph</button>
+            </div>
+            <div class="reading-listening-indicator" data-reading-listening hidden>
+              <i aria-hidden="true"></i>
+              <span>I am listening. Read slowly.</span>
             </div>
             <p class="reading-support-note" data-reading-support>Use Chrome for the best microphone reading check.</p>
           </article>
