@@ -19,7 +19,16 @@
     <link rel="icon" type="image/png" sizes="512x512" href="assets/favicon.png" />
     <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
     <link rel="stylesheet" href="styles.css" />
-  </head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-0ZT634EM99"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-0ZT634EM99');
+  </script>
+</head>
   <body>
     <div class="top-strip">
       <span>Parent Hub</span>
@@ -134,8 +143,8 @@
 
     <section class="kiya-widget" data-kiya-widget aria-label="Kiya AI parent assistant">
       <button class="kiya-toggle" type="button" data-kiya-toggle aria-expanded="false" aria-controls="kiya-panel">
-        <span class="kiya-avatar">AI</span>
-        <span><strong>Kiya AI</strong><small>Ask Kidsverse</small></span>
+        <span class="kiya-avatar" aria-hidden="true"></span>
+        
       </button>
       <div class="kiya-panel" id="kiya-panel" data-kiya-panel hidden>
         <div class="kiya-head">
@@ -168,6 +177,7 @@
     <footer class="site-footer">
       <strong>Kidsverse School Rehan</strong>
       <span>Premium preschool, Grade 1 and after-school learning in Rehan.</span>
+      <span class="powered-by-tivoro"><a href="https://tivoro.in" target="_blank" rel="noopener noreferrer">Powered by Tivoro - Your digital growth partner</a></span>
     </footer>
     <script src="script.js"></script>
   </body>
