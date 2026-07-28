@@ -2892,6 +2892,24 @@ function mergeReadingTranscript(baseText, nextText) {
   return [...baseWords, ...nextWords.slice(overlap)].join(" ");
 }
 
+function getReadingDisplayTranscript(spokenText, expectedText, maxWords = 22) {
+  const spokenWords = normalizeReadingWords(cleanReadingTranscript(spokenText));
+  const expectedDisplayWords = expectedText.replace(/[^a-zA-Z0-9\s']/g, " ").split(/\s+/).filter(Boolean);
+  const matchedWords = [];
+  let spokenIndex = 0;
+  expectedDisplayWords.forEach((displayWord) => {
+    const expectedWord = displayWord.toLowerCase();
+    const foundIndex = spokenWords.indexOf(expectedWord, spokenIndex);
+    if (foundIndex >= 0) {
+      matchedWords.push(displayWord);
+      spokenIndex = foundIndex + 1;
+    }
+  });
+  const displayWords = matchedWords.length ? matchedWords : cleanReadingTranscript(spokenText).split(/\s+/);
+  const trimmedWords = displayWords.slice(0, maxWords);
+  return `${trimmedWords.join(" ")}${displayWords.length > maxWords ? "..." : ""}`;
+}
+
 function getReadingPatienceTiming(grade, expectedWordCount) {
   const gradeNumber = grade === "ukg" ? 0 : Number(grade);
   const wordsPerMinute = gradeNumber === 0 ? 18 : gradeNumber === 1 ? 34 : gradeNumber <= 3 ? 55 : gradeNumber <= 5 ? 70 : gradeNumber <= 8 ? 85 : 95;
@@ -2899,7 +2917,8 @@ function getReadingPatienceTiming(grade, expectedWordCount) {
   return {
     maxListenMs: Math.min(Math.max(estimatedMs + (gradeNumber === 0 ? 18000 : 10000), gradeNumber === 0 ? 42000 : 22000), 90000),
     minBeforeJudgingMs: gradeNumber === 0 ? 16000 : gradeNumber === 1 ? 11000 : gradeNumber <= 4 ? 7500 : 6000,
-    restartLimit: gradeNumber === 0 ? 4 : gradeNumber <= 2 ? 2 : 1,
+    restartLimit: gradeNumber === 0 ? 8 : gradeNumber <= 2 ? 6 : 4,
+    completionRatio: gradeNumber === 0 ? 0.9 : gradeNumber <= 2 ? 0.92 : 0.95,
     heardEnoughRatio: gradeNumber === 0 ? 0.08 : gradeNumber <= 2 ? 0.16 : 0.22,
     earlyHeardRatio: gradeNumber === 0 ? 0.06 : 0.18,
   };
@@ -2962,7 +2981,8 @@ function initReadingFluencyLab() {
 
   function showReadingResult(spokenText) {
     const cleanSpokenText = cleanReadingTranscript(spokenText);
-    const expectedWords = normalizeReadingWords(activePassage().text);
+    const expectedText = activePassage().text;
+    const expectedWords = normalizeReadingWords(expectedText);
     const spokenWords = normalizeReadingWords(cleanSpokenText);
     const spokenPool = [...spokenWords];
     let correct = 0;
@@ -2981,7 +3001,7 @@ function initReadingFluencyLab() {
     const accuracy = expectedWords.length ? Math.round((correct / expectedWords.length) * 100) : 0;
     score.textContent = `${accuracy}%`;
     progress.value = accuracy;
-    transcript.textContent = cleanSpokenText || "We could not hear enough words. Please try again close to the microphone.";
+    transcript.textContent = getReadingDisplayTranscript(cleanSpokenText, expectedText, 22) || "We could not hear enough words. Please try again close to the microphone.";
     missed.textContent = missedWords.length ? uniqueWordList(missedWords).join(", ") : "Great. No important missing words found.";
     extra.textContent = spokenPool.length ? uniqueWordList(spokenPool).join(", ") : "No extra words found.";
     if (accuracy >= 90) {
@@ -3064,7 +3084,8 @@ function initReadingFluencyLab() {
     let readingFailed = false;
     let manualStop = false;
     let restartCount = 0;
-    let startedAt = 0;
+    let recognitionStartedAt = 0;
+    const sessionStartedAt = Date.now();
     const expectedWordCount = normalizeReadingWords(activePassage().text).length;
     const timing = getReadingPatienceTiming(grade, expectedWordCount);
     readingSessionId += 1;
@@ -3093,7 +3114,7 @@ function initReadingFluencyLab() {
       recognition.lang = "en-IN";
       recognition.interimResults = true;
       recognition.continuous = true;
-      startedAt = Date.now();
+      recognitionStartedAt = Date.now();
 
       recognition.onstart = () => {
         if (sessionId !== readingSessionId) return;
@@ -3115,12 +3136,13 @@ function initReadingFluencyLab() {
         }
         finalText = mergeReadingTranscript(committedText, finalParts.join(" "));
         latestTranscript = mergeReadingTranscript(finalText, interimParts.join(" "));
-        transcript.textContent = latestTranscript || "Listening now. You can begin when ready.";
+        const displayText = getReadingDisplayTranscript(latestTranscript, activePassage().text, 16);
+        transcript.textContent = displayText || "Listening now. You can begin when ready.";
       };
 
       recognition.onerror = (event) => {
         if (sessionId !== readingSessionId) return;
-        const elapsed = Date.now() - startedAt;
+        const elapsed = Date.now() - recognitionStartedAt;
         const heardEnough = normalizeReadingWords(latestTranscript || finalText).length >= Math.max(grade === "ukg" ? 1 : 2, Math.ceil(expectedWordCount * timing.earlyHeardRatio));
         if ((event.error === "no-speech" || event.error === "audio-capture") && elapsed < timing.minBeforeJudgingMs && restartCount < timing.restartLimit) {
           restartCount += 1;
@@ -3144,34 +3166,40 @@ function initReadingFluencyLab() {
 
       recognition.onend = () => {
         if (sessionId !== readingSessionId) return;
-        window.clearTimeout(readingTimer);
         if (manualStop) {
           finishReading();
           return;
         }
         if (readingFailed) return;
 
-        const elapsed = Date.now() - startedAt;
+        const recognitionElapsed = Date.now() - recognitionStartedAt;
+        const sessionElapsed = Date.now() - sessionStartedAt;
         const heardWords = normalizeReadingWords(latestTranscript || finalText).length;
-        const heardEnough = heardWords >= Math.max(grade === "ukg" ? 1 : 2, Math.ceil(expectedWordCount * timing.heardEnoughRatio));
-        if (!heardEnough && elapsed < timing.minBeforeJudgingMs && restartCount < timing.restartLimit) {
+        const completedEnough = heardWords >= Math.max(grade === "ukg" ? 1 : 3, Math.ceil(expectedWordCount * timing.completionRatio));
+        const stillHasTime = sessionElapsed < timing.maxListenMs - 1200;
+        const shouldContinue =
+          !completedEnough &&
+          stillHasTime &&
+          restartCount < timing.restartLimit &&
+          (recognitionElapsed < timing.minBeforeJudgingMs || heardWords < expectedWordCount);
+        if (shouldContinue) {
           restartCount += 1;
-          committedText = finalText;
-          support.textContent = "Still listening. Take your time and start again.";
-          beginRecognition();
+          committedText = latestTranscript || finalText;
+          support.textContent = "Still listening. Continue reading slowly.";
+          window.setTimeout(beginRecognition, 180);
           return;
         }
         finishReading();
       };
 
-      readingTimer = window.setTimeout(() => {
-        support.textContent = "Good effort. Checking what was read so far.";
-        if (listeningIndicator) listeningIndicator.hidden = true;
-        recognition?.stop();
-      }, timing.maxListenMs);
-
       recognition.start();
     }
+
+    readingTimer = window.setTimeout(() => {
+      support.textContent = "Good effort. Checking what was read so far.";
+      if (listeningIndicator) listeningIndicator.hidden = true;
+      recognition?.stop();
+    }, timing.maxListenMs);
 
     beginRecognition();
 
