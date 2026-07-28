@@ -2857,8 +2857,8 @@ function initReadingFluencyLab() {
   const lab = document.querySelector("[data-reading-lab]");
   if (!lab) return;
 
-  const gradeButtons = lab.querySelectorAll("[data-reading-grade]");
-  const levelButtons = lab.querySelectorAll("[data-reading-level]");
+  const gradeSelect = lab.querySelector("[data-reading-grade]");
+  const levelSelect = lab.querySelector("[data-reading-level]");
   const levelLabel = lab.querySelector("[data-reading-level-label]");
   const title = lab.querySelector("[data-reading-title]");
   const passage = lab.querySelector("[data-reading-passage]");
@@ -2874,16 +2874,10 @@ function initReadingFluencyLab() {
   const missed = lab.querySelector("[data-reading-missed]");
   const extra = lab.querySelector("[data-reading-extra]");
   const tip = lab.querySelector("[data-reading-tip]");
-  const questionWrap = document.querySelector("[data-reading-questions]");
-  const questionCount = questionWrap?.querySelector("[data-reading-question-count]");
-  const questionText = questionWrap?.querySelector("[data-reading-question]");
-  const answerGrid = questionWrap?.querySelector("[data-reading-answers]");
-  const questionFeedback = questionWrap?.querySelector("[data-reading-question-feedback]");
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  let grade = "ukg";
-  let level = "beginner";
+  let grade = gradeSelect?.value || "ukg";
+  let level = levelSelect?.value || "beginner";
   let passageIndex = 0;
-  let questionIndex = 0;
   let recognition = null;
   let currentReadingLevels = getReadingLevelsForGrade(grade);
   let readingTimer = null;
@@ -2892,33 +2886,6 @@ function initReadingFluencyLab() {
 
   function activePassage() {
     return currentReadingLevels[level][passageIndex];
-  }
-
-  function renderQuestion() {
-    if (!questionWrap || !answerGrid) return;
-    const data = activePassage();
-    const question = data.questions[questionIndex];
-    questionCount.textContent = `Question ${questionIndex + 1} of ${data.questions.length}`;
-    questionText.textContent = question.question;
-    questionFeedback.textContent = "";
-    answerGrid.innerHTML = question.options
-      .map((option) => `<button type="button" data-reading-answer="${option}">${option}</button>`)
-      .join("");
-    answerGrid.querySelectorAll("[data-reading-answer]").forEach((button) => {
-      button.addEventListener("click", () => {
-        const correct = button.dataset.readingAnswer === question.answer;
-        answerGrid.querySelectorAll("button").forEach((item) => {
-          item.disabled = true;
-          item.classList.toggle("is-correct", item.dataset.readingAnswer === question.answer);
-          item.classList.toggle("is-wrong", item === button && !correct);
-        });
-        questionFeedback.textContent = correct ? "Correct. Good understanding." : `Good try. Correct answer: ${question.answer}.`;
-        window.setTimeout(() => {
-          questionIndex = (questionIndex + 1) % data.questions.length;
-          renderQuestion();
-        }, 1300);
-      });
-    });
   }
 
   function renderPassage() {
@@ -2936,11 +2903,9 @@ function initReadingFluencyLab() {
     missed.textContent = "Words will appear here after reading.";
     extra.textContent = "Extra spoken words will appear here.";
     tip.textContent = "Listen once, then read slowly and clearly.";
-    questionIndex = 0;
     stopButton.hidden = true;
     if (listeningIndicator) listeningIndicator.hidden = true;
     startButton.disabled = false;
-    renderQuestion();
   }
 
   function showReadingResult(spokenText) {
@@ -3003,24 +2968,17 @@ function initReadingFluencyLab() {
     }
   }
 
-  levelButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      level = button.dataset.readingLevel;
-      passageIndex = 0;
-      levelButtons.forEach((item) => item.classList.toggle("is-active", item === button));
-      renderPassage();
-    });
+  levelSelect?.addEventListener("change", () => {
+    level = levelSelect.value || "beginner";
+    passageIndex = 0;
+    renderPassage();
   });
 
-  gradeButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      grade = button.dataset.readingGrade;
-      passageIndex = 0;
-      questionIndex = 0;
-      currentReadingLevels = getReadingLevelsForGrade(grade);
-      gradeButtons.forEach((item) => item.classList.toggle("is-active", item === button));
-      renderPassage();
-    });
+  gradeSelect?.addEventListener("change", () => {
+    grade = gradeSelect.value || "ukg";
+    passageIndex = 0;
+    currentReadingLevels = getReadingLevelsForGrade(grade);
+    renderPassage();
   });
 
   listenButton?.addEventListener("click", () => speakRoutineText(activePassage().text, listenButton));
