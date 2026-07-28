@@ -3609,12 +3609,21 @@ body:has(.about-hero) .about-hero::before {
   gap: 14px;
 }
 
+.reading-grade-tabs,
 .reading-level-tabs {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 10px;
 }
 
+.reading-grade-tabs {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+.reading-level-tabs {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.reading-grade-tabs button,
 .reading-level-tabs button,
 .reading-answer-grid button,
 .word-helper-grid button {
@@ -3625,6 +3634,7 @@ body:has(.about-hero) .about-hero::before {
   transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease, border-color 160ms ease;
 }
 
+.reading-grade-tabs button,
 .reading-level-tabs button {
   min-height: 54px;
   padding: 10px 12px;
@@ -3632,6 +3642,16 @@ body:has(.about-hero) .about-hero::before {
   background: rgba(255, 255, 255, 0.86);
 }
 
+.reading-grade-tabs button {
+  min-height: 46px;
+  color: #16453e;
+  background: linear-gradient(145deg, #ffffff, #eef8ff);
+  font-size: 0.92rem;
+}
+
+.reading-grade-tabs button:hover,
+.reading-grade-tabs button:focus,
+.reading-grade-tabs button.is-active,
 .reading-level-tabs button:hover,
 .reading-level-tabs button:focus,
 .reading-level-tabs button.is-active,
@@ -3726,6 +3746,45 @@ body:has(.about-hero) .about-hero::before {
 
 .reading-controls button[hidden] {
   display: none;
+}
+
+.reading-listening-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  width: fit-content;
+  padding: 9px 13px;
+  color: #16453e;
+  border: 1px solid rgba(39, 185, 167, 0.22);
+  border-radius: 999px;
+  background: linear-gradient(135deg, #e8fbf6, #fff7e7);
+  box-shadow: 0 12px 26px rgba(31, 49, 66, 0.08);
+  font-weight: 950;
+}
+
+.reading-listening-indicator[hidden] {
+  display: none;
+}
+
+.reading-listening-indicator i {
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: #27b9a7;
+  box-shadow: 0 0 0 0 rgba(39, 185, 167, 0.4);
+  animation: readingListeningPulse 1.25s ease-in-out infinite;
+}
+
+@keyframes readingListeningPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(39, 185, 167, 0.36);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 0 9px rgba(39, 185, 167, 0);
+    transform: scale(1.12);
+  }
 }
 
 .reading-support-note {
@@ -6975,6 +7034,144 @@ body:has(.about-hero) .about-hero::before {
   width: fit-content;
 }
 
+.teacher-reading-layout {
+  align-items: start;
+}
+
+.teacher-reading-form .field-helper,
+.student-photo-upload span {
+  color: var(--muted);
+  font-size: 0.84rem;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.teacher-reading-form [data-teacher-reading-other-wrap][hidden] {
+  display: none;
+}
+
+.teacher-reading-photo-preview {
+  width: fit-content;
+  margin-top: 16px;
+  padding: 10px;
+  border: 1px solid rgba(34, 49, 63, 0.08);
+  border-radius: 20px;
+  background: linear-gradient(145deg, #ffffff, #eefaf5);
+  box-shadow: 0 14px 30px rgba(31, 49, 66, 0.08);
+}
+
+.teacher-reading-photo-preview[hidden] {
+  display: none;
+}
+
+.teacher-reading-photo-preview img {
+  display: block;
+  width: 128px;
+  height: 128px;
+  border-radius: 16px;
+  object-fit: cover;
+}
+
+.teacher-reading-passages {
+  display: grid;
+  gap: 14px;
+}
+
+.teacher-reading-passage-card {
+  display: grid;
+  gap: 14px;
+  padding: clamp(16px, 3vw, 22px);
+  border: 1px solid rgba(31, 49, 66, 0.08);
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at 92% 12%, rgba(255, 216, 111, 0.26), transparent 22%),
+    linear-gradient(145deg, #ffffff, #eef8ff);
+  box-shadow: 0 16px 42px rgba(31, 49, 66, 0.08);
+}
+
+.teacher-reading-passage-card:nth-child(even) {
+  background:
+    radial-gradient(circle at 10% 12%, rgba(222, 215, 255, 0.34), transparent 22%),
+    linear-gradient(145deg, #ffffff, #fff7e7);
+}
+
+.teacher-reading-passage-card span {
+  width: fit-content;
+  padding: 5px 9px;
+  color: #16453e;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--mint), var(--sun));
+  font-size: 0.72rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.teacher-reading-passage-card p {
+  margin: 8px 0 0;
+  color: var(--ink);
+  font-family: "Baloo 2", "Nunito", system-ui, sans-serif;
+  font-size: clamp(1.1rem, 2vw, 1.42rem);
+  font-weight: 800;
+  line-height: 1.36;
+}
+
+.teacher-reading-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.teacher-reading-card-actions button[hidden] {
+  display: none;
+}
+
+.teacher-reading-live-result {
+  display: grid;
+  gap: 6px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: inset 0 0 0 1px rgba(31, 49, 66, 0.06);
+}
+
+.teacher-reading-live-result strong {
+  color: #16453e;
+  font-family: "Baloo 2", "Nunito", system-ui, sans-serif;
+  font-size: 1.2rem;
+  line-height: 1.05;
+}
+
+.teacher-reading-live-result p {
+  margin: 0;
+  color: var(--muted);
+  font-family: "Nunito", system-ui, sans-serif;
+  font-size: 0.95rem;
+  font-weight: 850;
+}
+
+.teacher-reading-report-card .student-report-photo {
+  border: 4px solid #ffffff;
+  box-shadow: 0 14px 30px rgba(31, 49, 66, 0.12);
+}
+
+.teacher-submit-status {
+  border: 1px solid rgba(39, 185, 167, 0.2);
+  background: linear-gradient(145deg, #ffffff, #e8fbf6);
+}
+
+.teacher-submit-status.is-practice {
+  border-color: rgba(255, 114, 95, 0.2);
+  background: linear-gradient(145deg, #ffffff, #fff0ea);
+}
+
+.teacher-submit-status h3 {
+  color: #16453e;
+}
+
+.teacher-submit-status.is-practice h3 {
+  color: #9d3f2e;
+}
+
 @media (max-width: 820px) {
   .feedback-hero,
   .feedback-details,
@@ -7055,6 +7252,7 @@ body:has(.about-hero) .about-hero::before {
   .tense-next-grid,
   .routine-verb-grid,
   .routine-builder,
+  .reading-grade-tabs,
   .reading-level-tabs,
   .word-helper-grid,
   .reading-answer-grid {
@@ -7081,6 +7279,7 @@ body:has(.about-hero) .about-hero::before {
   .tense-next-grid,
   .routine-verb-grid,
   .routine-builder,
+  .reading-grade-tabs,
   .reading-level-tabs,
   .word-helper-grid,
   .reading-answer-grid,
