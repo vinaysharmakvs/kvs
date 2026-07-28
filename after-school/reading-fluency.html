@@ -112,24 +112,32 @@
           <h2>Select grade first, then choose the reading challenge.</h2>
           <p>UKG starts with word reading. Grade 1 begins with familiar sentences, and higher grades move toward richer paragraphs.</p>
         </div>
-        <div class="reading-grade-tabs" role="tablist" aria-label="Student grade">
-          <button class="is-active" type="button" data-reading-grade="ukg">UKG</button>
-          <button type="button" data-reading-grade="1">Grade 1</button>
-          <button type="button" data-reading-grade="2">Grade 2</button>
-          <button type="button" data-reading-grade="3">Grade 3</button>
-          <button type="button" data-reading-grade="4">Grade 4</button>
-          <button type="button" data-reading-grade="5">Grade 5</button>
-          <button type="button" data-reading-grade="6">Grade 6</button>
-          <button type="button" data-reading-grade="7">Grade 7</button>
-          <button type="button" data-reading-grade="8">Grade 8</button>
-          <button type="button" data-reading-grade="9">Grade 9</button>
-          <button type="button" data-reading-grade="10">Grade 10</button>
-        </div>
-        <div class="reading-level-tabs" role="tablist" aria-label="Reading levels">
-          <button class="is-active" type="button" data-reading-level="beginner">Beginner</button>
-          <button type="button" data-reading-level="explorer">Explorer</button>
-          <button type="button" data-reading-level="confident">Confident Reader</button>
-          <button type="button" data-reading-level="challenge">Challenge Mode</button>
+        <div class="reading-select-panel" aria-label="Reading settings">
+          <label>
+            <span>Student grade</span>
+            <select data-reading-grade>
+              <option value="ukg">UKG</option>
+              <option value="1">Grade 1</option>
+              <option value="2">Grade 2</option>
+              <option value="3">Grade 3</option>
+              <option value="4">Grade 4</option>
+              <option value="5">Grade 5</option>
+              <option value="6">Grade 6</option>
+              <option value="7">Grade 7</option>
+              <option value="8">Grade 8</option>
+              <option value="9">Grade 9</option>
+              <option value="10">Grade 10</option>
+            </select>
+          </label>
+          <label>
+            <span>Reading level</span>
+            <select data-reading-level>
+              <option value="beginner">Beginner</option>
+              <option value="explorer">Explorer</option>
+              <option value="confident">Confident Reader</option>
+              <option value="challenge">Challenge Mode</option>
+            </select>
+          </label>
         </div>
 
         <div class="reading-lab-shell">
@@ -193,19 +201,6 @@
           <button type="button" data-word="carefully"><strong>carefully</strong><span>Doing something with attention.</span></button>
           <button type="button" data-word="confidence"><strong>confidence</strong><span>Feeling ready to try.</span></button>
           <button type="button" data-word="responsible"><strong>responsible</strong><span>Doing your work properly.</span></button>
-        </div>
-      </section>
-
-      <section class="section reading-question-section" data-reading-questions>
-        <div class="section-heading">
-          <p class="eyebrow">Quick Understanding Check</p>
-          <h2>Answer two small questions after reading.</h2>
-        </div>
-        <div class="reading-question-card">
-          <p data-reading-question-count>Question 1 of 2</p>
-          <strong data-reading-question>What does the child do first?</strong>
-          <div class="reading-answer-grid" data-reading-answers></div>
-          <span data-reading-question-feedback></span>
         </div>
       </section>
 
