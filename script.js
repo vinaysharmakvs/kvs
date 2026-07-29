@@ -2931,6 +2931,7 @@ function initReadingFluencyLab() {
   const gradeSelect = lab.querySelector("[data-reading-grade]");
   const levelSelect = lab.querySelector("[data-reading-level]");
   const levelLabel = lab.querySelector("[data-reading-level-label]");
+  const studentNameInput = lab.querySelector("[data-reading-student-name]");
   const title = lab.querySelector("[data-reading-title]");
   const passage = lab.querySelector("[data-reading-passage]");
   const listenButton = lab.querySelector("[data-reading-listen]");
@@ -2938,6 +2939,7 @@ function initReadingFluencyLab() {
   const stopButton = lab.querySelector("[data-reading-stop]");
   const nextButton = lab.querySelector("[data-reading-next]");
   const listeningIndicator = lab.querySelector("[data-reading-listening]");
+  const countdown = lab.querySelector("[data-reading-countdown]");
   const support = lab.querySelector("[data-reading-support]");
   const score = lab.querySelector("[data-reading-score]");
   const progress = lab.querySelector("[data-reading-progress]");
@@ -2945,6 +2947,15 @@ function initReadingFluencyLab() {
   const missed = lab.querySelector("[data-reading-missed]");
   const extra = lab.querySelector("[data-reading-extra]");
   const tip = lab.querySelector("[data-reading-tip]");
+  const certificateCard = lab.querySelector("[data-reading-certificate]");
+  const certificateName = lab.querySelector("[data-reading-certificate-name]");
+  const certificateMessage = lab.querySelector("[data-reading-certificate-message]");
+  const certificateGrade = lab.querySelector("[data-reading-certificate-grade]");
+  const certificateScore = lab.querySelector("[data-reading-certificate-score]");
+  const certificateToday = lab.querySelector("[data-reading-certificate-today]");
+  const certificateStreak = lab.querySelector("[data-reading-certificate-streak]");
+  const shareButton = lab.querySelector("[data-reading-share]");
+  const shareNote = lab.querySelector("[data-reading-share-note]");
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   let grade = gradeSelect?.value || "ukg";
   let level = levelSelect?.value || "beginner";
@@ -2952,8 +2963,13 @@ function initReadingFluencyLab() {
   let recognition = null;
   let currentReadingLevels = getReadingLevelsForGrade(grade);
   let readingTimer = null;
+  let countdownTimer = null;
   let readingSessionId = 0;
+  let latestCertificateText = "";
+  let latestCertificateData = null;
   const micSessionKey = "kidsverseReadingMicPermission";
+  const streakStorageKey = "kidsverseReadingPracticeStreak";
+  const studentNameStorageKey = "kidsverseReadingStudentName";
 
   function activePassage() {
     return currentReadingLevels[level][passageIndex];
@@ -2965,6 +2981,7 @@ function initReadingFluencyLab() {
     readingSessionId += 1;
     recognition?.abort();
     window.clearTimeout(readingTimer);
+    window.clearTimeout(countdownTimer);
     levelLabel.textContent = `${readingGradeLabels[grade]} - ${data.label}`;
     title.textContent = data.title;
     passage.textContent = data.text;
@@ -2974,7 +2991,9 @@ function initReadingFluencyLab() {
     missed.textContent = "Words will appear here after reading.";
     extra.textContent = "Extra spoken words will appear here.";
     tip.textContent = "Listen once, then read slowly and clearly.";
+    if (certificateCard) certificateCard.hidden = true;
     stopButton.hidden = true;
+    if (countdown) countdown.hidden = true;
     if (listeningIndicator) listeningIndicator.hidden = true;
     startButton.disabled = false;
   }
@@ -3011,6 +3030,330 @@ function initReadingFluencyLab() {
     } else {
       tip.textContent = "Listen once more, read one sentence at a time and try again.";
     }
+    updateReadingCertificate(accuracy);
+  }
+
+  function getStudentName() {
+    const name = studentNameInput?.value.trim() || "Reading Star";
+    return name.replace(/\s+/g, " ").slice(0, 40);
+  }
+
+  function getTodayDateKey() {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
+
+  function getPreviousDateKey(dateKey) {
+    const date = new Date(`${dateKey}T00:00:00`);
+    date.setDate(date.getDate() - 1);
+    return date.toISOString().slice(0, 10);
+  }
+
+  function loadReadingStreak() {
+    try {
+      return JSON.parse(localStorage.getItem(streakStorageKey)) || { lastDate: "", streak: 0, todayCount: 0 };
+    } catch {
+      return { lastDate: "", streak: 0, todayCount: 0 };
+    }
+  }
+
+  function saveReadingStreak(data) {
+    try {
+      localStorage.setItem(streakStorageKey, JSON.stringify(data));
+    } catch {
+      /* Local storage can be unavailable; certificate still works without saved streak. */
+    }
+  }
+
+  function recordReadingStreak() {
+    const today = getTodayDateKey();
+    const saved = loadReadingStreak();
+    let streak = 1;
+    let todayCount = 1;
+    if (saved.lastDate === today) {
+      streak = Math.max(1, Number(saved.streak) || 1);
+      todayCount = (Number(saved.todayCount) || 0) + 1;
+    } else if (saved.lastDate === getPreviousDateKey(today)) {
+      streak = (Number(saved.streak) || 0) + 1;
+    }
+    const next = { lastDate: today, streak, todayCount };
+    saveReadingStreak(next);
+    return next;
+  }
+
+  function updateReadingCertificate(accuracy) {
+    const streak = recordReadingStreak();
+    const name = getStudentName();
+    const gradeLabel = readingGradeLabels[grade] || "Student";
+    const levelText = activePassage().label || readingLevelLabels[level] || "Reading Practice";
+    latestCertificateData = {
+      name,
+      gradeLabel,
+      levelText,
+      accuracy,
+      streak: streak.streak,
+      todayCount: streak.todayCount,
+      date: new Date().toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }),
+    };
+    latestCertificateText = `${name} earned a Kidsverse Reading Star certificate today with ${accuracy}% reading accuracy. Current streak: ${streak.streak} day${streak.streak === 1 ? "" : "s"}.`;
+    if (studentNameInput) {
+      try {
+        localStorage.setItem(studentNameStorageKey, name);
+      } catch {
+        /* Name saving is optional. */
+      }
+    }
+    if (certificateName) certificateName.textContent = name;
+    if (certificateMessage) certificateMessage.textContent = `${gradeLabel} - ${levelText} completed with confident effort.`;
+    if (certificateGrade) certificateGrade.innerHTML = `Grade & Level<br>${gradeLabel}<br>${levelText}`;
+    if (certificateScore) certificateScore.innerHTML = `Reading Accuracy<br>${accuracy}%`;
+    if (certificateToday) certificateToday.innerHTML = `Today's Practice<br>${streak.todayCount}<br>Sessions`;
+    if (certificateStreak) certificateStreak.innerHTML = `Current Streak<br>${streak.streak}<br>Day${streak.streak === 1 ? "" : "s"}`;
+    if (shareNote) shareNote.textContent = "Certificate ready. Share it with family or friends.";
+    if (certificateCard) certificateCard.hidden = false;
+  }
+
+  function wrapCanvasText(context, text, x, y, maxWidth, lineHeight, maxLines = 3) {
+    const words = text.split(/\s+/);
+    let line = "";
+    let lines = 0;
+    words.forEach((word) => {
+      const testLine = line ? `${line} ${word}` : word;
+      if (context.measureText(testLine).width > maxWidth && line) {
+        if (lines < maxLines) context.fillText(line, x, y + lines * lineHeight);
+        lines += 1;
+        line = word;
+      } else {
+        line = testLine;
+      }
+    });
+    if (line && lines < maxLines) context.fillText(line, x, y + lines * lineHeight);
+  }
+
+  function createReadingCertificateBlob() {
+    return new Promise((resolve) => {
+      if (!latestCertificateData) {
+        resolve(null);
+        return;
+      }
+      const canvas = document.createElement("canvas");
+      canvas.width = 1500;
+      canvas.height = 900;
+      const context = canvas.getContext("2d");
+      if (!context.roundRect) {
+        context.roundRect = function roundRectFallback(x, y, width, height, radius) {
+          const corner = Math.min(radius, width / 2, height / 2);
+          this.moveTo(x + corner, y);
+          this.lineTo(x + width - corner, y);
+          this.quadraticCurveTo(x + width, y, x + width, y + corner);
+          this.lineTo(x + width, y + height - corner);
+          this.quadraticCurveTo(x + width, y + height, x + width - corner, y + height);
+          this.lineTo(x + corner, y + height);
+          this.quadraticCurveTo(x, y + height, x, y + height - corner);
+          this.lineTo(x, y + corner);
+          this.quadraticCurveTo(x, y, x + corner, y);
+          this.closePath();
+        };
+      }
+      const data = latestCertificateData;
+      const gradient = context.createLinearGradient(0, 0, 1500, 900);
+      gradient.addColorStop(0, "#16106f");
+      gradient.addColorStop(0.32, "#5b16b6");
+      gradient.addColorStop(0.68, "#1b2fa8");
+      gradient.addColorStop(1, "#130a55");
+      context.fillStyle = gradient;
+      context.fillRect(0, 0, 1500, 900);
+      for (let index = 0; index < 90; index += 1) {
+        const x = (index * 173) % 1500;
+        const y = (index * 97) % 900;
+        const size = 4 + (index % 4) * 2;
+        context.fillStyle = ["#ffd86f", "#27b9a7", "#ff73b7", "#ffffff"][index % 4];
+        context.save();
+        context.translate(x, y);
+        context.rotate((index % 8) * 0.4);
+        context.fillRect(-size / 2, -size / 2, size, size);
+        context.restore();
+      }
+      context.fillStyle = "#fffdf5";
+      context.beginPath();
+      context.roundRect(305, 42, 890, 810, 26);
+      context.fill();
+      context.strokeStyle = "#f2c95b";
+      context.lineWidth = 7;
+      context.stroke();
+      context.strokeStyle = "rgba(242, 201, 91, 0.42)";
+      context.lineWidth = 3;
+      context.strokeRect(337, 76, 826, 742);
+
+      function drawStar(x, y, radius, color) {
+        context.save();
+        context.translate(x, y);
+        context.fillStyle = color;
+        context.beginPath();
+        for (let point = 0; point < 10; point += 1) {
+          const angle = -Math.PI / 2 + point * (Math.PI / 5);
+          const length = point % 2 === 0 ? radius : radius * 0.46;
+          context.lineTo(Math.cos(angle) * length, Math.sin(angle) * length);
+        }
+        context.closePath();
+        context.fill();
+        context.restore();
+      }
+
+      function drawCartoonChild(x, y, accent, isGirl = false) {
+        context.save();
+        context.translate(x, y);
+        context.fillStyle = "rgba(0,0,0,0.18)";
+        context.beginPath();
+        context.ellipse(0, 238, 92, 28, 0, 0, Math.PI * 2);
+        context.fill();
+        context.fillStyle = accent;
+        context.beginPath();
+        context.roundRect(-62, 92, 124, 152, 36);
+        context.fill();
+        context.fillStyle = "#ffd0b8";
+        context.beginPath();
+        context.arc(0, 42, 70, 0, Math.PI * 2);
+        context.fill();
+        context.fillStyle = "#3b1e17";
+        context.beginPath();
+        context.arc(-24, 22, 62, Math.PI, 0);
+        context.arc(28, 24, 52, Math.PI, 0);
+        context.fill();
+        context.fillStyle = "#ffffff";
+        context.beginPath();
+        context.arc(-26, 42, 15, 0, Math.PI * 2);
+        context.arc(28, 42, 15, 0, Math.PI * 2);
+        context.fill();
+        context.fillStyle = "#221714";
+        context.beginPath();
+        context.arc(-22, 44, 7, 0, Math.PI * 2);
+        context.arc(32, 44, 7, 0, Math.PI * 2);
+        context.fill();
+        context.strokeStyle = "#a94438";
+        context.lineWidth = 5;
+        context.beginPath();
+        context.arc(3, 72, 24, 0.08, Math.PI - 0.08);
+        context.stroke();
+        if (isGirl) {
+          context.fillStyle = "#ff73b7";
+          context.beginPath();
+          context.moveTo(32, -20);
+          context.lineTo(90, -56);
+          context.lineTo(74, 4);
+          context.closePath();
+          context.fill();
+        } else {
+          context.fillStyle = "#f5a400";
+          context.beginPath();
+          context.roundRect(54, -46, 78, 86, 10);
+          context.fill();
+          context.fillStyle = "#ffd86f";
+          context.beginPath();
+          context.arc(93, -7, 26, 0, Math.PI * 2);
+          context.fill();
+          drawStar(93, -7, 18, "#f5a400");
+        }
+        context.restore();
+      }
+
+      drawCartoonChild(150, 520, "#1d8ee8", false);
+      drawCartoonChild(1348, 520, "#ff73b7", true);
+      drawStar(210, 130, 20, "#ffd86f");
+      drawStar(1302, 132, 20, "#ffd86f");
+      drawStar(472, 235, 13, "#ffbf2f");
+      drawStar(1050, 218, 13, "#27b9a7");
+
+      const ribbon = context.createLinearGradient(470, 62, 1030, 132);
+      ribbon.addColorStop(0, "#5e18b8");
+      ribbon.addColorStop(0.5, "#b933ff");
+      ribbon.addColorStop(1, "#5e18b8");
+      context.fillStyle = ribbon;
+      context.beginPath();
+      context.roundRect(470, 58, 560, 78, 18);
+      context.fill();
+      context.textAlign = "center";
+      context.fillStyle = "#ffffff";
+      context.font = "900 54px Nunito, Arial, sans-serif";
+      context.fillText("CERTIFICATE", 750, 112);
+      context.font = "900 25px Nunito, Arial, sans-serif";
+      context.fillStyle = "#6d25cb";
+      context.fillText("OF READING EXCELLENCE", 750, 172);
+      drawStar(570, 164, 12, "#ffbf2f");
+      drawStar(930, 164, 12, "#ffbf2f");
+      context.fillStyle = "#283748";
+      context.font = "800 22px Nunito, Arial, sans-serif";
+      context.fillText("Proudly presented to", 750, 226);
+      context.font = "900 72px 'Baloo 2', Nunito, Arial, sans-serif";
+      context.fillStyle = "#7a22dc";
+      wrapCanvasText(context, data.name, 750, 320, 760, 72, 2);
+      context.strokeStyle = "rgba(154, 54, 255, 0.35)";
+      context.setLineDash([10, 9]);
+      context.beginPath();
+      context.moveTo(480, 356);
+      context.lineTo(1020, 356);
+      context.stroke();
+      context.setLineDash([]);
+      context.fillStyle = "#283748";
+      context.font = "900 28px Nunito, Arial, sans-serif";
+      context.fillText("You are a", 610, 418);
+      context.fillStyle = "#9b36ff";
+      context.beginPath();
+      context.roundRect(690, 384, 245, 52, 26);
+      context.fill();
+      context.fillStyle = "#ffffff";
+      context.fillText("Reading Star!", 812, 419);
+      drawStar(930, 410, 22, "#ffd86f");
+
+      const metrics = [
+        { icon: "🎓", label: "Grade & Level", value: data.gradeLabel, sub: data.levelText, color: "#6d25cb" },
+        { icon: "🎯", label: "Reading Accuracy", value: `${data.accuracy}%`, sub: data.accuracy >= 90 ? "Excellent!" : "Great effort!", color: "#099952" },
+        { icon: "📅", label: "Today's Practice", value: `${data.todayCount}`, sub: "Sessions", color: "#0876ca" },
+        { icon: "🔥", label: "Current Streak", value: `${data.streak}`, sub: "Days in a row!", color: "#e14d20" },
+      ];
+      metrics.forEach((metric, index) => {
+        const x = 410 + index * 225;
+        context.fillStyle = "rgba(255,255,255,0.86)";
+        context.beginPath();
+        context.roundRect(x - 92, 485, 184, 185, 18);
+        context.fill();
+        context.strokeStyle = "rgba(216, 174, 87, 0.28)";
+        context.lineWidth = 2;
+        context.stroke();
+        context.font = "34px Arial, sans-serif";
+        context.fillText(metric.icon, x, 532);
+        context.fillStyle = "#283748";
+        context.font = "900 18px Nunito, Arial, sans-serif";
+        context.fillText(metric.label, x, 566);
+        context.fillStyle = metric.color;
+        context.font = "900 48px Nunito, Arial, sans-serif";
+        context.fillText(metric.value, x, 626);
+        context.fillStyle = metric.color;
+        context.beginPath();
+        context.roundRect(x - 62, 640, 124, 32, 16);
+        context.fill();
+        context.fillStyle = "#ffffff";
+        context.font = "900 17px Nunito, Arial, sans-serif";
+        context.fillText(metric.sub.slice(0, 18), x, 662);
+      });
+
+      context.fillStyle = "#6d25cb";
+      context.beginPath();
+      context.roundRect(505, 720, 490, 56, 18);
+      context.fill();
+      drawStar(540, 748, 19, "#ffd86f");
+      drawStar(960, 748, 19, "#ffd86f");
+      context.fillStyle = "#ffffff";
+      context.font = "900 31px 'Baloo 2', Nunito, Arial, sans-serif";
+      context.fillText("Keep shining and keep reading!", 750, 758);
+      context.fillStyle = "rgba(255,255,255,0.9)";
+      context.font = "800 18px Nunito, Arial, sans-serif";
+      context.fillText(`Created on ${data.date} | Kidsverse School Rehan`, 750, 830);
+      canvas.toBlob((blob) => resolve(blob), "image/png", 0.95);
+    });
   }
 
   function getSavedMicPermission() {
@@ -3029,6 +3372,13 @@ function initReadingFluencyLab() {
     }
   }
 
+  try {
+    const savedName = localStorage.getItem(studentNameStorageKey);
+    if (savedName && studentNameInput) studentNameInput.value = savedName;
+  } catch {
+    /* Optional student name restore. */
+  }
+
   async function getCurrentMicPermission() {
     if (!navigator.permissions?.query) return getSavedMicPermission();
     try {
@@ -3039,6 +3389,38 @@ function initReadingFluencyLab() {
     } catch {
       return getSavedMicPermission();
     }
+  }
+
+  function runReadingCountdown(sessionId) {
+    return new Promise((resolve) => {
+      if (!countdown) {
+        resolve(true);
+        return;
+      }
+      const steps = ["3", "2", "1", "Start"];
+      let index = 0;
+      countdown.hidden = false;
+      countdown.textContent = steps[index];
+      function tick() {
+        if (sessionId !== readingSessionId) {
+          countdown.hidden = true;
+          resolve(false);
+          return;
+        }
+        index += 1;
+        if (index >= steps.length) {
+          countdown.textContent = "Start";
+          countdownTimer = window.setTimeout(() => {
+            countdown.hidden = true;
+            resolve(sessionId === readingSessionId);
+          }, 420);
+          return;
+        }
+        countdown.textContent = steps[index];
+        countdownTimer = window.setTimeout(tick, 720);
+      }
+      countdownTimer = window.setTimeout(tick, 720);
+    });
   }
 
   levelSelect?.addEventListener("change", () => {
@@ -3055,6 +3437,40 @@ function initReadingFluencyLab() {
   });
 
   listenButton?.addEventListener("click", () => speakRoutineText(activePassage().text, listenButton));
+
+  shareButton?.addEventListener("click", async () => {
+    const shareText = latestCertificateText || `${getStudentName()} completed Kidsverse Reading Fluency practice today.`;
+    const certificateBlob = await createReadingCertificateBlob();
+    if (certificateBlob) {
+      const file = new File([certificateBlob], "kidsverse-reading-star-certificate.png", { type: "image/png" });
+      if (navigator.share && navigator.canShare?.({ files: [file] })) {
+        try {
+          await navigator.share({ title: "Kidsverse Reading Star Certificate", text: shareText, files: [file] });
+          if (shareNote) shareNote.textContent = "Certificate image shared successfully.";
+          return;
+        } catch {
+          if (shareNote) shareNote.textContent = "Sharing was cancelled. You can try again.";
+          return;
+        }
+      }
+    }
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: "Kidsverse Reading Star Certificate", text: shareText, url: window.location.href });
+        if (shareNote) shareNote.textContent = "Certificate shared successfully.";
+        return;
+      } catch {
+        if (shareNote) shareNote.textContent = "Sharing was cancelled. You can try again.";
+        return;
+      }
+    }
+    try {
+      await navigator.clipboard.writeText(`${shareText} ${window.location.href}`);
+      if (shareNote) shareNote.textContent = "Certificate message copied. You can paste it on WhatsApp or social media.";
+    } catch {
+      if (shareNote) shareNote.textContent = shareText;
+    }
+  });
 
   nextButton?.addEventListener("click", () => {
     passageIndex = (passageIndex + 1) % currentReadingLevels[level].length;
@@ -3078,11 +3494,14 @@ function initReadingFluencyLab() {
     stopTenseReading();
     recognition?.abort();
     window.clearTimeout(readingTimer);
+    window.clearTimeout(countdownTimer);
     let finalText = "";
     let latestTranscript = "";
     let committedText = "";
     let readingFailed = false;
     let manualStop = false;
+    let countdownActive = true;
+    let recognitionStarted = false;
     let restartCount = 0;
     let recognitionStartedAt = 0;
     const sessionStartedAt = Date.now();
@@ -3093,23 +3512,27 @@ function initReadingFluencyLab() {
 
     startButton.disabled = true;
     stopButton.hidden = false;
-    transcript.textContent = "Listening now. Read slowly. Take your time.";
+    transcript.textContent = "Get ready. Reading will start after the countdown.";
     support.textContent =
-      permission === "granted" ? "Listening. Microphone is ready." : "Listening. Please allow microphone access if Chrome asks.";
+      permission === "granted" ? "Microphone is ready. Start after the countdown." : "Please allow microphone access if Chrome asks, then start after the countdown.";
     support.classList.remove("is-warning");
-    if (listeningIndicator) listeningIndicator.hidden = false;
+    if (countdown) countdown.hidden = false;
+    if (listeningIndicator) listeningIndicator.hidden = true;
 
     function finishReading() {
       if (sessionId !== readingSessionId) return;
       window.clearTimeout(readingTimer);
+      window.clearTimeout(countdownTimer);
       startButton.disabled = false;
       stopButton.hidden = true;
+      if (countdown) countdown.hidden = true;
       if (listeningIndicator) listeningIndicator.hidden = true;
       showReadingResult(latestTranscript || finalText);
     }
 
     function beginRecognition() {
       if (sessionId !== readingSessionId) return;
+      recognitionStarted = true;
       recognition = new SpeechRecognition();
       recognition.lang = "en-IN";
       recognition.interimResults = true;
@@ -3195,6 +3618,29 @@ function initReadingFluencyLab() {
       recognition.start();
     }
 
+    stopButton.onclick = () => {
+      manualStop = true;
+      window.clearTimeout(countdownTimer);
+      if (countdown) countdown.hidden = true;
+      if (listeningIndicator) listeningIndicator.hidden = true;
+      if (countdownActive || !recognitionStarted) {
+        readingSessionId += 1;
+        startButton.disabled = false;
+        stopButton.hidden = true;
+        transcript.textContent = "Reading cancelled. Click Start Reading when ready.";
+        support.textContent = "Take your time. Start again when the child is ready.";
+        return;
+      }
+      recognition?.stop();
+    };
+
+    const shouldStart = await runReadingCountdown(sessionId);
+    if (!shouldStart) return;
+    countdownActive = false;
+    transcript.textContent = "Listening now. Read slowly. Take your time.";
+    support.textContent = "Listening patiently. Slow reading is okay.";
+    if (listeningIndicator) listeningIndicator.hidden = false;
+
     readingTimer = window.setTimeout(() => {
       support.textContent = "Good effort. Checking what was read so far.";
       if (listeningIndicator) listeningIndicator.hidden = true;
@@ -3202,12 +3648,6 @@ function initReadingFluencyLab() {
     }, timing.maxListenMs);
 
     beginRecognition();
-
-    stopButton.onclick = () => {
-      manualStop = true;
-      if (listeningIndicator) listeningIndicator.hidden = true;
-      recognition?.stop();
-    };
   });
   renderPassage();
 }
