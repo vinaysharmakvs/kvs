@@ -112,6 +112,13 @@
           <h2>Select grade first, then choose the reading challenge.</h2>
           <p>UKG starts with word reading. Grade 1 begins with familiar sentences, and higher grades move toward richer paragraphs.</p>
         </div>
+        <div class="reading-student-card">
+          <label>
+            <span>Student name</span>
+            <input type="text" data-reading-student-name placeholder="Enter student name for certificate" autocomplete="name" />
+          </label>
+          <p>Your certificate will be created after the reading assessment.</p>
+        </div>
         <div class="reading-select-panel" aria-label="Reading settings">
           <label>
             <span>Student grade</span>
@@ -159,6 +166,7 @@
               <i aria-hidden="true"></i>
               <span>I am listening. Read slowly.</span>
             </div>
+            <div class="reading-countdown" data-reading-countdown hidden aria-live="polite">3</div>
             <p class="reading-support-note" data-reading-support>Use Chrome for the best microphone reading check.</p>
           </article>
 
@@ -185,6 +193,24 @@
                 <span>Practice tip</span>
                 <p data-reading-tip>Listen once, then read slowly and clearly.</p>
               </article>
+            </div>
+            <div class="reading-certificate-card" data-reading-certificate hidden>
+              <div class="reading-certificate-preview" data-reading-certificate-preview>
+                <div class="reading-certificate-ribbon">Certificate</div>
+                <span>Of Reading Excellence</span>
+                <p>Proudly presented to</p>
+                <strong data-reading-certificate-name>Student</strong>
+                <em>You are a Reading Star!</em>
+                <div class="reading-certificate-stats">
+                  <small data-reading-certificate-grade>Grade & Level</small>
+                  <small data-reading-certificate-score>Accuracy --</small>
+                  <small data-reading-certificate-today>Today 1</small>
+                  <small data-reading-certificate-streak>Streak 1 day</small>
+                </div>
+                <b>Keep shining and keep reading!</b>
+              </div>
+              <button class="primary-button" type="button" data-reading-share>Share Certificate</button>
+              <p data-reading-share-note>Share with family or friends after completing the assessment.</p>
             </div>
           </aside>
         </div>
