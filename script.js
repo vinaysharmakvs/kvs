@@ -149,6 +149,8 @@ function setKiyaOpen(open) {
   kiyaToggle.setAttribute("aria-expanded", String(open));
 }
 
+setKiyaOpen(false);
+
 kiyaToggle?.addEventListener("click", () => {
   setKiyaOpen(!kiyaWidget?.classList.contains("is-open"));
 });
@@ -3066,6 +3068,7 @@ function initReadingFluencyLab() {
   const certificateCard = lab.querySelector("[data-reading-certificate]");
   const certificateName = lab.querySelector("[data-reading-certificate-name]");
   const certificateMessage = lab.querySelector("[data-reading-certificate-message]");
+  const certificateMedal = lab.querySelector("[data-reading-certificate-medal]");
   const certificateGrade = lab.querySelector("[data-reading-certificate-grade]");
   const certificateScore = lab.querySelector("[data-reading-certificate-score]");
   const certificateToday = lab.querySelector("[data-reading-certificate-today]");
@@ -3200,21 +3203,36 @@ function initReadingFluencyLab() {
     return next;
   }
 
+  function getReadingMedal(accuracy) {
+    if (accuracy > 90) {
+      return { name: "Gold Medal", icon: "Gold", color: "#f5a400", accent: "#ffd86f", certificate: "Gold Medal Certificate" };
+    }
+    if (accuracy >= 80) {
+      return { name: "Silver Medal", icon: "Silver", color: "#8b97a8", accent: "#eef3f8", certificate: "Silver Medal Certificate" };
+    }
+    if (accuracy >= 70) {
+      return { name: "Bronze Medal", icon: "Bronze", color: "#b66a2c", accent: "#f3b46d", certificate: "Bronze Medal Certificate" };
+    }
+    return { name: "Appreciation Certificate", icon: "Star", color: "#6d25cb", accent: "#d8f5e7", certificate: "Appreciation Certificate" };
+  }
+
   function updateReadingCertificate(accuracy) {
     const streak = recordReadingStreak();
     const name = getStudentName();
     const gradeLabel = readingGradeLabels[grade] || "Student";
     const levelText = activePassage().label || readingLevelLabels[level] || "Reading Practice";
+    const medal = getReadingMedal(accuracy);
     latestCertificateData = {
       name,
       gradeLabel,
       levelText,
       accuracy,
+      medal,
       streak: streak.streak,
       todayCount: streak.todayCount,
       date: new Date().toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }),
     };
-    latestCertificateText = `${name} earned a Kidsverse Reading Star certificate today with ${accuracy}% reading accuracy. Current streak: ${streak.streak} day${streak.streak === 1 ? "" : "s"}.`;
+    latestCertificateText = `${name} earned a ${medal.name} in Kidsverse Reading Fluency today with ${accuracy}% reading accuracy. Current streak: ${streak.streak} day${streak.streak === 1 ? "" : "s"}.`;
     if (studentNameInput) {
       try {
         localStorage.setItem(studentNameStorageKey, name);
@@ -3224,6 +3242,11 @@ function initReadingFluencyLab() {
     }
     if (certificateName) certificateName.textContent = name;
     if (certificateMessage) certificateMessage.textContent = `${gradeLabel} - ${levelText} completed with confident effort.`;
+    if (certificateMedal) {
+      certificateMedal.textContent = medal.certificate;
+      certificateMedal.style.setProperty("--medal-color", medal.color);
+      certificateMedal.style.setProperty("--medal-accent", medal.accent);
+    }
     if (certificateGrade) certificateGrade.innerHTML = `Grade & Level<br>${gradeLabel}<br>${levelText}`;
     if (certificateScore) certificateScore.innerHTML = `Reading Accuracy<br>${accuracy}%`;
     if (certificateToday) certificateToday.innerHTML = `Today's Practice<br>${streak.todayCount}<br>Sessions`;
@@ -3319,6 +3342,46 @@ function initReadingFluencyLab() {
         context.restore();
       }
 
+      function drawMedal(x, y, medal) {
+        context.save();
+        context.translate(x, y);
+        context.fillStyle = "#2f8fb8";
+        context.beginPath();
+        context.moveTo(-34, 56);
+        context.lineTo(-8, 132);
+        context.lineTo(0, 92);
+        context.lineTo(10, 132);
+        context.lineTo(36, 56);
+        context.closePath();
+        context.fill();
+        context.fillStyle = "#ef4d53";
+        context.beginPath();
+        context.moveTo(-16, 64);
+        context.lineTo(-4, 120);
+        context.lineTo(0, 92);
+        context.lineTo(5, 120);
+        context.lineTo(18, 64);
+        context.closePath();
+        context.fill();
+        const medalGradient = context.createRadialGradient(-18, -18, 8, 0, 0, 66);
+        medalGradient.addColorStop(0, "#ffffff");
+        medalGradient.addColorStop(0.35, medal.accent);
+        medalGradient.addColorStop(1, medal.color);
+        context.fillStyle = medalGradient;
+        context.beginPath();
+        context.arc(0, 0, 72, 0, Math.PI * 2);
+        context.fill();
+        context.strokeStyle = "rgba(255,255,255,0.75)";
+        context.lineWidth = 7;
+        context.stroke();
+        drawStar(0, -5, 34, "#ffffff");
+        context.fillStyle = "#ffffff";
+        context.font = "900 22px Nunito, Arial, sans-serif";
+        context.textAlign = "center";
+        context.fillText(medal.icon.toUpperCase(), 0, 100);
+        context.restore();
+      }
+
       function drawCartoonChild(x, y, accent, isGirl = false) {
         context.save();
         context.translate(x, y);
@@ -3382,6 +3445,7 @@ function initReadingFluencyLab() {
       drawStar(1302, 132, 20, "#ffd86f");
       drawStar(472, 235, 13, "#ffbf2f");
       drawStar(1050, 218, 13, "#27b9a7");
+      drawMedal(1065, 160, data.medal);
 
       const ribbon = context.createLinearGradient(470, 62, 1030, 132);
       ribbon.addColorStop(0, "#5e18b8");
@@ -3418,11 +3482,12 @@ function initReadingFluencyLab() {
       context.fillText("You are a", 610, 418);
       context.fillStyle = "#9b36ff";
       context.beginPath();
-      context.roundRect(690, 384, 245, 52, 26);
+      context.roundRect(650, 384, 330, 52, 26);
       context.fill();
       context.fillStyle = "#ffffff";
-      context.fillText("Reading Star!", 812, 419);
-      drawStar(930, 410, 22, "#ffd86f");
+      context.font = data.medal.name.length > 14 ? "900 23px Nunito, Arial, sans-serif" : "900 28px Nunito, Arial, sans-serif";
+      context.fillText(data.medal.name, 815, 419);
+      drawStar(972, 410, 22, "#ffd86f");
 
       const metrics = [
         { icon: "🎓", label: "Grade & Level", value: data.gradeLabel, sub: data.levelText, color: "#6d25cb" },
