@@ -21,6 +21,28 @@ const teacherLock = document.querySelector("[data-teacher-lock]");
 const lockError = document.querySelector("[data-lock-error]");
 const teacherPasscode = "Kidsverse@2026";
 const teacherAccessKey = "kidsverseTeacherAssessmentAccess";
+const teacherResourceLogin = document.querySelector("[data-resource-login]");
+const teacherResourceLock = document.querySelector("[data-resource-lock]");
+const teacherResourceError = document.querySelector("[data-resource-lock-error]");
+const teacherResourceClassSelect = document.querySelector("[data-resource-class-select]");
+const teacherResourceActiveLabel = document.querySelector("[data-resource-active-label]");
+const teacherResourceSwitch = document.querySelector("[data-resource-switch]");
+const teacherResourceClassButtons = document.querySelectorAll("[data-resource-class-jump]");
+const teacherResourcePasscodes = {
+  playway: "Playway@2026",
+  nursery: "Nursery@2026",
+  lkg: "LKG@2026",
+  ukg: "UKG@2026",
+  grade1: "Grade1@2026",
+};
+const teacherResourceLabels = {
+  playway: "Playway",
+  nursery: "Nursery",
+  lkg: "LKG",
+  ukg: "UKG",
+  grade1: "Grade 1",
+};
+const teacherResourceAccessKey = "kidsverseTeacherResourceAccess";
 
 const gradeData = {
   "ukg-2": {
@@ -188,6 +210,88 @@ teacherLogin?.addEventListener("submit", (event) => {
     lockError.hidden = false;
   }
 });
+
+function showTeacherResourceClass(classKey) {
+  const label = teacherResourceLabels[classKey] || "Selected class";
+  document.body.classList.remove("is-locked");
+  if (teacherResourceLock) teacherResourceLock.hidden = true;
+  if (teacherResourceActiveLabel) teacherResourceActiveLabel.textContent = `${label} resource opened`;
+  document.querySelectorAll("[data-resource-class]").forEach((section) => {
+    section.hidden = section.dataset.resourceClass !== classKey;
+  });
+  teacherResourceClassButtons.forEach((button) => {
+    const active = button.dataset.resourceClassJump === classKey;
+    button.classList.toggle("is-active", active);
+    button.setAttribute("aria-pressed", String(active));
+  });
+}
+
+function lockTeacherResource(preselectClass = "") {
+  document.body.classList.add("is-locked");
+  if (teacherResourceLock) teacherResourceLock.hidden = false;
+  if (teacherResourceClassSelect && preselectClass) teacherResourceClassSelect.value = preselectClass;
+  if (teacherResourceLogin) teacherResourceLogin.reset();
+  if (teacherResourceClassSelect && preselectClass) teacherResourceClassSelect.value = preselectClass;
+  if (teacherResourceError) teacherResourceError.hidden = true;
+}
+
+if (teacherResourceLogin) {
+  const savedClass = sessionStorage.getItem(teacherResourceAccessKey);
+  if (savedClass && teacherResourcePasscodes[savedClass]) showTeacherResourceClass(savedClass);
+  else document.querySelectorAll("[data-resource-class]").forEach((section) => {
+    section.hidden = true;
+  });
+}
+
+teacherResourceLogin?.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const data = new FormData(teacherResourceLogin);
+  const classKey = data.get("resourceClass");
+  const passcode = data.get("passcode");
+  if (teacherResourcePasscodes[classKey] && teacherResourcePasscodes[classKey] === passcode) {
+    sessionStorage.setItem(teacherResourceAccessKey, classKey);
+    if (teacherResourceError) teacherResourceError.hidden = true;
+    showTeacherResourceClass(classKey);
+    return;
+  }
+  if (teacherResourceError) teacherResourceError.hidden = false;
+});
+
+teacherResourceSwitch?.addEventListener("click", () => {
+  sessionStorage.removeItem(teacherResourceAccessKey);
+  lockTeacherResource();
+});
+
+teacherResourceClassButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    const classKey = button.dataset.resourceClassJump;
+    const savedClass = sessionStorage.getItem(teacherResourceAccessKey);
+    if (savedClass === classKey) {
+      showTeacherResourceClass(classKey);
+      return;
+    }
+    sessionStorage.removeItem(teacherResourceAccessKey);
+    lockTeacherResource(classKey);
+  });
+});
+
+function initTeacherResourceAudio() {
+  document.querySelectorAll(".teacher-resource-page .resource-card-grid li, .teacher-resource-page .resource-card-grid article > p").forEach((line) => {
+    if (line.querySelector("[data-resource-audio]")) return;
+    const text = line.textContent.trim();
+    if (!text) return;
+    const button = document.createElement("button");
+    button.className = "resource-audio-button";
+    button.type = "button";
+    button.dataset.resourceAudio = text;
+    button.textContent = "Listen";
+    button.setAttribute("aria-label", `Listen to: ${text}`);
+    button.addEventListener("click", () => speakRoutineText(text, button));
+    line.appendChild(button);
+  });
+}
+
+initTeacherResourceAudio();
 
 const cultureForm = document.querySelector("[data-culture-form]");
 const cultureReport = document.querySelector("[data-culture-report]");
@@ -3439,13 +3543,14 @@ function initReadingFluencyLab() {
   listenButton?.addEventListener("click", () => speakRoutineText(activePassage().text, listenButton));
 
   shareButton?.addEventListener("click", async () => {
-    const shareText = latestCertificateText || `${getStudentName()} completed Kidsverse Reading Fluency practice today.`;
+    const labLink = window.location.href;
+    const shareText = `${latestCertificateText || `${getStudentName()} completed Kidsverse Reading Fluency practice today.`}\nPractice here: ${labLink}`;
     const certificateBlob = await createReadingCertificateBlob();
     if (certificateBlob) {
       const file = new File([certificateBlob], "kidsverse-reading-star-certificate.png", { type: "image/png" });
       if (navigator.share && navigator.canShare?.({ files: [file] })) {
         try {
-          await navigator.share({ title: "Kidsverse Reading Star Certificate", text: shareText, files: [file] });
+          await navigator.share({ title: "Kidsverse Reading Star Certificate", text: shareText, url: labLink, files: [file] });
           if (shareNote) shareNote.textContent = "Certificate image shared successfully.";
           return;
         } catch {
@@ -3456,7 +3561,7 @@ function initReadingFluencyLab() {
     }
     if (navigator.share) {
       try {
-        await navigator.share({ title: "Kidsverse Reading Star Certificate", text: shareText, url: window.location.href });
+        await navigator.share({ title: "Kidsverse Reading Star Certificate", text: shareText, url: labLink });
         if (shareNote) shareNote.textContent = "Certificate shared successfully.";
         return;
       } catch {
@@ -3465,7 +3570,7 @@ function initReadingFluencyLab() {
       }
     }
     try {
-      await navigator.clipboard.writeText(`${shareText} ${window.location.href}`);
+      await navigator.clipboard.writeText(shareText);
       if (shareNote) shareNote.textContent = "Certificate message copied. You can paste it on WhatsApp or social media.";
     } catch {
       if (shareNote) shareNote.textContent = shareText;
