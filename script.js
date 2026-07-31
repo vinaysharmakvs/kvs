@@ -82,7 +82,9 @@ function enhanceAfterSchoolMenu() {
     const hasAfterSchoolDropdown = [...nav.querySelectorAll(".nav-dropdown .nav-parent")].some(
       (link) => link.textContent.trim().toLowerCase() === "after school"
     );
-    if (hasAfterSchoolDropdown) return;
+    if (hasAfterSchoolDropdown) {
+      return;
+    }
 
     const afterSchoolLink = [...nav.children].find(
       (child) => child.matches?.("a") && child.textContent.trim().toLowerCase() === "after school"
