@@ -191,15 +191,21 @@
       }
     }
 
-    try {
-      video.srcObject = stream;
-      await video.play?.();
-      videoEmpty.hidden = true;
-      cameraOffButton.disabled = false;
-      cameraButton.textContent = "Camera On";
-    } catch (error) {
-      stopCamera();
-      videoEmpty.innerHTML = "<strong>Preview paused</strong><span>Camera permission worked, but the video preview could not play. Please refresh and try again.</span>";
+    video.muted = true;
+    video.playsInline = true;
+    video.autoplay = true;
+    video.srcObject = stream;
+    videoEmpty.hidden = true;
+    video.classList.add("is-camera-on");
+    cameraOffButton.disabled = false;
+    cameraButton.textContent = "Camera On";
+
+    const playPromise = video.play?.();
+    if (playPromise?.catch) {
+      playPromise.catch(() => {
+        videoEmpty.hidden = false;
+        videoEmpty.innerHTML = "<strong>Tap the video area</strong><span>Camera permission worked. Tap here once to show the preview.</span>";
+      });
     }
   }
 
@@ -207,7 +213,9 @@
     stream?.getTracks().forEach((track) => track.stop());
     stream = null;
     video.srcObject = null;
+    video.classList.remove("is-camera-on");
     videoEmpty.hidden = false;
+    videoEmpty.innerHTML = "<strong>Mirror Practice</strong><span>Camera preview will appear here.</span>";
     cameraOffButton.disabled = true;
     cameraButton.textContent = "Start Camera";
   }
@@ -436,6 +444,18 @@
   activitySelect?.addEventListener("change", () => renderMission(findActivity(activitySelect.value)));
   cameraButton?.addEventListener("click", startCamera);
   cameraOffButton?.addEventListener("click", stopCamera);
+  videoEmpty?.addEventListener("click", () => {
+    if (!stream) {
+      startCamera();
+      return;
+    }
+    video.play?.().then(() => {
+      videoEmpty.hidden = true;
+      video.classList.add("is-camera-on");
+    }).catch(() => {
+      videoEmpty.innerHTML = "<strong>Preview still blocked</strong><span>Please refresh, allow Camera from the browser lock icon, then tap Start Camera again.</span>";
+    });
+  });
   startButton?.addEventListener("click", startSpeaking);
   stopButton?.addEventListener("click", stopSpeaking);
   hintButton?.addEventListener("click", () => {
