@@ -37,6 +37,17 @@
   let selectedMission = null;
   let interimText = "";
 
+  video?.addEventListener("loadedmetadata", () => {
+    if (!stream) return;
+    videoEmpty.hidden = true;
+    video.classList.add("is-camera-on");
+  });
+
+  video?.addEventListener("playing", () => {
+    videoEmpty.hidden = true;
+    video.classList.add("is-camera-on");
+  });
+
   const missions = [
     ["Introduce yourself", "Tell us your name, class, school and one thing you enjoy.", ["Say your name", "Share your class", "Tell one favourite thing"], "Begin with: My name is..."],
     ["Describe your school", "Speak about your school and what you like there.", ["Where it is", "Your classroom", "A favourite place"], "Think about one place in school you like."],
