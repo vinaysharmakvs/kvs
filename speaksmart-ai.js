@@ -163,17 +163,43 @@
   }
 
   async function startCamera() {
-    if (!navigator.mediaDevices?.getUserMedia) {
-      videoEmpty.innerHTML = "<strong>Camera unavailable</strong><span>You can continue in audio-only or typed practice mode.</span>";
+    if (stream) return;
+    const mediaDevices = window.navigator?.mediaDevices;
+    if (!window.isSecureContext) {
+      videoEmpty.innerHTML = "<strong>Secure page needed</strong><span>Please open this page on https to use the camera.</span>";
+      return;
+    }
+    if (!mediaDevices?.getUserMedia) {
+      videoEmpty.innerHTML = "<strong>Camera unavailable</strong><span>This browser does not allow camera access here. You can continue with audio-only or typed practice.</span>";
       return;
     }
     try {
-      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: true });
+      stream = await mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false });
+    } catch (firstError) {
+      try {
+        stream = await mediaDevices.getUserMedia({ video: true, audio: false });
+      } catch (error) {
+        const errorName = error?.name || firstError?.name || "";
+        const message =
+          errorName === "NotAllowedError"
+            ? "Camera permission was blocked. Please allow camera access from the browser address bar and try again."
+            : errorName === "NotFoundError"
+              ? "No camera was found on this device. You can continue with audio-only or typed practice."
+              : "Camera could not start. Close other apps using the camera, then try again.";
+        videoEmpty.innerHTML = `<strong>Camera not started</strong><span>${message}</span>`;
+        return;
+      }
+    }
+
+    try {
       video.srcObject = stream;
+      await video.play?.();
       videoEmpty.hidden = true;
       cameraOffButton.disabled = false;
+      cameraButton.textContent = "Camera On";
     } catch (error) {
-      videoEmpty.innerHTML = "<strong>Permission needed</strong><span>Please allow camera or continue with audio-only typing.</span>";
+      stopCamera();
+      videoEmpty.innerHTML = "<strong>Preview paused</strong><span>Camera permission worked, but the video preview could not play. Please refresh and try again.</span>";
     }
   }
 
@@ -183,6 +209,7 @@
     video.srcObject = null;
     videoEmpty.hidden = false;
     cameraOffButton.disabled = true;
+    cameraButton.textContent = "Start Camera";
   }
 
   function createRecognition() {
