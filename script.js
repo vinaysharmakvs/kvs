@@ -1,3851 +1,9164 @@
-const menuButton = document.querySelector("[data-menu-button]");
-const siteHeader = document.querySelector(".site-header");
-const gradeButtons = document.querySelectorAll("[data-grade]");
-const gradeResult = document.querySelector("[data-grade-result]");
-const inquiryForm = document.querySelector(".inquiry-form");
-const kiyaWidget = document.querySelector("[data-kiya-widget]");
-const kiyaToggle = document.querySelector("[data-kiya-toggle]");
-const kiyaPanel = document.querySelector("[data-kiya-panel]");
-const kiyaClose = document.querySelector("[data-kiya-close]");
-const readinessForm = document.querySelector("[data-readiness-form]");
-const readinessResult = document.querySelector("[data-readiness-result]");
-const parentFeedbackForm = document.querySelector("[data-parent-feedback-form]");
-const feedbackPercent = document.querySelector("[data-feedback-percent]");
-const feedbackMood = document.querySelector("[data-feedback-mood]");
-const feedbackProgress = document.querySelector("[data-feedback-progress]");
-const feedbackSubmit = document.querySelector("[data-feedback-submit]");
-const feedbackValidation = document.querySelector("[data-feedback-validation]");
-const feedbackThankYou = document.querySelector("[data-feedback-thank-you]");
-const teacherLogin = document.querySelector("[data-teacher-login]");
-const teacherLock = document.querySelector("[data-teacher-lock]");
-const lockError = document.querySelector("[data-lock-error]");
-const teacherPasscode = "Kidsverse@2026";
-const teacherAccessKey = "kidsverseTeacherAssessmentAccess";
-const teacherResourceLogin = document.querySelector("[data-resource-login]");
-const teacherResourceLock = document.querySelector("[data-resource-lock]");
-const teacherResourceError = document.querySelector("[data-resource-lock-error]");
-const teacherResourceClassSelect = document.querySelector("[data-resource-class-select]");
-const teacherResourceActiveLabel = document.querySelector("[data-resource-active-label]");
-const teacherResourceSwitch = document.querySelector("[data-resource-switch]");
-const teacherResourceClassButtons = document.querySelectorAll("[data-resource-class-jump]");
-const teacherResourcePasscodes = {
-  playway: "Playway@2026",
-  nursery: "Nursery@2026",
-  lkg: "LKG@2026",
-  ukg: "UKG@2026",
-  grade1: "Grade1@2026",
-};
-const teacherResourceLabels = {
-  playway: "Playway",
-  nursery: "Nursery",
-  lkg: "LKG",
-  ukg: "UKG",
-  grade1: "Grade 1",
-};
-const teacherResourceAccessKey = "kidsverseTeacherResourceAccess";
-
-const gradeData = {
-  "ukg-2": {
-    label: "Foundation and confidence support",
-    title: "Reading, writing, numbers, spoken English and daily study discipline.",
-    text: "For younger learners, we focus on homework rhythm, neat work, classroom confidence, basic concepts and communication comfort.",
-  },
-  "3-5": {
-    label: "Strong habits and exam readiness",
-    title: "Concept clarity, disciplined practice and confident communication.",
-    text: "Students build stronger basics, English speaking comfort, written practice, revision habits and early competitive exam awareness.",
-  },
-  "6-8": {
-    label: "Middle school mentoring",
-    title: "Academics, personality development and Sainik/Navodaya direction.",
-    text: "We support school subjects, assignments, reasoning practice, communication, discipline and focused preparation for Sainik School and Navodaya exams.",
-  },
-  "9-10": {
-    label: "High school exam support",
-    title: "Exam preparation, revision discipline and confident performance.",
-    text: "For Grade 9 and 10, the focus moves toward subject clarity, planned revision, doubt-solving, presentation skills and exam confidence.",
-  },
-};
-
-function renderGrade(key) {
-  const data = gradeData[key] || gradeData["ukg-2"];
-  if (!gradeResult) return;
-  gradeResult.innerHTML = `<span>${data.label}</span><h3>${data.title}</h3><p>${data.text}</p>`;
+:root {
+  --ink: #1f3142;
+  --muted: #647385;
+  --paper: #fffaf1;
+  --white: #ffffff;
+  --peach: #ffd8c5;
+  --coral: #ff725f;
+  --sun: #ffd86f;
+  --mint: #d9f7e8;
+  --teal: #27b9a7;
+  --sky: #c9ecff;
+  --lilac: #ded7ff;
+  --line: rgba(31, 49, 66, 0.1);
+  --shadow: 0 24px 70px rgba(31, 49, 66, 0.12);
+  --radius: 8px;
 }
 
-function getRootPath() {
-  return window.location.pathname.includes("/after-school/") ? "../" : "";
+/* Kidsverse SpeakSmart AI */
+.speaksmart-page {
+  background:
+    linear-gradient(90deg, rgba(31, 49, 66, 0.035) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(31, 49, 66, 0.035) 1px, transparent 1px),
+    radial-gradient(circle at 10% 8%, rgba(255, 212, 95, 0.34), transparent 30%),
+    radial-gradient(circle at 92% 12%, rgba(125, 92, 255, 0.18), transparent 32%),
+    linear-gradient(180deg, #fff8ec 0%, #eef7ff 48%, #fff9f1 100%);
+  background-size: 42px 42px, 42px 42px, auto, auto, auto;
 }
 
-function enhanceAfterSchoolMenu() {
-  document.querySelectorAll(".nav-links").forEach((nav) => {
-    const hasAfterSchoolDropdown = [...nav.querySelectorAll(".nav-dropdown .nav-parent")].some(
-      (link) => link.textContent.trim().toLowerCase() === "after school"
-    );
-    if (hasAfterSchoolDropdown) {
-      return;
-    }
-
-    const afterSchoolLink = [...nav.children].find(
-      (child) => child.matches?.("a") && child.textContent.trim().toLowerCase() === "after school"
-    );
-    if (!afterSchoolLink) return;
-
-    const root = getRootPath();
-    const dropdown = document.createElement("div");
-    dropdown.className = "nav-dropdown after-school-nav-dropdown";
-    dropdown.innerHTML = `
-      <a class="nav-parent" href="${root}after-school.html">After School</a>
-      <div class="nav-menu nav-menu-learning">
-        <a href="${root}after-school.html">After School Overview</a>
-        <a class="nav-menu-label" href="${root}after-school/present-tense.html">English Learning Lab</a>
-        <a class="nav-sub-link" href="${root}after-school/present-tense.html">Present Tense</a>
-        <a class="nav-sub-link" href="${root}after-school/past-tense.html">Past Tense</a>
-        <a class="nav-sub-link" href="${root}after-school/future-tense.html">Future Tense</a>
-        <a class="nav-sub-link" href="${root}after-school/daily-routine-verbs.html">Daily Routine Verbs</a>
-        <a class="nav-sub-link" href="${root}after-school/reading-fluency.html">Reading Fluency</a>
-      </div>
-    `;
-    afterSchoolLink.replaceWith(dropdown);
-  });
+.speaksmart-hero {
+  width: min(1180px, calc(100% - 32px));
+  margin: 34px auto 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 0.86fr);
+  gap: 28px;
+  align-items: stretch;
 }
 
-enhanceAfterSchoolMenu();
-
-menuButton?.addEventListener("click", () => {
-  const open = siteHeader.classList.toggle("is-open");
-  menuButton.textContent = open ? "Close" : "Menu";
-  menuButton.setAttribute("aria-expanded", String(open));
-});
-
-document.querySelectorAll(".nav-links a").forEach((link) => {
-  link.addEventListener("click", () => {
-    siteHeader.classList.remove("is-open");
-    if (menuButton) {
-      menuButton.textContent = "Menu";
-      menuButton.setAttribute("aria-expanded", "false");
-    }
-  });
-});
-
-gradeButtons.forEach((button) => {
-  button.addEventListener("click", () => {
-    gradeButtons.forEach((item) => item.classList.toggle("is-active", item === button));
-    renderGrade(button.dataset.grade);
-  });
-});
-
-inquiryForm?.addEventListener("submit", (event) => {
-  event.preventDefault();
-  const data = new FormData(inquiryForm);
-  const message = encodeURIComponent(
-    `Hello Kidsverse School Rehan, I want to enquire. Parent: ${data.get("name")}. Mobile: ${data.get("phone")}. Program: ${data.get("program")}. Child age/grade: ${data.get("age")}.`
-  );
-  window.open(`https://wa.me/918826758881?text=${message}`, "_blank", "noopener,noreferrer");
-});
-
-function setKiyaOpen(open) {
-  if (!kiyaWidget || !kiyaToggle || !kiyaPanel) return;
-  kiyaWidget.classList.toggle("is-open", open);
-  kiyaPanel.hidden = !open;
-  kiyaToggle.setAttribute("aria-expanded", String(open));
+.speaksmart-hero-copy,
+.speaksmart-camera-mock,
+.smart-profile-card,
+.smart-dashboard-head,
+.smart-video-card,
+.smart-question-panel,
+.speaksmart-transcript,
+.speaksmart-feedback,
+.speaksmart-progress {
+  border: 1px solid rgba(45, 70, 105, 0.12);
+  box-shadow: 0 24px 70px rgba(56, 68, 108, 0.12);
 }
 
-setKiyaOpen(false);
-
-kiyaToggle?.addEventListener("click", () => {
-  setKiyaOpen(!kiyaWidget?.classList.contains("is-open"));
-});
-
-kiyaClose?.addEventListener("click", () => {
-  setKiyaOpen(false);
-});
-
-function enhanceKiyaLearningLinks() {
-  document.querySelectorAll(".kiya-links").forEach((links) => {
-    const labRoot = window.location.pathname.includes("/after-school/") ? "" : "after-school/";
-    const learningLinks = [
-      { href: `${labRoot}present-tense.html`, label: "Present Tense Lab" },
-      { href: `${labRoot}past-tense.html`, label: "Past Tense Lab" },
-      { href: `${labRoot}future-tense.html`, label: "Future Tense Lab" },
-      { href: `${labRoot}daily-routine-verbs.html`, label: "Daily Routine Verbs" },
-      { href: `${labRoot}reading-fluency.html`, label: "Reading Fluency" },
-    ];
-
-    learningLinks.forEach((item) => {
-      const alreadyExists = [...links.querySelectorAll("a")].some((link) => link.getAttribute("href") === item.href || link.textContent.trim() === item.label);
-      if (alreadyExists) return;
-      const link = document.createElement("a");
-      link.href = item.href;
-      link.textContent = item.label;
-      links.appendChild(link);
-    });
-  });
-
-  document.querySelectorAll(".kiya-body > p").forEach((intro) => {
-    if (intro.dataset.learningUpdated) return;
-    intro.textContent = "Namaste. I can help you open admission, programmes, English grammar labs, daily verbs and reading fluency practice.";
-    intro.dataset.learningUpdated = "true";
-  });
+.speaksmart-hero-copy {
+  position: relative;
+  overflow: hidden;
+  border-radius: 30px;
+  padding: clamp(24px, 5vw, 52px);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(237, 249, 255, 0.82));
 }
 
-enhanceKiyaLearningLinks();
-
-document.querySelectorAll(".kiya-links a").forEach((link) => {
-  link.addEventListener("click", () => setKiyaOpen(false));
-});
-
-function unlockTeacherAssessment() {
-  document.body.classList.remove("is-locked");
-  if (teacherLock) teacherLock.hidden = true;
+.speaksmart-hero-copy::after {
+  content: "";
+  position: absolute;
+  inset: auto -12% -46% 18%;
+  height: 260px;
+  pointer-events: none;
+  background: conic-gradient(from 120deg, rgba(117, 98, 255, 0.2), rgba(48, 199, 255, 0.16), rgba(255, 212, 95, 0.18), rgba(117, 98, 255, 0.2));
+  filter: blur(18px);
+  transform: rotateX(70deg);
 }
 
-if (teacherLogin && localStorage.getItem(teacherAccessKey) === "granted") {
-  unlockTeacherAssessment();
+.speaksmart-hero-copy h1 {
+  max-width: 780px;
+  margin: 8px 0 14px;
+  color: #18284a;
+  font-size: clamp(2.6rem, 7vw, 5.8rem);
+  line-height: 0.92;
 }
 
-teacherLogin?.addEventListener("submit", (event) => {
-  event.preventDefault();
-  const formData = new FormData(teacherLogin);
-  if (formData.get("passcode") === teacherPasscode) {
-    localStorage.setItem(teacherAccessKey, "granted");
-    unlockTeacherAssessment();
-  } else if (lockError) {
-    lockError.hidden = false;
-  }
-});
-
-function showTeacherResourceClass(classKey) {
-  const label = teacherResourceLabels[classKey] || "Selected class";
-  document.body.classList.remove("is-locked");
-  if (teacherResourceLock) teacherResourceLock.hidden = true;
-  if (teacherResourceActiveLabel) teacherResourceActiveLabel.textContent = `${label} resource opened`;
-  document.querySelectorAll("[data-resource-class]").forEach((section) => {
-    section.hidden = section.dataset.resourceClass !== classKey;
-  });
-  teacherResourceClassButtons.forEach((button) => {
-    const active = button.dataset.resourceClassJump === classKey;
-    button.classList.toggle("is-active", active);
-    button.setAttribute("aria-pressed", String(active));
-  });
+.speaksmart-hero-copy p {
+  max-width: 680px;
+  color: rgba(24, 40, 74, 0.72);
+  font-size: 1.12rem;
 }
 
-function lockTeacherResource(preselectClass = "") {
-  document.body.classList.add("is-locked");
-  if (teacherResourceLock) teacherResourceLock.hidden = false;
-  if (teacherResourceClassSelect && preselectClass) teacherResourceClassSelect.value = preselectClass;
-  if (teacherResourceLogin) teacherResourceLogin.reset();
-  if (teacherResourceClassSelect && preselectClass) teacherResourceClassSelect.value = preselectClass;
-  if (teacherResourceError) teacherResourceError.hidden = true;
+.speaksmart-safety-note {
+  position: relative;
+  z-index: 1;
+  margin-top: 22px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: rgba(255, 244, 204, 0.88);
+  color: #674b00;
+  font-weight: 800;
 }
 
-function getTeacherResourceQueryAccess() {
-  const params = new URLSearchParams(window.location.search);
-  const classKey = String(params.get("resourceClass") || "").trim().toLowerCase();
-  const passcode = String(params.get("passcode") || "").trim();
-  if (teacherResourcePasscodes[classKey] && teacherResourcePasscodes[classKey] === passcode) return classKey;
-  return "";
+.speaksmart-skill-constellation {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 18px;
+  perspective: 900px;
+  transform-style: preserve-3d;
 }
 
-if (teacherResourceLogin) {
-  const queryClass = getTeacherResourceQueryAccess();
-  const savedClass = sessionStorage.getItem(teacherResourceAccessKey);
-  if (queryClass) {
-    sessionStorage.setItem(teacherResourceAccessKey, queryClass);
-    showTeacherResourceClass(queryClass);
-  } else if (savedClass && teacherResourcePasscodes[savedClass]) showTeacherResourceClass(savedClass);
-  else document.querySelectorAll("[data-resource-class]").forEach((section) => {
-    section.hidden = true;
-  });
+.speaksmart-skill-constellation span {
+  min-height: 72px;
+  display: grid;
+  place-items: center;
+  border-radius: 18px;
+  color: #17264b;
+  font-weight: 950;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.94), rgba(227, 247, 255, 0.72));
+  border: 1px solid rgba(80, 92, 170, 0.14);
+  box-shadow: 0 16px 34px rgba(45, 64, 110, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.86);
+  transform: translateZ(calc(var(--depth, 1) * 10px)) rotateX(10deg);
+  transition: transform 0.24s ease, box-shadow 0.24s ease;
 }
 
-teacherResourceLogin?.addEventListener("submit", (event) => {
-  event.preventDefault();
-  const data = new FormData(teacherResourceLogin);
-  const classKey = data.get("resourceClass");
-  const passcode = data.get("passcode");
-  if (teacherResourcePasscodes[classKey] && teacherResourcePasscodes[classKey] === passcode) {
-    sessionStorage.setItem(teacherResourceAccessKey, classKey);
-    if (teacherResourceError) teacherResourceError.hidden = true;
-    showTeacherResourceClass(classKey);
-    return;
-  }
-  if (teacherResourceError) teacherResourceError.hidden = false;
-});
+.speaksmart-skill-constellation span:nth-child(1) { --depth: 1; }
+.speaksmart-skill-constellation span:nth-child(2) { --depth: 2; }
+.speaksmart-skill-constellation span:nth-child(3) { --depth: 3; }
+.speaksmart-skill-constellation span:nth-child(4) { --depth: 4; }
 
-teacherResourceSwitch?.addEventListener("click", () => {
-  sessionStorage.removeItem(teacherResourceAccessKey);
-  lockTeacherResource();
-});
-
-teacherResourceClassButtons.forEach((button) => {
-  button.addEventListener("click", () => {
-    const classKey = button.dataset.resourceClassJump;
-    const savedClass = sessionStorage.getItem(teacherResourceAccessKey);
-    if (savedClass === classKey) {
-      showTeacherResourceClass(classKey);
-      return;
-    }
-    sessionStorage.removeItem(teacherResourceAccessKey);
-    lockTeacherResource(classKey);
-  });
-});
-
-function initTeacherResourceAudio() {
-  document.querySelectorAll(".teacher-resource-page .resource-card-grid li, .teacher-resource-page .resource-card-grid article > p").forEach((line) => {
-    if (line.querySelector("[data-resource-audio]")) return;
-    const text = line.textContent.trim();
-    if (!text) return;
-    const button = document.createElement("button");
-    button.className = "resource-audio-button";
-    button.type = "button";
-    button.dataset.resourceAudio = text;
-    button.textContent = "Listen";
-    button.setAttribute("aria-label", `Listen to: ${text}`);
-    button.addEventListener("click", () => speakRoutineText(text, button));
-    line.appendChild(button);
-  });
+.speaksmart-skill-constellation span:hover {
+  transform: translateY(-6px) translateZ(44px) rotateX(0deg);
+  box-shadow: 0 24px 48px rgba(45, 64, 110, 0.18);
 }
 
-initTeacherResourceAudio();
-
-const cultureForm = document.querySelector("[data-culture-form]");
-const cultureReport = document.querySelector("[data-culture-report]");
-const pdfAssessmentButton = document.querySelector("[data-pdf-assessment]");
-const assessmentActionButtons = document.querySelectorAll("[data-assessment-action]");
-const assessmentValidation = document.querySelector("[data-assessment-validation]");
-const studentReportForm = document.querySelector("[data-student-report-form]");
-const studentReportOutput = document.querySelector("[data-student-report-output]");
-const studentReportButtons = document.querySelectorAll("[data-student-report-action]");
-const studentReportValidation = document.querySelector("[data-student-report-validation]");
-const studentReportPdf = document.querySelector("[data-student-report-pdf]");
-const studentPhotoInput = document.querySelector("[data-student-photo-input]");
-const studentClassSelect = document.querySelector("[data-student-class-select]");
-const studentNameSelect = document.querySelector("[data-student-name-select]");
-const studentTeacherSelect = document.querySelector("[data-student-teacher-select]");
-const teacherReadingForm = document.querySelector("[data-teacher-reading-form]");
-const teacherReadingName = document.querySelector("[data-teacher-reading-name]");
-const teacherReadingOtherWrap = document.querySelector("[data-teacher-reading-other-wrap]");
-const teacherReadingOther = document.querySelector("[data-teacher-reading-other]");
-const teacherReadingPhotoInput = document.querySelector("[data-teacher-reading-photo]");
-const teacherReadingPhotoPreview = document.querySelector("[data-teacher-reading-photo-preview]");
-const teacherReadingPassageWrap = document.querySelector("[data-teacher-reading-passages]");
-const teacherReadingReport = document.querySelector("[data-teacher-reading-report]");
-const teacherReadingValidation = document.querySelector("[data-teacher-reading-validation]");
-const teacherReadingPrint = document.querySelector("[data-teacher-reading-print]");
-let studentPhotoDataUrl = "";
-let teacherReadingPhotoDataUrl = "";
-const studentRosters = {
-  "Playway - Alpha": {
-    teacher: "Ms Kajal",
-    students: [
-      "Harshiv Dhiman",
-      "Aariv Choudhary",
-      "Daksh Manhas",
-      "Kiyansh Bhardwaj",
-      "Kriday Sharma",
-      "Rivaan Sharma",
-      "Smarth Thakur",
-      "Navikaa Dhiman",
-    ],
-  },
-  "Nursery - Alpha": {
-    teacher: "Ms Diksha",
-    students: [
-      "Prashi Dhiman",
-      "Kaviya Sharma",
-      "Raghavan Kashyap",
-      "Kashvi",
-      "Rudraksh Divya Sharma",
-      "Wamika Singh",
-      "Kashvi",
-      "Samayra",
-      "Taksh Sharma",
-      "Tarish Sharma",
-      "Nivisha Sharma",
-      "Manya",
-      "Suryansh",
-      "Diyansh bhardwaj",
-      "Anaya Choudhary",
-      "Rudraditya Singh Rana",
-      "Vanya Sharma",
-      "Aarvik narang",
-      "Tysha Naharwaria",
-      "Shreyansh Rana Rajput",
-      "Rabhya Thakur",
-      "Agastya Sharma",
-      "Rabnoor",
-      "Kashvi Modgil",
-    ],
-  },
-  "Nursery - Beta": {
-    teacher: "Ms Rubi",
-    students: [
-      "Prisha Dhiman",
-      "Radhika",
-      "Aabid Khan",
-      "Aadil Khan",
-      "Aarav Singh",
-      "Naira Sharma",
-      "Divyam Sharma",
-      "Harnoor Kaur",
-      "Samarth Awasti",
-      "Gurpreet kaur",
-      "Ayaan Sharma",
-      "Sanvi Sharma",
-      "Shiv Pathania",
-      "Manraj Singh",
-      "Lakshit Mankotia",
-      "Manvik Singh",
-      "Vedaant",
-      "PranaV Panjla",
-      "Vedansh",
-      "Samayra",
-      "Manvi Sharma",
-      "Gunvit Singh",
-      "Aarav",
-      "Suryansh Sharma",
-    ],
-  },
-  "Nursery - Gamma": {
-    teacher: "Ms Meenakshi",
-    students: [
-      "Advay Pakhreria",
-      "Advay Pakhreria",
-      "Vedansh Kutlehria",
-      "Parineeta",
-      "Parineeti",
-      "Aashvi Thakur",
-      "Shivansh Sharma",
-      "Vriha Sharma",
-      "Trinaj Kaushal",
-      "Hardik Pathania",
-      "Amayra Sharma",
-      "Saisha Sharma",
-      "Aadish",
-      "Nyra Thakur",
-      "Pranav Pathania",
-      "Riyansh Koundal",
-      "Agastya Choudhary",
-      "Shambhavi Sharma",
-      "Kiara Sharma",
-      "Manya Sharma",
-      "Yadunandan Sharma",
-      "Vidushi",
-      "Rudraksh",
-      "Aadil Sharma",
-      "Kavish Choudhary",
-      "Mitaksh Pathania",
-      "Yashmit Mankotia",
-      "Aadhya Singh",
-      "Shivansh Guleria",
-      "Shinoy Bhardwaj",
-    ],
-  },
-  "LKG - Alpha": {
-    teacher: "Ms Darshana",
-    students: [
-      "Barleen Kaur",
-      "Arpit pathania",
-      "dhruvit sharma",
-      "Aradhya",
-      "Prathyush",
-      "Atharv mankotia",
-      "Anaya",
-      "Dhruv Sapehia",
-      "KAVISH THAKUR",
-      "SHIRIN",
-      "KRISHIV RANA",
-      "Bhavika",
-      "Rushant Guleria",
-      "Aarush Singh",
-      "Aadvik Samkaria",
-      "Anaya",
-      "Jasmine Pathania",
-      "Rushita Koundal",
-      "Jashvi Rana",
-      "Rubab Rana",
-      "Dhriti Sharma",
-      "Krishiv Sharma",
-      "Naira",
-      "Kashvi",
-    ],
-  },
-  "LKG - Beta": {
-    teacher: "Ms Neena",
-    students: [
-      "Smayra Dhiman",
-      "ishan rana",
-      "Akshit pathania",
-      "Saket",
-      "Kairav Sharma",
-      "Kanishk",
-      "Krishav Thakur",
-      "Harleen kaur",
-      "Sahibpreet Singh",
-      "Shivansh sharma",
-      "Jasveen kaur",
-      "krishaa thakur",
-      "Saransh Guleria",
-      "Arindham Bhardwaj",
-      "Rounak",
-      "Mitansh Thakur",
-      "tanishka sandhu",
-      "samaira sharma",
-      "mishika dhiman",
-      "Kiara Dadwal",
-      "shivaansh bhardwaj",
-      "Gitansh sharma",
-      "Samaira Choudhary",
-      "Rihan Gaidher",
-      "Hitika Kalia",
-      "Agamjot Singh",
-      "Avyukt Sharma",
-    ],
-  },
-  "LKG - Gamma": {
-    teacher: "Ms Puja",
-    students: [
-      "Mahir Gautam",
-      "Atharv Pandit",
-      "Chahat Thakur",
-      "Dhriti rana",
-      "Trishika Guleria",
-      "Ekansh",
-      "Aashutosh Sharma",
-      "Arshveer",
-      "Advik pathania",
-      "Aaira Sharma",
-      "Kridham",
-      "Siromani Gandharvika",
-      "Daksh rana",
-      "Ojasvi thakur",
-      "Atharva pathania",
-      "Manvik Singh",
-      "Yuvik pathania",
-      "Aashvi sharma",
-      "Keerat",
-      "Aashvi",
-      "Hetal",
-      "Shanaya naryal",
-      "Krisha pathania",
-      "Parnika Rajput",
-      "Swastika Koundal",
-      "Avnish choudhary",
-      "Saanvi Bhatia",
-    ],
-  },
-  "UKG - Alpha": {
-    teacher: "Ms Rajnish",
-    students: [
-      "Lavit Minahas",
-      "Gourish Bhandari",
-      "Kartik",
-      "Akarsh Singh Mankotia",
-      "Inayat Sharma",
-      "Navish Sharma",
-      "Raghavi",
-      "Aadvik Bhardwaj",
-      "Mankirat Singh",
-      "Sunali Thakur",
-      "Aashita Sharma",
-      "Parv Dhiman",
-      "Aavya Sharma",
-      "Rihan Sharma",
-      "Aadhvika Sharma",
-      "Shivank Sharma",
-      "Jasnoor Kaur",
-      "Anaya Thakur",
-      "Anandit Sandhu",
-      "Aahana Pathania",
-      "Dipansh",
-      "Anayra Rajput",
-      "Ayush pathania",
-      "Aashvik Dhiman",
-      "Viransh",
-      "Atharv Rana",
-      "Suryansh",
-      "Aashvi Singh",
-    ],
-  },
-  "UKG - Beta": {
-    teacher: "Ms Priya",
-    students: [
-      "Aayra Sharma",
-      "Abira",
-      "Riyansh sharma",
-      "Ennayat Kaushal",
-      "Shouvik",
-      "Anayra Sharma",
-      "Avyansh Sharma",
-      "Sharvil Dhiman",
-      "prabhleen kaur",
-      "Aditi mankotia",
-      "Abhyuday Singh",
-      "navika katoch",
-      "Parneet kaur sandhu",
-      "avnoor singh",
-      "Divyanshi",
-      "Aarav Guleria",
-      "Saira Sharma",
-      "Viraaj veer Sharma",
-      "Geetanshi Kutlehria",
-      "Mannat",
-      "Avni Pathania",
-      "Samraat Pathania",
-      "Ashita Bhatia",
-      "Aadhvik sharma",
-      "Kavyansh Dhiman",
-      "Sehajleen Kaur",
-      "Rudvika",
-      "Riyanshi Dhiman",
-      "Ritika",
-      "Vivan",
-    ],
-  },
-  "Grade 1 - Alpha": {
-    teacher: "Ms Shikha",
-    students: [
-      "Kairav Patiyal",
-      "Harshida",
-      "Arabjot Singh",
-      "Adhira Rana",
-      "Abir Sharma",
-      "Amyra Bhardwaj",
-      "Rutakshya",
-      "Twisha",
-      "Anaya",
-      "Naman Choudhary",
-      "Mokshita Sharma",
-      "Vansh Rana",
-      "Devarsh Pathania",
-      "Rutvin Sapehia",
-      "Yamya Singh",
-      "Ashvik Dhiman",
-      "Abhinandan Sharma",
-      "Swastik Sharma",
-      "Rudraksh Bhardwaj",
-      "Mitansh Nangla",
-      "Anav Pathania",
-    ],
-  },
-};
-const cultureAreas = [
-  { key: "greetings", label: "Respect & Greetings", strength: "Students greet teachers and visitors confidently.", improve: "Practice daily greeting routines and standing response." },
-  { key: "walking", label: "Walking Discipline", strength: "Students move in lines with good control.", improve: "Improve silent walking, line formation and monitor-led movement." },
-  { key: "water", label: "Water & Washroom Discipline", strength: "Students follow washroom and water routines responsibly.", improve: "Remind children to take permission, return quietly and close taps." },
-  { key: "environment", label: "Environmental Awareness", strength: "Students show care for classroom resources.", improve: "Assign energy and water monitors to switch off lights, fans and taps." },
-  { key: "classroom", label: "Classroom Behaviour", strength: "Students listen, sit properly and follow classroom instructions.", improve: "Reinforce hand-raising, silence practice and active listening." },
-  { key: "property", label: "Respect for School Property", strength: "Students care for books, desks and classroom materials.", improve: "Use a responsibility chart for books, dustbins and shared materials." },
-  { key: "personal", label: "Personal Discipline", strength: "Students maintain personal grooming and school readiness.", improve: "Add a weekly uniform, nails, shoes and ID-card reminder." },
-  { key: "values", label: "Values", strength: "Students show kindness, sharing and polite communication.", improve: "Use values role play for please, sorry, thank you and helping habits." },
-];
-
-function getCultureData() {
-  if (!cultureForm) return null;
-  const formData = new FormData(cultureForm);
-  const scores = cultureAreas.map((area) => {
-    const card = cultureForm.querySelector(`[data-area="${area.key}"]`);
-    const checkboxes = Array.from(card?.querySelectorAll('input[type="checkbox"]') || []);
-    const checked = checkboxes.filter((checkbox) => checkbox.checked).length;
-    const maxChecks = checkboxes.length || 1;
-    const score = Math.round((checked / maxChecks) * 10);
-    return {
-      ...area,
-      score,
-      checked,
-      maxChecks,
-    };
-  });
-  const total = scores.reduce((sum, area) => sum + area.score, 0);
-  const max = scores.length * 10;
-  const percent = Math.round((total / max) * 100);
-  const grade = percent >= 90 ? "Excellent" : percent >= 75 ? "Good" : percent >= 60 ? "Needs Improvement" : "Immediate Attention";
-  return {
-    id: Date.now(),
-    date: formData.get("date"),
-    observer: formData.get("observer"),
-    className: formData.get("className"),
-    teacher: formData.get("teacher"),
-    notes: formData.get("notes"),
-    scores,
-    total,
-    max,
-    percent,
-    grade,
-  };
+.speaksmart-camera-mock {
+  position: relative;
+  overflow: hidden;
+  min-height: 440px;
+  border-radius: 30px;
+  padding: 18px;
+  background:
+    linear-gradient(160deg, rgba(29, 45, 89, 0.94), rgba(74, 65, 168, 0.86)),
+    #26325f;
+  color: #fff;
+  perspective: 1000px;
+  transform-style: preserve-3d;
 }
 
-function renderCultureReport(data) {
-  if (!cultureReport || !data) return;
-  const topAreas = [...data.scores].sort((a, b) => b.score - a.score).slice(0, 3);
-  const weakAreas = [...data.scores].sort((a, b) => a.score - b.score).slice(0, 3);
-  const stars = "★★★★★".slice(0, Math.max(1, Math.round(data.percent / 20)));
-  const gradeClass = data.percent >= 90 ? "excellent" : data.percent >= 75 ? "good" : data.percent >= 60 ? "needs" : "attention";
-  cultureReport.innerHTML = `
-    <div class="report-card report-dashboard">
-      <div class="report-topline">
-        <div>
-          <p class="eyebrow">Generated analysis</p>
-          <h2>${data.className || "Class"} Culture Dashboard</h2>
-          <p>${data.date || "Date not added"} · ${data.teacher || "Teacher not selected"} · ${data.observer || "Class Teacher"}</p>
-        </div>
-        <div class="score-ring ${gradeClass}"><strong>${data.percent}%</strong><span>${data.grade}</span></div>
-      </div>
-
-      <div class="report-stat-grid">
-        <article><span>Overall</span><strong>${data.total}/${data.max}</strong><small>Total score</small></article>
-        <article><span>Grade</span><strong>${data.grade}</strong><small>${stars}</small></article>
-        <article><span>Top Area</span><strong>${topAreas[0]?.label || "Not available"}</strong><small>${topAreas[0]?.score || 0}/10</small></article>
-        <article><span>Needs Focus</span><strong>${weakAreas[0]?.label || "Not available"}</strong><small>${weakAreas[0]?.score || 0}/10</small></article>
-      </div>
-
-      <h3>Area-wise Score</h3>
-      <div class="score-bars">
-        ${data.scores.map((area) => `<div class="score-bar-row"><div><strong>${area.label}</strong><small>${area.checked}/${area.maxChecks} habits observed</small></div><span>${area.score}/10</span><progress max="10" value="${area.score}"></progress></div>`).join("")}
-      </div>
-
-      <div class="report-columns">
-        <section class="report-panel strengths-panel"><h3>Strengths</h3><ul>${topAreas.map((area) => `<li>${area.strength}</li>`).join("")}</ul></section>
-        <section class="report-panel improvement-panel"><h3>Areas for Improvement</h3><ul>${weakAreas.map((area) => `<li>${area.improve}</li>`).join("")}</ul></section>
-      </div>
-
-      <section class="report-panel suggestion-panel">
-        <h3>Suggestions for Teacher</h3>
-        <ul>
-          <li>Greeting Circle Activity</li>
-          <li>Classroom Responsibility Chart</li>
-          <li>Energy Saving Monitor</li>
-          <li>Silent Walking Practice</li>
-          <li>Save Water Campaign</li>
-        </ul>
-      </section>
-    </div>
-  `;
+.speaksmart-camera-mock::before {
+  content: "";
+  position: absolute;
+  inset: 14px;
+  border-radius: 26px;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: 28px 28px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.85), transparent 76%);
 }
 
-function getCultureAnalysisText(data) {
-  if (!data) return "";
-  const topAreas = [...data.scores].sort((a, b) => b.score - a.score).slice(0, 3);
-  const weakAreas = [...data.scores].sort((a, b) => a.score - b.score).slice(0, 3);
-  return [
-    "Kidsverse School Rehan",
-    "Class Culture Assessment",
-    "",
-    `Date: ${data.date || "Not added"}`,
-    `Audit conducted by: ${data.observer || "Class Teacher"}`,
-    `Class: ${data.className || "Not selected"}`,
-    `Class Teacher: ${data.teacher || "Not selected"}`,
-    `Overall Score: ${data.percent}% (${data.grade})`,
-    `Total: ${data.total}/${data.max}`,
-    data.notes ? `Notes: ${data.notes}` : "",
-    "",
-    "Area Scores:",
-    ...data.scores.map((area) => `- ${area.label}: ${area.score}/10 (${area.checked}/${area.maxChecks} habits observed)`),
-    "",
-    "Strengths:",
-    ...topAreas.map((area) => `- ${area.strength}`),
-    "",
-    "Areas for Improvement:",
-    ...weakAreas.map((area) => `- ${area.improve}`),
-    "",
-    "Suggestions for Teacher:",
-    "- Greeting Circle Activity",
-    "- Classroom Responsibility Chart",
-    "- Energy Saving Monitor",
-    "- Silent Walking Practice",
-    "- Save Water Campaign",
-  ].filter(Boolean).join("\n");
+.smart-planet-deck {
+  position: absolute;
+  inset: 24px 20px auto auto;
+  width: 220px;
+  height: 170px;
+  transform-style: preserve-3d;
+  transform: rotateX(58deg) rotateZ(-28deg);
+  z-index: 3;
+  pointer-events: none;
 }
 
-function updateAutoScores() {
-  document.querySelectorAll("[data-area-card]").forEach((card) => {
-    const checkboxes = Array.from(card.querySelectorAll('input[type="checkbox"]'));
-    const checked = checkboxes.filter((checkbox) => checkbox.checked).length;
-    const score = checkboxes.length ? Math.round((checked / checkboxes.length) * 10) : 0;
-    const scoreBadge = card.querySelector("[data-auto-score]");
-    if (scoreBadge) scoreBadge.textContent = `${score}/10`;
-  });
+.smart-cube {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  min-width: 74px;
+  min-height: 54px;
+  border-radius: 16px;
+  color: #19294b;
+  font-size: 0.82rem;
+  font-weight: 950;
+  background: linear-gradient(145deg, #ffffff, #dff7ff);
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  box-shadow: 0 22px 38px rgba(0, 0, 0, 0.28), inset 0 0 0 2px rgba(255, 255, 255, 0.42);
+  animation: smartCubeFloat 4.6s ease-in-out infinite;
 }
 
-function isAssessmentValid() {
-  if (!cultureForm) return false;
-  const formData = new FormData(cultureForm);
-  const hasRequiredDetails = Boolean(formData.get("date") && formData.get("className") && formData.get("teacher"));
-  const hasObservation = Array.from(cultureForm.querySelectorAll('[data-area-card] input[type="checkbox"]')).some((checkbox) => checkbox.checked);
-  return hasRequiredDetails && hasObservation;
+.smart-cube::after {
+  content: "";
+  position: absolute;
+  inset: 100% 8px auto;
+  height: 18px;
+  transform: skewX(-32deg);
+  transform-origin: top;
+  border-radius: 0 0 12px 12px;
+  background: rgba(74, 98, 190, 0.35);
+  filter: blur(2px);
 }
 
-function updateAssessmentValidation() {
-  const valid = isAssessmentValid();
-  assessmentActionButtons.forEach((button) => {
-    button.disabled = !valid;
-  });
-  if (assessmentValidation) {
-    assessmentValidation.hidden = valid;
-  }
-  return valid;
+.smart-cube.is-one {
+  left: 0;
+  top: 28px;
 }
 
-document.querySelectorAll('[data-area-card] input[type="checkbox"]').forEach((checkbox) => {
-  checkbox.addEventListener("change", () => {
-    updateAutoScores();
-    updateAssessmentValidation();
-  });
-});
-
-cultureForm?.addEventListener("submit", (event) => {
-  event.preventDefault();
-  if (!updateAssessmentValidation()) return;
-  renderCultureReport(getCultureData());
-});
-
-cultureForm?.addEventListener("input", updateAssessmentValidation);
-cultureForm?.addEventListener("change", updateAssessmentValidation);
-
-pdfAssessmentButton?.addEventListener("click", () => {
-  const data = getCultureData();
-  if (!data || !updateAssessmentValidation()) return;
-  renderCultureReport(data);
-  window.print();
-});
-
-if (cultureForm) {
-  cultureForm.elements.date.valueAsDate = new Date();
-  updateAutoScores();
-  updateAssessmentValidation();
+.smart-cube.is-two {
+  right: 4px;
+  top: 8px;
+  background: linear-gradient(145deg, #fff6c7, #ffffff);
+  animation-delay: 0.45s;
 }
 
-const studentAssessmentAreas = [
-  {
-    key: "academic",
-    label: "Academic Performance",
-    strength: "shows strong classroom understanding and concept clarity",
-    improve: "revise classroom concepts through short daily practice",
-    parent: "Please ask one simple question daily from the topic covered in class.",
-    teacher: "Use quick recap questions before moving to the next concept.",
-  },
-  {
-    key: "readingWriting",
-    label: "Reading & Writing",
-    strength: "is developing good reading and written expression",
-    improve: "strengthen reading fluency, handwriting and sentence formation",
-    parent: "Encourage 10-15 minutes of reading aloud and neat writing practice at home.",
-    teacher: "Give guided reading turns and short copy-writing support during class.",
-  },
-  {
-    key: "communication",
-    label: "Communication",
-    strength: "communicates with confidence and clarity",
-    improve: "speak more confidently during class conversations",
-    parent: "Invite the child to describe their school day in 3-4 complete sentences.",
-    teacher: "Offer small speaking opportunities through show-and-tell or question rounds.",
-  },
-  {
-    key: "participation",
-    label: "Participation",
-    strength: "participates actively in classroom activities",
-    improve: "take more initiative during group tasks and class activities",
-    parent: "Appreciate every attempt to answer or participate, even when the answer is not perfect.",
-    teacher: "Use partner activities to increase comfortable participation.",
-  },
-  {
-    key: "behaviour",
-    label: "Behaviour",
-    strength: "follows classroom rules and maintains good discipline",
-    improve: "follow instructions more consistently during routines",
-    parent: "Reinforce polite words, listening habits and simple routines at home.",
-    teacher: "Use gentle reminders and visual routine cues during transitions.",
-  },
-  {
-    key: "responsibility",
-    label: "Responsibility",
-    strength: "shows responsibility with belongings, homework and school habits",
-    improve: "build stronger responsibility for belongings, homework and cleanliness",
-    parent: "Let the child pack their bag with a small checklist.",
-    teacher: "Assign small classroom responsibilities to build ownership.",
-  },
-  {
-    key: "social",
-    label: "Social Skills",
-    strength: "shares, cooperates and works well with classmates",
-    improve: "practice sharing, teamwork and respectful peer interaction",
-    parent: "Encourage turn-taking games and polite sharing at home.",
-    teacher: "Pair the child with supportive peers for cooperative activities.",
-  },
-  {
-    key: "creativity",
-    label: "Creativity",
-    strength: "shows creativity during activities and projects",
-    improve: "express ideas more freely through art, stories and play",
-    parent: "Provide simple drawing, craft or storytelling time without pressure.",
-    teacher: "Use open-ended prompts where there is more than one correct answer.",
-  },
-  {
-    key: "attendance",
-    label: "Attendance",
-    strength: "maintains good attendance and school readiness",
-    improve: "improve punctuality and regular attendance",
-    parent: "Keep a consistent sleep and morning routine for school readiness.",
-    teacher: "Monitor attendance patterns and support settling when the child returns after absence.",
-  },
-  {
-    key: "growth",
-    label: "Overall Growth",
-    strength: "has shown positive overall growth this month",
-    improve: "continue building steady progress across learning and confidence",
-    parent: "Celebrate small improvements and keep practice light but regular.",
-    teacher: "Set one small weekly goal and acknowledge visible progress.",
-  },
-];
-
-function getStudentReportData() {
-  if (!studentReportForm) return null;
-  const formData = new FormData(studentReportForm);
-  const scores = studentAssessmentAreas.map((area) => ({
-    ...area,
-    score: Number(formData.get(area.key) || 0),
-  }));
-  const total = scores.reduce((sum, area) => sum + area.score, 0);
-  const max = scores.length * 5;
-  const percent = Math.round((total / max) * 100);
-  const average = total / scores.length;
-  const grade = average >= 4.5 ? "Excellent" : average >= 3.7 ? "Very Good" : average >= 3 ? "Good" : average >= 2.2 ? "Needs Support" : "Needs Focused Attention";
-  return {
-    studentName: String(formData.get("studentName") || "").trim(),
-    className: String(formData.get("className") || "").trim(),
-    month: String(formData.get("month") || "").trim(),
-    teacher: String(formData.get("teacher") || "").trim(),
-    remarks: String(formData.get("remarks") || "").trim(),
-    improvementNote: String(formData.get("improvementNote") || "").trim(),
-    studentPhoto: studentPhotoDataUrl,
-    scores,
-    total,
-    max,
-    percent,
-    average,
-    grade,
-  };
+.smart-cube.is-three {
+  left: 74px;
+  bottom: 10px;
+  background: linear-gradient(145deg, #f0ebff, #ffffff);
+  animation-delay: 0.9s;
 }
 
-function formatStudentMonth(value) {
-  if (!value) return "Month not selected";
-  const [year, month] = value.split("-");
-  const date = new Date(Number(year), Number(month) - 1, 1);
-  return date.toLocaleDateString("en-IN", { month: "long", year: "numeric" });
+@keyframes smartCubeFloat {
+  0%, 100% { transform: translateZ(12px) translateY(0); }
+  50% { transform: translateZ(46px) translateY(-8px); }
 }
 
-function getStudentReportTone(data) {
-  if (data.average >= 4.5) return "excellent progress";
-  if (data.average >= 3.7) return "very good progress";
-  if (data.average >= 3) return "steady progress";
-  return "developing progress with focused support";
+.mock-video {
+  position: relative;
+  z-index: 1;
+  min-height: 260px;
+  border-radius: 24px;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(255, 255, 255, 0.22), transparent 26%),
+    linear-gradient(135deg, #6fe7ff, #8d7bff);
 }
 
-function getTeacherNoteKeywords(text) {
-  const value = String(text || "").toLowerCase();
-  return {
-    learning: /learn|learing|study|academic|concept|understand/.test(value),
-    reading: /read|phonics|book/.test(value),
-    writing: /writ|handwriting|copy|sentence/.test(value),
-    maths: /math|number|count/.test(value),
-    communication: /speak|talk|communication|confidence|answer/.test(value),
-    behaviour: /behav|discipline|listen|rule|manners/.test(value),
-    participation: /participat|activity|group|class/.test(value),
-    work: /work|practice|focus|improve|need|weak/.test(value),
-    positive: /good|very good|excellent|nice|better|improv|progress/.test(value),
-  };
+.mock-video span {
+  position: absolute;
+  top: 34px;
+  left: 34px;
+  font-weight: 900;
+  color: rgba(255, 255, 255, 0.86);
 }
 
-function rewriteTeacherObservation(text, firstName) {
-  const keywords = getTeacherNoteKeywords(text);
-  const strengths = [];
-  if (keywords.learning) strengths.push("learning progress");
-  if (keywords.reading) strengths.push("reading readiness");
-  if (keywords.writing) strengths.push("written work");
-  if (keywords.maths) strengths.push("number concepts");
-  if (keywords.communication) strengths.push("classroom communication");
-  if (keywords.behaviour) strengths.push("classroom behaviour");
-  if (keywords.participation) strengths.push("class participation");
+.mock-face {
+  width: 132px;
+  height: 132px;
+  border-radius: 38% 38% 45% 45%;
+  background: linear-gradient(180deg, #fff0b7, #ffbda2);
+  box-shadow: 0 18px 0 rgba(22, 35, 80, 0.22);
+}
 
-  if (strengths.length) {
-    return `${firstName} is showing positive development in ${strengths.slice(0, 2).join(" and ")}. The teacher has observed steady effort and encouraging progress during classroom activities.`;
+.mock-panel {
+  position: absolute;
+  z-index: 4;
+  left: 30px;
+  right: 30px;
+  bottom: 30px;
+  padding: 18px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #162550;
+  transform: translateZ(42px);
+}
+
+.mock-panel strong,
+.mock-panel p,
+.mock-panel span {
+  display: block;
+}
+
+.mock-meter {
+  height: 10px;
+  margin: 12px 0;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #dce7ff;
+}
+
+.mock-meter i {
+  display: block;
+  width: 78%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #38c6ff, #8c6dff, #ffc44d);
+}
+
+.mock-mic {
+  position: absolute;
+  top: 28px;
+  right: 26px;
+  display: flex;
+  align-items: end;
+  gap: 4px;
+}
+
+.mock-mic i,
+.smart-audio-bars i {
+  width: 7px;
+  height: 18px;
+  border-radius: 99px;
+  background: #ffd45f;
+  animation: smartBars 1.1s ease-in-out infinite;
+}
+
+.mock-mic i:nth-child(2),
+.smart-audio-bars i:nth-child(2) {
+  height: 28px;
+  animation-delay: 0.15s;
+}
+
+.mock-mic i:nth-child(3),
+.smart-audio-bars i:nth-child(3) {
+  height: 22px;
+  animation-delay: 0.3s;
+}
+
+@keyframes smartBars {
+  0%, 100% { transform: scaleY(0.55); opacity: 0.62; }
+  50% { transform: scaleY(1.05); opacity: 1; }
+}
+
+.speaksmart-features {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.speaksmart-features article,
+.smart-stat-grid article,
+.smart-score-grid article,
+.smart-feedback-grid article,
+.smart-actions-grid button {
+  border-radius: 22px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(45, 70, 105, 0.12);
+  transform-style: preserve-3d;
+  transition: transform 0.24s ease, box-shadow 0.24s ease, border-color 0.24s ease;
+}
+
+.speaksmart-features article:hover,
+.smart-actions-grid button:hover,
+.smart-stat-grid article:hover {
+  border-color: rgba(110, 91, 255, 0.26);
+  transform: translateY(-6px) rotateX(4deg) rotateY(var(--smart-tilt-y, -3deg));
+  box-shadow: 0 24px 54px rgba(48, 67, 130, 0.16);
+}
+
+.speaksmart-features article:nth-child(1),
+.smart-score-grid article:nth-child(1) { background: linear-gradient(135deg, #fff7ce, #ffffff); }
+.speaksmart-features article:nth-child(2),
+.smart-score-grid article:nth-child(2) { background: linear-gradient(135deg, #e4f6ff, #ffffff); }
+.speaksmart-features article:nth-child(3),
+.smart-score-grid article:nth-child(3) { background: linear-gradient(135deg, #f0ebff, #ffffff); }
+.speaksmart-features article:nth-child(4),
+.smart-score-grid article:nth-child(4) { background: linear-gradient(135deg, #e8fbef, #ffffff); }
+
+.speaksmart-features span,
+.smart-stat-grid span,
+.smart-score-grid span {
+  display: block;
+  color: #6e5bff;
+  font-weight: 900;
+}
+
+.speaksmart-features strong,
+.smart-stat-grid strong,
+.smart-score-grid strong {
+  display: block;
+  margin-top: 6px;
+  color: #19294b;
+  font-size: 1.25rem;
+}
+
+.smart-profile-card {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
+  gap: 14px;
+  align-items: end;
+  border-radius: 26px;
+  padding: 18px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.94), rgba(239, 250, 255, 0.9));
+}
+
+.smart-profile-card label,
+.smart-question-panel label {
+  display: grid;
+  gap: 8px;
+  color: #203453;
+  font-weight: 900;
+}
+
+.smart-profile-card input,
+.smart-profile-card select,
+.smart-question-panel select,
+.speaksmart-transcript textarea {
+  width: 100%;
+  border: 1px solid rgba(45, 70, 105, 0.14);
+  border-radius: 16px;
+  padding: 13px 14px;
+  background: #fff;
+  color: #1e3153;
+  font: inherit;
+  font-weight: 800;
+}
+
+.smart-dashboard-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: center;
+  border-radius: 26px;
+  padding: 24px;
+  background: linear-gradient(135deg, #fff7d7, #eaf7ff);
+}
+
+.smart-dashboard-head h2 {
+  margin: 0 0 6px;
+  color: #18284a;
+}
+
+.smart-stat-grid,
+.smart-score-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.smart-stat-grid article,
+.smart-score-grid article {
+  min-height: 110px;
+}
+
+.smart-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.smart-actions-grid button {
+  min-height: 94px;
+  cursor: pointer;
+  color: #162550;
+  font-weight: 950;
+  text-align: left;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.smart-actions-grid button:hover {
+  transform: translateY(-6px) rotateX(4deg) rotateY(var(--smart-tilt-y, -3deg));
+  box-shadow: 0 18px 40px rgba(63, 80, 130, 0.13);
+}
+
+.smart-actions-grid button:nth-child(1) { background: linear-gradient(135deg, #fff7ce, #ffffff); }
+.smart-actions-grid button:nth-child(2) { background: linear-gradient(135deg, #e5f8ff, #ffffff); }
+.smart-actions-grid button:nth-child(3) { background: linear-gradient(135deg, #f0ebff, #ffffff); }
+.smart-actions-grid button:nth-child(4) { background: linear-gradient(135deg, #e8fbef, #ffffff); }
+.smart-actions-grid button:nth-child(5) { background: linear-gradient(135deg, #ffe8dc, #ffffff); }
+.smart-actions-grid button:nth-child(6) { background: linear-gradient(135deg, #ecf0ff, #ffffff); }
+
+.smart-room-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(310px, 0.72fr);
+  gap: 18px;
+}
+
+.smart-video-card,
+.smart-question-panel,
+.speaksmart-transcript,
+.speaksmart-feedback,
+.speaksmart-progress {
+  border-radius: 28px;
+  padding: 18px;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.smart-video-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.smart-video-card::before {
+  content: "";
+  position: absolute;
+  inset: 14px 14px auto;
+  height: 64px;
+  pointer-events: none;
+  border-radius: 22px;
+  background: linear-gradient(90deg, rgba(58, 200, 255, 0.12), rgba(123, 99, 255, 0.14), rgba(255, 212, 95, 0.16));
+}
+
+.smart-cockpit-strip {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.smart-cockpit-strip span {
+  border-radius: 999px;
+  padding: 8px 11px;
+  color: #17264b;
+  font-size: 0.78rem;
+  font-weight: 950;
+  background: rgba(255, 255, 255, 0.76);
+  border: 1px solid rgba(80, 92, 170, 0.12);
+  box-shadow: 0 8px 18px rgba(40, 60, 100, 0.08);
+}
+
+.smart-video-frame {
+  position: relative;
+  overflow: hidden;
+  min-height: 420px;
+  border-radius: 24px;
+  background: #111a3d;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12), 0 20px 55px rgba(28, 38, 85, 0.18);
+}
+
+.smart-video-frame::after {
+  content: "";
+  position: absolute;
+  inset: 12px;
+  z-index: 3;
+  pointer-events: none;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: inset 0 0 34px rgba(88, 209, 255, 0.12);
+}
+
+.smart-video-frame video,
+.smart-video-empty {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.smart-video-frame video {
+  z-index: 1;
+  display: block;
+  opacity: 0;
+  background: #111a3d;
+  transform: scaleX(-1);
+}
+
+.smart-video-frame video.is-camera-on {
+  opacity: 1;
+}
+
+.smart-video-empty {
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 8px;
+  color: #fff;
+  text-align: center;
+  background:
+    radial-gradient(circle at 50% 35%, rgba(255, 255, 255, 0.2), transparent 26%),
+    linear-gradient(135deg, #35bff4, #7761f2);
+}
+
+.smart-video-empty[hidden] {
+  display: none !important;
+}
+
+.smart-video-empty strong {
+  font-size: clamp(2rem, 5vw, 4.5rem);
+}
+
+.smart-recording-pill {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  padding: 9px 13px;
+  border-radius: 999px;
+  background: #ff5f5f;
+  color: #fff;
+  font-weight: 950;
+}
+
+.smart-controls,
+.smart-feedback-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.smart-privacy-line {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: #fff6d6;
+  color: #604800;
+  font-weight: 850;
+}
+
+.smart-question-panel {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.smart-question-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(240, 247, 255, 0.84)),
+    repeating-linear-gradient(90deg, rgba(110, 91, 255, 0.04) 0 1px, transparent 1px 22px);
+}
+
+.smart-mission-portal {
+  position: relative;
+  min-height: 142px;
+  margin-bottom: 16px;
+  perspective: 900px;
+  transform-style: preserve-3d;
+}
+
+.portal-core {
+  position: absolute;
+  inset: 36px 38%;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #17264b, #7461f4);
+  box-shadow: 0 0 0 10px rgba(104, 225, 255, 0.12), 0 24px 54px rgba(44, 58, 122, 0.26);
+  transform: rotateX(58deg) rotateZ(45deg);
+  animation: smartPortalPulse 2.6s ease-in-out infinite;
+}
+
+.portal-card {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  min-width: 84px;
+  min-height: 42px;
+  border-radius: 15px;
+  color: #17264b;
+  font-weight: 950;
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(80, 92, 170, 0.14);
+  box-shadow: 0 14px 28px rgba(45, 64, 110, 0.14);
+  animation: smartPortalCard 4.8s ease-in-out infinite;
+}
+
+.portal-card.is-top {
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%) translateZ(38px);
+}
+
+.portal-card.is-right {
+  right: 0;
+  top: 58px;
+  animation-delay: 0.35s;
+}
+
+.portal-card.is-bottom {
+  left: 8px;
+  bottom: 6px;
+  animation-delay: 0.7s;
+}
+
+@keyframes smartPortalPulse {
+  0%, 100% { transform: rotateX(58deg) rotateZ(45deg) scale(0.94); }
+  50% { transform: rotateX(58deg) rotateZ(45deg) scale(1.08); }
+}
+
+@keyframes smartPortalCard {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -8px; }
+}
+
+.smart-timer-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.smart-timer-row span {
+  color: #19294b;
+  font-size: 2.2rem;
+  font-weight: 950;
+}
+
+.smart-audio-bars {
+  display: flex;
+  align-items: end;
+  gap: 5px;
+  min-height: 34px;
+  opacity: 0.36;
+}
+
+.smart-audio-bars.is-listening {
+  opacity: 1;
+}
+
+.smart-progress-track {
+  height: 12px;
+  margin: 12px 0 18px;
+  border-radius: 999px;
+  background: #e5ecfb;
+  overflow: hidden;
+}
+
+.smart-progress-track i {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #31c7ff, #7b63ff, #ffd45f);
+}
+
+.smart-question-card {
+  margin-top: 16px;
+  padding: 18px;
+  border-radius: 22px;
+  color: #17264b;
+  background: linear-gradient(135deg, #f4efff, #ffffff 56%, #fff5cd);
+}
+
+.smart-question-card small,
+.smart-question-card h3,
+.smart-question-card li {
+  color: #17264b;
+}
+
+.smart-question-card h3 {
+  margin: 6px 0 12px;
+  font-size: 1.45rem;
+}
+
+.smart-question-card button {
+  border: 0;
+  border-radius: 999px;
+  padding: 10px 14px;
+  background: #19294b;
+  color: #fff;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.smart-question-card p {
+  margin: 12px 0 0;
+  color: #604800;
+  font-weight: 850;
+}
+
+.smart-reminders {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.smart-reminders strong,
+.smart-reminders span {
+  border-radius: 999px;
+  padding: 8px 11px;
+  background: #eef7ff;
+  color: #26385d;
+  font-weight: 850;
+}
+
+.smart-transcript-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.smart-transcript-head h2 {
+  margin: 0 0 8px;
+  color: #17264b;
+}
+
+.smart-transcript-head p:not(.eyebrow) {
+  max-width: 760px;
+  margin: 0;
+  color: rgba(23, 38, 75, 0.72);
+  font-weight: 850;
+}
+
+.smart-transcript-status {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+  min-width: 220px;
+}
+
+.smart-transcript-status span {
+  border-radius: 999px;
+  padding: 9px 12px;
+  color: #17264b;
+  font-size: 0.82rem;
+  font-weight: 950;
+  background: linear-gradient(135deg, #fff8c8, #e8f8ff);
+  border: 1px solid rgba(80, 92, 170, 0.12);
+  box-shadow: 0 10px 22px rgba(45, 64, 110, 0.1);
+}
+
+.smart-transcript-console {
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+  padding: 14px;
+  background:
+    linear-gradient(135deg, rgba(23, 38, 75, 0.94), rgba(92, 72, 181, 0.88)),
+    #17264b;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12), 0 22px 52px rgba(28, 38, 85, 0.15);
+}
+
+.smart-transcript-console::before {
+  content: "";
+  position: absolute;
+  inset: 12px;
+  pointer-events: none;
+  border-radius: 18px;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.speaksmart-transcript textarea {
+  position: relative;
+  z-index: 1;
+  min-height: 170px;
+  resize: vertical;
+  line-height: 1.6;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.55);
+}
+
+.smart-feedback-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: center;
+  padding: 22px;
+  border-radius: 24px;
+  background: linear-gradient(135deg, #e9fbff, #fff5d1);
+}
+
+.smart-feedback-head h2 {
+  margin: 0;
+  color: #17264b;
+}
+
+.smart-feedback-head > strong {
+  display: grid;
+  place-items: center;
+  width: 112px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6be0ff, #7c63ff);
+  color: #fff;
+  font-size: 2rem;
+  box-shadow: inset 0 0 0 8px rgba(255, 255, 255, 0.28);
+}
+
+.smart-feedback-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.smart-feedback-grid article h3 {
+  color: #17264b;
+}
+
+.smart-feedback-grid article li,
+.smart-feedback-grid article p {
+  color: rgba(23, 38, 75, 0.78);
+  font-weight: 800;
+}
+
+.smart-feedback-grid [data-smart-better-words] p {
+  display: grid;
+  gap: 5px;
+  margin: 0 0 10px;
+}
+
+.smart-feedback-grid [data-smart-better-words] span {
+  color: rgba(23, 38, 75, 0.65);
+}
+
+.smart-progress-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.55fr);
+  gap: 16px;
+}
+
+.smart-chart-card,
+.smart-badges-card {
+  border-radius: 24px;
+  padding: 20px;
+  background: #fff;
+  border: 1px solid rgba(45, 70, 105, 0.12);
+}
+
+.smart-chart {
+  min-height: 230px;
+  display: flex;
+  align-items: end;
+  gap: 10px;
+  padding-top: 24px;
+}
+
+.smart-chart span {
+  flex: 1;
+  min-height: 18px;
+  border-radius: 14px 14px 6px 6px;
+  background: linear-gradient(180deg, #7b63ff, #39c7ff);
+  position: relative;
+}
+
+.smart-chart b {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 6px);
+  transform: translateX(-50%);
+  color: #17264b;
+  font-size: 0.75rem;
+}
+
+.smart-badges-card [data-smart-badges] {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 12px;
+}
+
+.smart-badges-card span {
+  border-radius: 999px;
+  padding: 9px 12px;
+  background: #edf2fb;
+  color: #5e6a83;
+  font-weight: 900;
+}
+
+.smart-badges-card span.is-earned {
+  background: linear-gradient(135deg, #fff0a8, #ffd45f);
+  color: #523b00;
+}
+
+@media (max-width: 980px) {
+  .speaksmart-hero,
+  .smart-room-grid,
+  .smart-progress-layout {
+    grid-template-columns: 1fr;
   }
 
-  if (keywords.positive) {
-    return `${firstName} is showing good progress this month and is responding well to classroom routines and learning activities.`;
+  .speaksmart-features,
+  .smart-stat-grid,
+  .smart-score-grid,
+  .smart-actions-grid,
+  .speaksmart-skill-constellation {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  return `${firstName} is making steady progress this month. The teacher has noted areas that can be supported through regular guidance and encouragement.`;
-}
-
-function rewriteImprovementFocus(text, firstName) {
-  const keywords = getTeacherNoteKeywords(text);
-  const focus = [];
-  if (keywords.reading) focus.push("reading practice");
-  if (keywords.writing) focus.push("neat written work");
-  if (keywords.maths) focus.push("number practice");
-  if (keywords.communication) focus.push("speaking confidence");
-  if (keywords.behaviour) focus.push("listening and classroom routines");
-  if (keywords.participation) focus.push("active class participation");
-  if (keywords.learning && !focus.length) focus.push("concept revision");
-  if (keywords.work && !focus.length) focus.push("consistent practice");
-
-  if (focus.length) {
-    return `${firstName} will benefit from focused support in ${focus.slice(0, 2).join(" and ")}. Short daily practice and gentle encouragement will help build stronger confidence next month.`;
-  }
-
-  return `${firstName} should continue receiving guided practice and positive reinforcement so progress remains steady in the coming month.`;
-}
-
-function isStudentReportValid() {
-  if (!studentReportForm) return false;
-  const data = getStudentReportData();
-  if (!data) return false;
-  return Boolean(
-    data.studentName &&
-      data.className &&
-      data.month &&
-      data.teacher &&
-      data.remarks &&
-      data.improvementNote &&
-      data.studentPhoto &&
-      data.scores.every((area) => area.score > 0)
-  );
-}
-
-function updateStudentReportValidation() {
-  const valid = isStudentReportValid();
-  studentReportButtons.forEach((button) => {
-    button.disabled = !valid;
-  });
-  if (studentReportValidation) studentReportValidation.hidden = valid;
-  return valid;
-}
-
-function updateStudentStarVisuals() {
-  document.querySelectorAll(".star-rating").forEach((group) => {
-    const selected = Number(group.querySelector("input:checked")?.value || 0);
-    Array.from(group.querySelectorAll("label")).forEach((label, index) => {
-      label.classList.toggle("is-filled", index < selected);
-    });
-  });
-}
-
-function applyStudentRosterTags() {
-  if (!studentReportForm || !studentClassSelect || !studentNameSelect || !studentTeacherSelect) return;
-  const selectedClass = studentClassSelect.value;
-  const roster = studentRosters[selectedClass];
-  const previousStudent = studentNameSelect.value;
-
-  studentNameSelect.innerHTML = "";
-  studentTeacherSelect.innerHTML = "";
-
-  if (!selectedClass) {
-    studentNameSelect.disabled = true;
-    studentTeacherSelect.disabled = true;
-    studentNameSelect.append(new Option("Select class first", ""));
-    studentTeacherSelect.append(new Option("Teacher will appear after class selection", ""));
-    return;
-  }
-
-  if (!roster) {
-    studentNameSelect.disabled = true;
-    studentTeacherSelect.disabled = true;
-    studentNameSelect.append(new Option("No student roster added for this class yet", ""));
-    studentTeacherSelect.append(new Option("No teacher tagged for this class yet", ""));
-    return;
-  }
-
-  studentNameSelect.disabled = false;
-  studentTeacherSelect.disabled = false;
-  studentNameSelect.append(new Option("Select student", ""));
-  roster.students.forEach((student) => {
-    studentNameSelect.append(new Option(student, student));
-  });
-  if (roster.students.includes(previousStudent)) {
-    studentNameSelect.value = previousStudent;
-  }
-
-  studentTeacherSelect.append(new Option(roster.teacher, roster.teacher));
-  studentTeacherSelect.value = roster.teacher;
-}
-
-function renderStudentReport(data) {
-  if (!studentReportOutput || !data) return;
-  const topAreas = [...data.scores].sort((a, b) => b.score - a.score).slice(0, 3);
-  const focusAreas = [...data.scores].sort((a, b) => a.score - b.score).slice(0, 3);
-  const stars = "★★★★★".slice(0, Math.max(1, Math.round(data.average)));
-  const gradeClass = data.average >= 4.5 ? "excellent" : data.average >= 3.7 ? "good" : data.average >= 3 ? "needs" : "attention";
-  const firstName = data.studentName.split(" ")[0] || "The student";
-  const teacherRemark = data.remarks ? `<p><strong>Teacher observation:</strong> ${rewriteTeacherObservation(data.remarks, firstName)}</p>` : "";
-  const improvementRemark = data.improvementNote ? `<p><strong>Focus for next month:</strong> ${rewriteImprovementFocus(data.improvementNote, firstName)}</p>` : "";
-  const photoMarkup = data.studentPhoto
-    ? `<img class="student-report-photo" src="${data.studentPhoto}" alt="${data.studentName} photo" />`
-    : `<div class="student-report-photo is-placeholder"><span>${firstName.charAt(0).toUpperCase()}</span></div>`;
-
-  studentReportOutput.innerHTML = `
-    <div class="report-card report-dashboard student-monthly-report">
-      <div class="report-topline">
-        <div class="student-report-title">
-          ${photoMarkup}
-          <div>
-            <p class="eyebrow">Monthly student report</p>
-            <h2>${data.studentName} - ${formatStudentMonth(data.month)}</h2>
-            <p>${data.className} · ${data.teacher}</p>
-          </div>
-        </div>
-        <div class="score-ring ${gradeClass}"><strong>${data.percent}%</strong><span>${data.grade}</span></div>
-      </div>
-
-      <div class="report-stat-grid">
-        <article><span>Overall Grade</span><strong>${data.grade}</strong><small>${stars}</small></article>
-        <article><span>Total Score</span><strong>${data.total}/${data.max}</strong><small>${data.average.toFixed(1)}/5 average</small></article>
-        <article><span>Top Strength</span><strong>${topAreas[0]?.label || "Not available"}</strong><small>${topAreas[0]?.score || 0}/5</small></article>
-        <article><span>Focus Area</span><strong>${focusAreas[0]?.label || "Not available"}</strong><small>${focusAreas[0]?.score || 0}/5</small></article>
-      </div>
-
-      <section class="report-panel student-feedback-panel">
-        <h3>Overall Feedback</h3>
-        <p>${data.studentName} has shown ${getStudentReportTone(data)} this month. ${firstName} is strongest in ${topAreas.map((area) => area.label.toLowerCase()).join(", ")}. With continued support in ${focusAreas[0]?.label.toLowerCase() || "key learning habits"}, ${firstName} can build stronger confidence and consistency in the coming month.</p>
-        ${teacherRemark}
-        ${improvementRemark}
-      </section>
-
-      <h3>Area-wise Ratings</h3>
-      <div class="score-bars">
-        ${data.scores.map((area) => `<div class="score-bar-row"><div><strong>${area.label}</strong><small>${area.score}/5 rating</small></div><span>${"★★★★★".slice(0, area.score)}</span><progress max="5" value="${area.score}"></progress></div>`).join("")}
-      </div>
-
-      <div class="report-columns">
-        <section class="report-panel strengths-panel"><h3>Strengths</h3><ul>${topAreas.map((area) => `<li>${firstName} ${area.strength}.</li>`).join("")}</ul></section>
-        <section class="report-panel improvement-panel"><h3>Areas of Improvement</h3><ul>${focusAreas.map((area) => `<li>${area.improve}.</li>`).join("")}</ul></section>
-      </div>
-
-      <div class="report-columns">
-        <section class="report-panel suggestion-panel"><h3>Parent Suggestions</h3><ul>${focusAreas.map((area) => `<li>${area.parent}</li>`).join("")}</ul></section>
-        <section class="report-panel teacher-suggestion-panel"><h3>Teacher Suggestions</h3><ul>${focusAreas.map((area) => `<li>${area.teacher}</li>`).join("")}</ul></section>
-      </div>
-    </div>
-  `;
-}
-
-studentReportForm?.addEventListener("input", () => {
-  applyStudentRosterTags();
-  updateStudentReportValidation();
-});
-studentReportForm?.addEventListener("change", () => {
-  applyStudentRosterTags();
-  updateStudentStarVisuals();
-  updateStudentReportValidation();
-});
-
-studentPhotoInput?.addEventListener("change", () => {
-  const file = studentPhotoInput.files?.[0];
-  if (!file) {
-    studentPhotoDataUrl = "";
-    updateStudentReportValidation();
-    return;
-  }
-
-  const reader = new FileReader();
-  reader.addEventListener("load", () => {
-    studentPhotoDataUrl = String(reader.result || "");
-    updateStudentReportValidation();
-  });
-  reader.readAsDataURL(file);
-});
-
-studentReportForm?.addEventListener("submit", (event) => {
-  event.preventDefault();
-  if (!updateStudentReportValidation()) return;
-  renderStudentReport(getStudentReportData());
-});
-
-studentReportPdf?.addEventListener("click", () => {
-  const data = getStudentReportData();
-  if (!data || !updateStudentReportValidation()) return;
-  renderStudentReport(data);
-  window.print();
-});
-
-if (studentReportForm) {
-  const now = new Date();
-  studentReportForm.elements.month.value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
-  applyStudentRosterTags();
-  updateStudentStarVisuals();
-  updateStudentReportValidation();
-}
-
-const teacherReadingPassages = [
-  "A good early years classroom is calm, warm and purposeful. Children learn better when the teacher speaks clearly, gives simple instructions and uses patient encouragement.",
-  "Reading aloud is not only about speed. A strong reader uses correct pronunciation, natural pauses, clear voice and expression so that children can understand the meaning.",
-  "When a child struggles with a word, the teacher should slow down, break the sound gently and help the child try again with confidence instead of pressure.",
-  "Stories help young learners build imagination, vocabulary and listening habits. A teacher who reads with expression can make even a simple paragraph feel interesting.",
-  "In a caring school environment, teachers observe every child closely. They notice confidence, comfort, participation and progress before deciding the next learning step.",
-];
-
-const teacherReadingState = teacherReadingPassages.map(() => ({ transcript: "", accuracy: 0, attempted: false, missed: [], extra: [] }));
-
-function scoreTeacherReading(expectedText, spokenText) {
-  const expectedWords = normalizeReadingWords(expectedText);
-  const spokenWords = normalizeReadingWords(spokenText);
-  const spokenPool = [...spokenWords];
-  let correct = 0;
-  const missed = [];
-
-  expectedWords.forEach((word) => {
-    const index = spokenPool.indexOf(word);
-    if (index >= 0) {
-      correct += 1;
-      spokenPool.splice(index, 1);
-    } else {
-      missed.push(word);
-    }
-  });
-
-  return {
-    accuracy: expectedWords.length ? Math.round((correct / expectedWords.length) * 100) : 0,
-    missed: uniqueWordList(missed),
-    extra: uniqueWordList(spokenPool),
-  };
-}
-
-function renderTeacherReadingPassages() {
-  if (!teacherReadingPassageWrap) return;
-  teacherReadingPassageWrap.innerHTML = teacherReadingPassages
-    .map(
-      (text, index) => `
-        <article class="teacher-reading-passage-card" data-teacher-reading-card="${index}">
-          <div>
-            <span>Passage ${index + 1} of 5</span>
-            <p>${text}</p>
-          </div>
-          <div class="teacher-reading-card-actions">
-            <button class="tense-audio-button" type="button" data-teacher-reading-listen="${index}">Listen sample</button>
-            <button class="primary-button" type="button" data-teacher-reading-start="${index}">Start reading</button>
-            <button class="secondary-button" type="button" data-teacher-reading-stop="${index}" hidden>Stop</button>
-          </div>
-          <div class="reading-listening-indicator" data-teacher-reading-indicator="${index}" hidden><i aria-hidden="true"></i><span>I am listening. Read slowly.</span></div>
-          <div class="teacher-reading-live-result">
-            <strong data-teacher-reading-score="${index}">Not attempted</strong>
-            <p data-teacher-reading-transcript="${index}">Transcript will appear here.</p>
-          </div>
-        </article>
-      `
-    )
-    .join("");
-}
-
-function updateTeacherReadingValidation() {
-  if (!teacherReadingForm || !teacherReadingValidation) return false;
-  const formData = new FormData(teacherReadingForm);
-  const teacherValue = String(formData.get("teacherName") || "");
-  const otherName = String(formData.get("otherTeacherName") || "").trim();
-  const teacherOk = teacherValue && (teacherValue !== "__other" || otherName);
-  const valid = Boolean(formData.get("date") && teacherOk && formData.get("observer") && teacherReadingPhotoDataUrl && teacherReadingState.every((item) => item.attempted));
-  teacherReadingValidation.hidden = valid;
-  return valid;
-}
-
-function getTeacherReadingName() {
-  const selected = teacherReadingName?.value || "";
-  if (selected === "__other") return teacherReadingOther?.value.trim() || "";
-  return selected;
-}
-
-function getTeacherReadingGrade(percent) {
-  if (percent >= 90) return "Excellent";
-  if (percent >= 78) return "Strong";
-  if (percent >= 65) return "Developing";
-  return "Needs Support";
-}
-
-function getTeacherReadingSubmitStatus(percent) {
-  if (percent >= 78) {
-    return {
-      label: "Ready to submit",
-      text: "Your reading score is up to mark. You can download or print this report and submit it to school.",
-      className: "is-ready",
-    };
-  }
-  return {
-    label: "Practise before submission",
-    text: "Please practise the focus areas and retake the self assessment before submitting it to school.",
-    className: "is-practice",
-  };
-}
-
-function renderTeacherReadingReport() {
-  if (!teacherReadingReport || !teacherReadingForm) return;
-  const formData = new FormData(teacherReadingForm);
-  const name = getTeacherReadingName();
-  const micAverage = Math.round(teacherReadingState.reduce((sum, item) => sum + item.accuracy, 0) / teacherReadingState.length);
-  const bestScore = Math.max(...teacherReadingState.map((item) => item.accuracy));
-  const lowestScore = Math.min(...teacherReadingState.map((item) => item.accuracy));
-  const consistencyScore = Math.max(0, 100 - (bestScore - lowestScore));
-  const completionScore = teacherReadingState.every((item) => item.attempted) ? 100 : 0;
-  const finalScore = Math.round(micAverage * 0.8 + consistencyScore * 0.15 + completionScore * 0.05);
-  const grade = getTeacherReadingGrade(finalScore);
-  const submitStatus = getTeacherReadingSubmitStatus(finalScore);
-  const needs = [];
-  if (teacherReadingState.some((item) => item.accuracy < 75)) needs.push("pronunciation clarity");
-  if (consistencyScore < 78) needs.push("reading consistency");
-  if (lowestScore < 65) needs.push("difficult word practice");
-  if (micAverage < 78) needs.push("fluency and clear pauses");
-  const photoMarkup = teacherReadingPhotoDataUrl ? `<img class="student-report-photo" src="${teacherReadingPhotoDataUrl}" alt="${name} photo" />` : "";
-
-  teacherReadingReport.innerHTML = `
-    <div class="report-card report-dashboard teacher-reading-report-card">
-      <div class="report-topline">
-        <div class="student-report-title">
-          ${photoMarkup}
-          <div>
-            <p class="eyebrow">Teacher reading assessment</p>
-            <h2>${name}</h2>
-            <p>${formData.get("date")} · Self assessment for ${formData.get("observer")}</p>
-          </div>
-        </div>
-        <div class="score-ring ${finalScore >= 90 ? "excellent" : finalScore >= 78 ? "good" : finalScore >= 65 ? "needs" : "attention"}"><strong>${finalScore}%</strong><span>${grade}</span></div>
-      </div>
-      <section class="report-panel teacher-submit-status ${submitStatus.className}">
-        <h3>${submitStatus.label}</h3>
-        <p>${submitStatus.text}</p>
-      </section>
-      <div class="report-stat-grid">
-        <article><span>Reading Accuracy</span><strong>${micAverage}%</strong><small>5 passage average</small></article>
-        <article><span>Consistency</span><strong>${consistencyScore}%</strong><small>Stability across all passages</small></article>
-        <article><span>Best Passage</span><strong>${bestScore}%</strong><small>Highest read-aloud match</small></article>
-        <article><span>Focus</span><strong>${needs[0] || "Expression"}</strong><small>Next improvement area</small></article>
-      </div>
-      <section class="report-panel">
-        <h3>Overall Reading Feedback</h3>
-        <p>${name} has completed the reading self assessment and achieved a ${grade.toLowerCase()} reading profile. This result is auto-calculated from five microphone-based passage checks, reading accuracy and consistency across passages.</p>
-      </section>
-      <h3>Passage-wise Accuracy</h3>
-      <div class="score-bars">
-        ${teacherReadingState.map((item, index) => `<div class="score-bar-row"><div><strong>Passage ${index + 1}</strong><small>${item.missed?.length ? `Missed: ${item.missed.join(", ")}` : "No major missed words"}</small></div><span>${item.accuracy}%</span><progress max="100" value="${item.accuracy}"></progress></div>`).join("")}
-      </div>
-      <div class="report-columns">
-        <section class="report-panel strengths-panel"><h3>Strengths</h3><ul><li>Completed all five read-aloud passages.</li><li>Demonstrated classroom reading readiness.</li><li>Manual observation supports a balanced reading profile.</li></ul></section>
-        <section class="report-panel improvement-panel"><h3>Improvement Plan</h3><ul>${(needs.length ? needs : ["natural pauses", "expression"]).map((item) => `<li>Practise ${item} through 5-minute daily read-aloud sessions.</li>`).join("")}</ul></section>
-      </div>
-    </div>
-  `;
-}
-
-function initTeacherReadingAssessment() {
-  if (!teacherReadingForm || !teacherReadingPassageWrap) return;
-  renderTeacherReadingPassages();
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (teacherReadingForm.elements.date && !teacherReadingForm.elements.date.value) {
-    teacherReadingForm.elements.date.valueAsDate = new Date();
-  }
-
-  teacherReadingName?.addEventListener("change", () => {
-    const isOther = teacherReadingName.value === "__other";
-    if (teacherReadingOtherWrap) teacherReadingOtherWrap.hidden = !isOther;
-    if (teacherReadingOther) teacherReadingOther.required = isOther;
-    updateTeacherReadingValidation();
-  });
-
-  teacherReadingPhotoInput?.addEventListener("change", () => {
-    const file = teacherReadingPhotoInput.files?.[0];
-    if (!file) {
-      teacherReadingPhotoDataUrl = "";
-      if (teacherReadingPhotoPreview) teacherReadingPhotoPreview.hidden = true;
-      updateTeacherReadingValidation();
-      return;
-    }
-    const reader = new FileReader();
-    reader.addEventListener("load", () => {
-      teacherReadingPhotoDataUrl = String(reader.result || "");
-      if (teacherReadingPhotoPreview) {
-        teacherReadingPhotoPreview.hidden = false;
-        teacherReadingPhotoPreview.innerHTML = `<img src="${teacherReadingPhotoDataUrl}" alt="Teacher preview" />`;
-      }
-      updateTeacherReadingValidation();
-    });
-    reader.readAsDataURL(file);
-  });
-
-  teacherReadingPassageWrap.addEventListener("click", (event) => {
-    const listenButton = event.target.closest("[data-teacher-reading-listen]");
-    const startButton = event.target.closest("[data-teacher-reading-start]");
-    const stopButton = event.target.closest("[data-teacher-reading-stop]");
-    if (listenButton) {
-      const index = Number(listenButton.dataset.teacherReadingListen);
-      speakRoutineText(teacherReadingPassages[index], listenButton);
-      return;
-    }
-    if (stopButton?._recognition) {
-      stopButton._recognition.stop();
-      return;
-    }
-    if (!startButton) return;
-    const index = Number(startButton.dataset.teacherReadingStart);
-    const card = teacherReadingPassageWrap.querySelector(`[data-teacher-reading-card="${index}"]`);
-    const passageStop = card?.querySelector(`[data-teacher-reading-stop="${index}"]`);
-    const indicator = card?.querySelector(`[data-teacher-reading-indicator="${index}"]`);
-    const transcriptEl = card?.querySelector(`[data-teacher-reading-transcript="${index}"]`);
-    const scoreEl = card?.querySelector(`[data-teacher-reading-score="${index}"]`);
-
-    if (!SpeechRecognition) {
-      if (transcriptEl) transcriptEl.textContent = "Microphone scoring is not supported in this browser. Please use Chrome.";
-      return;
-    }
-
-    stopTenseReading();
-    const recognition = new SpeechRecognition();
-    recognition.lang = "en-IN";
-    recognition.interimResults = true;
-    recognition.continuous = true;
-    let finalText = "";
-    let latestText = "";
-    startButton.disabled = true;
-    if (passageStop) {
-      passageStop.hidden = false;
-      passageStop._recognition = recognition;
-    }
-    if (indicator) indicator.hidden = false;
-    if (transcriptEl) transcriptEl.textContent = "Listening. Read slowly and clearly.";
-
-    recognition.onresult = (speechEvent) => {
-      let interim = "";
-      for (let resultIndex = speechEvent.resultIndex; resultIndex < speechEvent.results.length; resultIndex += 1) {
-        const text = speechEvent.results[resultIndex][0].transcript;
-        if (speechEvent.results[resultIndex].isFinal) finalText += ` ${text}`;
-        else interim += ` ${text}`;
-      }
-      latestText = `${finalText} ${interim}`.trim();
-      if (transcriptEl) transcriptEl.textContent = latestText || "Listening...";
-    };
-
-    recognition.onend = () => {
-      startButton.disabled = false;
-      if (passageStop) passageStop.hidden = true;
-      if (indicator) indicator.hidden = true;
-      const result = scoreTeacherReading(teacherReadingPassages[index], latestText || finalText);
-      teacherReadingState[index] = { ...result, transcript: latestText || finalText, attempted: Boolean(latestText || finalText) };
-      if (scoreEl) scoreEl.textContent = teacherReadingState[index].attempted ? `${result.accuracy}% accuracy` : "Try again";
-      if (transcriptEl) transcriptEl.textContent = latestText || "No clear reading captured. Please try again close to the microphone.";
-      updateTeacherReadingValidation();
-    };
-
-    recognition.onerror = () => {
-      startButton.disabled = false;
-      if (passageStop) passageStop.hidden = true;
-      if (indicator) indicator.hidden = true;
-      if (transcriptEl) transcriptEl.textContent = "Could not hear clearly. Please try again in a quiet place.";
-    };
-
-    recognition.start();
-  });
-
-  teacherReadingForm.addEventListener("input", updateTeacherReadingValidation);
-  teacherReadingForm.addEventListener("change", updateTeacherReadingValidation);
-  teacherReadingForm.addEventListener("submit", (event) => {
-    event.preventDefault();
-    if (!updateTeacherReadingValidation()) return;
-    renderTeacherReadingReport();
-  });
-
-  teacherReadingPrint?.addEventListener("click", () => {
-    if (!updateTeacherReadingValidation()) return;
-    renderTeacherReadingReport();
-    window.print();
-  });
-
-  updateTeacherReadingValidation();
-}
-
-initTeacherReadingAssessment();
-
-const feedbackCategories = [
-  { label: "Teacher", fields: ["teacherAttention", "teacherComfort", "teacherLearning"] },
-  { label: "Operations", fields: ["opsUpdates", "opsTechnology", "opsSafety"] },
-  { label: "Founders", fields: ["founderApproach", "founderListening", "founderTrust"] },
-  { label: "Transport", fields: ["transportTiming", "transportSafety", "transportCommunication"] },
-];
-const feedbackFields = feedbackCategories.flatMap((category) => category.fields);
-const feedbackGoogleFormEndpoint = "https://docs.google.com/forms/d/e/1FAIpQLSd_gtfABfJjeWceDpiXn8msu_oDY44XINnInovsIhdcwf67Kw/formResponse";
-const feedbackPendingKey = "kidsversePendingParentFeedback";
-const feedbackGoogleEntryMap = {
-  parentName: "entry.531725399",
-  parentPhone: "entry.1055010208",
-  studentName: "entry.30854622",
-  childClass: "entry.725294418",
-  teacherAttention: "entry.1232646832",
-  teacherComfort: "entry.1719162783",
-  teacherLearning: "entry.1940244171",
-  opsUpdates: "entry.1210229565",
-  opsTechnology: "entry.730050687",
-  opsSafety: "entry.1060265380",
-  founderApproach: "entry.1328171448",
-  founderListening: "entry.265137716",
-  founderTrust: "entry.1410430860",
-  transportTiming: "entry.1085153353",
-  transportSafety: "entry.489999209",
-  transportCommunication: "entry.1857715293",
-  suggestion: "entry.817929326",
-};
-
-function getFeedbackData() {
-  if (!parentFeedbackForm) return null;
-  const formData = new FormData(parentFeedbackForm);
-  const fieldValues = Object.fromEntries(
-    ["parentName", "parentPhone", "studentName", "childClass", ...feedbackFields, "suggestion"].map((field) => [
-      field,
-      String(formData.get(field) || "").trim(),
-    ])
-  );
-  const ratings = feedbackFields.map((field) => Number(formData.get(field) || 0));
-  const completedRatings = ratings.filter(Boolean);
-  const average = completedRatings.length ? completedRatings.reduce((sum, value) => sum + value, 0) / completedRatings.length : 0;
-  const percent = Math.round((average / 5) * 100);
-  const categories = feedbackCategories.map((category) => {
-    const values = category.fields.map((field) => Number(formData.get(field) || 0));
-    const completed = values.filter(Boolean);
-    const categoryAverage = completed.length ? completed.reduce((sum, value) => sum + value, 0) / completed.length : 0;
-    return {
-      label: category.label,
-      values,
-      score: categoryAverage ? Math.round((categoryAverage / 5) * 100) : 0,
-      average: categoryAverage ? categoryAverage.toFixed(1) : "0.0",
-    };
-  });
-  return {
-    ...fieldValues,
-    fieldValues,
-    ratings,
-    completedRatings,
-    categories,
-    percent,
-  };
-}
-
-function getFeedbackGooglePayload(data) {
-  const params = new URLSearchParams();
-  Object.entries(feedbackGoogleEntryMap).forEach(([field, entry]) => {
-    params.set(entry, data.fieldValues[field] || "");
-  });
-  return params;
-}
-
-async function submitFeedbackToGoogleForm(data) {
-  if (!feedbackGoogleFormEndpoint) return false;
-  const payload = getFeedbackGooglePayload(data);
-
-  if (window.location.protocol === "file:") {
-    try {
-      localStorage.setItem(feedbackPendingKey, payload.toString());
-    } catch (error) {
-      console.warn("Kidsverse feedback could not be saved for later submission.", error);
-    }
-    return false;
-  }
-
-  try {
-    await fetch(feedbackGoogleFormEndpoint, {
-      method: "POST",
-      mode: "no-cors",
-      body: payload,
-    });
-    return true;
-  } catch (error) {
-    console.warn("Kidsverse feedback Google Form submission failed", error);
-    return false;
+  .smart-profile-card {
+    grid-template-columns: 1fr;
   }
 }
 
-function submitPendingFeedbackToGoogleForm() {
-  if (!feedbackGoogleFormEndpoint || window.location.protocol === "file:") return;
-  const pendingPayload = localStorage.getItem(feedbackPendingKey);
-  if (!pendingPayload) return;
+@media (max-width: 640px) {
+  .speaksmart-hero {
+    width: min(100% - 20px, 1180px);
+    margin-top: 16px;
+  }
 
-  fetch(feedbackGoogleFormEndpoint, {
-    method: "POST",
-    mode: "no-cors",
-    body: new URLSearchParams(pendingPayload),
-  })
-    .then(() => localStorage.removeItem(feedbackPendingKey))
-    .catch((error) => {
-      console.warn("Pending Kidsverse feedback could not be submitted.", error);
-    });
+  .speaksmart-hero-copy,
+  .speaksmart-camera-mock,
+  .smart-video-card,
+  .smart-question-panel,
+  .speaksmart-transcript,
+  .speaksmart-feedback,
+  .speaksmart-progress {
+    border-radius: 22px;
+    padding: 16px;
+  }
+
+  .speaksmart-camera-mock {
+    min-height: 360px;
+  }
+
+  .smart-planet-deck {
+    width: 170px;
+    height: 126px;
+    transform: rotateX(58deg) rotateZ(-24deg) scale(0.78);
+    transform-origin: top right;
+  }
+
+  .smart-mission-portal {
+    min-height: 116px;
+  }
+
+  .portal-card {
+    min-width: 72px;
+    min-height: 38px;
+    font-size: 0.84rem;
+  }
+
+  .smart-video-frame {
+    min-height: 310px;
+  }
+
+  .speaksmart-features,
+  .smart-stat-grid,
+  .smart-score-grid,
+  .smart-actions-grid,
+  .smart-feedback-grid,
+  .speaksmart-skill-constellation {
+    grid-template-columns: 1fr;
+  }
+
+  .smart-dashboard-head,
+  .smart-feedback-head,
+  .smart-transcript-head {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .smart-transcript-status {
+    justify-content: flex-start;
+    min-width: 0;
+  }
+
+  .smart-controls .primary-button,
+  .smart-controls .secondary-button,
+  .smart-feedback-actions .primary-button,
+  .smart-feedback-actions .secondary-button {
+    width: 100%;
+  }
 }
 
-function getFeedbackMood(percent, complete) {
-  if (!complete) return "Please complete all parent happiness questions.";
-  if (percent >= 90) return "Excellent parent happiness";
-  if (percent >= 75) return "Good experience with room to improve";
-  if (percent >= 60) return "Needs focused improvement";
-  return "Needs immediate attention";
+@media (prefers-reduced-motion: reduce) {
+  .smart-cube,
+  .portal-card,
+  .portal-core,
+  .mock-mic i,
+  .smart-audio-bars i {
+    animation: none !important;
+  }
+
+  [data-smart-tilt] {
+    transform: none !important;
+  }
 }
 
-function updateFeedbackState() {
-  const data = getFeedbackData();
-  if (!data) return false;
-  const complete = Boolean(data.parentName && data.parentPhone && data.studentName && data.childClass && data.completedRatings.length === feedbackFields.length);
-  if (feedbackPercent) feedbackPercent.textContent = `${complete ? data.percent : 0}%`;
-  if (feedbackProgress) feedbackProgress.value = complete ? data.percent : 0;
-  if (feedbackMood) feedbackMood.textContent = getFeedbackMood(data.percent, complete);
-  if (feedbackSubmit) feedbackSubmit.disabled = !complete;
-  if (feedbackValidation) feedbackValidation.hidden = complete;
-  return complete;
+@media print {
+  .speaksmart-page .top-strip,
+  .speaksmart-page .site-header,
+  .speaksmart-page .speaksmart-hero,
+  .speaksmart-page .speaksmart-features,
+  .speaksmart-page .speaksmart-setup,
+  .speaksmart-page .speaksmart-room,
+  .speaksmart-page .speaksmart-transcript,
+  .speaksmart-page .kiya-widget,
+  .speaksmart-page .whatsapp-float,
+  .speaksmart-page .smart-feedback-actions {
+    display: none !important;
+  }
+
+  .speaksmart-page .speaksmart-progress,
+  .speaksmart-page .speaksmart-feedback,
+  .speaksmart-page .speaksmart-dashboard {
+    display: block !important;
+    box-shadow: none;
+    border: 1px solid #d7ddea;
+  }
 }
 
-parentFeedbackForm?.addEventListener("input", updateFeedbackState);
-parentFeedbackForm?.addEventListener("change", updateFeedbackState);
-
-parentFeedbackForm?.addEventListener("submit", async (event) => {
-  event.preventDefault();
-  if (!updateFeedbackState()) return;
-  const data = getFeedbackData();
-  if (!data) return;
-  const allGreat = data.ratings.every((rating) => rating === 5);
-  const submitted = await submitFeedbackToGoogleForm(data);
-  if (feedbackThankYou) {
-    feedbackThankYou.hidden = false;
-    feedbackThankYou.innerHTML = allGreat
-      ? `<strong>Thank you for sharing your valuable feedback.</strong><p>${submitted ? "Your feedback has been recorded." : "Your feedback has been saved and will sync when the website is opened online."} We will definitely work on making Kidsverse the best school for your child education.</p><a class="primary-button" href="https://g.co/kgs/Q9A7iHY" target="_blank" rel="noopener noreferrer">Please rate us 5 star on Google</a>`
-      : `<strong>Thank you for sharing your valuable feedback.</strong><p>${submitted ? "Your feedback has been recorded." : "Your feedback has been saved and will sync when the website is opened online."} We will definitely work on making Kidsverse the best school for your child education.</p>`;
-    feedbackThankYou.scrollIntoView({ behavior: "smooth", block: "center" });
-  }
-});
-
-if (parentFeedbackForm) {
-  updateFeedbackState();
-  submitPendingFeedbackToGoogleForm();
+* {
+  box-sizing: border-box;
 }
 
-readinessForm?.addEventListener("submit", (event) => {
-  event.preventDefault();
-  if (!readinessResult) return;
-
-  const data = new FormData(readinessForm);
-  const childName = String(data.get("childName") || "Your child").trim() || "Your child";
-  const values = ["communication", "social", "motor", "routine", "learning"].map((key) => Number(data.get(key) || 0));
-  const total = values.reduce((sum, value) => sum + value, 0);
-  const percent = Math.round((total / 15) * 100);
-  let title = "Nursery ready with gentle support";
-  let note = "Your child is showing many readiness signs. A school visit can help us understand comfort, confidence and the right starting routine.";
-
-  if (percent < 55) {
-    title = "Building readiness step by step";
-    note = "Your child may benefit from gentle settling, speaking practice, routines and playful activities before a full Nursery rhythm.";
-  } else if (percent >= 78) {
-    title = "Strong Nursery readiness signs";
-    note = "Your child is showing good signs across communication, routines, social comfort and learning habits. A visit can confirm the best fit.";
-  }
-
-  const message = encodeURIComponent(
-    `Hello Kidsverse School, I completed the Nursery Readiness Check for ${childName}. Score: ${percent}%. Please guide me on the right class and school visit.`
-  );
-
-  readinessResult.hidden = false;
-  readinessResult.innerHTML = `
-    <span>Readiness view</span>
-    <strong>${percent}%</strong>
-    <h3>${title}</h3>
-    <p>${note}</p>
-    <div class="readiness-result-actions">
-      <a class="primary-button" href="https://wa.me/918826758881?text=${message}" target="_blank" rel="noopener noreferrer">Discuss With Kidsverse</a>
-      <a class="secondary-button" href="nursery.html">View Nursery Programme</a>
-    </div>
-  `;
-  readinessResult.scrollIntoView({ behavior: "smooth", block: "center" });
-});
-
-const tenseDetails = {
-  simple: {
-    title: "Present Simple",
-    story: "Habit, routine or fact",
-    structure: "Subject + V1 / V1+s or es<br />OR Subject + am/is/are + noun/adjective/place",
-    examples: ["I go to school every day.", "She reads before bedtime.", "The sun rises in the east."],
-    activity: "Look for habits, routines, facts, general truths and present states.",
-  },
-  continuous: {
-    title: "Present Continuous",
-    story: "Happening right now",
-    structure: "Subject + am/is/are + Verb-ing",
-    examples: ["I am going to school now.", "She is reading a story.", "They are playing outside."],
-    activity: "Look for now, right now, at this moment or actions happening while we speak.",
-  },
-  perfect: {
-    title: "Present Perfect",
-    story: "Finished, but connected with now",
-    structure: "Subject + has/have + V3",
-    examples: ["I have completed my homework.", "She has finished the book.", "They have cleaned the room."],
-    activity: "Look for a finished action that still matters now, like homework completed or a result visible today.",
-  },
-  perfectContinuous: {
-    title: "Present Perfect Continuous",
-    story: "Started earlier and still continuing",
-    structure: "Subject + has/have been + Verb-ing",
-    examples: ["I have been studying for two hours.", "She has been reading since morning.", "They have been practising daily."],
-    activity: "Look for since or for. The action began earlier and is still connected to now.",
-  },
-};
-
-let activeTenseSpeech = null;
-let activeTenseSpeechButton = null;
-
-function resetTenseAudioButton(button) {
-  if (!button) return;
-  const restoreHtml = button.dataset.audioOriginalHtml || button.dataset.audioRestoreHtml;
-  if (restoreHtml) {
-    button.innerHTML = restoreHtml;
-    delete button.dataset.audioOriginalHtml;
-  } else {
-    button.textContent = button.dataset.audioDefaultText || "Read examples";
-  }
-  button.classList.remove("is-reading");
-  button.setAttribute("aria-pressed", "false");
+html {
+  scroll-behavior: smooth;
 }
 
-function stopTenseReading() {
-  if ("speechSynthesis" in window) window.speechSynthesis.cancel();
-  if (activeTenseSpeechButton) resetTenseAudioButton(activeTenseSpeechButton);
-  activeTenseSpeech = null;
-  activeTenseSpeechButton = null;
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 8% 8%, rgba(255, 216, 111, 0.36), transparent 23rem),
+    radial-gradient(circle at 90% 12%, rgba(201, 236, 255, 0.62), transparent 24rem),
+    radial-gradient(circle at 80% 80%, rgba(217, 247, 232, 0.72), transparent 28rem),
+    var(--paper);
+  font-family: "Nunito", system-ui, sans-serif;
+  line-height: 1.6;
+  overflow-x: hidden;
 }
 
-function renderTenseDetail(key) {
-  const panel = document.querySelector("[data-tense-detail]");
-  const data = getActiveTenseLab().details[key];
-  if (!panel || !data) return;
-  stopTenseReading();
-  panel.innerHTML = `
-    <div>
-      <p class="eyebrow">${data.story}</p>
-      <h3>${data.title}</h3>
-      <code>${data.structure}</code>
-    </div>
-    <div>
-      <p>${data.activity}</p>
-      <ul>${data.examples.map((example) => `<li>${example}</li>`).join("")}</ul>
-      <button class="tense-audio-button" type="button" data-read-tense="${key}" aria-pressed="false">Read examples</button>
-    </div>
-  `;
+a {
+  color: inherit;
+  text-decoration: none;
 }
 
-function readTenseExamples(key, button) {
-  const data = getActiveTenseLab().details[key];
-  if (!data || !("speechSynthesis" in window) || !("SpeechSynthesisUtterance" in window)) {
-    if (button) button.textContent = "Audio not supported";
-    return;
-  }
-
-  if (button?.classList.contains("is-reading")) {
-    stopTenseReading();
-    return;
-  }
-
-  window.speechSynthesis.cancel();
-  if (activeTenseSpeechButton && activeTenseSpeechButton !== button) {
-    resetTenseAudioButton(activeTenseSpeechButton);
-  }
-  const text = `${data.title}. ${data.story}. ${data.activity} Examples. ${data.examples.join(" ")}`;
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = "en-IN";
-  utterance.rate = 0.86;
-  utterance.pitch = 1.08;
-  activeTenseSpeech = utterance;
-  activeTenseSpeechButton = button;
-  if (button) {
-    button.dataset.audioDefaultText = "Read examples";
-    button.textContent = "Stop reading";
-    button.classList.add("is-reading");
-    button.setAttribute("aria-pressed", "true");
-  }
-  utterance.onend = () => {
-    if (activeTenseSpeech === utterance) stopTenseReading();
-  };
-  utterance.onerror = () => {
-    if (button) {
-      resetTenseAudioButton(button);
-      button.textContent = "Try again";
-    }
-    activeTenseSpeech = null;
-    activeTenseSpeechButton = null;
-  };
-  window.speechSynthesis.speak(utterance);
+img {
+  display: block;
+  max-width: 100%;
 }
 
-function initTenseCards() {
-  const cards = document.querySelectorAll("[data-tense-card]");
-  const panel = document.querySelector("[data-tense-detail]");
-  if (!cards.length) return;
-  renderTenseDetail(cards[0].dataset.tenseCard);
-  cards.forEach((card) => {
-    card.addEventListener("click", () => {
-      cards.forEach((item) => item.classList.toggle("is-active", item === card));
-      renderTenseDetail(card.dataset.tenseCard);
-    });
-  });
-  panel?.addEventListener("click", (event) => {
-    const button = event.target.closest("[data-read-tense]");
-    if (!button) return;
-    readTenseExamples(button.dataset.readTense, button);
-  });
+button,
+input,
+select {
+  font: inherit;
 }
 
-function initTenseChoiceTool() {
-  const tool = document.querySelector("[data-tense-choice-tool]");
-  const feedback = document.querySelector("[data-choice-feedback]");
-  if (!tool || !feedback) return;
-  const choiceData = getActiveTenseLab().choice;
-  tool.querySelectorAll("[data-choice]").forEach((button) => {
-    button.addEventListener("click", () => {
-      const correct = button.dataset.choice === choiceData.correct;
-      feedback.classList.toggle("is-correct", correct);
-      feedback.classList.toggle("is-wrong", !correct);
-      feedback.innerHTML = correct ? choiceData.correctText : choiceData.wrongText;
-    });
-  });
+h1,
+h2,
+h3,
+p {
+  margin: 0;
 }
 
-const transformerData = {
-  habit: {
-    label: "Habit",
-    sentence: "Rahul plays football.",
-    note: "Use Present Simple when the action is a habit or routine.",
-  },
-  now: {
-    label: "Happening now",
-    sentence: "Rahul is playing football.",
-    note: "Use Present Continuous when the action is happening right now.",
-  },
-  finished: {
-    label: "Finished",
-    sentence: "Rahul has played football.",
-    note: "Use Present Perfect when the action is finished but still connects with now.",
-  },
-  continuing: {
-    label: "Continuing",
-    sentence: "Rahul has been playing football for an hour.",
-    note: "Use Present Perfect Continuous when the action started earlier and is still continuing.",
-  },
-};
-
-function initSentenceTransformer() {
-  const transformer = document.querySelector("[data-transformer]");
-  if (!transformer) return;
-  const label = transformer.querySelector("[data-transform-label]");
-  const sentence = transformer.querySelector("[data-transform-sentence]");
-  const note = transformer.querySelector("[data-transform-note]");
-  function renderTransform(key) {
-    const data = getActiveTenseLab().transformer[key];
-    if (!data) return;
-    label.textContent = data.label;
-    sentence.textContent = data.sentence;
-    note.textContent = data.note;
-  }
-  renderTransform(transformer.querySelector(".is-active")?.dataset.transform || "habit");
-  transformer.querySelectorAll("[data-transform]").forEach((button) => {
-    button.addEventListener("click", () => {
-      transformer.querySelectorAll("[data-transform]").forEach((item) => item.classList.toggle("is-active", item === button));
-      renderTransform(button.dataset.transform);
-    });
-  });
+h1,
+h2,
+h3,
+.brand strong {
+  font-family: "Baloo 2", "Nunito", system-ui, sans-serif;
+  letter-spacing: 0;
 }
 
-const practiceIntentData = {
-  simple: {
-    title: "Present Simple",
-    example: "She reads every day.",
-    success: "Good. This looks like Present Simple because it shows a habit, fact or current state.",
-    guide: "For Present Simple, write a habit, fact or current state: She reads every day. The sun rises. I am happy.",
-  },
-  continuous: {
-    title: "Present Continuous",
-    example: "She is reading now.",
-    success: "Good. This looks like Present Continuous because it uses am/is/are with a verb ending in ing.",
-    guide: "For Present Continuous, use I am, he/she/it is, we/you/they are + verb-ing.",
-  },
-  perfect: {
-    title: "Present Perfect",
-    example: "She has finished the book.",
-    success: "Good. This looks like Present Perfect because it uses has/have with a completed action.",
-    guide: "For Present Perfect, use he/she/it has or I/we/you/they have + V3.",
-  },
-  perfectContinuous: {
-    title: "Present Perfect Continuous",
-    example: "She has been reading for two hours.",
-    success: "Good. This looks like Present Perfect Continuous because it uses has/have been + verb-ing with a time clue.",
-    guide: "For Present Perfect Continuous, use he/she/it has been or I/we/you/they have been + verb-ing with for or since.",
-  },
-};
-
-const simpleSignalWords = /\b(always|usually|often|sometimes|never|daily|every|on mondays|on sundays|at night|in the morning)\b/i;
-const continuousSignalWords = /\b(now|right now|currently|at this moment|today)\b/i;
-const perfectSignalWords = /\b(already|just|yet|ever|never|recently|so far)\b/i;
-const perfectContinuousSignalWords = /\b(for|since|all day|all morning|all week)\b/i;
-const commonV3Words = /\b(done|gone|eaten|written|read|seen|made|taken|given|known|finished|completed|played|studied|learned|learnt|cleaned|checked|watched|visited|opened|closed)\b/i;
-
-function hasSubject(sentence) {
-  return /\b(i|we|you|they|he|she|it|[A-Z][a-z]+)\b/.test(sentence.trim());
+.top-strip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  min-height: 44px;
+  padding: 8px 48px 8px 18px;
+  color: #173434;
+  background: linear-gradient(90deg, var(--sun), var(--mint), var(--sky));
+  font-weight: 900;
 }
 
-function getSubjectType(sentence) {
-  const firstWord = sentence.trim().split(/\s+/)[0]?.replace(/[^a-z]/gi, "").toLowerCase();
-  if (!firstWord) return "unknown";
-  if (firstWord === "i") return "i";
-  if (["he", "she", "it"].includes(firstWord)) return "singular";
-  if (["we", "you", "they"].includes(firstWord)) return "plural";
-  return "singular";
+.top-strip span {
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.68);
+  white-space: nowrap;
 }
 
-function hasCorrectBeHelper(sentence) {
-  const lower = sentence.toLowerCase();
-  const subjectType = getSubjectType(sentence);
-  if (subjectType === "i") return /\bi\s+am\b/.test(lower);
-  if (subjectType === "singular") return /\b(he|she|it|[a-z]+)\s+is\b/.test(lower);
-  if (subjectType === "plural") return /\b(we|you|they)\s+are\b/.test(lower);
-  return false;
+.top-strip a {
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
 
-function hasCorrectPerfectHelper(sentence) {
-  const lower = sentence.toLowerCase();
-  const subjectType = getSubjectType(sentence);
-  if (subjectType === "singular") return /\b(he|she|it|[a-z]+)\s+has\b/.test(lower);
-  if (subjectType === "i" || subjectType === "plural") return /\b(i|we|you|they)\s+have\b/.test(lower);
-  return false;
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin: 0 auto;
+  padding: 12px clamp(16px, 4vw, 62px);
+  border-bottom: 1px solid rgba(31, 49, 66, 0.08);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.88), rgba(255, 250, 241, 0.84)),
+    rgba(255, 250, 241, 0.86);
+  box-shadow: 0 12px 34px rgba(31, 49, 66, 0.06);
+  backdrop-filter: blur(20px);
 }
 
-function getPracticeChecks(sentence, intent) {
-  const normalized = sentence.trim().replace(/\s+/g, " ");
-  const lower = normalized.toLowerCase();
-  const hasWords = normalized.split(" ").filter(Boolean).length >= 3;
-  const subject = hasSubject(normalized);
-  const checks = { subject, verb: false, signal: false };
-  const mode = getTenseLabMode();
-  const correctBeHelper = hasCorrectBeHelper(normalized);
-  const correctPerfectHelper = hasCorrectPerfectHelper(normalized);
-  const beFactPattern = correctBeHelper && !/\b(am|is|are)\s+\w+ing\b/.test(lower);
-  const perfectContinuousPattern = /\b(has|have)\s+been\s+\w+ing\b/.test(lower);
-
-  if (mode === "past") {
-    const pastSimpleVerb = /\b(was|were|went|played|read|wrote|ate|studied|visited|finished|completed|made|saw|took|gave|did|had)\b/.test(lower);
-    if (intent === "simple") {
-      checks.verb = hasWords && pastSimpleVerb && !/\b(was|were)\s+\w+ing\b/.test(lower);
-      checks.signal = /\b(yesterday|last|ago|in 202|in 201|before)\b/.test(lower) || checks.verb;
-    }
-    if (intent === "continuous") {
-      checks.verb = /\b(was|were)\s+\w+ing\b/.test(lower);
-      checks.signal = /\b(when|while|at that time|yesterday|last)\b/.test(lower) || checks.verb;
-    }
-    if (intent === "perfect") {
-      checks.verb = /\bhad\s+\w+(ed|en|ne|wn)\b/.test(lower) || /\bhad\s+/.test(lower) && commonV3Words.test(lower);
-      checks.signal = /\b(before|already|after|by the time)\b/.test(lower) || checks.verb;
-    }
-    if (intent === "perfectContinuous") {
-      checks.verb = /\bhad\s+been\s+\w+ing\b/.test(lower);
-      checks.signal = /\b(for|since|before|when)\b/.test(lower);
-    }
-    return checks;
-  }
-
-  if (mode === "future") {
-    const beGoingTo = correctBeHelper && /\bgoing\s+to\s+\w+\b/.test(lower);
-    if (intent === "simple") {
-      checks.verb = /\bwill\s+\w+\b/.test(lower) || beGoingTo;
-      checks.signal = /\b(tomorrow|next|soon|later|tonight|in the future)\b/.test(lower) || checks.verb;
-    }
-    if (intent === "continuous") {
-      checks.verb = /\bwill\s+be\s+\w+ing\b/.test(lower) || /\b(am|is|are)\s+going\s+to\s+be\s+\w+ing\b/.test(lower);
-      checks.signal = /\b(at|this time|tomorrow|next|later)\b/.test(lower) || checks.verb;
-    }
-    if (intent === "perfect") {
-      checks.verb = /\bwill\s+have\s+\w+(ed|en|ne|wn)\b/.test(lower) || /\bwill\s+have\s+/.test(lower) && commonV3Words.test(lower);
-      checks.signal = /\b(by|before|by then|by tomorrow|by next)\b/.test(lower) || checks.verb;
-    }
-    if (intent === "perfectContinuous") {
-      checks.verb = /\bwill\s+have\s+been\s+\w+ing\b/.test(lower);
-      checks.signal = /\b(for|since|by|before)\b/.test(lower);
-    }
-    return checks;
-  }
-
-  if (intent === "simple") {
-    const actionPattern =
-      !/\b(am|is|are|has|have)\s+\w+/.test(lower) &&
-      /\b(go|goes|read|reads|play|plays|write|writes|eat|eats|study|studies|come|comes|like|likes|work|works|learn|learns)\b/.test(lower);
-    checks.verb =
-      hasWords &&
-      (actionPattern || beFactPattern);
-    checks.signal = actionPattern || simpleSignalWords.test(lower) || beFactPattern;
-  }
-
-  if (intent === "continuous") {
-    checks.verb = correctBeHelper && /\b(am|is|are)\s+\w+ing\b/.test(lower);
-    checks.signal = continuousSignalWords.test(lower) || checks.verb;
-  }
-
-  if (intent === "perfect") {
-    checks.verb = correctPerfectHelper && !perfectContinuousPattern && (/\b(has|have)\s+\w+(ed|en|ne|wn)\b/.test(lower) || commonV3Words.test(lower));
-    checks.signal = perfectSignalWords.test(lower) || checks.verb;
-  }
-
-  if (intent === "perfectContinuous") {
-    checks.verb = correctPerfectHelper && perfectContinuousPattern;
-    checks.signal = perfectContinuousSignalWords.test(lower);
-  }
-
-  return checks;
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-width: max-content;
+  padding: 6px 9px 6px 6px;
+  border: 1px solid rgba(31, 49, 66, 0.08);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.58);
 }
 
-function initTensePracticeBox() {
-  const practice = document.querySelector("[data-tense-practice]");
-  if (!practice) return;
-  const input = practice.querySelector("[data-practice-input]");
-  const feedback = practice.querySelector("[data-practice-feedback]");
-  const intentButtons = practice.querySelectorAll("[data-practice-intent]");
-  const ruleBadges = practice.querySelectorAll("[data-practice-rule]");
-  let intent = "simple";
-  let typingLetter = 0;
-  let typingForward = true;
-
-  function updatePlaceholder() {
-    input.placeholder = `Example: ${getActiveTenseLab().practice[intent].example}`;
-  }
-
-  function validatePractice() {
-    const sentence = input.value.trim();
-    const data = getActiveTenseLab().practice[intent];
-    const checks = getPracticeChecks(sentence, intent);
-    const passed = checks.subject && checks.verb && checks.signal;
-    const hasText = sentence.length > 0;
-
-    ruleBadges.forEach((badge) => {
-      badge.classList.toggle("is-met", Boolean(checks[badge.dataset.practiceRule]));
-    });
-
-    feedback.classList.toggle("is-good", passed);
-    feedback.classList.toggle("is-guide", hasText && !passed);
-
-    if (!hasText) {
-      feedback.innerHTML = `
-        <span>${data.title}</span>
-        <strong>Start with a clear subject and action.</strong>
-        <p>Example: ${data.example}</p>
-      `;
-      return;
-    }
-
-    if (passed) {
-      feedback.innerHTML = `
-        <span>${data.title}</span>
-        <strong>Sentence pattern looks correct.</strong>
-        <p>${data.success}</p>
-      `;
-      return;
-    }
-
-    const missing = [];
-    if (!checks.subject) missing.push("a clear subject");
-    if (!checks.verb) missing.push("the right verb pattern");
-    if (!checks.signal) missing.push("a time clue or meaning clue");
-    feedback.innerHTML = `
-      <span>${data.title}</span>
-      <strong>Almost there. Add ${missing.join(", ")}.</strong>
-      <p>${data.guide}</p>
-    `;
-  }
-
-  intentButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      intent = button.dataset.practiceIntent;
-      typingLetter = 0;
-      typingForward = true;
-      intentButtons.forEach((item) => item.classList.toggle("is-active", item === button));
-      updatePlaceholder();
-      validatePractice();
-    });
-  });
-
-  input.addEventListener("input", validatePractice);
-  input.addEventListener("focus", () => input.classList.remove("is-auto-typing"));
-  input.addEventListener("blur", () => {
-    if (!input.value) input.classList.add("is-auto-typing");
-  });
-  input.classList.add("is-auto-typing");
-  window.setInterval(() => {
-    if (input.value || document.activeElement === input) return;
-    const examples = Object.values(getActiveTenseLab().practice).map((item) => item.example);
-    const activeIndex = Math.max(0, [...intentButtons].findIndex((button) => button.dataset.practiceIntent === intent));
-    const example = examples[activeIndex] || examples[0];
-    typingLetter += typingForward ? 1 : -1;
-    input.placeholder = example.slice(0, typingLetter);
-    if (typingLetter >= example.length + 14) typingForward = false;
-    if (typingLetter <= 0) {
-      typingForward = true;
-      typingLetter = 0;
-    }
-  }, 55);
-  updatePlaceholder();
-  validatePractice();
+.brand img {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  border-radius: 16px;
+  background: #050505;
+  box-shadow: 0 14px 28px rgba(31, 49, 66, 0.18);
 }
 
-const tenseQuizQuestions = [
-  {
-    prompt: "She writes in her diary every night.",
-    options: ["Present Simple", "Present Continuous", "Present Perfect", "Present Perfect Continuous"],
-    answer: "Present Simple",
-    explanation: "Every night shows a routine, so we use Present Simple.",
-  },
-  {
-    prompt: "They are watching a science video now.",
-    options: ["Present Simple", "Present Continuous", "Present Perfect", "Present Perfect Continuous"],
-    answer: "Present Continuous",
-    explanation: "Now shows the action is happening at this moment.",
-  },
-  {
-    prompt: "I have finished my worksheet.",
-    options: ["Present Simple", "Present Continuous", "Present Perfect", "Present Perfect Continuous"],
-    answer: "Present Perfect",
-    explanation: "The worksheet is finished, and the result matters now.",
-  },
-  {
-    prompt: "We have been waiting for ten minutes.",
-    options: ["Present Simple", "Present Continuous", "Present Perfect", "Present Perfect Continuous"],
-    answer: "Present Perfect Continuous",
-    explanation: "For ten minutes shows an action that started earlier and continues until now.",
-  },
-  {
-    prompt: "My brother plays chess on Sundays.",
-    options: ["Present Simple", "Present Continuous", "Present Perfect", "Present Perfect Continuous"],
-    answer: "Present Simple",
-    explanation: "On Sundays tells us this is a regular activity.",
-  },
-  {
-    prompt: "Riya is drawing a flower.",
-    options: ["Present Simple", "Present Continuous", "Present Perfect", "Present Perfect Continuous"],
-    answer: "Present Continuous",
-    explanation: "Is drawing shows the action is going on right now.",
-  },
-  {
-    prompt: "The teacher has checked the notebooks.",
-    options: ["Present Simple", "Present Continuous", "Present Perfect", "Present Perfect Continuous"],
-    answer: "Present Perfect",
-    explanation: "Has checked shows a completed action connected with the present.",
-  },
-  {
-    prompt: "He has been learning English since April.",
-    options: ["Present Simple", "Present Continuous", "Present Perfect", "Present Perfect Continuous"],
-    answer: "Present Perfect Continuous",
-    explanation: "Since April shows the learning started earlier and is still continuing.",
-  },
-  {
-    prompt: "The bus arrives at 8 o'clock.",
-    options: ["Present Simple", "Present Continuous", "Present Perfect", "Present Perfect Continuous"],
-    answer: "Present Simple",
-    explanation: "A timetable or fixed routine uses Present Simple.",
-  },
-  {
-    prompt: "The children are practising for the show.",
-    options: ["Present Simple", "Present Continuous", "Present Perfect", "Present Perfect Continuous"],
-    answer: "Present Continuous",
-    explanation: "Are practising shows the action is happening around this time.",
-  },
-];
-
-const pastTenseDetails = {
-  simple: {
-    title: "Past Simple",
-    story: "Finished action in the past",
-    structure: "Subject + V2<br />OR Subject + was/were + noun/adjective/place",
-    examples: ["I played football yesterday.", "She visited her grandmother.", "They were happy."],
-    activity: "Look for a finished past action, past state or clues like yesterday, last week and ago.",
-  },
-  continuous: {
-    title: "Past Continuous",
-    story: "Was happening at a past time",
-    structure: "Subject + was/were + Verb-ing",
-    examples: ["I was reading at 7 pm.", "They were playing when it rained.", "She was writing a story."],
-    activity: "Use it when an action was in progress at a past moment or when another action happened.",
-  },
-  perfect: {
-    title: "Past Perfect",
-    story: "Finished before another past action",
-    structure: "Subject + had + V3",
-    examples: ["I had completed my homework before dinner.", "She had finished the book.", "They had left before I arrived."],
-    activity: "Use it for the earlier past action when two past actions are connected.",
-  },
-  perfectContinuous: {
-    title: "Past Perfect Continuous",
-    story: "Continued before a past time",
-    structure: "Subject + had been + Verb-ing",
-    examples: ["I had been studying for two hours.", "She had been reading before lunch.", "They had been practising since morning."],
-    activity: "Use it when an action continued for some time before another past moment.",
-  },
-};
-
-const futureTenseDetails = {
-  simple: {
-    title: "Future Simple",
-    story: "Will happen later",
-    structure: "Subject + will + V1<br />OR Subject + am/is/are going to + V1",
-    examples: ["I will play football tomorrow.", "She is going to read a book.", "They will visit us next week."],
-    activity: "Look for actions planned, expected or decided for a later time.",
-  },
-  continuous: {
-    title: "Future Continuous",
-    story: "Will be happening at a future time",
-    structure: "Subject + will be + Verb-ing",
-    examples: ["I will be studying at 8 pm.", "She will be reading tomorrow morning.", "They will be travelling next week."],
-    activity: "Use it when an action will be in progress at a future moment.",
-  },
-  perfect: {
-    title: "Future Perfect",
-    story: "Will be finished before a future time",
-    structure: "Subject + will have + V3",
-    examples: ["I will have completed my homework by evening.", "She will have finished the book.", "They will have reached by noon."],
-    activity: "Use it for an action that will be complete before a future deadline.",
-  },
-  perfectContinuous: {
-    title: "Future Perfect Continuous",
-    story: "Will have continued until a future time",
-    structure: "Subject + will have been + Verb-ing",
-    examples: ["I will have been studying for two hours by 8 pm.", "She will have been reading since morning.", "They will have been practising for a month."],
-    activity: "Use it when an action will continue up to a future point.",
-  },
-};
-
-const pastTransformerData = {
-  habit: {
-    label: "Finished past",
-    sentence: "Rahul played football yesterday.",
-    note: "Use Past Simple when the action is finished in the past.",
-  },
-  now: {
-    label: "Happening then",
-    sentence: "Rahul was playing football at 5 pm.",
-    note: "Use Past Continuous when the action was going on at a past time.",
-  },
-  finished: {
-    label: "Earlier past",
-    sentence: "Rahul had played football before dinner.",
-    note: "Use Past Perfect when one past action happened before another past action.",
-  },
-  continuing: {
-    label: "Continuing before past",
-    sentence: "Rahul had been playing football for an hour.",
-    note: "Use Past Perfect Continuous when an action continued before a past moment.",
-  },
-};
-
-const futureTransformerData = {
-  habit: {
-    label: "Later action",
-    sentence: "Rahul will play football tomorrow.",
-    note: "Use Future Simple when the action will happen later.",
-  },
-  now: {
-    label: "Happening later",
-    sentence: "Rahul will be playing football at 5 pm.",
-    note: "Use Future Continuous when the action will be going on at a future time.",
-  },
-  finished: {
-    label: "Finished by then",
-    sentence: "Rahul will have played football by evening.",
-    note: "Use Future Perfect when the action will be complete before a future time.",
-  },
-  continuing: {
-    label: "Continuing until then",
-    sentence: "Rahul will have been playing football for an hour.",
-    note: "Use Future Perfect Continuous when the action will continue up to a future point.",
-  },
-};
-
-const pastPracticeIntentData = {
-  simple: {
-    title: "Past Simple",
-    example: "She played yesterday.",
-    success: "Good. This looks like Past Simple because it shows a finished past action or state.",
-    guide: "For Past Simple, use V2 or was/were: She played yesterday. They were ready.",
-  },
-  continuous: {
-    title: "Past Continuous",
-    example: "She was reading at 7 pm.",
-    success: "Good. This looks like Past Continuous because it uses was/were + verb-ing.",
-    guide: "For Past Continuous, use was/were + verb-ing: She was reading. They were playing.",
-  },
-  perfect: {
-    title: "Past Perfect",
-    example: "She had finished the book.",
-    success: "Good. This looks like Past Perfect because it uses had + V3.",
-    guide: "For Past Perfect, use had + V3: She had finished the book.",
-  },
-  perfectContinuous: {
-    title: "Past Perfect Continuous",
-    example: "She had been reading for two hours.",
-    success: "Good. This looks like Past Perfect Continuous because it uses had been + verb-ing.",
-    guide: "For Past Perfect Continuous, use had been + verb-ing with for, since, before or when.",
-  },
-};
-
-const futurePracticeIntentData = {
-  simple: {
-    title: "Future Simple",
-    example: "She will read tomorrow.",
-    success: "Good. This looks like Future Simple because it shows an action that will happen later.",
-    guide: "For Future Simple, use will + V1 or am/is/are going to + V1.",
-  },
-  continuous: {
-    title: "Future Continuous",
-    example: "She will be reading at 7 pm.",
-    success: "Good. This looks like Future Continuous because it uses will be + verb-ing.",
-    guide: "For Future Continuous, use will be + verb-ing: She will be reading at 7 pm.",
-  },
-  perfect: {
-    title: "Future Perfect",
-    example: "She will have finished the book by evening.",
-    success: "Good. This looks like Future Perfect because it uses will have + V3.",
-    guide: "For Future Perfect, use will have + V3 with a future deadline like by evening.",
-  },
-  perfectContinuous: {
-    title: "Future Perfect Continuous",
-    example: "She will have been reading for two hours.",
-    success: "Good. This looks like Future Perfect Continuous because it uses will have been + verb-ing.",
-    guide: "For Future Perfect Continuous, use will have been + verb-ing with for, since or by.",
-  },
-};
-
-const pastTenseQuizQuestions = [
-  { prompt: "She visited her aunt yesterday.", options: ["Past Simple", "Past Continuous", "Past Perfect", "Past Perfect Continuous"], answer: "Past Simple", explanation: "Visited and yesterday show a finished past action." },
-  { prompt: "They were watching a movie at 8 pm.", options: ["Past Simple", "Past Continuous", "Past Perfect", "Past Perfect Continuous"], answer: "Past Continuous", explanation: "Were watching shows an action in progress at a past time." },
-  { prompt: "I had finished my work before dinner.", options: ["Past Simple", "Past Continuous", "Past Perfect", "Past Perfect Continuous"], answer: "Past Perfect", explanation: "Had finished shows an action completed before another past time." },
-  { prompt: "We had been waiting for ten minutes.", options: ["Past Simple", "Past Continuous", "Past Perfect", "Past Perfect Continuous"], answer: "Past Perfect Continuous", explanation: "Had been waiting shows an action continuing before a past moment." },
-  { prompt: "He wrote a letter last night.", options: ["Past Simple", "Past Continuous", "Past Perfect", "Past Perfect Continuous"], answer: "Past Simple", explanation: "Wrote and last night show a completed past action." },
-  { prompt: "Riya was drawing when I entered.", options: ["Past Simple", "Past Continuous", "Past Perfect", "Past Perfect Continuous"], answer: "Past Continuous", explanation: "Was drawing was happening when another past action occurred." },
-  { prompt: "The teacher had checked the notebooks.", options: ["Past Simple", "Past Continuous", "Past Perfect", "Past Perfect Continuous"], answer: "Past Perfect", explanation: "Had checked shows completion before a past reference point." },
-  { prompt: "He had been learning English since April.", options: ["Past Simple", "Past Continuous", "Past Perfect", "Past Perfect Continuous"], answer: "Past Perfect Continuous", explanation: "Had been learning with since shows continued action before a past time." },
-  { prompt: "The bus arrived at 8 o'clock.", options: ["Past Simple", "Past Continuous", "Past Perfect", "Past Perfect Continuous"], answer: "Past Simple", explanation: "Arrived is a completed past action." },
-  { prompt: "The children were practising for the show.", options: ["Past Simple", "Past Continuous", "Past Perfect", "Past Perfect Continuous"], answer: "Past Continuous", explanation: "Were practising shows a past action in progress." },
-];
-
-const futureTenseQuizQuestions = [
-  { prompt: "She will write in her diary tomorrow.", options: ["Future Simple", "Future Continuous", "Future Perfect", "Future Perfect Continuous"], answer: "Future Simple", explanation: "Will write shows an action that will happen later." },
-  { prompt: "They will be watching a science video at 8 pm.", options: ["Future Simple", "Future Continuous", "Future Perfect", "Future Perfect Continuous"], answer: "Future Continuous", explanation: "Will be watching shows an action in progress at a future time." },
-  { prompt: "I will have finished my worksheet by evening.", options: ["Future Simple", "Future Continuous", "Future Perfect", "Future Perfect Continuous"], answer: "Future Perfect", explanation: "Will have finished shows completion before a future deadline." },
-  { prompt: "We will have been waiting for ten minutes by then.", options: ["Future Simple", "Future Continuous", "Future Perfect", "Future Perfect Continuous"], answer: "Future Perfect Continuous", explanation: "Will have been waiting shows continuation up to a future point." },
-  { prompt: "My brother will play chess on Sunday.", options: ["Future Simple", "Future Continuous", "Future Perfect", "Future Perfect Continuous"], answer: "Future Simple", explanation: "Will play shows a future action." },
-  { prompt: "Riya will be drawing during the art class.", options: ["Future Simple", "Future Continuous", "Future Perfect", "Future Perfect Continuous"], answer: "Future Continuous", explanation: "Will be drawing shows an action going on at a future time." },
-  { prompt: "The teacher will have checked the notebooks by noon.", options: ["Future Simple", "Future Continuous", "Future Perfect", "Future Perfect Continuous"], answer: "Future Perfect", explanation: "Will have checked shows the action will be complete by noon." },
-  { prompt: "He will have been learning English for one year.", options: ["Future Simple", "Future Continuous", "Future Perfect", "Future Perfect Continuous"], answer: "Future Perfect Continuous", explanation: "Will have been learning shows continued action up to a future point." },
-  { prompt: "The bus will arrive at 8 o'clock.", options: ["Future Simple", "Future Continuous", "Future Perfect", "Future Perfect Continuous"], answer: "Future Simple", explanation: "Will arrive shows a future event." },
-  { prompt: "The children will be practising tomorrow morning.", options: ["Future Simple", "Future Continuous", "Future Perfect", "Future Perfect Continuous"], answer: "Future Continuous", explanation: "Will be practising shows future action in progress." },
-];
-
-function getTenseLabMode() {
-  if (document.body.classList.contains("past-tense-page")) return "past";
-  if (document.body.classList.contains("future-tense-page")) return "future";
-  return "present";
+.brand strong,
+.brand small {
+  display: block;
+  line-height: 1;
 }
 
-function getActiveTenseLab() {
-  const labs = {
-    present: {
-      details: tenseDetails,
-      transformer: transformerData,
-      practice: practiceIntentData,
-      quiz: tenseQuizQuestions,
-      completionTitle: "Excellent. You have completed the Present Tense Learning Lab.",
-      choice: {
-        correct: "habit",
-        correctText: "Correct. This is <strong>Present Simple</strong> because it describes Rahul's routine.",
-        wrongText: "Almost. The words <strong>every evening</strong> show a routine, so this is Present Simple.",
-      },
-    },
-    past: {
-      details: pastTenseDetails,
-      transformer: pastTransformerData,
-      practice: pastPracticeIntentData,
-      quiz: pastTenseQuizQuestions,
-      completionTitle: "Excellent. You have completed the Past Tense Learning Lab.",
-      choice: {
-        correct: "habit",
-        correctText: "Correct. This is <strong>Past Simple</strong> because the action finished yesterday.",
-        wrongText: "Almost. The word <strong>yesterday</strong> shows a finished past action, so this is Past Simple.",
-      },
-    },
-    future: {
-      details: futureTenseDetails,
-      transformer: futureTransformerData,
-      practice: futurePracticeIntentData,
-      quiz: futureTenseQuizQuestions,
-      completionTitle: "Excellent. You have completed the Future Tense Learning Lab.",
-      choice: {
-        correct: "habit",
-        correctText: "Correct. This is <strong>Future Simple</strong> because the action will happen tomorrow.",
-        wrongText: "Almost. The word <strong>tomorrow</strong> points to a future action, so this is Future Simple.",
-      },
-    },
-  };
-  return labs[getTenseLabMode()];
+.brand strong {
+  font-size: 1.35rem;
 }
 
-function initTenseQuiz() {
-  const quiz = document.querySelector("[data-tense-quiz]");
-  if (!quiz) return;
-  const quizQuestions = getActiveTenseLab().quiz;
-  const completionTitle = getActiveTenseLab().completionTitle;
-  const card = quiz.querySelector("[data-quiz-card]");
-  const progress = quiz.querySelector("[data-quiz-progress]");
-  const retry = quiz.querySelector("[data-quiz-retry]");
-  const scoreText = quiz.querySelector("[data-quiz-score]");
-  let index = 0;
-  let score = 0;
-
-  function updateScore() {
-    if (scoreText) scoreText.textContent = `Score: ${score}/${quizQuestions.length}`;
-    if (progress) progress.value = index;
-  }
-
-  function renderQuestion() {
-    const question = quizQuestions[index];
-    updateScore();
-    if (!card || !question) {
-      if (card) {
-        card.innerHTML = `
-          <h3>${completionTitle}</h3>
-          <p class="quiz-explanation">Final score: ${score}/${quizQuestions.length}. You can retry the quiz or continue practising in the learning lab.</p>
-        `;
-      }
-      if (progress) progress.value = quizQuestions.length;
-      return;
-    }
-
-    card.innerHTML = `
-      <span class="eyebrow">Question ${index + 1} of ${quizQuestions.length}</span>
-      <h3>${question.prompt}</h3>
-      <div class="quiz-options">
-        ${question.options.map((option) => `<button class="quiz-option" type="button" data-option="${option}">${option}</button>`).join("")}
-      </div>
-      <p class="quiz-explanation" hidden></p>
-    `;
-
-    const explanation = card.querySelector(".quiz-explanation");
-    card.querySelectorAll("[data-option]").forEach((button) => {
-      button.addEventListener("click", () => {
-        const correct = button.dataset.option === question.answer;
-        if (correct) score += 1;
-        card.querySelectorAll("[data-option]").forEach((optionButton) => {
-          optionButton.disabled = true;
-          optionButton.classList.toggle("is-correct", optionButton.dataset.option === question.answer);
-          optionButton.classList.toggle("is-wrong", optionButton === button && !correct);
-        });
-        explanation.hidden = false;
-        explanation.innerHTML = `${correct ? "Correct." : "Good try."} ${question.explanation}`;
-        const nextButton = document.createElement("button");
-        nextButton.className = "primary-button";
-        nextButton.type = "button";
-        nextButton.textContent = index === quizQuestions.length - 1 ? "Show Result" : "Next Question";
-        nextButton.addEventListener("click", () => {
-          index += 1;
-          renderQuestion();
-        });
-        card.appendChild(nextButton);
-        updateScore();
-      });
-    });
-  }
-
-  retry?.addEventListener("click", () => {
-    index = 0;
-    score = 0;
-    renderQuestion();
-  });
-
-  renderQuestion();
+.brand small {
+  margin-top: 4px;
+  color: var(--muted);
+  font-weight: 900;
+  text-transform: uppercase;
 }
 
-initTenseCards();
-initTenseChoiceTool();
-initSentenceTransformer();
-initTensePracticeBox();
-initTenseQuiz();
-
-const routinePrompts = [
-  {
-    prompt: "Tell me three things you do in the morning.",
-    example: "I wake up early. I brush my teeth. I eat breakfast.",
-  },
-  {
-    prompt: "Tell me two things you do after school.",
-    example: "I play outside. I study in the evening.",
-  },
-  {
-    prompt: "Tell me what you do before sleeping.",
-    example: "I read a story. I sleep early at night.",
-  },
-  {
-    prompt: "Tell me what you do to get ready for school.",
-    example: "I bathe. I wear my uniform. I go to school.",
-  },
-  {
-    prompt: "Tell me your full day in five short sentences.",
-    example: "I wake up early. I brush my teeth. I go to school. I play after school. I sleep at night.",
-  },
-];
-
-function speakRoutineText(text, button) {
-  if (!("speechSynthesis" in window) || !("SpeechSynthesisUtterance" in window)) {
-    if (button) button.textContent = "Audio not supported";
-    return;
-  }
-
-  if (button?.classList.contains("is-reading")) {
-    stopTenseReading();
-    return;
-  }
-
-  stopTenseReading();
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = "en-IN";
-  utterance.rate = 0.86;
-  utterance.pitch = 1.08;
-  activeTenseSpeech = utterance;
-  activeTenseSpeechButton = button;
-  if (button) {
-    if ((button.dataset.routineSpeak || button.dataset.word || button.children.length) && !button.dataset.audioOriginalHtml) {
-      if (!button.dataset.audioRestoreHtml) button.dataset.audioRestoreHtml = button.innerHTML;
-      button.dataset.audioOriginalHtml = button.dataset.audioRestoreHtml;
-    } else {
-      button.dataset.audioDefaultText = button.textContent;
-    }
-    button.textContent = "Stop reading";
-    button.classList.add("is-reading");
-    button.setAttribute("aria-pressed", "true");
-  }
-  utterance.onend = () => {
-    if (activeTenseSpeech === utterance) stopTenseReading();
-  };
-  utterance.onerror = () => {
-    if (button) resetTenseAudioButton(button);
-    activeTenseSpeech = null;
-    activeTenseSpeechButton = null;
-  };
-  window.speechSynthesis.speak(utterance);
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px;
+  border: 1px solid rgba(31, 49, 66, 0.08);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.58);
+  color: #405161;
+  font-size: 0.92rem;
+  font-weight: 900;
+  box-shadow: 0 12px 28px rgba(31, 49, 66, 0.05);
 }
 
-function getRoutineVerb(action, subject) {
-  const verbMap = {
-    "brush my teeth": "brushes her teeth",
-    "wake up early": "wakes up early",
-    "eat breakfast": "eats breakfast",
-    "go to school": "goes to school",
-    "study English": "studies English",
-    "read a story": "reads a story",
-    "play outside": "plays outside",
-  };
-  if (subject === "He" || subject === "She") return verbMap[action] || action;
-  return action;
+.nav-links a {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: 38px;
+  padding: 9px 13px;
+  border-radius: 999px;
+  transition: color 160ms ease, background 160ms ease, transform 160ms ease;
 }
 
-function initRoutineBuilder() {
-  const builder = document.querySelector("[data-routine-builder]");
-  if (!builder) return;
-  const subject = builder.querySelector("[data-routine-subject]");
-  const action = builder.querySelector("[data-routine-action]");
-  const time = builder.querySelector("[data-routine-time]");
-  const output = builder.querySelector("[data-routine-sentence]");
-  const readButton = builder.querySelector("[data-routine-read-built]");
-
-  function renderSentence() {
-    const sentence = `${subject.value} ${getRoutineVerb(action.value, subject.value)} ${time.value}.`;
-    output.textContent = sentence;
-    resetTenseAudioButton(readButton);
-    readButton.textContent = "Read sentence";
-  }
-
-  [subject, action, time].forEach((field) => field.addEventListener("change", renderSentence));
-  readButton?.addEventListener("click", () => speakRoutineText(output.textContent, readButton));
-  renderSentence();
+.nav-links > a:hover,
+.nav-links > a:focus,
+.nav-parent:hover,
+.nav-parent:focus {
+  color: #16453e;
+  background: linear-gradient(135deg, #e8fbf6, #fff7e7);
+  transform: translateY(-1px);
 }
 
-function initRoutineVerbs() {
-  document.querySelectorAll("[data-routine-speak]").forEach((button) => {
-    button.addEventListener("click", () => speakRoutineText(button.dataset.routineSpeak, button));
-  });
+.nav-dropdown {
+  position: relative;
+  padding: 0;
 }
 
-function initRoutinePrompts() {
-  const promptCard = document.querySelector("[data-routine-prompts]");
-  if (!promptCard) return;
-  const count = promptCard.querySelector("[data-routine-prompt-count]");
-  const prompt = promptCard.querySelector("[data-routine-prompt]");
-  const example = promptCard.querySelector("[data-routine-prompt-example]");
-  const readButton = promptCard.querySelector("[data-routine-read-prompt]");
-  const nextButton = promptCard.querySelector("[data-routine-next-prompt]");
-  let index = 0;
-
-  function renderPrompt() {
-    const data = routinePrompts[index];
-    count.textContent = `Prompt ${index + 1} of ${routinePrompts.length}`;
-    prompt.textContent = data.prompt;
-    example.textContent = `Example: ${data.example}`;
-    resetTenseAudioButton(readButton);
-    readButton.textContent = "Read Prompt";
-  }
-
-  readButton?.addEventListener("click", () => {
-    const data = routinePrompts[index];
-    speakRoutineText(`${data.prompt} ${data.example}`, readButton);
-  });
-  nextButton?.addEventListener("click", () => {
-    index = (index + 1) % routinePrompts.length;
-    stopTenseReading();
-    renderPrompt();
-  });
-  renderPrompt();
+.nav-parent {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 38px;
+  padding: 9px 13px;
+  border-radius: 999px;
+  transition: color 160ms ease, background 160ms ease, transform 160ms ease;
 }
 
-function initRoutinePractice() {
-  const practice = document.querySelector("[data-routine-practice]");
-  if (!practice) return;
-  const input = practice.querySelector("[data-routine-practice-input]");
-  const feedback = practice.querySelector("[data-routine-practice-feedback]");
-  const rules = practice.querySelectorAll("[data-routine-rule]");
-  const typingExamples = [
-    "I wake up early. I brush my teeth. I eat breakfast. I go to school. I sleep early at night.",
-    "I study in the evening. I read a story at night. I help my mother. I play after school. I drink water.",
-    "She wakes up early. She wears her uniform. She goes to school. She writes neatly. She sleeps at night.",
-  ];
-  let typingIndex = 0;
-  let typingLetter = 0;
-  let typingForward = true;
-  const verbWords = /\b(wake|brush|bathe|eat|drink|wear|go|study|read|write|play|help|sleep|wakes|brushes|bathes|eats|drinks|wears|goes|studies|reads|writes|plays|helps|sleeps)\b/gi;
-  const timeWords = /\b(morning|afternoon|evening|night|daily|usually|every day|every morning|after school|before school|before sleeping|at night)\b/i;
-
-  function validateRoutine() {
-    const value = input.value.trim();
-    const sentences = value.split(/[.!?]+/).map((item) => item.trim()).filter(Boolean);
-    const verbs = value.match(verbWords) || [];
-    const checks = {
-      sentences: sentences.length >= 5,
-      verbs: new Set(verbs.map((verb) => verb.toLowerCase())).size >= 4,
-      time: timeWords.test(value),
-    };
-    const passed = checks.sentences && checks.verbs && checks.time;
-
-    rules.forEach((rule) => rule.classList.toggle("is-met", Boolean(checks[rule.dataset.routineRule])));
-    feedback.classList.toggle("is-good", passed);
-    feedback.classList.toggle("is-guide", value.length > 0 && !passed);
-
-    if (!value) {
-      feedback.innerHTML = `<span>Ready to practise</span><strong>Write your daily routine in simple sentences.</strong><p>Try to include five action words.</p>`;
-      return;
-    }
-
-    if (passed) {
-      feedback.innerHTML = `<span>Speaking ready</span><strong>Good routine paragraph.</strong><p>Now read it aloud slowly and clearly.</p>`;
-      return;
-    }
-
-    const missing = [];
-    if (!checks.sentences) missing.push("five short sentences");
-    if (!checks.verbs) missing.push("more action verbs");
-    if (!checks.time) missing.push("routine time words");
-    feedback.innerHTML = `<span>Almost there</span><strong>Add ${missing.join(", ")}.</strong><p>Use words like morning, after school, evening, night or every day.</p>`;
-  }
-
-  input.addEventListener("input", validateRoutine);
-  input.addEventListener("focus", () => input.classList.remove("is-auto-typing"));
-  input.addEventListener("blur", () => {
-    if (!input.value) input.classList.add("is-auto-typing");
-  });
-  input.classList.add("is-auto-typing");
-  window.setInterval(() => {
-    if (input.value || document.activeElement === input) return;
-    const example = typingExamples[typingIndex];
-    typingLetter += typingForward ? 1 : -1;
-    input.placeholder = example.slice(0, typingLetter);
-    if (typingLetter >= example.length + 18) typingForward = false;
-    if (typingLetter <= 0) {
-      typingForward = true;
-      typingIndex = (typingIndex + 1) % typingExamples.length;
-    }
-  }, 55);
-  validateRoutine();
+.nav-parent::after {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: translateY(-2px) rotate(45deg);
 }
 
-initRoutineVerbs();
-initRoutineBuilder();
-initRoutinePrompts();
-initRoutinePractice();
-
-function makeReadingItem(label, title, text, question, answer, wrongOne, wrongTwo) {
-  return {
-    label,
-    title,
-    text,
-    questions: [
-      { question, options: [answer, wrongOne, wrongTwo], answer },
-      { question: "What should the reader practise?", options: ["Read clearly with small pauses", "Skip difficult words", "Read without looking"], answer: "Read clearly with small pauses" },
-    ],
-  };
+.nav-menu {
+  position: absolute;
+  top: calc(100% + 12px);
+  left: 50%;
+  z-index: 30;
+  display: grid;
+  gap: 8px;
+  min-width: 238px;
+  padding: 12px;
+  border: 1px solid rgba(31, 49, 66, 0.08);
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at 12% 14%, rgba(255, 216, 111, 0.2), transparent 35%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(238, 250, 245, 0.95));
+  box-shadow: 0 24px 62px rgba(31, 49, 66, 0.16);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 10px) scale(0.98);
+  transition: opacity 160ms ease, transform 160ms ease;
+  backdrop-filter: blur(18px);
 }
 
-const readingLevels = {
-  beginner: [
-    makeReadingItem("Beginner", "My Morning", "I wake up early. I brush my teeth. I eat breakfast. Then I go to school with a happy smile.", "What does the child do first?", "Wake up early", "Play outside", "Sleep late"),
-    makeReadingItem("Beginner", "My Pet Cat", "My cat is small and soft. She drinks milk. She sits near me when I read my book.", "What does the cat drink?", "Milk", "Juice", "Tea"),
-    makeReadingItem("Beginner", "At the Park", "I go to the park in the evening. I run, play and laugh with my friends.", "Where does the child go?", "To the park", "To the shop", "To the bus stop"),
-    makeReadingItem("Beginner", "My Red Bag", "I have a red school bag. I keep my books, pencil and lunch box inside it.", "What color is the bag?", "Red", "Blue", "Green"),
-    makeReadingItem("Beginner", "Good Habits", "I wash my hands before food. I sit properly and eat slowly.", "When does the child wash hands?", "Before food", "After sleeping", "During play"),
-    makeReadingItem("Beginner", "Rainy Day", "It is raining today. I carry my umbrella and walk carefully.", "What does the child carry?", "An umbrella", "A kite", "A ball"),
-    makeReadingItem("Beginner", "My Teacher", "My teacher smiles at us. She helps us read new words every day.", "Who helps the children read?", "The teacher", "The driver", "The shopkeeper"),
-    makeReadingItem("Beginner", "Lunch Time", "I eat rice and dal for lunch. I share a small bite with my friend.", "What does the child eat?", "Rice and dal", "Cake and chips", "Only mango"),
-    makeReadingItem("Beginner", "Clean Room", "I keep my toys in the box. My room looks clean and nice.", "Where does the child keep toys?", "In the box", "On the road", "Under water"),
-    makeReadingItem("Beginner", "My Pencil", "I write with my pencil. I keep it sharp and use it neatly.", "What does the child write with?", "A pencil", "A spoon", "A leaf"),
-    makeReadingItem("Beginner", "Story Book", "I read a story book at night. The story has a kind king.", "When does the child read?", "At night", "At lunch", "In the rain"),
-    makeReadingItem("Beginner", "Happy Sunday", "On Sunday, I help my mother. Then I draw a sun and a house.", "Who does the child help?", "Mother", "Doctor", "Pilot"),
-    makeReadingItem("Beginner", "My Friend", "My friend sits beside me. We share colors and draw flowers.", "Who sits beside the child?", "A friend", "A bird", "A farmer"),
-    makeReadingItem("Beginner", "School Bell", "The school bell rings. We stand in a line and walk to class.", "What rings?", "The school bell", "The phone", "The door"),
-    makeReadingItem("Beginner", "After School", "After school, I drink water and rest. Then I finish my homework.", "What does the child finish?", "Homework", "A race", "A song"),
-    makeReadingItem("Beginner", "My Garden", "I see flowers in my garden. A butterfly sits on a yellow flower.", "What sits on the flower?", "A butterfly", "A pencil", "A shoe"),
-    makeReadingItem("Beginner", "Clean Teeth", "I brush my teeth every morning. My teeth feel clean and fresh.", "What feels clean?", "Teeth", "Shoes", "Books"),
-    makeReadingItem("Beginner", "Bus Ride", "I sit near the window in the bus. I see trees and shops on the way.", "Where does the child sit?", "Near the window", "Under the seat", "On the roof"),
-    makeReadingItem("Beginner", "My Drawing", "I draw a big tree. I color the leaves green and the trunk brown.", "What does the child draw?", "A big tree", "A train", "A phone"),
-    makeReadingItem("Beginner", "Bed Time", "At night, I keep my books away. I say good night and sleep.", "What does the child say?", "Good night", "Good morning", "Happy birthday"),
-  ],
-  explorer: [
-    makeReadingItem("Explorer", "A Helpful Friend", "Riya saw a new student in class. The student looked quiet, so Riya shared her book and explained the activity carefully.", "Who helped the new student?", "Riya", "The driver", "The doctor"),
-    makeReadingItem("Explorer", "Garden Duty", "Every Saturday, Arjun waters the plants in his garden. He removes dry leaves and feels responsible for keeping the garden clean.", "When does Arjun water the plants?", "Every Saturday", "Every Monday", "Every night"),
-    makeReadingItem("Explorer", "The Lost Eraser", "Kabir could not find his eraser. His friend checked under the desk and found it near the chair.", "Where was the eraser found?", "Near the chair", "Inside the bottle", "On the bus"),
-    makeReadingItem("Explorer", "Morning Assembly", "The students stood in neat lines for assembly. They sang the prayer and listened to the thought of the day.", "What did the students listen to?", "The thought of the day", "A cooking show", "A cricket score"),
-    makeReadingItem("Explorer", "Neat Notebook", "Anaya wrote the date, heading and answers neatly. Her teacher praised her careful notebook work.", "Why was Anaya praised?", "For neat notebook work", "For running fast", "For hiding books"),
-    makeReadingItem("Explorer", "Water Bottle", "During games period, Manav drank water slowly. He remembered to close the bottle tightly.", "What did Manav close tightly?", "The bottle", "The window", "The gate"),
-    makeReadingItem("Explorer", "Library Visit", "The class visited the library after lunch. Each child selected one story book and sat quietly.", "Where did the class go?", "The library", "The playground", "The kitchen"),
-    makeReadingItem("Explorer", "Kind Words", "Meera said thank you to the helper. Her polite words made everyone smile.", "What did Meera say?", "Thank you", "Go away", "Run fast"),
-    makeReadingItem("Explorer", "Practice Time", "Dev practised reading one paragraph daily. After a week, he could read louder and clearer.", "What did Dev practise?", "Reading", "Swimming", "Painting walls"),
-    makeReadingItem("Explorer", "Clean Desk", "Before leaving class, Simran arranged her books and picked up small paper pieces from the floor.", "What did Simran pick up?", "Paper pieces", "Mangoes", "Shoes"),
-    makeReadingItem("Explorer", "Sports Day", "Aarav ran in the race and reached the finish line. He felt proud because he did not give up.", "Why did Aarav feel proud?", "He did not give up", "He slept late", "He missed school"),
-    makeReadingItem("Explorer", "Helping Grandmother", "Nisha helped her grandmother carry a light bag. They walked slowly and talked happily.", "Who did Nisha help?", "Her grandmother", "A police officer", "A shopkeeper"),
-    makeReadingItem("Explorer", "The Class Plant", "The children named the class plant Greeny. They watered it and watched two new leaves grow.", "What did the children name the plant?", "Greeny", "Sunny", "Rocky"),
-    makeReadingItem("Explorer", "Drawing Competition", "Rahul drew a clean village scene. He added mountains, fields and a small river.", "What did Rahul draw?", "A village scene", "A city mall", "A spaceship"),
-    makeReadingItem("Explorer", "Quiet Reading", "The teacher asked everyone to read silently for ten minutes. The room became calm and focused.", "How did the room become?", "Calm and focused", "Noisy and messy", "Dark and cold"),
-    makeReadingItem("Explorer", "The Lunch Box", "Tara opened her lunch box and shared fruits with her friend. They ate together happily.", "What did Tara share?", "Fruits", "Pencils", "Shoes"),
-    makeReadingItem("Explorer", "Clean Shoes", "Before assembly, Rohan cleaned his shoes with a soft cloth. He wanted to look neat.", "What did Rohan clean?", "His shoes", "His bag", "His desk"),
-    makeReadingItem("Explorer", "The Little Seed", "A little seed was planted near the wall. After many days, a tiny green shoot came out.", "What came out of the seed?", "A tiny green shoot", "A toy car", "A paper boat"),
-    makeReadingItem("Explorer", "Reading Partner", "Ishita and Pari read the same paragraph together. They corrected each other gently.", "How did they correct each other?", "Gently", "Rudely", "Angrily"),
-    makeReadingItem("Explorer", "School Notice", "The monitor read the school notice aloud. The class listened carefully to the picnic details.", "What was in the notice?", "Picnic details", "A movie ticket", "A shopping list"),
-  ],
-  confident: [
-    makeReadingItem("Confident Reader", "The Library Monitor", "Naman became the library monitor for his class. He arranged the story books, guided younger children and reminded everyone to return books on time.", "What role did Naman get?", "Library monitor", "Sports captain", "Class artist"),
-    makeReadingItem("Confident Reader", "Practice Before Stage", "Before the school assembly, Meera practised her speech slowly. She paused after each sentence and spoke with confidence in front of everyone.", "What did Meera practise?", "Her speech", "A dance step", "A maths sum"),
-    makeReadingItem("Confident Reader", "The Clean Classroom", "The students made a small plan to keep their classroom clean. One group arranged books, another cleaned desks and everyone checked the floor before leaving.", "What did the students plan?", "To keep the classroom clean", "To close the school", "To cancel lunch"),
-    makeReadingItem("Confident Reader", "A Rainy Walk", "When it started raining, Kavya held her umbrella properly and helped her younger brother cross the wet path safely.", "Who did Kavya help?", "Her younger brother", "Her teacher", "Her neighbour's dog"),
-    makeReadingItem("Confident Reader", "The Reading Promise", "Aman promised to read one page every night. Slowly, he started recognizing new words and reading with better speed.", "What did Aman promise?", "To read one page every night", "To watch cartoons all night", "To skip reading"),
-    makeReadingItem("Confident Reader", "Science Corner", "The teacher created a science corner with magnets, leaves and stones. Children observed each object and wrote one sentence about it.", "What did children write?", "One sentence about each object", "A long song", "A birthday card"),
-    makeReadingItem("Confident Reader", "The Honest Answer", "During the quiz, Sana forgot one answer. She honestly said she did not know and listened carefully when the teacher explained it.", "What did Sana say?", "She did not know", "She was sleeping", "She had finished lunch"),
-    makeReadingItem("Confident Reader", "The School Garden", "Our school garden has bright flowers and young plants. Students visit it to learn patience, care and responsibility.", "What does the garden teach?", "Patience, care and responsibility", "Noise and anger", "Shopping and travel"),
-    makeReadingItem("Confident Reader", "Team Project", "Four students worked on a chart about healthy food. They divided the work, shared ideas and completed the project before the bell.", "What was the chart about?", "Healthy food", "Old coins", "Fast cars"),
-    makeReadingItem("Confident Reader", "Helping at Home", "After finishing homework, Diya helped set the dinner table. Her parents appreciated her responsible habit.", "What did Diya help set?", "The dinner table", "A football goal", "A shop counter"),
-    makeReadingItem("Confident Reader", "The New Word", "The word curious was new for Raghav. He asked its meaning, used it in a sentence and remembered it the next day.", "Which word was new?", "Curious", "Dinner", "Window"),
-    makeReadingItem("Confident Reader", "A Calm Leader", "The class leader spoke calmly when two friends disagreed. He listened to both sides and helped them solve the problem.", "How did the leader speak?", "Calmly", "Loudly and rudely", "Without listening"),
-    makeReadingItem("Confident Reader", "Festival Card", "Children prepared festival cards for their families. They wrote kind messages and decorated each card with care.", "Who were the cards for?", "Their families", "Bus drivers", "Shopkeepers"),
-    makeReadingItem("Confident Reader", "The Missed Bus", "Ritika missed the bus but did not panic. She informed her teacher and waited safely near the school gate.", "What did Ritika do?", "Informed her teacher", "Ran away", "Cried all day"),
-    makeReadingItem("Confident Reader", "Reading With Expression", "The teacher asked students to change their voice while reading dialogues. The story sounded lively and easier to understand.", "What made the story lively?", "Changing voice while reading", "Closing the book", "Skipping dialogues"),
-    makeReadingItem("Confident Reader", "The Helpful Monitor", "The monitor checked if everyone had submitted homework. He made a list and spoke politely to the teacher.", "What did the monitor make?", "A list", "A cake", "A kite"),
-    makeReadingItem("Confident Reader", "Small Savings", "Nikhil saved a few coins every week. At the end of the month, he bought a book with his own savings.", "What did Nikhil buy?", "A book", "A bicycle", "A phone"),
-    makeReadingItem("Confident Reader", "Nature Walk", "During the nature walk, children noticed different leaves, bird sounds and small insects near the garden path.", "What did children notice?", "Leaves, bird sounds and insects", "Only buses", "Only lunch boxes"),
-    makeReadingItem("Confident Reader", "The Brave Try", "Although the paragraph looked long, Vanya read it sentence by sentence. Her confidence improved after the second attempt.", "How did Vanya read it?", "Sentence by sentence", "Without opening the book", "By skipping every line"),
-    makeReadingItem("Confident Reader", "The Thank You Note", "After the visit, students wrote a thank you note to the guest speaker. They mentioned what they learned from the session.", "What did students write?", "A thank you note", "A weather report", "A menu card"),
-  ],
-  challenge: [
-    makeReadingItem("Challenge Mode", "The Science Exhibition", "During the science exhibition, Kabir presented a working model of rainwater harvesting. He explained the idea clearly, answered questions patiently and encouraged his friends to save water at home.", "What model did Kabir present?", "Rainwater harvesting", "Traffic lights", "A toy train"),
-    makeReadingItem("Challenge Mode", "A Responsible Team", "The class prepared for cleanliness day by making posters, dividing duties and speaking politely to visitors. Their teacher praised the team for planning the work without confusion.", "Why did the teacher praise them?", "They planned without confusion", "They shouted loudly", "They forgot their duties"),
-    makeReadingItem("Challenge Mode", "The Debate Practice", "Before the debate, students collected facts, arranged their points and practised speaking with a steady voice. They learned that preparation makes confidence stronger.", "What made confidence stronger?", "Preparation", "Guessing answers", "Avoiding practice"),
-    makeReadingItem("Challenge Mode", "The Community Helper Visit", "A nurse visited the classroom and explained basic health habits. Students asked thoughtful questions about cleanliness, nutrition and helping sick people.", "Who visited the classroom?", "A nurse", "A musician", "A shop owner"),
-    makeReadingItem("Challenge Mode", "The Reading Circle", "In the reading circle, every student read one paragraph and shared the main idea. The activity helped them listen carefully and speak in complete sentences.", "What did students share?", "The main idea", "Their lunch", "A secret code"),
-    makeReadingItem("Challenge Mode", "A Smart Study Plan", "Ishan made a weekly study plan before his exams. He kept time for revision, short breaks and doubt clearing with his teacher.", "What did Ishan make?", "A weekly study plan", "A birthday poster", "A travel ticket"),
-    makeReadingItem("Challenge Mode", "The Kind Captain", "The team captain encouraged every player during practice. Even when the team lost, she appreciated effort and discussed how to improve next time.", "What did the captain appreciate?", "Effort", "Noise", "Delay"),
-    makeReadingItem("Challenge Mode", "A Visit to the Farm", "Students visited a farm and observed how vegetables grow. The farmer explained soil care, watering and the importance of hard work.", "What did students observe?", "How vegetables grow", "How phones are made", "How cars race"),
-    makeReadingItem("Challenge Mode", "The Problem Solver", "When the chart paper tore, Alisha did not complain. She used tape, redesigned the border and helped her group finish the presentation.", "What did Alisha use?", "Tape", "Glue only", "A hammer"),
-    makeReadingItem("Challenge Mode", "The History Model", "For the history project, students built a small fort model. They labelled the gate, walls and watch tower, then explained their purpose.", "What did students build?", "A small fort model", "A rocket engine", "A water bottle"),
-    makeReadingItem("Challenge Mode", "The Thoughtful Question", "During English class, Harsh asked why some words sound the same but have different meanings. The teacher explained homophones with simple examples.", "What did the teacher explain?", "Homophones", "Fractions", "Weather changes"),
-    makeReadingItem("Challenge Mode", "The Confidence Diary", "Every evening, Myra wrote one thing she did well and one thing she wanted to improve. Her diary helped her notice small progress.", "What helped Myra notice progress?", "Her diary", "A loud bell", "A shopping bag"),
-    makeReadingItem("Challenge Mode", "The Safety Drill", "The school conducted a safety drill to teach students how to leave classrooms calmly. Teachers guided everyone to the open ground.", "Where did teachers guide everyone?", "The open ground", "The library shelf", "The kitchen"),
-    makeReadingItem("Challenge Mode", "The Eco Club", "Members of the eco club collected used paper and made new notebooks. They learned that small actions can reduce waste.", "What did the eco club make?", "New notebooks", "Plastic toys", "Lunch plates"),
-    makeReadingItem("Challenge Mode", "The Guest Speaker", "A young engineer spoke about building useful machines. She told students that curiosity, patience and practice are important for innovation.", "What is important for innovation?", "Curiosity, patience and practice", "Laziness and delay", "Skipping questions"),
-    makeReadingItem("Challenge Mode", "The News Reader", "Tanvi read the morning news clearly during assembly. She pronounced difficult words carefully and paused after every important sentence.", "What did Tanvi read?", "The morning news", "A recipe", "A comic title"),
-    makeReadingItem("Challenge Mode", "The Maths Fair", "At the maths fair, students created games using shapes, numbers and patterns. Visitors learned concepts while playing simple challenges.", "What did students create?", "Games using shapes, numbers and patterns", "Only songs", "Only drawings of food"),
-    makeReadingItem("Challenge Mode", "The Patient Artist", "Armaan painted a village scene for two days. He added small details slowly and learned that patient work often looks better.", "What did Armaan learn?", "Patient work often looks better", "Fast work is always perfect", "Details do not matter"),
-    makeReadingItem("Challenge Mode", "The Class Newsletter", "The class prepared a monthly newsletter with poems, drawings and event reports. Each child contributed one small piece of work.", "What did each child contribute?", "One small piece of work", "A large machine", "A lunch order"),
-    makeReadingItem("Challenge Mode", "The Helpful App Idea", "Students discussed an app that reminds children to drink water, read daily and finish homework. They drew screens and explained how it would help families.", "What would the app remind children to do?", "Drink water, read daily and finish homework", "Buy toys and sleep late", "Forget school work"),
-  ],
-};
-
-const readingGradeLabels = {
-  ukg: "UKG",
-  1: "Grade 1",
-  2: "Grade 2",
-  3: "Grade 3",
-  4: "Grade 4",
-  5: "Grade 5",
-  6: "Grade 6",
-  7: "Grade 7",
-  8: "Grade 8",
-  9: "Grade 9",
-  10: "Grade 10",
-};
-
-const readingLevelLabels = {
-  beginner: "Beginner",
-  explorer: "Explorer",
-  confident: "Confident Reader",
-  challenge: "Challenge Mode",
-};
-
-const ukgWordSets = [
-  ["cat", "bat", "mat", "hat", "rat"],
-  ["sun", "run", "fun", "bun", "cup"],
-  ["red", "bed", "pen", "hen", "ten"],
-  ["dog", "log", "fog", "box", "fox"],
-  ["bag", "tag", "rag", "cap", "map"],
-  ["pin", "tin", "win", "sit", "hit"],
-  ["top", "hop", "mop", "pot", "hot"],
-  ["jam", "ram", "yam", "van", "fan"],
-  ["fish", "dish", "ship", "shop", "shell"],
-  ["ball", "bell", "doll", "duck", "door"],
-  ["apple", "ant", "arrow", "arm", "ask"],
-  ["book", "bag", "bus", "boy", "box"],
-  ["cake", "cup", "cat", "car", "cap"],
-  ["milk", "moon", "mat", "man", "map"],
-  ["leaf", "lamp", "lion", "leg", "log"],
-  ["tree", "toy", "tap", "top", "ten"],
-  ["rain", "rose", "red", "rat", "run"],
-  ["kite", "king", "key", "kid", "kit"],
-  ["star", "sit", "sun", "sock", "seed"],
-  ["home", "hand", "hat", "hen", "hill"],
-];
-
-const gradeOneTopics = [
-  ["My Daily Routine", "I wake up early. I brush my teeth. I eat breakfast. I go to school happily.", "What does the child do after waking up?", "Brush teeth"],
-  ["My School", "My school is clean and bright. I learn, play and read with my friends.", "Where does the child learn and play?", "School"],
-  ["My Friend", "My friend sits with me in class. We share pencils and help each other.", "Who sits with the child?", "Friend"],
-  ["My Favorite Color", "My favorite color is blue. I like blue sky, blue flowers and my blue bag.", "What is the favorite color?", "Blue"],
-  ["My Family", "I love my family. We eat dinner together and talk about our day.", "Who does the child love?", "Family"],
-  ["My Lunch Box", "My lunch box has roti and fruit. I eat slowly and keep it clean.", "What is in the lunch box?", "Roti and fruit"],
-  ["My Toy", "I have a small toy car. I keep it safely after playing.", "What toy does the child have?", "Toy car"],
-  ["My Teacher", "My teacher helps me read new words. She smiles when I try again.", "Who helps the child read?", "Teacher"],
-  ["My Birthday", "On my birthday, I wear new clothes. My friends sing a happy song.", "What do friends sing?", "A happy song"],
-  ["My Garden", "I see flowers in my garden. I water the plants in the evening.", "What does the child water?", "Plants"],
-  ["My Book", "I read my book at night. The story has a brave child.", "When does the child read?", "At night"],
-  ["My Pet", "My pet dog runs fast. He plays with a red ball.", "What does the dog play with?", "Red ball"],
-  ["My Classroom", "Our classroom has charts and books. We keep it neat every day.", "What is in the classroom?", "Charts and books"],
-  ["My Uniform", "I wear my uniform to school. I keep my shoes clean.", "What does the child wear?", "Uniform"],
-  ["My Morning Walk", "I walk with my father in the morning. We see trees and birds.", "Who walks with the child?", "Father"],
-  ["My Pencil Box", "My pencil box has pencils, eraser and sharpener. I keep it inside my bag.", "What is inside the pencil box?", "Pencils, eraser and sharpener"],
-  ["My Playground", "I play on the playground after class. I run and laugh with friends.", "Where does the child play?", "Playground"],
-  ["My Favorite Fruit", "My favorite fruit is mango. It is sweet, yellow and juicy.", "Which fruit is favorite?", "Mango"],
-  ["My Raincoat", "It rains today. I wear my raincoat and walk carefully.", "What does the child wear?", "Raincoat"],
-  ["My Bedtime", "At bedtime, I keep my toys away. I say good night and sleep.", "What does the child say?", "Good night"],
-];
-
-const readingGradeThemes = {
-  2: ["helping at home", "clean classroom", "school garden", "library visit", "kind words", "healthy lunch", "rainy day", "festival card", "sports practice", "reading partner"],
-  3: ["science corner", "community helper", "team chart", "plant growth", "good habits", "water saving", "story circle", "class monitor", "nature walk", "morning assembly"],
-  4: ["responsible leader", "cleanliness drive", "school exhibition", "reading challenge", "helpful neighbour", "traffic safety", "healthy routine", "garden project", "library monitor", "art competition"],
-  5: ["study plan", "environment project", "public speaking", "team responsibility", "historical place", "science fair", "newspaper reading", "problem solving", "honest choice", "community visit"],
-  6: ["time management", "digital safety", "water conservation", "team leadership", "creative writing", "exam preparation", "health awareness", "school newsletter", "science model", "peer support"],
-  7: ["climate action", "debate preparation", "responsible technology", "entrepreneurship idea", "research habits", "social responsibility", "reading reflection", "career curiosity", "innovation lab", "public service"],
-  8: ["leadership in groups", "financial awareness", "cyber safety", "scientific thinking", "sustainable living", "community research", "critical reading", "presentation skills", "problem analysis", "future planning"],
-  9: ["career exploration", "digital discipline", "environment policy", "communication skills", "project research", "personal responsibility", "exam strategy", "social impact", "technology ethics", "leadership decisions"],
-  10: ["board exam planning", "career readiness", "responsible AI", "public speaking", "research-based projects", "time ownership", "mental focus", "digital portfolio", "social innovation", "future goals"],
-};
-
-const readingLevelPatterns = {
-  beginner: {
-    intro: "This passage uses clear sentences for early reading practice.",
-    detail: "Read slowly and pause after each full stop.",
-  },
-  explorer: {
-    intro: "This passage adds more detail and connects ideas.",
-    detail: "Notice the action, reason and result while reading.",
-  },
-  confident: {
-    intro: "This passage uses richer vocabulary and longer sentence flow.",
-    detail: "Read with expression and keep the meaning clear.",
-  },
-  challenge: {
-    intro: "This passage asks the reader to handle mature ideas with confidence.",
-    detail: "Use steady pace, clear pauses and thoughtful expression.",
-  },
-};
-
-function titleCaseReadingTopic(topic) {
-  return topic.replace(/\b\w/g, (letter) => letter.toUpperCase());
+.nav-dropdown::after {
+  content: "";
+  position: absolute;
+  left: -18px;
+  right: -18px;
+  top: 100%;
+  height: 16px;
 }
 
-function buildUkgReadingLevels() {
-  return Object.fromEntries(
-    Object.entries(readingLevelLabels).map(([levelKey, label]) => [
-      levelKey,
-      ukgWordSets.map((words, index) => {
-        const levelWords =
-          levelKey === "beginner"
-            ? words.slice(0, 3)
-            : levelKey === "explorer"
-              ? words.slice(0, 4)
-              : levelKey === "confident"
-                ? words
-                : [...words, "read", "say"];
-        return makeReadingItem(label, `Word Reading ${index + 1}`, levelWords.join(". ") + ".", "Which word should the child read first?", levelWords[0], "school", "garden");
-      }),
-    ])
-  );
+.nav-dropdown:hover .nav-menu,
+.nav-dropdown:focus-within .nav-menu {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, 0);
 }
 
-function buildGradeOneReadingLevels() {
-  return Object.fromEntries(
-    Object.entries(readingLevelLabels).map(([levelKey, label]) => [
-      levelKey,
-      gradeOneTopics.map(([title, baseText, question, answer]) => {
-        const text =
-          levelKey === "beginner"
-            ? baseText
-            : levelKey === "explorer"
-              ? `${baseText} I read the words again and speak clearly.`
-              : levelKey === "confident"
-                ? `${baseText} I answer one small question and tell the idea in my own words.`
-                : `${baseText} I practise the paragraph twice, use clear pauses and explain the main idea confidently.`;
-        return makeReadingItem(label, title, text, question, answer, "Lunch box", "Playground");
-      }),
-    ])
-  );
+.nav-menu a {
+  justify-content: flex-start;
+  min-height: 42px;
+  padding: 10px 12px;
+  color: #405161;
+  border: 1px solid rgba(31, 49, 66, 0.06);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.74);
+  box-shadow: 0 10px 20px rgba(31, 49, 66, 0.05);
 }
 
-function buildHigherGradeReadingLevels(grade) {
-  const themes = readingGradeThemes[grade] || readingGradeThemes[2];
-  return Object.fromEntries(
-    Object.entries(readingLevelLabels).map(([levelKey, label]) => [
-      levelKey,
-      Array.from({ length: 20 }, (_, index) => {
-        const topic = themes[index % themes.length];
-        const title = `${titleCaseReadingTopic(topic)} ${index + 1}`;
-        const pattern = readingLevelPatterns[levelKey];
-        const text =
-          levelKey === "beginner"
-            ? `Students read about ${topic}. ${pattern.intro} The child understands the main idea and says one clear sentence about it.`
-            : levelKey === "explorer"
-              ? `Students explore ${topic} through a short classroom situation. ${pattern.intro} The reader finds what happened, why it mattered and how the student responded.`
-              : levelKey === "confident"
-                ? `${titleCaseReadingTopic(topic)} becomes part of confident learning. ${pattern.intro} The student connects details, explains the purpose and reads the paragraph with natural expression.`
-                : `This challenge passage presents ${topic} as a real-life thinking task. ${pattern.intro} The reader must keep a steady pace, understand the message and explain the outcome clearly.`;
-        return makeReadingItem(label, title, text, "What is the passage mainly about?", topic, "a picnic menu", "a lost pencil");
-      }),
-    ])
-  );
+.nav-menu a:hover,
+.nav-menu a:focus {
+  color: #0c756c;
+  background: linear-gradient(135deg, var(--mint), #ffffff);
+  transform: translateX(2px);
 }
 
-function getReadingLevelsForGrade(grade) {
-  if (grade === "ukg") return buildUkgReadingLevels();
-  if (grade === "1") return buildGradeOneReadingLevels();
-  return buildHigherGradeReadingLevels(Number(grade));
+.nav-menu a.nav-menu-label {
+  color: #16453e;
+  background: linear-gradient(135deg, var(--sun), var(--mint));
 }
 
-function normalizeReadingWords(text) {
-  return text
-    .toLowerCase()
-    .replace(/[^a-z0-9\s']/g, " ")
-    .split(/\s+/)
-    .filter(Boolean);
+.nav-menu a.nav-sub-link {
+  margin-left: 12px;
+  min-height: 38px;
+  color: #405161;
+  background: rgba(255, 255, 255, 0.64);
 }
 
-function uniqueWordList(words) {
-  return [...new Set(words)].slice(0, 12);
+.nav-menu a.nav-sub-link::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: currentColor;
+  opacity: 0.45;
 }
 
-function cleanReadingTranscript(text) {
-  const words = text.replace(/\s+/g, " ").trim().split(" ").filter(Boolean);
-  if (!words.length) return "";
-  const sameChunk = (startA, startB, size) => {
-    for (let offset = 0; offset < size; offset += 1) {
-      if (words[startA + offset].toLowerCase() !== words[startB + offset].toLowerCase()) return false;
-    }
-    return true;
-  };
-  const cleaned = [];
-  let index = 0;
-  while (index < words.length) {
-    let repeatSize = 0;
-    const maxSize = Math.min(8, Math.floor((words.length - index) / 2));
-    for (let size = maxSize; size >= 1; size -= 1) {
-      if (sameChunk(index, index + size, size)) {
-        repeatSize = size;
-        break;
-      }
-    }
-    if (!repeatSize) {
-      cleaned.push(words[index]);
-      index += 1;
-      continue;
-    }
-    cleaned.push(...words.slice(index, index + repeatSize));
-    index += repeatSize;
-    while (index + repeatSize <= words.length && sameChunk(index - repeatSize, index, repeatSize)) {
-      index += repeatSize;
-    }
-  }
-  return cleaned.join(" ");
+.nav-menu span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 42px;
+  padding: 10px 12px;
+  color: rgba(64, 81, 97, 0.58);
+  border: 1px dashed rgba(31, 49, 66, 0.12);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.52);
+  font-weight: 900;
 }
 
-function mergeReadingTranscript(baseText, nextText) {
-  const baseWords = cleanReadingTranscript(baseText).split(/\s+/).filter(Boolean);
-  const nextWords = cleanReadingTranscript(nextText).split(/\s+/).filter(Boolean);
-  if (!baseWords.length) return nextWords.join(" ");
-  if (!nextWords.length) return baseWords.join(" ");
-  let overlap = 0;
-  const maxOverlap = Math.min(baseWords.length, nextWords.length);
-  for (let size = maxOverlap; size > 0; size -= 1) {
-    const baseChunk = baseWords.slice(baseWords.length - size).map((word) => word.toLowerCase()).join(" ");
-    const nextChunk = nextWords.slice(0, size).map((word) => word.toLowerCase()).join(" ");
-    if (baseChunk === nextChunk) {
-      overlap = size;
-      break;
-    }
-  }
-  return [...baseWords, ...nextWords.slice(overlap)].join(" ");
+.header-cta,
+.primary-button,
+.secondary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  padding: 12px 18px;
+  border: 0;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-weight: 950;
+  text-align: center;
 }
 
-function getReadingDisplayTranscript(spokenText, expectedText, maxWords = 22) {
-  const spokenWords = normalizeReadingWords(cleanReadingTranscript(spokenText));
-  const expectedDisplayWords = expectedText.replace(/[^a-zA-Z0-9\s']/g, " ").split(/\s+/).filter(Boolean);
-  const matchedWords = [];
-  let spokenIndex = 0;
-  expectedDisplayWords.forEach((displayWord) => {
-    const expectedWord = displayWord.toLowerCase();
-    const foundIndex = spokenWords.indexOf(expectedWord, spokenIndex);
-    if (foundIndex >= 0) {
-      matchedWords.push(displayWord);
-      spokenIndex = foundIndex + 1;
-    }
-  });
-  const displayWords = matchedWords.length ? matchedWords : cleanReadingTranscript(spokenText).split(/\s+/);
-  const trimmedWords = displayWords.slice(0, maxWords);
-  return `${trimmedWords.join(" ")}${displayWords.length > maxWords ? "..." : ""}`;
+.header-cta,
+.primary-button {
+  color: var(--white);
+  background: linear-gradient(135deg, var(--coral), #ff9d5d);
+  box-shadow: 0 16px 34px rgba(255, 114, 95, 0.24);
 }
 
-function getReadingPatienceTiming(grade, expectedWordCount) {
-  const gradeNumber = grade === "ukg" ? 0 : Number(grade);
-  const wordsPerMinute = gradeNumber === 0 ? 18 : gradeNumber === 1 ? 34 : gradeNumber <= 3 ? 55 : gradeNumber <= 5 ? 70 : gradeNumber <= 8 ? 85 : 95;
-  const estimatedMs = Math.ceil((expectedWordCount / wordsPerMinute) * 60000);
-  return {
-    maxListenMs: Math.min(Math.max(estimatedMs + (gradeNumber === 0 ? 18000 : 10000), gradeNumber === 0 ? 42000 : 22000), 90000),
-    minBeforeJudgingMs: gradeNumber === 0 ? 16000 : gradeNumber === 1 ? 11000 : gradeNumber <= 4 ? 7500 : 6000,
-    restartLimit: gradeNumber === 0 ? 8 : gradeNumber <= 2 ? 6 : 4,
-    completionRatio: gradeNumber === 0 ? 0.9 : gradeNumber <= 2 ? 0.92 : 0.95,
-    heardEnoughRatio: gradeNumber === 0 ? 0.08 : gradeNumber <= 2 ? 0.16 : 0.22,
-    earlyHeardRatio: gradeNumber === 0 ? 0.06 : 0.18,
-  };
+.secondary-button {
+  color: var(--ink);
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.82);
 }
 
-function initReadingFluencyLab() {
-  const lab = document.querySelector("[data-reading-lab]");
-  if (!lab) return;
-
-  const gradeSelect = lab.querySelector("[data-reading-grade]");
-  const levelSelect = lab.querySelector("[data-reading-level]");
-  const levelLabel = lab.querySelector("[data-reading-level-label]");
-  const studentNameInput = lab.querySelector("[data-reading-student-name]");
-  const title = lab.querySelector("[data-reading-title]");
-  const passage = lab.querySelector("[data-reading-passage]");
-  const listenButton = lab.querySelector("[data-reading-listen]");
-  const startButton = lab.querySelector("[data-reading-start]");
-  const stopButton = lab.querySelector("[data-reading-stop]");
-  const nextButton = lab.querySelector("[data-reading-next]");
-  const listeningIndicator = lab.querySelector("[data-reading-listening]");
-  const countdown = lab.querySelector("[data-reading-countdown]");
-  const support = lab.querySelector("[data-reading-support]");
-  const score = lab.querySelector("[data-reading-score]");
-  const progress = lab.querySelector("[data-reading-progress]");
-  const transcript = lab.querySelector("[data-reading-transcript]");
-  const missed = lab.querySelector("[data-reading-missed]");
-  const extra = lab.querySelector("[data-reading-extra]");
-  const tip = lab.querySelector("[data-reading-tip]");
-  const certificateCard = lab.querySelector("[data-reading-certificate]");
-  const certificateName = lab.querySelector("[data-reading-certificate-name]");
-  const certificateMessage = lab.querySelector("[data-reading-certificate-message]");
-  const certificateMedal = lab.querySelector("[data-reading-certificate-medal]");
-  const certificateGrade = lab.querySelector("[data-reading-certificate-grade]");
-  const certificateScore = lab.querySelector("[data-reading-certificate-score]");
-  const certificateToday = lab.querySelector("[data-reading-certificate-today]");
-  const certificateStreak = lab.querySelector("[data-reading-certificate-streak]");
-  const shareButton = lab.querySelector("[data-reading-share]");
-  const shareNote = lab.querySelector("[data-reading-share-note]");
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  let grade = gradeSelect?.value || "ukg";
-  let level = levelSelect?.value || "beginner";
-  let passageIndex = 0;
-  let recognition = null;
-  let currentReadingLevels = getReadingLevelsForGrade(grade);
-  let readingTimer = null;
-  let countdownTimer = null;
-  let readingSessionId = 0;
-  let latestCertificateText = "";
-  let latestCertificateData = null;
-  const micSessionKey = "kidsverseReadingMicPermission";
-  const streakStorageKey = "kidsverseReadingPracticeStreak";
-  const studentNameStorageKey = "kidsverseReadingStudentName";
-
-  function activePassage() {
-    return currentReadingLevels[level][passageIndex];
-  }
-
-  function renderPassage() {
-    const data = activePassage();
-    stopTenseReading();
-    readingSessionId += 1;
-    recognition?.abort();
-    window.clearTimeout(readingTimer);
-    window.clearTimeout(countdownTimer);
-    levelLabel.textContent = `${readingGradeLabels[grade]} - ${data.label}`;
-    title.textContent = data.title;
-    passage.textContent = data.text;
-    score.textContent = "--";
-    progress.value = 0;
-    transcript.textContent = "Click Start Reading and read the paragraph aloud.";
-    missed.textContent = "Words will appear here after reading.";
-    extra.textContent = "Extra spoken words will appear here.";
-    tip.textContent = "Listen once, then read slowly and clearly.";
-    if (certificateCard) certificateCard.hidden = true;
-    stopButton.hidden = true;
-    if (countdown) countdown.hidden = true;
-    if (listeningIndicator) listeningIndicator.hidden = true;
-    startButton.disabled = false;
-  }
-
-  function showReadingResult(spokenText) {
-    const cleanSpokenText = cleanReadingTranscript(spokenText);
-    const expectedText = activePassage().text;
-    const expectedWords = normalizeReadingWords(expectedText);
-    const spokenWords = normalizeReadingWords(cleanSpokenText);
-    const spokenPool = [...spokenWords];
-    let correct = 0;
-    const missedWords = [];
-
-    expectedWords.forEach((word) => {
-      const foundIndex = spokenPool.indexOf(word);
-      if (foundIndex >= 0) {
-        correct += 1;
-        spokenPool.splice(foundIndex, 1);
-      } else {
-        missedWords.push(word);
-      }
-    });
-
-    const accuracy = expectedWords.length ? Math.round((correct / expectedWords.length) * 100) : 0;
-    score.textContent = `${accuracy}%`;
-    progress.value = accuracy;
-    transcript.textContent = getReadingDisplayTranscript(cleanSpokenText, expectedText, 22) || "We could not hear enough words. Please try again close to the microphone.";
-    missed.textContent = missedWords.length ? uniqueWordList(missedWords).join(", ") : "Great. No important missing words found.";
-    extra.textContent = spokenPool.length ? uniqueWordList(spokenPool).join(", ") : "No extra words found.";
-    if (accuracy >= 90) {
-      tip.textContent = "Excellent reading. Now practise expression and clear pauses.";
-    } else if (accuracy >= 70) {
-      tip.textContent = "Good reading. Try the missed words once, then read again slowly.";
-    } else {
-      tip.textContent = "Listen once more, read one sentence at a time and try again.";
-    }
-    updateReadingCertificate(accuracy);
-  }
-
-  function getStudentName() {
-    const name = studentNameInput?.value.trim() || "Reading Star";
-    return name.replace(/\s+/g, " ").slice(0, 40);
-  }
-
-  function getTodayDateKey() {
-    const date = new Date();
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  }
-
-  function getPreviousDateKey(dateKey) {
-    const date = new Date(`${dateKey}T00:00:00`);
-    date.setDate(date.getDate() - 1);
-    return date.toISOString().slice(0, 10);
-  }
-
-  function loadReadingStreak() {
-    try {
-      return JSON.parse(localStorage.getItem(streakStorageKey)) || { lastDate: "", streak: 0, todayCount: 0 };
-    } catch {
-      return { lastDate: "", streak: 0, todayCount: 0 };
-    }
-  }
-
-  function saveReadingStreak(data) {
-    try {
-      localStorage.setItem(streakStorageKey, JSON.stringify(data));
-    } catch {
-      /* Local storage can be unavailable; certificate still works without saved streak. */
-    }
-  }
-
-  function recordReadingStreak() {
-    const today = getTodayDateKey();
-    const saved = loadReadingStreak();
-    let streak = 1;
-    let todayCount = 1;
-    if (saved.lastDate === today) {
-      streak = Math.max(1, Number(saved.streak) || 1);
-      todayCount = (Number(saved.todayCount) || 0) + 1;
-    } else if (saved.lastDate === getPreviousDateKey(today)) {
-      streak = (Number(saved.streak) || 0) + 1;
-    }
-    const next = { lastDate: today, streak, todayCount };
-    saveReadingStreak(next);
-    return next;
-  }
-
-  function getReadingMedal(accuracy) {
-    if (accuracy > 90) {
-      return { name: "Gold Medal", icon: "Gold", color: "#f5a400", accent: "#ffd86f", certificate: "Gold Medal Certificate" };
-    }
-    if (accuracy >= 80) {
-      return { name: "Silver Medal", icon: "Silver", color: "#8b97a8", accent: "#eef3f8", certificate: "Silver Medal Certificate" };
-    }
-    if (accuracy >= 70) {
-      return { name: "Bronze Medal", icon: "Bronze", color: "#b66a2c", accent: "#f3b46d", certificate: "Bronze Medal Certificate" };
-    }
-    return { name: "Appreciation Certificate", icon: "Star", color: "#6d25cb", accent: "#d8f5e7", certificate: "Appreciation Certificate" };
-  }
-
-  function updateReadingCertificate(accuracy) {
-    const streak = recordReadingStreak();
-    const name = getStudentName();
-    const gradeLabel = readingGradeLabels[grade] || "Student";
-    const levelText = activePassage().label || readingLevelLabels[level] || "Reading Practice";
-    const medal = getReadingMedal(accuracy);
-    latestCertificateData = {
-      name,
-      gradeLabel,
-      levelText,
-      accuracy,
-      medal,
-      streak: streak.streak,
-      todayCount: streak.todayCount,
-      date: new Date().toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }),
-    };
-    latestCertificateText = `${name} earned a ${medal.name} in Kidsverse Reading Fluency today with ${accuracy}% reading accuracy. Current streak: ${streak.streak} day${streak.streak === 1 ? "" : "s"}.`;
-    if (studentNameInput) {
-      try {
-        localStorage.setItem(studentNameStorageKey, name);
-      } catch {
-        /* Name saving is optional. */
-      }
-    }
-    if (certificateName) certificateName.textContent = name;
-    if (certificateMessage) certificateMessage.textContent = `${gradeLabel} - ${levelText} completed with confident effort.`;
-    if (certificateMedal) {
-      certificateMedal.textContent = medal.certificate;
-      certificateMedal.style.setProperty("--medal-color", medal.color);
-      certificateMedal.style.setProperty("--medal-accent", medal.accent);
-    }
-    if (certificateGrade) certificateGrade.innerHTML = `Grade & Level<br>${gradeLabel}<br>${levelText}`;
-    if (certificateScore) certificateScore.innerHTML = `Reading Accuracy<br>${accuracy}%`;
-    if (certificateToday) certificateToday.innerHTML = `Today's Practice<br>${streak.todayCount}<br>Sessions`;
-    if (certificateStreak) certificateStreak.innerHTML = `Current Streak<br>${streak.streak}<br>Day${streak.streak === 1 ? "" : "s"}`;
-    if (shareNote) shareNote.textContent = "Certificate ready. Share it with family or friends.";
-    if (certificateCard) certificateCard.hidden = false;
-  }
-
-  function wrapCanvasText(context, text, x, y, maxWidth, lineHeight, maxLines = 3) {
-    const words = text.split(/\s+/);
-    let line = "";
-    let lines = 0;
-    words.forEach((word) => {
-      const testLine = line ? `${line} ${word}` : word;
-      if (context.measureText(testLine).width > maxWidth && line) {
-        if (lines < maxLines) context.fillText(line, x, y + lines * lineHeight);
-        lines += 1;
-        line = word;
-      } else {
-        line = testLine;
-      }
-    });
-    if (line && lines < maxLines) context.fillText(line, x, y + lines * lineHeight);
-  }
-
-  function createReadingCertificateBlob() {
-    return new Promise((resolve) => {
-      if (!latestCertificateData) {
-        resolve(null);
-        return;
-      }
-      const canvas = document.createElement("canvas");
-      canvas.width = 1500;
-      canvas.height = 900;
-      const context = canvas.getContext("2d");
-      if (!context.roundRect) {
-        context.roundRect = function roundRectFallback(x, y, width, height, radius) {
-          const corner = Math.min(radius, width / 2, height / 2);
-          this.moveTo(x + corner, y);
-          this.lineTo(x + width - corner, y);
-          this.quadraticCurveTo(x + width, y, x + width, y + corner);
-          this.lineTo(x + width, y + height - corner);
-          this.quadraticCurveTo(x + width, y + height, x + width - corner, y + height);
-          this.lineTo(x + corner, y + height);
-          this.quadraticCurveTo(x, y + height, x, y + height - corner);
-          this.lineTo(x, y + corner);
-          this.quadraticCurveTo(x, y, x + corner, y);
-          this.closePath();
-        };
-      }
-      const data = latestCertificateData;
-      const gradient = context.createLinearGradient(0, 0, 1500, 900);
-      gradient.addColorStop(0, "#16106f");
-      gradient.addColorStop(0.32, "#5b16b6");
-      gradient.addColorStop(0.68, "#1b2fa8");
-      gradient.addColorStop(1, "#130a55");
-      context.fillStyle = gradient;
-      context.fillRect(0, 0, 1500, 900);
-      for (let index = 0; index < 90; index += 1) {
-        const x = (index * 173) % 1500;
-        const y = (index * 97) % 900;
-        const size = 4 + (index % 4) * 2;
-        context.fillStyle = ["#ffd86f", "#27b9a7", "#ff73b7", "#ffffff"][index % 4];
-        context.save();
-        context.translate(x, y);
-        context.rotate((index % 8) * 0.4);
-        context.fillRect(-size / 2, -size / 2, size, size);
-        context.restore();
-      }
-      context.fillStyle = "#fffdf5";
-      context.beginPath();
-      context.roundRect(305, 42, 890, 810, 26);
-      context.fill();
-      context.strokeStyle = "#f2c95b";
-      context.lineWidth = 7;
-      context.stroke();
-      context.strokeStyle = "rgba(242, 201, 91, 0.42)";
-      context.lineWidth = 3;
-      context.strokeRect(337, 76, 826, 742);
-
-      function drawStar(x, y, radius, color) {
-        context.save();
-        context.translate(x, y);
-        context.fillStyle = color;
-        context.beginPath();
-        for (let point = 0; point < 10; point += 1) {
-          const angle = -Math.PI / 2 + point * (Math.PI / 5);
-          const length = point % 2 === 0 ? radius : radius * 0.46;
-          context.lineTo(Math.cos(angle) * length, Math.sin(angle) * length);
-        }
-        context.closePath();
-        context.fill();
-        context.restore();
-      }
-
-      function drawMedal(x, y, medal) {
-        context.save();
-        context.translate(x, y);
-        context.fillStyle = "#2f8fb8";
-        context.beginPath();
-        context.moveTo(-34, 56);
-        context.lineTo(-8, 132);
-        context.lineTo(0, 92);
-        context.lineTo(10, 132);
-        context.lineTo(36, 56);
-        context.closePath();
-        context.fill();
-        context.fillStyle = "#ef4d53";
-        context.beginPath();
-        context.moveTo(-16, 64);
-        context.lineTo(-4, 120);
-        context.lineTo(0, 92);
-        context.lineTo(5, 120);
-        context.lineTo(18, 64);
-        context.closePath();
-        context.fill();
-        const medalGradient = context.createRadialGradient(-18, -18, 8, 0, 0, 66);
-        medalGradient.addColorStop(0, "#ffffff");
-        medalGradient.addColorStop(0.35, medal.accent);
-        medalGradient.addColorStop(1, medal.color);
-        context.fillStyle = medalGradient;
-        context.beginPath();
-        context.arc(0, 0, 72, 0, Math.PI * 2);
-        context.fill();
-        context.strokeStyle = "rgba(255,255,255,0.75)";
-        context.lineWidth = 7;
-        context.stroke();
-        drawStar(0, -5, 34, "#ffffff");
-        context.fillStyle = "#ffffff";
-        context.font = "900 22px Nunito, Arial, sans-serif";
-        context.textAlign = "center";
-        context.fillText(medal.icon.toUpperCase(), 0, 100);
-        context.restore();
-      }
-
-      function drawCartoonChild(x, y, accent, isGirl = false) {
-        context.save();
-        context.translate(x, y);
-        context.fillStyle = "rgba(0,0,0,0.18)";
-        context.beginPath();
-        context.ellipse(0, 238, 92, 28, 0, 0, Math.PI * 2);
-        context.fill();
-        context.fillStyle = accent;
-        context.beginPath();
-        context.roundRect(-62, 92, 124, 152, 36);
-        context.fill();
-        context.fillStyle = "#ffd0b8";
-        context.beginPath();
-        context.arc(0, 42, 70, 0, Math.PI * 2);
-        context.fill();
-        context.fillStyle = "#3b1e17";
-        context.beginPath();
-        context.arc(-24, 22, 62, Math.PI, 0);
-        context.arc(28, 24, 52, Math.PI, 0);
-        context.fill();
-        context.fillStyle = "#ffffff";
-        context.beginPath();
-        context.arc(-26, 42, 15, 0, Math.PI * 2);
-        context.arc(28, 42, 15, 0, Math.PI * 2);
-        context.fill();
-        context.fillStyle = "#221714";
-        context.beginPath();
-        context.arc(-22, 44, 7, 0, Math.PI * 2);
-        context.arc(32, 44, 7, 0, Math.PI * 2);
-        context.fill();
-        context.strokeStyle = "#a94438";
-        context.lineWidth = 5;
-        context.beginPath();
-        context.arc(3, 72, 24, 0.08, Math.PI - 0.08);
-        context.stroke();
-        if (isGirl) {
-          context.fillStyle = "#ff73b7";
-          context.beginPath();
-          context.moveTo(32, -20);
-          context.lineTo(90, -56);
-          context.lineTo(74, 4);
-          context.closePath();
-          context.fill();
-        } else {
-          context.fillStyle = "#f5a400";
-          context.beginPath();
-          context.roundRect(54, -46, 78, 86, 10);
-          context.fill();
-          context.fillStyle = "#ffd86f";
-          context.beginPath();
-          context.arc(93, -7, 26, 0, Math.PI * 2);
-          context.fill();
-          drawStar(93, -7, 18, "#f5a400");
-        }
-        context.restore();
-      }
-
-      drawCartoonChild(150, 520, "#1d8ee8", false);
-      drawCartoonChild(1348, 520, "#ff73b7", true);
-      drawStar(210, 130, 20, "#ffd86f");
-      drawStar(1302, 132, 20, "#ffd86f");
-      drawStar(472, 235, 13, "#ffbf2f");
-      drawStar(1050, 218, 13, "#27b9a7");
-      drawMedal(1065, 160, data.medal);
-
-      const ribbon = context.createLinearGradient(470, 62, 1030, 132);
-      ribbon.addColorStop(0, "#5e18b8");
-      ribbon.addColorStop(0.5, "#b933ff");
-      ribbon.addColorStop(1, "#5e18b8");
-      context.fillStyle = ribbon;
-      context.beginPath();
-      context.roundRect(470, 58, 560, 78, 18);
-      context.fill();
-      context.textAlign = "center";
-      context.fillStyle = "#ffffff";
-      context.font = "900 54px Nunito, Arial, sans-serif";
-      context.fillText("CERTIFICATE", 750, 112);
-      context.font = "900 25px Nunito, Arial, sans-serif";
-      context.fillStyle = "#6d25cb";
-      context.fillText("OF READING EXCELLENCE", 750, 172);
-      drawStar(570, 164, 12, "#ffbf2f");
-      drawStar(930, 164, 12, "#ffbf2f");
-      context.fillStyle = "#283748";
-      context.font = "800 22px Nunito, Arial, sans-serif";
-      context.fillText("Proudly presented to", 750, 226);
-      context.font = "900 72px 'Baloo 2', Nunito, Arial, sans-serif";
-      context.fillStyle = "#7a22dc";
-      wrapCanvasText(context, data.name, 750, 320, 760, 72, 2);
-      context.strokeStyle = "rgba(154, 54, 255, 0.35)";
-      context.setLineDash([10, 9]);
-      context.beginPath();
-      context.moveTo(480, 356);
-      context.lineTo(1020, 356);
-      context.stroke();
-      context.setLineDash([]);
-      context.fillStyle = "#283748";
-      context.font = "900 28px Nunito, Arial, sans-serif";
-      context.fillText("You are a", 610, 418);
-      context.fillStyle = "#9b36ff";
-      context.beginPath();
-      context.roundRect(650, 384, 330, 52, 26);
-      context.fill();
-      context.fillStyle = "#ffffff";
-      context.font = data.medal.name.length > 14 ? "900 23px Nunito, Arial, sans-serif" : "900 28px Nunito, Arial, sans-serif";
-      context.fillText(data.medal.name, 815, 419);
-      drawStar(972, 410, 22, "#ffd86f");
-
-      const metrics = [
-        { icon: "🎓", label: "Grade & Level", value: data.gradeLabel, sub: data.levelText, color: "#6d25cb" },
-        { icon: "🎯", label: "Reading Accuracy", value: `${data.accuracy}%`, sub: data.accuracy >= 90 ? "Excellent!" : "Great effort!", color: "#099952" },
-        { icon: "📅", label: "Today's Practice", value: `${data.todayCount}`, sub: "Sessions", color: "#0876ca" },
-        { icon: "🔥", label: "Current Streak", value: `${data.streak}`, sub: "Days in a row!", color: "#e14d20" },
-      ];
-      metrics.forEach((metric, index) => {
-        const x = 410 + index * 225;
-        context.fillStyle = "rgba(255,255,255,0.86)";
-        context.beginPath();
-        context.roundRect(x - 92, 485, 184, 185, 18);
-        context.fill();
-        context.strokeStyle = "rgba(216, 174, 87, 0.28)";
-        context.lineWidth = 2;
-        context.stroke();
-        context.font = "34px Arial, sans-serif";
-        context.fillText(metric.icon, x, 532);
-        context.fillStyle = "#283748";
-        context.font = "900 18px Nunito, Arial, sans-serif";
-        context.fillText(metric.label, x, 566);
-        context.fillStyle = metric.color;
-        context.font = "900 48px Nunito, Arial, sans-serif";
-        context.fillText(metric.value, x, 626);
-        context.fillStyle = metric.color;
-        context.beginPath();
-        context.roundRect(x - 62, 640, 124, 32, 16);
-        context.fill();
-        context.fillStyle = "#ffffff";
-        context.font = "900 17px Nunito, Arial, sans-serif";
-        context.fillText(metric.sub.slice(0, 18), x, 662);
-      });
-
-      context.fillStyle = "#6d25cb";
-      context.beginPath();
-      context.roundRect(505, 720, 490, 56, 18);
-      context.fill();
-      drawStar(540, 748, 19, "#ffd86f");
-      drawStar(960, 748, 19, "#ffd86f");
-      context.fillStyle = "#ffffff";
-      context.font = "900 31px 'Baloo 2', Nunito, Arial, sans-serif";
-      context.fillText("Keep shining and keep reading!", 750, 758);
-      context.fillStyle = "rgba(255,255,255,0.9)";
-      context.font = "800 18px Nunito, Arial, sans-serif";
-      context.fillText(`Created on ${data.date} | Kidsverse School Rehan`, 750, 830);
-      canvas.toBlob((blob) => resolve(blob), "image/png", 0.95);
-    });
-  }
-
-  function getSavedMicPermission() {
-    try {
-      return sessionStorage.getItem(micSessionKey);
-    } catch {
-      return "";
-    }
-  }
-
-  function saveMicPermission(value) {
-    try {
-      sessionStorage.setItem(micSessionKey, value);
-    } catch {
-      /* Session storage can be blocked in private modes; reading still works without it. */
-    }
-  }
-
-  try {
-    const savedName = localStorage.getItem(studentNameStorageKey);
-    if (savedName && studentNameInput) studentNameInput.value = savedName;
-  } catch {
-    /* Optional student name restore. */
-  }
-
-  async function getCurrentMicPermission() {
-    if (!navigator.permissions?.query) return getSavedMicPermission();
-    try {
-      const status = await navigator.permissions.query({ name: "microphone" });
-      saveMicPermission(status.state);
-      status.onchange = () => saveMicPermission(status.state);
-      return status.state;
-    } catch {
-      return getSavedMicPermission();
-    }
-  }
-
-  function runReadingCountdown(sessionId) {
-    return new Promise((resolve) => {
-      if (!countdown) {
-        resolve(true);
-        return;
-      }
-      const steps = ["3", "2", "1", "Start"];
-      let index = 0;
-      countdown.hidden = false;
-      countdown.textContent = steps[index];
-      function tick() {
-        if (sessionId !== readingSessionId) {
-          countdown.hidden = true;
-          resolve(false);
-          return;
-        }
-        index += 1;
-        if (index >= steps.length) {
-          countdown.textContent = "Start";
-          countdownTimer = window.setTimeout(() => {
-            countdown.hidden = true;
-            resolve(sessionId === readingSessionId);
-          }, 420);
-          return;
-        }
-        countdown.textContent = steps[index];
-        countdownTimer = window.setTimeout(tick, 720);
-      }
-      countdownTimer = window.setTimeout(tick, 720);
-    });
-  }
-
-  levelSelect?.addEventListener("change", () => {
-    level = levelSelect.value || "beginner";
-    passageIndex = 0;
-    renderPassage();
-  });
-
-  gradeSelect?.addEventListener("change", () => {
-    grade = gradeSelect.value || "ukg";
-    passageIndex = 0;
-    currentReadingLevels = getReadingLevelsForGrade(grade);
-    renderPassage();
-  });
-
-  listenButton?.addEventListener("click", () => speakRoutineText(activePassage().text, listenButton));
-
-  shareButton?.addEventListener("click", async () => {
-    const labLink = window.location.href;
-    const shareText = `${latestCertificateText || `${getStudentName()} completed Kidsverse Reading Fluency practice today.`}\nPractice here: ${labLink}`;
-    const certificateBlob = await createReadingCertificateBlob();
-    if (certificateBlob) {
-      const file = new File([certificateBlob], "kidsverse-reading-star-certificate.png", { type: "image/png" });
-      if (navigator.share && navigator.canShare?.({ files: [file] })) {
-        try {
-          await navigator.share({ title: "Kidsverse Reading Star Certificate", text: shareText, url: labLink, files: [file] });
-          if (shareNote) shareNote.textContent = "Certificate image shared successfully.";
-          return;
-        } catch {
-          if (shareNote) shareNote.textContent = "Sharing was cancelled. You can try again.";
-          return;
-        }
-      }
-    }
-    if (navigator.share) {
-      try {
-        await navigator.share({ title: "Kidsverse Reading Star Certificate", text: shareText, url: labLink });
-        if (shareNote) shareNote.textContent = "Certificate shared successfully.";
-        return;
-      } catch {
-        if (shareNote) shareNote.textContent = "Sharing was cancelled. You can try again.";
-        return;
-      }
-    }
-    try {
-      await navigator.clipboard.writeText(shareText);
-      if (shareNote) shareNote.textContent = "Certificate message copied. You can paste it on WhatsApp or social media.";
-    } catch {
-      if (shareNote) shareNote.textContent = shareText;
-    }
-  });
-
-  nextButton?.addEventListener("click", () => {
-    passageIndex = (passageIndex + 1) % currentReadingLevels[level].length;
-    renderPassage();
-  });
-
-  startButton?.addEventListener("click", async () => {
-    if (!SpeechRecognition) {
-      support.textContent = "Microphone reading check is not supported in this browser. Please open this page in Chrome.";
-      support.classList.add("is-warning");
-      return;
-    }
-
-    const permission = await getCurrentMicPermission();
-    if (permission === "denied") {
-      support.textContent = "Microphone is blocked for this page. Please allow microphone access from Chrome site settings, then try again.";
-      support.classList.add("is-warning");
-      return;
-    }
-
-    stopTenseReading();
-    recognition?.abort();
-    window.clearTimeout(readingTimer);
-    window.clearTimeout(countdownTimer);
-    let finalText = "";
-    let latestTranscript = "";
-    let committedText = "";
-    let readingFailed = false;
-    let manualStop = false;
-    let countdownActive = true;
-    let recognitionStarted = false;
-    let restartCount = 0;
-    let recognitionStartedAt = 0;
-    const sessionStartedAt = Date.now();
-    const expectedWordCount = normalizeReadingWords(activePassage().text).length;
-    const timing = getReadingPatienceTiming(grade, expectedWordCount);
-    readingSessionId += 1;
-    const sessionId = readingSessionId;
-
-    startButton.disabled = true;
-    stopButton.hidden = false;
-    transcript.textContent = "Get ready. Reading will start after the countdown.";
-    support.textContent =
-      permission === "granted" ? "Microphone is ready. Start after the countdown." : "Please allow microphone access if Chrome asks, then start after the countdown.";
-    support.classList.remove("is-warning");
-    if (countdown) countdown.hidden = false;
-    if (listeningIndicator) listeningIndicator.hidden = true;
-
-    function finishReading() {
-      if (sessionId !== readingSessionId) return;
-      window.clearTimeout(readingTimer);
-      window.clearTimeout(countdownTimer);
-      startButton.disabled = false;
-      stopButton.hidden = true;
-      if (countdown) countdown.hidden = true;
-      if (listeningIndicator) listeningIndicator.hidden = true;
-      showReadingResult(latestTranscript || finalText);
-    }
-
-    function beginRecognition() {
-      if (sessionId !== readingSessionId) return;
-      recognitionStarted = true;
-      recognition = new SpeechRecognition();
-      recognition.lang = "en-IN";
-      recognition.interimResults = true;
-      recognition.continuous = true;
-      recognitionStartedAt = Date.now();
-
-      recognition.onstart = () => {
-        if (sessionId !== readingSessionId) return;
-        saveMicPermission("granted");
-        support.textContent = "Listening patiently. Slow reading is okay.";
-      };
-
-      recognition.onresult = (event) => {
-        if (sessionId !== readingSessionId) return;
-        const finalParts = [];
-        const interimParts = [];
-        for (let index = 0; index < event.results.length; index += 1) {
-          const text = event.results[index][0].transcript;
-          if (event.results[index].isFinal) {
-            finalParts.push(text);
-          } else {
-            interimParts.push(text);
-          }
-        }
-        finalText = mergeReadingTranscript(committedText, finalParts.join(" "));
-        latestTranscript = mergeReadingTranscript(finalText, interimParts.join(" "));
-        const displayText = getReadingDisplayTranscript(latestTranscript, activePassage().text, 16);
-        transcript.textContent = displayText || "Listening now. You can begin when ready.";
-      };
-
-      recognition.onerror = (event) => {
-        if (sessionId !== readingSessionId) return;
-        const elapsed = Date.now() - recognitionStartedAt;
-        const heardEnough = normalizeReadingWords(latestTranscript || finalText).length >= Math.max(grade === "ukg" ? 1 : 2, Math.ceil(expectedWordCount * timing.earlyHeardRatio));
-        if ((event.error === "no-speech" || event.error === "audio-capture") && elapsed < timing.minBeforeJudgingMs && restartCount < timing.restartLimit) {
-          restartCount += 1;
-          support.textContent = "Still listening. Start slowly when ready.";
-          return;
-        }
-        readingFailed = true;
-        startButton.disabled = false;
-        stopButton.hidden = true;
-        if (listeningIndicator) listeningIndicator.hidden = true;
-        getCurrentMicPermission().then((state) => {
-          support.textContent =
-            state === "denied"
-              ? "Microphone is blocked for this page. Please allow access from Chrome site settings."
-              : heardEnough
-                ? "We heard some words. Press Start Reading again when the child is ready to continue."
-                : "We could not hear clearly yet. Let the child sit close to the microphone and try again slowly.";
-        });
-        support.classList.add("is-warning");
-      };
-
-      recognition.onend = () => {
-        if (sessionId !== readingSessionId) return;
-        if (manualStop) {
-          finishReading();
-          return;
-        }
-        if (readingFailed) return;
-
-        const recognitionElapsed = Date.now() - recognitionStartedAt;
-        const sessionElapsed = Date.now() - sessionStartedAt;
-        const heardWords = normalizeReadingWords(latestTranscript || finalText).length;
-        const completedEnough = heardWords >= Math.max(grade === "ukg" ? 1 : 3, Math.ceil(expectedWordCount * timing.completionRatio));
-        const stillHasTime = sessionElapsed < timing.maxListenMs - 1200;
-        const shouldContinue =
-          !completedEnough &&
-          stillHasTime &&
-          restartCount < timing.restartLimit &&
-          (recognitionElapsed < timing.minBeforeJudgingMs || heardWords < expectedWordCount);
-        if (shouldContinue) {
-          restartCount += 1;
-          committedText = latestTranscript || finalText;
-          support.textContent = "Still listening. Continue reading slowly.";
-          window.setTimeout(beginRecognition, 180);
-          return;
-        }
-        finishReading();
-      };
-
-      recognition.start();
-    }
-
-    stopButton.onclick = () => {
-      manualStop = true;
-      window.clearTimeout(countdownTimer);
-      if (countdown) countdown.hidden = true;
-      if (listeningIndicator) listeningIndicator.hidden = true;
-      if (countdownActive || !recognitionStarted) {
-        readingSessionId += 1;
-        startButton.disabled = false;
-        stopButton.hidden = true;
-        transcript.textContent = "Reading cancelled. Click Start Reading when ready.";
-        support.textContent = "Take your time. Start again when the child is ready.";
-        return;
-      }
-      recognition?.stop();
-    };
-
-    const shouldStart = await runReadingCountdown(sessionId);
-    if (!shouldStart) return;
-    countdownActive = false;
-    transcript.textContent = "Listening now. Read slowly. Take your time.";
-    support.textContent = "Listening patiently. Slow reading is okay.";
-    if (listeningIndicator) listeningIndicator.hidden = false;
-
-    readingTimer = window.setTimeout(() => {
-      support.textContent = "Good effort. Checking what was read so far.";
-      if (listeningIndicator) listeningIndicator.hidden = true;
-      recognition?.stop();
-    }, timing.maxListenMs);
-
-    beginRecognition();
-  });
-  renderPassage();
+.menu-button {
+  display: none;
+  align-items: center;
+  gap: 9px;
+  min-height: 42px;
+  padding: 10px 14px;
+  color: #16453e;
+  border: 1px solid rgba(31, 49, 66, 0.08);
+  border-radius: 999px;
+  background: linear-gradient(135deg, #fff7e7, #e8fbf6);
+  box-shadow: 0 12px 28px rgba(31, 49, 66, 0.1);
+  font-weight: 950;
 }
 
-function initReadingWordHelper() {
-  document.querySelectorAll("[data-word]").forEach((button) => {
-    button.dataset.audioRestoreHtml = button.innerHTML;
-    button.addEventListener("click", () => {
-      const word = button.querySelector("strong")?.textContent || button.dataset.word;
-      const meaning = button.querySelector("span")?.textContent || "";
-      speakRoutineText(`${word}. ${meaning}`, button);
-    });
-  });
+.menu-button::before {
+  content: "";
+  width: 18px;
+  height: 12px;
+  border-top: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  box-shadow: inset 0 5px 0 0 currentColor;
+  border-radius: 2px;
 }
 
-initReadingFluencyLab();
-initReadingWordHelper();
+.hero,
+.section,
+.trust-bar,
+.site-footer {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(360px, 0.86fr);
+  gap: clamp(28px, 5vw, 72px);
+  align-items: center;
+  min-height: calc(100vh - 120px);
+  padding: 56px 0;
+}
+
+.eyebrow {
+  margin-bottom: 12px;
+  color: #0c8f82;
+  font-size: 0.78rem;
+  font-weight: 950;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+h1 {
+  max-width: 790px;
+  font-size: clamp(3.2rem, 6vw, 6.4rem);
+  line-height: 0.9;
+}
+
+h2 {
+  font-size: clamp(2.2rem, 4.5vw, 4.6rem);
+  line-height: 0.96;
+}
+
+h3 {
+  font-size: 1.35rem;
+  line-height: 1.1;
+}
+
+.hero-copy p:not(.eyebrow),
+.section-heading p,
+.intro-copy p,
+.afterschool-copy p,
+.admissions-copy p {
+  color: var(--muted);
+  font-size: 1.08rem;
+  line-height: 1.72;
+}
+
+.hero-copy > p:not(.eyebrow) {
+  max-width: 680px;
+  margin-top: 18px;
+}
+
+.hero-actions,
+.hero-trust,
+.afterschool-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.hero-trust span,
+.afterschool-tags span {
+  padding: 8px 11px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.7);
+  font-size: 0.85rem;
+  font-weight: 900;
+}
+
+.hero-visual {
+  position: relative;
+  min-height: 520px;
+}
+
+.hero-visual img {
+  width: 100%;
+  height: 520px;
+  object-fit: cover;
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  box-shadow: var(--shadow);
+}
+
+.hero-card {
+  position: absolute;
+  display: grid;
+  gap: 2px;
+  min-width: 150px;
+  padding: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(14px);
+}
+
+.hero-card strong {
+  font-size: 1.8rem;
+}
+
+.hero-card span {
+  color: var(--muted);
+  font-weight: 900;
+}
+
+.hero-card-one {
+  left: -22px;
+  bottom: 64px;
+}
+
+.hero-card-two {
+  right: -10px;
+  top: 48px;
+}
+
+.trust-bar {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  padding: 44px 0;
+}
+
+.trust-bar article,
+.promise-grid article,
+.why-grid article,
+.grade-ladder,
+.inquiry-form {
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 18px 48px rgba(31, 49, 66, 0.08);
+}
+
+.trust-bar article {
+  padding: 18px;
+}
+
+.trust-bar strong,
+.trust-bar span {
+  display: block;
+}
+
+.trust-bar span {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.home-trust-grid,
+.program-roadmap,
+.journey-line,
+.reading-steps,
+.parent-story-grid,
+.join-reasons-grid,
+.stage-links {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+}
+
+.home-trust-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 12px;
+  padding: 18px 0 44px;
+}
+
+.home-trust-grid article,
+.program-roadmap a,
+.journey-line span,
+.reading-steps span,
+.parent-story-grid article,
+.join-reasons-grid article,
+.stage-links a,
+.ai-guide-card,
+.readiness-question,
+.readiness-result {
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 18px 48px rgba(31, 49, 66, 0.08);
+}
+
+.home-trust-grid article {
+  display: grid;
+  gap: 8px;
+  min-height: 176px;
+  padding: 18px;
+}
+
+.home-trust-grid span,
+.ai-guide-card span {
+  width: fit-content;
+  padding: 7px 10px;
+  color: #16453e;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--mint), var(--sun));
+  font-size: 0.76rem;
+  font-weight: 950;
+}
+
+.home-trust-grid strong,
+.ai-guide-card strong {
+  color: #16453e;
+  font-family: "Baloo 2", "Nunito", system-ui, sans-serif;
+  font-size: 1.2rem;
+  line-height: 1.08;
+}
+
+.home-trust-grid p,
+.ai-guide-section p,
+.reading-preview-section p,
+.parent-story-grid p,
+.join-reasons-grid p,
+.readiness-result p {
+  color: var(--muted);
+  line-height: 1.62;
+}
+
+.ai-guide-section,
+.reading-preview-section,
+.journey-section,
+.school-tour-cta,
+.stonefield-soft-section {
+  display: grid;
+  grid-template-columns: minmax(0, 0.65fr) minmax(320px, 0.72fr);
+  gap: clamp(22px, 5vw, 58px);
+  align-items: center;
+}
+
+.ai-guide-card {
+  display: grid;
+  gap: 16px;
+  padding: clamp(22px, 4vw, 36px);
+  background:
+    radial-gradient(circle at 12% 14%, rgba(255, 216, 111, 0.3), transparent 34%),
+    linear-gradient(135deg, #ffffff, #e8fbf6);
+}
+
+.ai-guide-actions,
+.readiness-result-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.home-icon-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.program-roadmap {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.program-roadmap a {
+  position: relative;
+  display: grid;
+  gap: 8px;
+  min-height: 190px;
+  padding: 20px;
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.program-roadmap a:hover,
+.stage-links a:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow);
+}
+
+.program-roadmap span {
+  color: #0c8f82;
+  font-size: 0.78rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.program-roadmap strong {
+  font-family: "Baloo 2", "Nunito", system-ui, sans-serif;
+  font-size: 1.45rem;
+  line-height: 1.05;
+}
+
+.program-roadmap small {
+  color: var(--muted);
+  font-size: 0.92rem;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.journey-section {
+  grid-template-columns: minmax(0, 0.52fr) minmax(0, 1fr);
+}
+
+.journey-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  width: auto;
+}
+
+.journey-line span {
+  position: relative;
+  padding: 10px 13px;
+  color: #16453e;
+  font-weight: 950;
+}
+
+.reading-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  width: auto;
+}
+
+.reading-steps span {
+  padding: 18px;
+  color: #16453e;
+  font-family: "Baloo 2", "Nunito", system-ui, sans-serif;
+  font-size: 1.18rem;
+  font-weight: 900;
+  text-align: center;
+}
+
+.reading-preview-section .primary-button {
+  margin-top: 22px;
+}
+
+.parent-story-grid,
+.join-reasons-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.join-reasons-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.parent-story-grid article,
+.join-reasons-grid article {
+  display: grid;
+  gap: 10px;
+  padding: 22px;
+}
+
+.parent-story-grid strong,
+.join-reasons-grid strong {
+  color: #16453e;
+  font-family: "Baloo 2", "Nunito", system-ui, sans-serif;
+  font-size: 1.2rem;
+}
+
+.google-review-section {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  align-items: stretch;
+  padding: clamp(24px, 4vw, 44px);
+  border: 1px solid rgba(31, 49, 66, 0.08);
+  border-radius: 34px;
+  background:
+    radial-gradient(circle at 8% 10%, rgba(255, 216, 111, 0.42), transparent 30%),
+    radial-gradient(circle at 92% 12%, rgba(222, 215, 255, 0.5), transparent 32%),
+    radial-gradient(circle at 75% 92%, rgba(217, 247, 232, 0.76), transparent 36%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(255, 250, 241, 0.82));
+  box-shadow: var(--shadow);
+}
+
+.google-review-copy {
+  display: grid;
+  align-content: center;
+  gap: 14px;
+}
+
+.google-review-copy h2 {
+  max-width: 760px;
+  color: #16453e;
+  font-size: clamp(2.15rem, 4vw, 3.6rem);
+  line-height: 1;
+}
+
+.google-review-copy p:not(.eyebrow) {
+  max-width: 680px;
+  color: var(--muted);
+  font-size: 1.05rem;
+}
+
+.google-review-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.google-review-wall {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 4px;
+  perspective: 1100px;
+}
+
+.google-review-wall article {
+  position: relative;
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  min-height: 270px;
+  padding: 20px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.82);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 88% 8%, rgba(255, 255, 255, 0.9), transparent 25%),
+    linear-gradient(145deg, #fff3e9, #fffdf7);
+  box-shadow: 0 20px 48px rgba(31, 49, 66, 0.09);
+  transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+}
+
+.google-review-wall article:nth-child(2) {
+  background:
+    radial-gradient(circle at 88% 8%, rgba(255, 255, 255, 0.86), transparent 25%),
+    linear-gradient(145deg, #efffff, #f4f1ff);
+}
+
+.google-review-wall article:nth-child(3) {
+  background:
+    radial-gradient(circle at 88% 8%, rgba(255, 255, 255, 0.86), transparent 25%),
+    linear-gradient(145deg, #fff9dd, #ecfff6);
+}
+
+.google-review-wall article::before {
+  content: "â€œ";
+  position: absolute;
+  right: 14px;
+  top: 2px;
+  color: rgba(255, 114, 95, 0.16);
+  font-family: Georgia, serif;
+  font-size: 7rem;
+  line-height: 1;
+}
+
+.google-review-wall article:hover,
+.google-review-wall article:focus-within {
+  transform: translateY(-8px) rotateX(2deg);
+  border-color: rgba(39, 185, 167, 0.26);
+  box-shadow: 0 28px 62px rgba(31, 49, 66, 0.16);
+}
+
+.google-review-wall span {
+  position: relative;
+  z-index: 1;
+  width: fit-content;
+  padding: 6px 9px;
+  color: #16453e;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  font-size: 0.72rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.review-stars {
+  position: relative;
+  z-index: 1;
+  width: fit-content;
+  padding: 5px 8px;
+  color: #b36b00;
+  border-radius: 999px;
+  background: rgba(255, 216, 111, 0.35);
+  font-size: 0.86rem;
+  letter-spacing: 1px;
+}
+
+.google-review-wall strong {
+  position: relative;
+  z-index: 1;
+  color: #16453e;
+  font-family: "Baloo 2", "Nunito", system-ui, sans-serif;
+  font-size: 1.3rem;
+  line-height: 1.05;
+}
+
+.google-review-wall p {
+  position: relative;
+  z-index: 1;
+  color: #405161;
+  font-size: 0.96rem;
+  line-height: 1.5;
+}
+
+.google-review-wall small {
+  position: relative;
+  z-index: 1;
+  margin-top: 4px;
+  color: #16453e;
+  font-size: 0.78rem;
+  font-weight: 950;
+  line-height: 1.35;
+}
+
+.google-review-card {
+  position: relative;
+  display: grid;
+  align-content: space-between;
+  gap: 18px;
+  min-height: 360px;
+  padding: 24px;
+  overflow: hidden;
+  color: #16453e;
+  border-radius: 26px;
+  background:
+    radial-gradient(circle at 18% 18%, rgba(255, 216, 111, 0.36), transparent 34%),
+    radial-gradient(circle at 88% 12%, rgba(201, 236, 255, 0.54), transparent 32%),
+    linear-gradient(135deg, #fff9e8, #eafff8);
+  box-shadow: 0 22px 52px rgba(31, 49, 66, 0.12);
+}
+
+.google-review-card::before {
+  content: "â˜…";
+  position: absolute;
+  right: -6px;
+  bottom: -40px;
+  color: rgba(255, 114, 95, 0.12);
+  font-family: "Baloo 2", "Nunito", system-ui, sans-serif;
+  font-size: 12rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.google-review-card span,
+.google-review-card strong,
+.google-review-card p,
+.google-review-card div {
+  position: relative;
+  z-index: 1;
+}
+
+.google-review-card span {
+  width: fit-content;
+  padding: 7px 11px;
+  color: #16453e;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--sun), var(--mint));
+  font-size: 0.78rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.google-review-card strong {
+  max-width: 360px;
+  font-family: "Baloo 2", "Nunito", system-ui, sans-serif;
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  line-height: 0.98;
+}
+
+.google-review-card p {
+  color: #536879;
+}
+
+.google-review-card div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.google-review-card small {
+  padding: 8px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  font-weight: 950;
+}
+
+.google-review-embed-card {
+  align-content: start;
+}
+
+.google-review-embed {
+  position: relative;
+  z-index: 1;
+  min-height: 190px;
+  overflow: hidden;
+  border: 1px solid rgba(31, 49, 66, 0.08);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.68);
+}
+
+.google-review-embed iframe {
+  width: 100%;
+  height: 230px;
+  border: 0;
+  filter: saturate(1.04) contrast(1.02);
+}
+
+.mini-faq-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.mini-faq-list details {
+  padding: 14px 16px;
+  border: 1px solid rgba(31, 49, 66, 0.08);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.74);
+}
+
+.mini-faq-list summary {
+  cursor: pointer;
+  color: #16453e;
+  font-weight: 950;
+}
+
+.mini-faq-list p {
+  margin-top: 8px;
+  color: var(--muted);
+}
+
+.school-tour-cta,
+.stonefield-soft-section {
+  padding: clamp(28px, 5vw, 52px);
+  border-radius: 30px;
+  border: 1px solid rgba(31, 49, 66, 0.08);
+  background:
+    radial-gradient(circle at 12% 14%, rgba(255, 216, 111, 0.42), transparent 32%),
+    radial-gradient(circle at 90% 10%, rgba(201, 236, 255, 0.62), transparent 34%),
+    radial-gradient(circle at 72% 88%, rgba(217, 247, 232, 0.78), transparent 32%),
+    linear-gradient(135deg, #fffdf7, #f3fff9);
+  color: var(--ink);
+  box-shadow: var(--shadow);
+}
+
+.school-tour-cta .eyebrow,
+.school-tour-cta h2,
+.school-tour-cta p,
+.stonefield-soft-section .eyebrow,
+.stonefield-soft-section h2,
+.stonefield-soft-section p {
+  color: #16453e;
+}
+
+.school-tour-cta > div {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+}
+
+.school-tour-cta {
+  grid-template-columns: 1fr;
+  justify-items: center;
+  text-align: center;
+}
+
+.school-tour-cta > div,
+.school-tour-cta .inquiry-form {
+  width: min(100%, 980px);
+}
+
+.school-tour-cta > div {
+  justify-items: center;
+}
+
+.school-tour-cta h2 {
+  max-width: 620px;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  line-height: 1;
+}
+
+.school-tour-cta p:not(.eyebrow) {
+  max-width: 650px;
+  color: #536879;
+  font-size: 1.04rem;
+  line-height: 1.65;
+}
+
+.stage-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.tour-steps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 22px;
+  width: 100%;
+  max-width: 980px;
+}
+
+.tour-steps span {
+  position: relative;
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  min-height: 172px;
+  padding: 18px;
+  overflow: hidden;
+  border: 1px solid rgba(31, 49, 66, 0.08);
+  border-radius: 26px;
+  background:
+    radial-gradient(circle at 88% 10%, rgba(255, 255, 255, 0.92), transparent 26%),
+    linear-gradient(145deg, #fff2e8, #fffdf8);
+  color: #16453e;
+  font-weight: 900;
+  line-height: 1.15;
+  text-align: left;
+  box-shadow: 0 14px 34px rgba(31, 49, 66, 0.08);
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+
+.tour-steps span:nth-child(2) {
+  background:
+    radial-gradient(circle at 88% 10%, rgba(255, 255, 255, 0.92), transparent 26%),
+    linear-gradient(145deg, #edfaff, #f7f2ff);
+}
+
+.tour-steps span:nth-child(3) {
+  background:
+    radial-gradient(circle at 88% 10%, rgba(255, 255, 255, 0.92), transparent 26%),
+    linear-gradient(145deg, #effff7, #fff9df);
+}
+
+.tour-steps span:nth-child(4) {
+  background:
+    radial-gradient(circle at 88% 10%, rgba(255, 255, 255, 0.92), transparent 26%),
+    linear-gradient(145deg, #fff0f5, #f1fffb);
+}
+
+.tour-steps span:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 22px 48px rgba(31, 49, 66, 0.14);
+}
+
+.tour-steps b {
+  display: inline-grid;
+  place-items: center;
+  justify-self: start;
+  width: 34px;
+  height: 34px;
+  color: #ffffff;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff725f, #27b9a7);
+  font-size: 0.74rem;
+  box-shadow: 0 10px 18px rgba(31, 49, 66, 0.12);
+}
+
+.tour-steps strong {
+  display: block;
+  color: #16453e;
+  font-family: "Baloo 2", "Nunito", system-ui, sans-serif;
+  font-size: 1.2rem;
+  line-height: 1.05;
+}
+
+.tour-steps small {
+  display: block;
+  color: #536879;
+  font-size: 0.9rem;
+  font-weight: 800;
+  line-height: 1.42;
+}
+
+.school-tour-cta .inquiry-form {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  max-width: 980px;
+  justify-self: center;
+  text-align: left;
+  border: 1px solid rgba(31, 49, 66, 0.08);
+  background:
+    radial-gradient(circle at 8% 12%, rgba(255, 216, 111, 0.24), transparent 34%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.78));
+  box-shadow: 0 22px 54px rgba(31, 49, 66, 0.12);
+}
+
+.school-tour-cta .inquiry-form button {
+  grid-column: 1 / -1;
+  justify-self: center;
+  min-width: min(100%, 280px);
+}
+
+.stonefield-soft-section {
+  grid-template-columns: minmax(0, 1fr) minmax(180px, auto);
+  align-items: center;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 10% 16%, rgba(255, 216, 111, 0.38), transparent 32%),
+    radial-gradient(circle at 94% 12%, rgba(201, 236, 255, 0.58), transparent 34%),
+    linear-gradient(135deg, #fff8e8, #ebfff8);
+  color: var(--ink);
+}
+
+.stonefield-soft-section .eyebrow,
+.stonefield-soft-section h2 {
+  color: #16453e;
+  max-width: 820px;
+  font-size: clamp(2rem, 4vw, 3.3rem);
+  line-height: 1;
+}
+
+.stonefield-soft-section p {
+  color: var(--muted);
+}
+
+.stonefield-soft-section > div {
+  display: grid;
+  gap: 14px;
+}
+
+.stonefield-path {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.stonefield-path span {
+  padding: 10px 13px;
+  border: 1px solid rgba(31, 49, 66, 0.08);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.68);
+  color: #16453e;
+  font-size: 0.88rem;
+  font-weight: 950;
+  box-shadow: 0 12px 28px rgba(31, 49, 66, 0.06);
+}
+
+.stonefield-soft-section .primary-button {
+  white-space: nowrap;
+}
+
+.readiness-tool-section {
+  display: grid;
+  gap: 18px;
+}
+
+.readiness-tool {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.readiness-question {
+  display: grid;
+  gap: 10px;
+  padding: 18px;
+}
+
+.readiness-question input[type="text"] {
+  min-height: 48px;
+  width: 100%;
+  padding: 0 13px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--white);
+}
+
+.readiness-question legend,
+.readiness-question strong {
+  color: #16453e;
+  font-family: "Baloo 2", "Nunito", system-ui, sans-serif;
+  font-size: 1.15rem;
+  font-weight: 900;
+}
+
+.readiness-question label {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  color: var(--muted);
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.readiness-tool button {
+  width: fit-content;
+}
+
+.readiness-result {
+  display: grid;
+  gap: 10px;
+  padding: 24px;
+  background: linear-gradient(135deg, #ffffff, #fff7e7);
+}
+
+.readiness-result span {
+  color: #0c8f82;
+  font-size: 0.78rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.readiness-result strong {
+  color: #16453e;
+  font-family: "Baloo 2", "Nunito", system-ui, sans-serif;
+  font-size: clamp(2.6rem, 7vw, 4.5rem);
+  line-height: 1;
+}
+
+.next-stage-section {
+  padding-top: 40px;
+}
+
+.stage-links {
+  width: 100%;
+  margin-top: 0;
+}
+
+.stage-links a {
+  padding: 12px 14px;
+  color: #16453e;
+  font-weight: 950;
+}
+
+.section {
+  padding: 82px 0;
+}
+
+.intro-section,
+.afterschool-section,
+.admissions-section {
+  display: grid;
+  grid-template-columns: minmax(0, 0.74fr) minmax(320px, 0.66fr);
+  gap: clamp(24px, 5vw, 68px);
+  align-items: center;
+}
+
+.promise-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.promise-grid article {
+  display: grid;
+  gap: 8px;
+  min-height: 150px;
+  padding: 20px;
+}
+
+.promise-grid span,
+.why-grid span {
+  width: fit-content;
+  padding: 7px 10px;
+  color: #16453e;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--mint), var(--sun));
+  font-size: 0.78rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.section-heading {
+  max-width: 820px;
+  margin-bottom: 34px;
+}
+
+.program-card-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.premium-program-card {
+  position: relative;
+  display: grid;
+  overflow: hidden;
+  min-height: 430px;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: var(--white);
+  box-shadow: 0 20px 56px rgba(31, 49, 66, 0.1);
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.premium-program-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow);
+}
+
+.premium-program-card img {
+  width: 100%;
+  height: 190px;
+  object-fit: cover;
+}
+
+.premium-program-card div {
+  display: grid;
+  gap: 9px;
+  padding: 18px;
+}
+
+.premium-program-card span {
+  width: fit-content;
+  padding: 7px 10px;
+  color: #99503e;
+  border-radius: 999px;
+  background: #fff0e9;
+  font-size: 0.78rem;
+  font-weight: 950;
+}
+
+.premium-program-card p {
+  color: var(--muted);
+}
+
+.premium-program-card a {
+  align-self: end;
+  width: fit-content;
+  padding: 9px 12px;
+  color: var(--white);
+  border-radius: var(--radius);
+  background: var(--coral);
+  font-weight: 950;
+}
+
+.premium-program-card.is-featured {
+  background: linear-gradient(180deg, #ffffff, #fff3dc);
+}
+
+.campus-story {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(320px, 0.62fr);
+  gap: clamp(28px, 5vw, 72px);
+  align-items: center;
+}
+
+.story-visual {
+  position: relative;
+  min-height: 520px;
+}
+
+.story-wide {
+  width: 82%;
+  height: 430px;
+  object-fit: cover;
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  box-shadow: var(--shadow);
+}
+
+.story-tall {
+  position: absolute;
+  width: min(32%, 210px);
+  height: 330px;
+  object-fit: cover;
+  border: 8px solid rgba(255, 255, 255, 0.88);
+  border-radius: 26px;
+  box-shadow: 0 22px 54px rgba(31, 49, 66, 0.18);
+}
+
+.story-one {
+  right: 8%;
+  top: 48px;
+  transform: rotate(3deg);
+}
+
+.story-two {
+  right: 22%;
+  bottom: 0;
+  transform: rotate(-4deg);
+}
+
+.story-copy {
+  display: grid;
+  gap: 18px;
+}
+
+.story-copy p:not(.eyebrow) {
+  color: var(--muted);
+  font-size: 1.08rem;
+  line-height: 1.72;
+}
+
+.story-points {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.story-points span {
+  padding: 8px 11px;
+  color: #16453e;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--mint), #ffffff);
+  font-size: 0.86rem;
+  font-weight: 950;
+}
+
+.program-hero,
+.program-strip,
+.playgroup-intro,
+.day-rhythm,
+.readiness-section {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+}
+
+.program-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(360px, 0.78fr);
+  gap: clamp(28px, 5vw, 70px);
+  align-items: center;
+  min-height: calc(100vh - 120px);
+  padding: 56px 0 40px;
+}
+
+.playgroup-hero {
+  position: relative;
+}
+
+.program-hero-copy > p:not(.eyebrow) {
+  max-width: 690px;
+  margin-top: 18px;
+  color: var(--muted);
+  font-size: 1.1rem;
+  line-height: 1.72;
+}
+
+.program-hero-panel {
+  position: relative;
+  display: grid;
+  gap: 14px;
+}
+
+.program-hero-panel > img {
+  width: 100%;
+  height: 500px;
+  object-fit: cover;
+  border: 1px solid var(--line);
+  border-radius: 30px;
+  box-shadow: var(--shadow);
+}
+
+.quick-facts {
+  display: grid;
+  grid-template-columns: 0.7fr 1fr;
+  gap: 10px;
+}
+
+.quick-facts article {
+  display: grid;
+  gap: 3px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 16px 34px rgba(31, 49, 66, 0.08);
+}
+
+.quick-facts article:nth-child(3) {
+  grid-column: 1 / -1;
+}
+
+.quick-facts span {
+  color: #0c8f82;
+  font-size: 0.76rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.quick-facts strong {
+  line-height: 1.2;
+}
+
+.program-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  padding-bottom: 44px;
+}
+
+.program-strip article,
+.learning-grid article,
+.rhythm-board article,
+.faq-grid article,
+.readiness-card {
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 18px 48px rgba(31, 49, 66, 0.08);
+}
+
+.program-strip article {
+  padding: 20px;
+}
+
+.program-strip span {
+  display: block;
+  margin-top: 6px;
+  color: var(--muted);
+}
+
+.playgroup-intro {
+  display: grid;
+  grid-template-columns: minmax(0, 0.72fr) minmax(320px, 0.72fr);
+  gap: clamp(24px, 5vw, 68px);
+  align-items: center;
+}
+
+.playgroup-intro > p {
+  color: var(--muted);
+  font-size: 1.12rem;
+  line-height: 1.78;
+}
+
+.curriculum-section {
+  width: 100%;
+  max-width: none;
+  padding-left: max(16px, calc((100% - 1180px) / 2));
+  padding-right: max(16px, calc((100% - 1180px) / 2));
+  background:
+    radial-gradient(circle at 12% 20%, rgba(255, 216, 111, 0.26), transparent 28%),
+    radial-gradient(circle at 92% 14%, rgba(222, 215, 255, 0.36), transparent 30%),
+    linear-gradient(135deg, #fffaf1, #f0fff8);
+}
+
+.learning-grid,
+.faq-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.learning-grid article,
+.faq-grid article {
+  display: grid;
+  gap: 10px;
+  padding: 22px;
+}
+
+.learning-grid span,
+.rhythm-board span {
+  width: fit-content;
+  min-width: 38px;
+  min-height: 38px;
+  display: inline-grid;
+  place-items: center;
+  color: #16453e;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--sun), var(--mint));
+  font-size: 0.82rem;
+  font-weight: 950;
+}
+
+.learning-grid p,
+.faq-grid p,
+.rhythm-board p {
+  color: var(--muted);
+}
+
+.day-rhythm {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.42fr) minmax(0, 0.82fr);
+  gap: clamp(24px, 5vw, 60px);
+  align-items: start;
+}
+
+.day-copy p:not(.eyebrow) {
+  margin-top: 16px;
+  color: var(--muted);
+  font-size: 1.08rem;
+  line-height: 1.72;
+}
+
+.rhythm-board {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.rhythm-board article {
+  display: grid;
+  gap: 8px;
+  padding: 18px;
+}
+
+.readiness-section {
+  display: grid;
+  grid-template-columns: minmax(0, 0.78fr) minmax(320px, 0.62fr);
+  gap: clamp(24px, 5vw, 68px);
+  align-items: center;
+}
+
+.readiness-card {
+  padding: clamp(24px, 4vw, 42px);
+  background: linear-gradient(135deg, #ffffff, #fff3dc);
+}
+
+.readiness-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.readiness-list span {
+  padding: 11px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.78);
+  font-weight: 900;
+}
+
+.readiness-photo-stack {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  align-items: center;
+}
+
+.readiness-photo-stack img {
+  width: 100%;
+  height: 420px;
+  object-fit: cover;
+  border-radius: 28px;
+  box-shadow: var(--shadow);
+}
+
+.readiness-photo-stack img:nth-child(2) {
+  margin-top: 70px;
+}
+
+.playway-page .program-strip article,
+.playway-page .learning-grid article,
+.playway-page .rhythm-board article,
+.playway-page .faq-grid article {
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.playway-page .program-strip article:hover,
+.playway-page .learning-grid article:hover,
+.playway-page .rhythm-board article:hover,
+.playway-page .faq-grid article:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow);
+}
+
+.faq-reference {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) auto;
+  gap: 24px;
+  align-items: center;
+  padding: clamp(24px, 4vw, 40px);
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 12% 14%, rgba(255, 216, 111, 0.34), transparent 28%),
+    linear-gradient(135deg, #ffffff, #eefaf5);
+  box-shadow: var(--shadow);
+}
+
+.faq-reference p:not(.eyebrow) {
+  margin-top: 14px;
+  color: var(--muted);
+  font-size: 1.04rem;
+  line-height: 1.7;
+}
+
+.faq-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(320px, 0.56fr);
+  gap: clamp(28px, 5vw, 70px);
+  align-items: center;
+  width: min(1180px, calc(100% - 32px));
+  min-height: calc(100vh - 120px);
+  margin: 0 auto;
+  padding: 56px 0 40px;
+}
+
+.faq-hero p:not(.eyebrow) {
+  max-width: 700px;
+  margin-top: 18px;
+  color: var(--muted);
+  font-size: 1.1rem;
+  line-height: 1.72;
+}
+
+.faq-hero-card {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: var(--shadow);
+}
+
+.faq-hero-card img {
+  width: 100%;
+  height: 360px;
+  object-fit: cover;
+  border-radius: 20px;
+}
+
+.faq-hero-card strong {
+  padding: 0 8px;
+  font-family: "Baloo 2", "Nunito", system-ui, sans-serif;
+  font-size: 1.35rem;
+  line-height: 1.1;
+}
+
+.faq-hero-card span {
+  padding: 0 8px 8px;
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.faq-page-section {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.38fr) minmax(0, 0.86fr);
+  gap: clamp(22px, 5vw, 58px);
+  align-items: start;
+}
+
+.faq-accordion {
+  display: grid;
+  gap: 12px;
+}
+
+.faq-accordion details {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.84);
+  box-shadow: 0 16px 38px rgba(31, 49, 66, 0.08);
+}
+
+.faq-accordion summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  min-height: 66px;
+  padding: 18px 20px;
+  cursor: pointer;
+  font-weight: 950;
+  list-style: none;
+}
+
+.faq-accordion summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq-accordion summary::after {
+  content: "+";
+  display: inline-grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  color: #16453e;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--sun), var(--mint));
+  font-weight: 950;
+}
+
+.faq-accordion details[open] summary::after {
+  content: "-";
+}
+
+.faq-accordion p {
+  padding: 0 20px 20px;
+  color: var(--muted);
+}
+
+.about-hero,
+.about-stat-band,
+.about-story,
+.mission-vision {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+}
+
+.about-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 0.78fr) minmax(420px, 0.95fr);
+  gap: clamp(28px, 5vw, 70px);
+  align-items: center;
+  min-height: calc(100vh - 120px);
+  padding: 46px 0 40px;
+}
+
+.home-hero,
+body:has(.about-hero) .about-hero {
+  position: relative;
+  isolation: isolate;
+}
+
+.home-hero::before,
+body:has(.about-hero) .about-hero::before {
+  content: "";
+  position: absolute;
+  inset: 18px -18px;
+  z-index: -1;
+  border-radius: 38px;
+  background:
+    radial-gradient(circle at 12% 16%, rgba(255, 216, 111, 0.38), transparent 30%),
+    radial-gradient(circle at 92% 12%, rgba(201, 236, 255, 0.58), transparent 34%),
+    radial-gradient(circle at 78% 88%, rgba(217, 247, 232, 0.68), transparent 34%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 250, 241, 0.52));
+}
+
+.about-hero-copy > p:not(.eyebrow) {
+  max-width: 700px;
+  margin-top: 18px;
+  color: var(--muted);
+  font-size: 1.1rem;
+  line-height: 1.72;
+}
+
+.about-hero-visual {
+  position: relative;
+}
+
+.about-hero-visual::before {
+  content: "";
+  position: absolute;
+  inset: 18px -12px -12px 18px;
+  z-index: -1;
+  border-radius: 34px;
+  background: linear-gradient(135deg, var(--sun), var(--mint), var(--sky));
+}
+
+.about-hero-visual img {
+  width: 100%;
+  height: auto;
+  max-height: min(64vh, 620px);
+  min-height: 0;
+  object-fit: contain;
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 34px;
+  box-shadow: var(--shadow);
+}
+
+.about-stat-band {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  padding-bottom: 44px;
+}
+
+.about-stat-band article,
+.about-story-card,
+.philosophy-grid article,
+.mission-vision article {
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 18px 48px rgba(31, 49, 66, 0.08);
+}
+
+.about-stat-band article {
+  padding: 20px;
+}
+
+.about-stat-band strong {
+  display: block;
+  color: #0c756c;
+  font-family: "Baloo 2", "Nunito", system-ui, sans-serif;
+  font-size: 2.2rem;
+  line-height: 1;
+}
+
+.about-stat-band span {
+  display: block;
+  margin-top: 8px;
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.about-story {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(320px, 0.52fr);
+  gap: clamp(24px, 5vw, 64px);
+  align-items: center;
+}
+
+.about-story-copy {
+  display: grid;
+  gap: 16px;
+}
+
+.about-story-copy p:not(.eyebrow),
+.about-story-card p,
+.mission-vision p {
+  color: var(--muted);
+  font-size: 1.06rem;
+  line-height: 1.72;
+}
+
+.about-story-card {
+  display: grid;
+  gap: 14px;
+  padding: clamp(22px, 4vw, 36px);
+  background:
+    radial-gradient(circle at 20% 12%, rgba(255, 216, 111, 0.34), transparent 35%),
+    linear-gradient(135deg, #ffffff, #eefaf5);
+}
+
+.about-story-card span {
+  width: fit-content;
+  padding: 7px 10px;
+  color: #16453e;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--mint), var(--sun));
+  font-size: 0.78rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.about-story-card strong {
+  font-family: "Baloo 2", "Nunito", system-ui, sans-serif;
+  font-size: clamp(1.8rem, 3vw, 2.7rem);
+  line-height: 1;
+}
+
+.philosophy-section {
+  width: 100%;
+  max-width: none;
+  padding-left: max(16px, calc((100% - 1180px) / 2));
+  padding-right: max(16px, calc((100% - 1180px) / 2));
+  background:
+    radial-gradient(circle at 12% 18%, rgba(255, 216, 111, 0.28), transparent 30%),
+    radial-gradient(circle at 92% 16%, rgba(201, 236, 255, 0.38), transparent 32%),
+    linear-gradient(135deg, #fffaf1, #f1fff8);
+}
+
+.philosophy-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.philosophy-grid article {
+  display: grid;
+  gap: 10px;
+  padding: 22px;
+}
+
+.philosophy-grid span {
+  width: fit-content;
+  padding: 7px 10px;
+  color: #99503e;
+  border-radius: 999px;
+  background: #fff0e9;
+  font-size: 0.78rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.philosophy-grid p {
+  color: var(--muted);
+}
+
+.mission-vision {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.mission-vision article {
+  display: grid;
+  gap: 14px;
+  padding: clamp(24px, 4vw, 38px);
+}
+
+.events-hero,
+.events-band,
+.celebration-flow {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+}
+
+.events-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 0.82fr) minmax(380px, 0.74fr);
+  gap: clamp(28px, 5vw, 70px);
+  align-items: center;
+  min-height: calc(100vh - 120px);
+  padding: 56px 0 40px;
+}
+
+.events-hero-copy > p:not(.eyebrow) {
+  max-width: 720px;
+  margin-top: 18px;
+  color: var(--muted);
+  font-size: 1.1rem;
+  line-height: 1.72;
+}
+
+.events-hero-visual {
+  display: grid;
+  grid-template-columns: 1fr 0.72fr;
+  gap: 12px;
+  align-items: end;
+}
+
+.events-hero-visual img {
+  width: 100%;
+  object-fit: cover;
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  box-shadow: var(--shadow);
+}
+
+.events-hero-visual img:first-child {
+  height: 500px;
+}
+
+.events-hero-visual img:last-child {
+  height: 360px;
+  margin-bottom: 42px;
+}
+
+.events-band {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  padding-bottom: 44px;
+}
+
+.events-band article,
+.event-grid article,
+.event-promise {
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 18px 48px rgba(31, 49, 66, 0.08);
+}
+
+.events-band article {
+  padding: 20px;
+}
+
+.events-band span {
+  display: block;
+  margin-top: 6px;
+  color: var(--muted);
+}
+
+.event-calendar {
+  width: 100%;
+  max-width: none;
+  padding-left: max(16px, calc((100% - 1180px) / 2));
+  padding-right: max(16px, calc((100% - 1180px) / 2));
+  background:
+    radial-gradient(circle at 12% 16%, rgba(255, 216, 111, 0.34), transparent 28%),
+    radial-gradient(circle at 88% 14%, rgba(222, 215, 255, 0.42), transparent 30%),
+    linear-gradient(135deg, #fffaf1, #f1fff8);
+}
+
+.event-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.event-grid article {
+  display: grid;
+  gap: 10px;
+  padding: 22px;
+}
+
+.event-grid span {
+  width: fit-content;
+  padding: 7px 10px;
+  color: #16453e;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--mint), var(--sun));
+  font-size: 0.78rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.event-grid p,
+.event-promise p {
+  color: var(--muted);
+}
+
+.ramayana-showcase {
+  width: min(1180px, calc(100% - 32px));
+}
+
+.story-feature {
+  display: grid;
+  grid-template-columns: minmax(0, 0.78fr) minmax(280px, 0.46fr);
+  gap: 18px;
+  align-items: stretch;
+  margin-bottom: 14px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 16% 18%, rgba(255, 216, 111, 0.28), transparent 32%),
+    linear-gradient(135deg, #ffffff, #eefaf5);
+  box-shadow: var(--shadow);
+}
+
+.story-feature img {
+  width: 100%;
+  height: 430px;
+  object-fit: cover;
+}
+
+.story-feature div {
+  display: grid;
+  align-content: center;
+  gap: 12px;
+  padding: clamp(22px, 4vw, 38px);
+}
+
+.story-feature span {
+  width: fit-content;
+  padding: 7px 10px;
+  color: #16453e;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--mint), var(--sun));
+  font-size: 0.78rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.story-feature p {
+  color: var(--muted);
+}
+
+.ramayana-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.ramayana-grid article {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 26px;
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: var(--shadow);
+}
+
+.ramayana-grid img {
+  width: 100%;
+  height: 430px;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.ramayana-grid div {
+  display: grid;
+  gap: 10px;
+  padding: 20px;
+}
+
+.ramayana-grid span {
+  width: fit-content;
+  padding: 7px 10px;
+  color: #99503e;
+  border-radius: 999px;
+  background: #fff0e9;
+  font-size: 0.78rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.ramayana-grid p {
+  color: var(--muted);
+}
+
+.event-gallery {
+  padding-top: 36px;
+}
+
+.event-photo-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.72fr 1fr;
+  gap: 12px;
+  align-items: stretch;
+}
+
+.event-photo-grid img {
+  width: 100%;
+  height: 260px;
+  object-fit: cover;
+  object-position: center top;
+  border-radius: 22px;
+  box-shadow: 0 18px 42px rgba(31, 49, 66, 0.12);
+}
+
+.event-photo-grid img:first-child {
+  grid-row: span 2;
+  height: 532px;
+}
+
+.event-photo-grid img:nth-child(4) {
+  height: 320px;
+}
+
+.event-promise,
+.event-reference,
+.parent-hub-teaser,
+.blog-cta {
+  display: grid;
+  grid-template-columns: minmax(0, 0.82fr) auto;
+  gap: 24px;
+  align-items: center;
+  padding: clamp(24px, 4vw, 40px);
+  background:
+    radial-gradient(circle at 12% 14%, rgba(255, 216, 111, 0.32), transparent 28%),
+    linear-gradient(135deg, #ffffff, #fff3dc);
+}
+
+.event-reference,
+.parent-hub-teaser,
+.blog-cta {
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  box-shadow: var(--shadow);
+}
+
+.parent-hub-teaser {
+  background:
+    radial-gradient(circle at 12% 16%, rgba(255, 216, 111, 0.34), transparent 28%),
+    radial-gradient(circle at 90% 15%, rgba(39, 185, 167, 0.22), transparent 32%),
+    linear-gradient(135deg, #ffffff, #eefaf5);
+}
+
+.parent-hub-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.parent-hub-tags span {
+  padding: 8px 12px;
+  color: #16453e;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.78);
+  font-size: 0.84rem;
+  font-weight: 950;
+}
+
+.event-reference p:not(.eyebrow),
+.parent-hub-teaser p:not(.eyebrow),
+.blog-cta p:not(.eyebrow),
+.event-promise p {
+  margin-top: 14px;
+  color: var(--muted);
+  font-size: 1.04rem;
+  line-height: 1.7;
+}
+
+.parent-hub-hero,
+.blog-hero {
+  width: min(100% - 32px, 1180px);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(320px, 0.72fr);
+  gap: clamp(24px, 4vw, 52px);
+  align-items: center;
+  padding: clamp(42px, 7vw, 84px) 0;
+}
+
+.parent-hub-hero h1,
+.blog-hero h1 {
+  max-width: 860px;
+}
+
+.parent-hub-hero p:not(.eyebrow),
+.blog-hero p:not(.eyebrow) {
+  max-width: 760px;
+  margin-top: 18px;
+  color: var(--muted);
+  font-size: clamp(1.04rem, 2vw, 1.22rem);
+  line-height: 1.75;
+}
+
+.parent-hub-visual,
+.blog-hero img {
+  border-radius: 30px;
+  box-shadow: var(--shadow);
+}
+
+.parent-hub-visual {
+  position: relative;
+  overflow: hidden;
+  min-height: 440px;
+  background: var(--white);
+}
+
+.parent-hub-visual img,
+.blog-hero img {
+  width: 100%;
+  height: 100%;
+  min-height: 440px;
+  object-fit: cover;
+}
+
+.parent-hub-visual div {
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  bottom: 18px;
+  display: grid;
+  gap: 4px;
+  padding: 16px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(14px);
+}
+
+.parent-hub-visual strong {
+  color: var(--ink);
+  font-size: 1.25rem;
+}
+
+.parent-hub-visual span {
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.parent-resource-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.parent-resource-strip article {
+  display: grid;
+  gap: 8px;
+  padding: 22px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.84);
+  box-shadow: 0 16px 34px rgba(31, 49, 66, 0.08);
+}
+
+.parent-resource-strip strong {
+  font-size: 1.08rem;
+}
+
+.parent-resource-strip span {
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.blog-list-section {
+  display: grid;
+  gap: 24px;
+}
+
+.blog-list-grid {
+  display: grid;
+  gap: 22px;
+}
+
+.blog-feature-card {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.48fr) minmax(0, 1fr);
+  gap: 24px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 30px;
+  background: var(--white);
+  box-shadow: var(--shadow);
+}
+
+.blog-feature-card img {
+  width: 100%;
+  height: 100%;
+  min-height: 330px;
+  object-fit: cover;
+}
+
+.blog-feature-card div {
+  display: grid;
+  align-content: center;
+  gap: 14px;
+  padding: clamp(22px, 4vw, 42px);
+}
+
+.blog-feature-card span,
+.blog-meta span,
+.comparison-panel span {
+  width: fit-content;
+  padding: 7px 10px;
+  color: #0c756c;
+  border-radius: 999px;
+  background: #e8fbf6;
+  font-size: 0.78rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.blog-feature-card p {
+  color: var(--muted);
+  font-size: 1.04rem;
+  line-height: 1.7;
+}
+
+.blog-article {
+  padding-bottom: 40px;
+}
+
+.blog-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.blog-body {
+  width: min(100% - 32px, 1180px);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  gap: 32px;
+  align-items: start;
+}
+
+.blog-sidebar {
+  position: sticky;
+  top: 110px;
+  display: grid;
+  gap: 10px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 14px 32px rgba(31, 49, 66, 0.08);
+}
+
+.blog-sidebar strong {
+  font-family: "Baloo 2", "Nunito", system-ui, sans-serif;
+  font-size: 1.18rem;
+}
+
+.blog-sidebar a {
+  color: var(--muted);
+  font-weight: 900;
+}
+
+.blog-content {
+  display: grid;
+  gap: 30px;
+}
+
+.blog-content > section {
+  padding: clamp(22px, 4vw, 38px);
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 16px 34px rgba(31, 49, 66, 0.08);
+}
+
+.blog-content p,
+.blog-content li {
+  color: var(--muted);
+  font-size: 1.04rem;
+  line-height: 1.78;
+}
+
+.blog-content p {
+  margin-top: 14px;
+}
+
+.comparison-panel {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  background:
+    radial-gradient(circle at 12% 18%, rgba(255, 216, 111, 0.28), transparent 32%),
+    linear-gradient(135deg, #fffaf1, #eefaf5);
+}
+
+.comparison-panel div {
+  display: grid;
+  gap: 12px;
+  padding: 20px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.comparison-panel ul {
+  display: grid;
+  gap: 10px;
+  padding-left: 20px;
+}
+
+.insight-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.insight-grid article {
+  display: grid;
+  gap: 8px;
+  padding: 18px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, var(--mint), #ffffff);
+}
+
+.insight-grid span {
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.parent-checklist {
+  display: grid;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.parent-checklist strong {
+  font-size: 1.16rem;
+}
+
+.parent-checklist span {
+  padding: 13px 15px;
+  border-radius: 16px;
+  background: #fff7e7;
+  color: #42515d;
+  font-weight: 850;
+}
+
+.blog-content blockquote {
+  margin-top: 20px;
+  padding: 22px;
+  color: #16453e;
+  border-left: 5px solid var(--teal);
+  border-radius: 18px;
+  background: #e8fbf6;
+  font-family: "Baloo 2", "Nunito", system-ui, sans-serif;
+  font-size: 1.42rem;
+  line-height: 1.25;
+  font-weight: 800;
+}
+
+.afterschool-section {
+  width: 100%;
+  max-width: none;
+  padding-left: max(16px, calc((100% - 1180px) / 2));
+  padding-right: max(16px, calc((100% - 1180px) / 2));
+  background:
+    radial-gradient(circle at 14% 16%, rgba(255, 216, 111, 0.3), transparent 28%),
+    radial-gradient(circle at 90% 12%, rgba(39, 185, 167, 0.22), transparent 30%),
+    linear-gradient(135deg, #fffaf1, #eefaf5);
+}
+
+.afterschool-copy .primary-button {
+  margin-top: 24px;
+}
+
+.afterschool-advantage {
+  display: grid;
+  gap: 10px;
+}
+
+.afterschool-benefit-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.afterschool-benefit-grid article {
+  display: grid;
+  gap: 10px;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 18px 48px rgba(31, 49, 66, 0.08);
+}
+
+.afterschool-benefit-grid span {
+  width: fit-content;
+  min-width: 38px;
+  min-height: 38px;
+  display: inline-grid;
+  place-items: center;
+  color: #16453e;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--sun), var(--mint));
+  font-size: 0.82rem;
+  font-weight: 950;
+}
+
+.afterschool-benefit-grid p {
+  color: var(--muted);
+  line-height: 1.62;
+}
+
+.english-lab-preview {
+  display: grid;
+  grid-template-columns: minmax(0, 0.76fr) minmax(0, 1fr);
+  gap: clamp(22px, 4vw, 44px);
+  align-items: center;
+  padding: clamp(26px, 4vw, 44px);
+  border: 1px solid rgba(31, 49, 66, 0.08);
+  border-radius: 30px;
+  background:
+    radial-gradient(circle at 12% 16%, rgba(255, 216, 111, 0.3), transparent 26%),
+    radial-gradient(circle at 92% 20%, rgba(222, 215, 255, 0.45), transparent 28%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(232, 251, 246, 0.88));
+  box-shadow: 0 22px 62px rgba(31, 49, 66, 0.08);
+}
+
+.english-lab-copy {
+  display: grid;
+  gap: 15px;
+}
+
+.english-lab-copy p:not(.eyebrow) {
+  color: var(--muted);
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
+.english-lab-copy .primary-button {
+  width: fit-content;
+}
+
+.english-lab-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.lab-module-card {
+  display: grid;
+  gap: 8px;
+  min-height: 176px;
+  padding: 20px;
+  color: var(--ink);
+  border: 1px solid rgba(31, 49, 66, 0.08);
+  border-radius: 22px;
+  background: linear-gradient(145deg, #ffffff, #fff7e7);
+  box-shadow: 0 16px 40px rgba(31, 49, 66, 0.08);
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.lab-module-card:nth-child(2) {
+  background: linear-gradient(145deg, #ffffff, #eef8ff);
+}
+
+.lab-module-card:nth-child(3) {
+  background: linear-gradient(145deg, #ffffff, #f3efff);
+}
+
+.lab-module-card:nth-child(4) {
+  background: linear-gradient(145deg, #ffffff, #eefaf5);
+}
+
+.lab-module-card:nth-child(5) {
+  background: linear-gradient(145deg, #ffffff, #fff0ea);
+}
+
+.lab-module-card.is-live:hover,
+.lab-module-card.is-live:focus {
+  transform: translateY(-4px);
+  box-shadow: 0 24px 56px rgba(31, 49, 66, 0.13);
+}
+
+.lab-module-card span {
+  width: 42px;
+  height: 42px;
+  display: inline-grid;
+  place-items: center;
+  color: #16453e;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--sun), var(--mint));
+  font-weight: 950;
+}
+
+.lab-module-card strong {
+  font-family: "Baloo 2", "Nunito", system-ui, sans-serif;
+  font-size: 1.36rem;
+  line-height: 1.05;
+}
+
+.lab-module-card p {
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.learning-lab-page {
+  background:
+    radial-gradient(circle at 10% 8%, rgba(255, 216, 111, 0.32), transparent 25rem),
+    radial-gradient(circle at 90% 10%, rgba(222, 215, 255, 0.46), transparent 24rem),
+    radial-gradient(circle at 84% 78%, rgba(201, 236, 255, 0.52), transparent 26rem),
+    #fffaf1;
+}
+
+.tense-hero {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 0.84fr) minmax(340px, 0.74fr);
+  gap: clamp(26px, 5vw, 60px);
+  align-items: center;
+  padding: clamp(44px, 7vw, 82px) 0 38px;
+}
+
+.tense-hero-copy h1 {
+  font-size: clamp(3rem, 5.8vw, 5.9rem);
+}
+
+.tense-hero-copy p:not(.eyebrow) {
+  max-width: 720px;
+  margin-top: 18px;
+  color: var(--muted);
+  font-size: 1.1rem;
+  line-height: 1.72;
+}
+
+.tense-hero-board {
+  position: relative;
+  display: grid;
+  gap: 18px;
+  padding: clamp(22px, 4vw, 34px);
+  border: 1px solid rgba(31, 49, 66, 0.08);
+  border-radius: 30px;
+  background:
+    linear-gradient(rgba(31, 49, 66, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(31, 49, 66, 0.04) 1px, transparent 1px),
+    radial-gradient(circle at 12% 16%, rgba(255, 216, 111, 0.34), transparent 30%),
+    linear-gradient(145deg, #ffffff, #eefaf5);
+  background-size: 28px 28px, 28px 28px, auto, auto;
+  box-shadow: 0 26px 70px rgba(31, 49, 66, 0.13);
+  overflow: hidden;
+}
+
+.tense-hero-board > span {
+  width: fit-content;
+  padding: 7px 12px;
+  color: #16453e;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--mint), var(--sun));
+  font-weight: 950;
+}
+
+.time-road,
+.big-time-road {
+  display: grid;
+  grid-template-columns: auto 1fr auto 1fr auto;
+  gap: 10px;
+  align-items: center;
+  color: #16453e;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.time-road i,
+.big-time-road i {
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--coral), var(--sun), var(--teal));
+}
+
+.time-road strong,
+.big-time-road strong {
+  display: inline-grid;
+  place-items: center;
+  min-width: 70px;
+  min-height: 70px;
+  color: #fff;
+  border: 6px solid #ffffff;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #0c756c, #27b9a7);
+  box-shadow: 0 16px 34px rgba(39, 185, 167, 0.22);
+}
+
+.hero-sentence-card {
+  display: grid;
+  gap: 8px;
+  padding: 22px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 16px 42px rgba(31, 49, 66, 0.1);
+  animation: floatSentence 4.5s ease-in-out infinite;
+}
+
+.hero-sentence-card small,
+.hero-sentence-card em {
+  color: var(--muted);
+  font-weight: 900;
+}
+
+.hero-sentence-card strong {
+  font-family: "Baloo 2", "Nunito", system-ui, sans-serif;
+  font-size: clamp(1.55rem, 3vw, 2.35rem);
+  line-height: 1.08;
+}
+
+@keyframes floatSentence {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.tense-road-section,
+.tense-cards-section,
+.tense-rules-section,
+.final-tense-quiz {
+  display: grid;
+  gap: 14px;
+}
+
+.learning-lab-page .section {
+  padding-top: clamp(26px, 4vw, 44px);
+  padding-bottom: clamp(26px, 4vw, 44px);
+}
+
+.learning-lab-page .section-heading {
+  max-width: 760px;
+  margin-bottom: 12px;
+}
+
+.learning-lab-page .section-heading .eyebrow {
+  margin-bottom: 6px;
+}
+
+.learning-lab-page .section-heading h2 {
+  font-size: clamp(1.65rem, 3vw, 2.75rem);
+  line-height: 1.02;
+}
+
+.learning-lab-page .section-heading p {
+  margin-top: 6px;
+  font-size: 0.98rem;
+  line-height: 1.48;
+}
+
+.big-time-road {
+  grid-template-columns: auto 1fr auto;
+  padding: 18px;
+  border: 1px solid rgba(31, 49, 66, 0.08);
+  border-radius: 26px;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 18px 48px rgba(31, 49, 66, 0.08);
+}
+
+.big-time-road div {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 12px;
+  align-items: center;
+}
+
+.big-time-road div::after {
+  content: "";
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--teal), var(--sky));
+}
+
+.tense-card-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.tense-card-grid button,
+.tense-choice-tool button,
+.transformer-buttons button,
+.quiz-option {
+  border: 1px solid rgba(31, 49, 66, 0.09);
+  cursor: pointer;
+  color: var(--ink);
+  font-weight: 900;
+  transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease, border-color 160ms ease;
+}
+
+.tense-card-grid button {
+  display: grid;
+  gap: 7px;
+  min-height: 188px;
+  padding: 16px;
+  border-radius: 20px;
+  background: linear-gradient(145deg, #ffffff, #fff7e7);
+  text-align: left;
+  box-shadow: 0 16px 38px rgba(31, 49, 66, 0.08);
+}
+
+.tense-card-grid button:nth-child(2) {
+  background: linear-gradient(145deg, #ffffff, #eef8ff);
+}
+
+.tense-card-grid button:nth-child(3) {
+  background: linear-gradient(145deg, #ffffff, #f3efff);
+}
+
+.tense-card-grid button:nth-child(4) {
+  background: linear-gradient(145deg, #ffffff, #eefaf5);
+}
+
+.tense-card-grid button:hover,
+.tense-card-grid button:focus,
+.tense-card-grid button.is-active {
+  transform: translateY(-4px);
+  border-color: rgba(12, 117, 108, 0.25);
+  box-shadow: 0 24px 58px rgba(31, 49, 66, 0.13);
+}
+
+.tense-card-grid span {
+  color: #0c756c;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+}
+
+.tense-card-grid strong {
+  font-family: "Baloo 2", "Nunito", system-ui, sans-serif;
+  font-size: 1.24rem;
+  line-height: 1.05;
+}
+
+.tense-card-grid code {
+  white-space: normal;
+  color: #16453e;
+  font-family: "Nunito", system-ui, sans-serif;
+  font-weight: 950;
+}
+
+.tense-card-grid em {
+  color: var(--muted);
+  font-style: normal;
+}
+
+.tense-detail-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 0.65fr) minmax(0, 1fr);
+  gap: 14px;
+  padding: clamp(16px, 3vw, 24px);
+  border: 1px solid rgba(31, 49, 66, 0.08);
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at 90% 20%, rgba(255, 216, 111, 0.24), transparent 24%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.96), rgba(232, 251, 246, 0.86));
+  box-shadow: 0 22px 58px rgba(31, 49, 66, 0.09);
+}
+
+.tense-detail-panel h3 {
+  font-size: clamp(1.55rem, 2.5vw, 2.15rem);
+}
+
+.tense-detail-panel p,
+.tense-detail-panel li {
+  color: var(--muted);
+  font-size: 0.96rem;
+  font-weight: 800;
+}
+
+.tense-detail-panel ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.tense-detail-panel code {
+  display: block;
+  width: fit-content;
+  margin-top: 10px;
+  padding: 9px 11px;
+  color: #16453e;
+  border-radius: 16px;
+  background: #ffffff;
+  font-family: "Nunito", system-ui, sans-serif;
+  font-weight: 950;
+}
+
+.tense-audio-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  min-height: 38px;
+  margin-top: 10px;
+  padding: 8px 12px;
+  color: #16453e;
+  border: 1px solid rgba(39, 185, 167, 0.18);
+  border-radius: 999px;
+  background: linear-gradient(135deg, #e8fbf6, #fff7e7);
+  box-shadow: 0 12px 24px rgba(31, 49, 66, 0.08);
+  cursor: pointer;
+  font-weight: 950;
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.tense-audio-button:hover,
+.tense-audio-button:focus {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 32px rgba(31, 49, 66, 0.12);
+}
+
+.tense-audio-button.is-reading {
+  color: #ffffff;
+  border-color: transparent;
+  background: linear-gradient(135deg, var(--coral), #ff9d5d);
+  box-shadow: 0 14px 28px rgba(255, 114, 95, 0.18);
+}
+
+.tense-tool-section,
+.sentence-transformer,
+.lab-cta-section {
+  display: grid;
+  grid-template-columns: minmax(0, 0.7fr) minmax(0, 1fr);
+  gap: clamp(14px, 3vw, 24px);
+  align-items: center;
+  padding: clamp(18px, 3vw, 26px);
+  border: 1px solid rgba(31, 49, 66, 0.08);
+  border-radius: 24px;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(243, 239, 255, 0.72));
+  box-shadow: 0 22px 58px rgba(31, 49, 66, 0.09);
+}
+
+.tense-situation {
+  margin-top: 12px;
+  padding: 14px 16px;
+  color: #16453e;
+  border-radius: 16px;
+  background: #ffffff;
+  font-family: "Baloo 2", "Nunito", system-ui, sans-serif;
+  font-size: clamp(1.22rem, 2.5vw, 1.7rem);
+  font-weight: 800;
+  line-height: 1.12;
+  box-shadow: 0 14px 34px rgba(31, 49, 66, 0.08);
+}
+
+.tense-choice-tool,
+.transformer-buttons {
+  display: grid;
+  gap: 8px;
+}
+
+.tense-choice-tool {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.tense-choice-tool button,
+.transformer-buttons button,
+.quiz-option {
+  min-height: 44px;
+  padding: 9px 12px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.88);
+}
+
+.tense-choice-tool button:hover,
+.tense-choice-tool button:focus,
+.transformer-buttons button:hover,
+.transformer-buttons button:focus,
+.transformer-buttons button.is-active,
+.quiz-option:hover,
+.quiz-option:focus {
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, #e8fbf6, #fff7e7);
+  box-shadow: 0 14px 30px rgba(31, 49, 66, 0.1);
+}
+
+.tense-choice-tool p {
+  grid-column: 1 / -1;
+  padding: 11px 13px;
+  color: #405161;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.72);
+  font-weight: 900;
+}
+
+.tense-choice-tool p.is-correct {
+  color: #16453e;
+  background: #e8fbf6;
+}
+
+.tense-choice-tool p.is-wrong {
+  color: #9d3f2e;
+  background: #fff0ea;
+}
+
+.sentence-transformer-section {
+  display: grid;
+  gap: 12px;
+}
+
+.sentence-transformer {
+  grid-template-columns: minmax(190px, 0.28fr) minmax(0, 1fr);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.96), rgba(238, 248, 255, 0.8));
+}
+
+.sentence-transformer article {
+  display: grid;
+  gap: 7px;
+  min-height: 142px;
+  align-content: center;
+  padding: clamp(16px, 3vw, 24px);
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 90% 16%, rgba(255, 216, 111, 0.36), transparent 24%),
+    #ffffff;
+  box-shadow: 0 16px 40px rgba(31, 49, 66, 0.08);
+}
+
+.sentence-transformer article span {
+  color: #0c756c;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.sentence-transformer article strong {
+  color: #16453e;
+  font-family: "Baloo 2", "Nunito", system-ui, sans-serif;
+  font-size: clamp(1.45rem, 3vw, 2.35rem);
+  line-height: 1.02;
+}
+
+.sentence-transformer article p {
+  color: var(--muted);
+  font-size: 0.95rem;
+  font-weight: 850;
+}
+
+.tense-practice-section {
+  display: grid;
+  gap: 14px;
+}
+
+.tense-practice-lab {
+  display: grid;
+  grid-template-columns: minmax(210px, 0.3fr) minmax(0, 1fr);
+  gap: 12px;
+  align-items: stretch;
+  padding: clamp(16px, 3vw, 24px);
+  border: 1px solid rgba(31, 49, 66, 0.08);
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 12% 18%, rgba(255, 216, 111, 0.28), transparent 28%),
+    radial-gradient(circle at 92% 12%, rgba(201, 236, 255, 0.42), transparent 28%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.96), rgba(232, 251, 246, 0.82));
+  box-shadow: 0 18px 46px rgba(31, 49, 66, 0.08);
+}
+
+.practice-intent-buttons {
+  display: grid;
+  gap: 8px;
+}
+
+.practice-intent-buttons button {
+  min-height: 46px;
+  padding: 10px 12px;
+  color: var(--ink);
+  border: 1px solid rgba(31, 49, 66, 0.09);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.88);
+  cursor: pointer;
+  font-weight: 950;
+  text-align: left;
+  transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+
+.practice-intent-buttons button:hover,
+.practice-intent-buttons button:focus,
+.practice-intent-buttons button.is-active {
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, #fff7e7, #e8fbf6);
+  box-shadow: 0 14px 30px rgba(31, 49, 66, 0.1);
+}
+
+.practice-writing-box {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  color: #16453e;
+  font-weight: 950;
+}
+
+.practice-writing-box textarea {
+  width: 100%;
+  min-height: 112px;
+  resize: vertical;
+  padding: 14px;
+  color: var(--ink);
+  border: 1px solid rgba(31, 49, 66, 0.1);
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: inset 0 2px 0 rgba(31, 49, 66, 0.02), 0 14px 34px rgba(31, 49, 66, 0.07);
+  font-size: 1.04rem;
+  font-weight: 850;
+  line-height: 1.55;
+  outline: none;
+}
+
+.routine-practice-lab .practice-writing-box textarea::placeholder {
+  color: rgba(64, 81, 97, 0.72);
+  font-weight: 900;
+}
+
+.practice-writing-box textarea:focus {
+  border-color: rgba(39, 185, 167, 0.44);
+  box-shadow: 0 0 0 4px rgba(39, 185, 167, 0.12), 0 16px 38px rgba(31, 49, 66, 0.08);
+}
+
+.practice-writing-box textarea.is-auto-typing {
+  background:
+    linear-gradient(90deg, rgba(255, 216, 111, 0.16), transparent 32%, rgba(217, 247, 232, 0.2)),
+    #ffffff;
+  background-size: 220% 100%;
+  animation: practiceTypingGlow 4s ease-in-out infinite;
+}
+
+@keyframes practiceTypingGlow {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.practice-feedback-card {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 5px;
+  padding: 14px 16px;
+  border: 1px solid rgba(31, 49, 66, 0.08);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 10px 26px rgba(31, 49, 66, 0.06);
+}
+
+.practice-feedback-card span {
+  width: fit-content;
+  padding: 5px 9px;
+  color: #16453e;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--mint), var(--sun));
+  font-size: 0.72rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.practice-feedback-card strong {
+  color: var(--ink);
+  font-family: "Baloo 2", "Nunito", system-ui, sans-serif;
+  font-size: clamp(1.18rem, 2vw, 1.65rem);
+  line-height: 1.08;
+}
+
+.practice-feedback-card p {
+  color: var(--muted);
+  font-weight: 850;
+}
+
+.practice-feedback-card.is-good {
+  border-color: rgba(39, 185, 167, 0.18);
+  background: linear-gradient(145deg, #ffffff, #e8fbf6);
+}
+
+.practice-feedback-card.is-guide {
+  border-color: rgba(255, 114, 95, 0.16);
+  background: linear-gradient(145deg, #ffffff, #fff0ea);
+}
+
+.practice-rule-meter {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.practice-rule-meter span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 8px;
+  color: rgba(64, 81, 97, 0.72);
+  border: 1px dashed rgba(31, 49, 66, 0.12);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.7);
+  font-weight: 950;
+  text-align: center;
+}
+
+.practice-rule-meter span.is-met {
+  color: #16453e;
+  border-style: solid;
+  border-color: rgba(39, 185, 167, 0.22);
+  background: #e8fbf6;
+}
+
+.tense-rule-list {
+  display: grid;
+  gap: 8px;
+}
+
+.tense-rule-list details {
+  padding: 13px 16px;
+  border: 1px solid rgba(31, 49, 66, 0.08);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 12px 32px rgba(31, 49, 66, 0.06);
+}
+
+.tense-rule-list summary {
+  cursor: pointer;
+  color: #16453e;
+  font-family: "Baloo 2", "Nunito", system-ui, sans-serif;
+  font-size: 1.12rem;
+  font-weight: 800;
+}
+
+.tense-rule-list code {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  margin-top: 8px;
+  padding: 8px 10px;
+  overflow-wrap: anywhere;
+  color: #16453e;
+  border-radius: 14px;
+  background: #eefaf5;
+  font-family: "Nunito", system-ui, sans-serif;
+  font-weight: 950;
+  line-height: 1.45;
+}
+
+.tense-rule-list p {
+  margin-top: 7px;
+  font-size: 0.94rem;
+  color: var(--muted);
+  font-weight: 850;
+}
+
+.quiz-shell {
+  display: grid;
+  gap: 12px;
+  padding: clamp(16px, 3vw, 24px);
+  border: 1px solid rgba(31, 49, 66, 0.08);
+  border-radius: 22px;
+  background: linear-gradient(145deg, #ffffff, #eef8ff);
+  box-shadow: 0 22px 58px rgba(31, 49, 66, 0.09);
+}
+
+.quiz-shell progress {
+  width: 100%;
+  height: 10px;
+  overflow: hidden;
+  border: 0;
+  border-radius: 999px;
+  background: #ffffff;
+}
+
+.quiz-shell progress::-webkit-progress-bar {
+  background: #ffffff;
+}
+
+.quiz-shell progress::-webkit-progress-value {
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--coral), var(--sun), var(--teal));
+}
+
+.quiz-shell article {
+  display: grid;
+  gap: 10px;
+}
+
+.quiz-shell h3 {
+  font-size: clamp(1.25rem, 2.5vw, 1.8rem);
+}
+
+.quiz-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.quiz-option.is-correct {
+  color: #16453e;
+  border-color: rgba(39, 185, 167, 0.24);
+  background: #e8fbf6;
+}
+
+.quiz-option.is-wrong {
+  color: #9d3f2e;
+  border-color: rgba(255, 114, 95, 0.24);
+  background: #fff0ea;
+}
+
+.quiz-explanation {
+  padding: 10px 12px;
+  color: #405161;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.76);
+  font-weight: 850;
+}
+
+.quiz-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.quiz-actions span {
+  color: #16453e;
+  font-weight: 950;
+}
+
+.tense-next-section {
+  display: grid;
+  gap: 12px;
+}
+
+.tense-next-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.tense-next-grid a {
+  display: grid;
+  gap: 6px;
+  min-height: 136px;
+  padding: 16px;
+  color: var(--ink);
+  border: 1px solid rgba(31, 49, 66, 0.08);
+  border-radius: 20px;
+  background: linear-gradient(145deg, #ffffff, #fff7e7);
+  box-shadow: 0 14px 34px rgba(31, 49, 66, 0.07);
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.tense-next-grid a:nth-child(2) {
+  background: linear-gradient(145deg, #ffffff, #eef8ff);
+}
+
+.tense-next-grid a:nth-child(3) {
+  background: linear-gradient(145deg, #ffffff, #eefaf5);
+}
+
+.tense-next-grid a:nth-child(4) {
+  background: linear-gradient(145deg, #ffffff, #f3efff);
+}
+
+.tense-next-grid a:nth-child(5) {
+  background: linear-gradient(145deg, #ffffff, #fff0ea);
+}
+
+.tense-next-grid a:hover,
+.tense-next-grid a:focus {
+  transform: translateY(-3px);
+  box-shadow: 0 20px 44px rgba(31, 49, 66, 0.11);
+}
+
+.tense-next-grid a.is-current {
+  border-color: rgba(39, 185, 167, 0.26);
+  background: linear-gradient(145deg, #e8fbf6, #ffffff);
+}
+
+.tense-next-grid span {
+  width: 38px;
+  height: 38px;
+  display: inline-grid;
+  place-items: center;
+  color: #16453e;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--sun), var(--mint));
+  font-weight: 950;
+}
+
+.tense-next-grid strong {
+  font-family: "Baloo 2", "Nunito", system-ui, sans-serif;
+  font-size: 1.2rem;
+  line-height: 1.05;
+}
+
+.tense-next-grid p {
+  color: var(--muted);
+  font-size: 0.92rem;
+  font-weight: 850;
+  line-height: 1.35;
+}
+
+.reading-hero-board {
+  background:
+    linear-gradient(rgba(31, 49, 66, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(31, 49, 66, 0.045) 1px, transparent 1px),
+    radial-gradient(circle at 16% 18%, rgba(255, 216, 111, 0.42), transparent 26%),
+    radial-gradient(circle at 88% 18%, rgba(222, 215, 255, 0.58), transparent 30%),
+    linear-gradient(145deg, #ffffff, #eaf8ff);
+  background-size: 24px 24px, 24px 24px, auto, auto, auto;
+}
+
+.reading-wave {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 96px;
+  padding: 14px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 16px 40px rgba(31, 49, 66, 0.08);
+}
+
+.reading-wave i {
+  width: 14px;
+  height: 34px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--coral), var(--sun), var(--teal));
+  animation: readingWave 1.3s ease-in-out infinite;
+}
+
+.reading-wave i:nth-child(2) {
+  animation-delay: 0.12s;
+}
+
+.reading-wave i:nth-child(3) {
+  animation-delay: 0.24s;
+}
+
+.reading-wave i:nth-child(4) {
+  animation-delay: 0.36s;
+}
+
+.reading-wave i:nth-child(5) {
+  animation-delay: 0.48s;
+}
+
+@keyframes readingWave {
+  0%,
+  100% {
+    transform: scaleY(0.48);
+  }
+  50% {
+    transform: scaleY(1.55);
+  }
+}
+
+.reading-level-section,
+.word-helper-section,
+.reading-question-section {
+  display: grid;
+  gap: 14px;
+}
+
+.reading-grade-tabs,
+.reading-level-tabs {
+  display: grid;
+  gap: 10px;
+}
+
+.reading-select-panel {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid rgba(31, 49, 66, 0.08);
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 8% 18%, rgba(255, 216, 111, 0.34), transparent 28%),
+    radial-gradient(circle at 92% 12%, rgba(199, 237, 255, 0.72), transparent 30%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(240, 255, 249, 0.9));
+  box-shadow: 0 18px 46px rgba(31, 49, 66, 0.09);
+}
+
+.reading-select-panel label {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  color: #16453e;
+  font-weight: 950;
+}
+
+.reading-select-panel label span {
+  padding-left: 4px;
+  font-size: 0.9rem;
+}
+
+.reading-select-panel select {
+  width: 100%;
+  min-height: 52px;
+  padding: 12px 42px 12px 14px;
+  border: 1px solid rgba(31, 49, 66, 0.12);
+  border-radius: 17px;
+  color: #183145;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(255, 249, 231, 0.94));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 10px 24px rgba(31, 49, 66, 0.07);
+  font: inherit;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.reading-select-panel select:focus {
+  outline: 3px solid rgba(39, 185, 167, 0.22);
+  border-color: rgba(39, 185, 167, 0.48);
+}
+
+.reading-student-card {
+  display: grid;
+  gap: 8px;
+  padding: 15px;
+  border: 1px solid rgba(31, 49, 66, 0.08);
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 12% 20%, rgba(255, 156, 122, 0.18), transparent 30%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(255, 247, 231, 0.9));
+  box-shadow: 0 16px 40px rgba(31, 49, 66, 0.08);
+}
+
+.reading-student-card label {
+  display: grid;
+  gap: 8px;
+  color: #16453e;
+  font-weight: 950;
+}
+
+.reading-student-card label span {
+  padding-left: 4px;
+  font-size: 0.9rem;
+}
+
+.reading-student-card input {
+  width: 100%;
+  min-height: 52px;
+  padding: 12px 14px;
+  color: #183145;
+  border: 1px solid rgba(31, 49, 66, 0.12);
+  border-radius: 17px;
+  background: #ffffff;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 10px 24px rgba(31, 49, 66, 0.06);
+  font: inherit;
+  font-weight: 900;
+}
+
+.reading-student-card input:focus {
+  outline: 3px solid rgba(255, 216, 111, 0.34);
+  border-color: rgba(255, 156, 122, 0.38);
+}
+
+.reading-student-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 850;
+}
+
+.reading-grade-tabs {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+.reading-level-tabs {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.reading-grade-tabs button,
+.reading-level-tabs button,
+.reading-answer-grid button,
+.word-helper-grid button {
+  color: var(--ink);
+  border: 1px solid rgba(31, 49, 66, 0.09);
+  cursor: pointer;
+  font-weight: 950;
+  transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease, border-color 160ms ease;
+}
+
+.reading-grade-tabs button,
+.reading-level-tabs button {
+  min-height: 54px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.86);
+}
+
+.reading-grade-tabs button {
+  min-height: 46px;
+  color: #16453e;
+  background: linear-gradient(145deg, #ffffff, #eef8ff);
+  font-size: 0.92rem;
+}
+
+.reading-grade-tabs button:hover,
+.reading-grade-tabs button:focus,
+.reading-grade-tabs button.is-active,
+.reading-level-tabs button:hover,
+.reading-level-tabs button:focus,
+.reading-level-tabs button.is-active,
+.reading-answer-grid button:hover,
+.reading-answer-grid button:focus,
+.word-helper-grid button:hover,
+.word-helper-grid button:focus {
+  transform: translateY(-2px);
+  border-color: rgba(39, 185, 167, 0.24);
+  background: linear-gradient(135deg, #fff7e7, #e8fbf6);
+  box-shadow: 0 14px 30px rgba(31, 49, 66, 0.1);
+}
+
+.reading-lab-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(320px, 0.58fr);
+  gap: 14px;
+  align-items: stretch;
+  padding: clamp(16px, 3vw, 24px);
+  border: 1px solid rgba(31, 49, 66, 0.08);
+  border-radius: 26px;
+  background:
+    radial-gradient(circle at 12% 18%, rgba(255, 216, 111, 0.28), transparent 28%),
+    radial-gradient(circle at 92% 16%, rgba(222, 215, 255, 0.42), transparent 28%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(238, 248, 255, 0.86));
+  box-shadow: 0 22px 58px rgba(31, 49, 66, 0.09);
+}
+
+.reading-passage-card,
+.reading-result-panel,
+.reading-question-card {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  padding: clamp(16px, 3vw, 22px);
+  border: 1px solid rgba(31, 49, 66, 0.08);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 16px 40px rgba(31, 49, 66, 0.07);
+}
+
+.reading-card-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.reading-card-top span,
+.reading-score-card span,
+.reading-transcript-card span,
+.reading-feedback-grid span,
+.reading-question-card > p {
+  width: fit-content;
+  padding: 5px 9px;
+  color: #16453e;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--mint), var(--sun));
+  font-size: 0.72rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.reading-card-top strong {
+  color: var(--ink);
+  font-family: "Baloo 2", "Nunito", system-ui, sans-serif;
+  font-size: clamp(1.35rem, 3vw, 2rem);
+  line-height: 1.05;
+}
+
+.reading-passage {
+  margin: 0;
+  padding: clamp(16px, 3vw, 24px);
+  color: #21303f;
+  border-radius: 20px;
+  background:
+    linear-gradient(90deg, rgba(255, 216, 111, 0.16), transparent 32%, rgba(217, 247, 232, 0.22)),
+    #ffffff;
+  box-shadow: inset 0 2px 0 rgba(31, 49, 66, 0.03), 0 14px 32px rgba(31, 49, 66, 0.06);
+  font-family: "Baloo 2", "Nunito", system-ui, sans-serif;
+  font-size: clamp(1.35rem, 3vw, 2.05rem);
+  font-weight: 800;
+  line-height: 1.34;
+}
+
+.reading-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.reading-controls button[hidden] {
+  display: none;
+}
+
+.reading-listening-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  width: fit-content;
+  padding: 9px 13px;
+  color: #16453e;
+  border: 1px solid rgba(39, 185, 167, 0.22);
+  border-radius: 999px;
+  background: linear-gradient(135deg, #e8fbf6, #fff7e7);
+  box-shadow: 0 12px 26px rgba(31, 49, 66, 0.08);
+  font-weight: 950;
+}
+
+.reading-listening-indicator[hidden] {
+  display: none;
+}
+
+.reading-countdown {
+  display: inline-grid;
+  place-items: center;
+  width: 78px;
+  height: 78px;
+  color: #16453e;
+  border: 3px solid rgba(255, 255, 255, 0.92);
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--sun), var(--mint));
+  box-shadow: 0 16px 34px rgba(31, 49, 66, 0.14);
+  font-family: "Baloo 2", "Nunito", system-ui, sans-serif;
+  font-size: 2rem;
+  font-weight: 950;
+  line-height: 1;
+  animation: readingCountdownPop 0.72s ease-in-out infinite;
+}
+
+.reading-countdown[hidden] {
+  display: none;
+}
+
+.reading-listening-indicator i {
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: #27b9a7;
+  box-shadow: 0 0 0 0 rgba(39, 185, 167, 0.4);
+  animation: readingListeningPulse 1.25s ease-in-out infinite;
+}
+
+@keyframes readingCountdownPop {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  45% {
+    transform: scale(1.08);
+  }
+}
+
+@keyframes readingListeningPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(39, 185, 167, 0.36);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 0 9px rgba(39, 185, 167, 0);
+    transform: scale(1.12);
+  }
+}
+
+.reading-support-note {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+  font-weight: 850;
+}
+
+.reading-support-note.is-warning {
+  color: #9d3f2e;
+}
+
+.reading-score-card,
+.reading-transcript-card,
+.reading-feedback-grid article,
+.reading-certificate-card {
+  display: grid;
+  gap: 8px;
+  padding: 14px;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 12px 28px rgba(31, 49, 66, 0.06);
+}
+
+.reading-score-card strong {
+  color: #16453e;
+  font-family: "Baloo 2", "Nunito", system-ui, sans-serif;
+  font-size: clamp(2.2rem, 5vw, 4rem);
+  line-height: 0.95;
+}
+
+.reading-score-card progress {
+  width: 100%;
+  height: 12px;
+  overflow: hidden;
+  border: 0;
+  border-radius: 999px;
+  background: #eef4f2;
+}
+
+.reading-score-card progress::-webkit-progress-bar {
+  background: #eef4f2;
+}
+
+.reading-score-card progress::-webkit-progress-value {
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--coral), var(--sun), var(--teal));
+}
+
+.reading-score-card progress::-moz-progress-bar {
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--coral), var(--sun), var(--teal));
+}
+
+.reading-transcript-card p,
+.reading-feedback-grid p,
+.reading-question-card span {
+  margin: 0;
+  color: var(--muted);
+  font-weight: 850;
+  line-height: 1.48;
+}
+
+.reading-transcript-card p {
+  max-height: 4.5em;
+  overflow: auto;
+  overflow-wrap: anywhere;
+  overscroll-behavior: contain;
+}
+
+.reading-feedback-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.reading-certificate-card[hidden] {
+  display: none;
+}
+
+.reading-certificate-card {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.reading-certificate-preview {
+  position: relative;
+  display: grid;
+  gap: 6px;
+  overflow: hidden;
+  min-height: 0;
+  padding: 14px;
+  color: #16453e;
+  border: 1px solid rgba(255, 208, 91, 0.68);
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 8% 18%, rgba(255, 196, 59, 0.24), transparent 26%),
+    radial-gradient(circle at 90% 20%, rgba(152, 68, 255, 0.14), transparent 28%),
+    linear-gradient(135deg, #fffaf0, #fffefe 48%, #fff1f8);
+  box-shadow: 0 10px 22px rgba(31, 49, 66, 0.07);
+  text-align: center;
+  min-width: 0;
+}
+
+.reading-certificate-preview::before,
+.reading-certificate-preview::after {
+  content: "";
+  position: absolute;
+  width: 54px;
+  height: 54px;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 50% 32%, #ffd86f 0 14%, transparent 15%),
+    radial-gradient(circle at 30% 62%, #27b9a7 0 8%, transparent 9%),
+    radial-gradient(circle at 70% 66%, #ff9c7a 0 8%, transparent 9%),
+    linear-gradient(135deg, #8d31ff, #43268f);
+  box-shadow: 0 8px 16px rgba(71, 38, 143, 0.12);
+}
+
+.reading-certificate-preview::before {
+  left: -22px;
+  bottom: 12px;
+}
+
+.reading-certificate-preview::after {
+  right: -22px;
+  top: 12px;
+  background:
+    radial-gradient(circle at 48% 34%, #ffffff 0 16%, transparent 17%),
+    radial-gradient(circle at 35% 68%, #ffd86f 0 8%, transparent 9%),
+    radial-gradient(circle at 68% 68%, #27b9a7 0 8%, transparent 9%),
+    linear-gradient(135deg, #ff73b7, #7037d9);
+}
+
+.reading-certificate-preview > * {
+  position: relative;
+  z-index: 1;
+}
+
+.reading-certificate-preview span {
+  justify-self: center;
+  width: fit-content;
+  padding: 5px 9px;
+  color: #ffffff;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #6d25cb, #9b36ff);
+  font-size: 0.78rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.reading-certificate-preview strong {
+  font-family: "Baloo 2", "Nunito", system-ui, sans-serif;
+  color: #7422d7;
+  font-size: clamp(1.3rem, 4vw, 1.75rem);
+  line-height: 1;
+  text-shadow: 0 2px 0 rgba(255, 255, 255, 0.9);
+  overflow-wrap: anywhere;
+}
+
+.reading-certificate-preview p {
+  margin: 0;
+  color: #283748;
+  font-weight: 900;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.reading-certificate-preview em {
+  justify-self: center;
+  width: fit-content;
+  max-width: 100%;
+  padding: 7px 12px;
+  color: #203448;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--medal-accent, #d8f5e7), #ffffff);
+  border: 1px solid var(--medal-color, #6d25cb);
+  box-shadow: 0 8px 18px rgba(31, 49, 66, 0.06);
+  font-size: 0.82rem;
+  font-style: normal;
+  font-weight: 950;
+  line-height: 1.2;
+  white-space: normal;
+}
+
+.reading-certificate-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(96px, 1fr));
+  gap: 7px;
+  min-width: 0;
+}
+
+.reading-certificate-stats small {
+  min-height: 0;
+  padding: 8px;
+  color: #203448;
+  border: 1px solid rgba(109, 37, 203, 0.1);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 7px 14px rgba(31, 49, 66, 0.05);
+  font-size: 0.76rem;
+  font-weight: 950;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.reading-certificate-stats small:nth-child(2) {
+  color: #068d51;
+}
+
+.reading-certificate-stats small:nth-child(3) {
+  color: #0876ca;
+}
+
+.reading-certificate-stats small:nth-child(4) {
+  color: #e14d20;
+}
+
+.reading-certificate-card > p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+  font-weight: 850;
+  line-height: 1.42;
+}
+
+.word-helper-grid,
+.reading-answer-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.word-helper-grid button {
+  display: grid;
+  gap: 8px;
+  min-height: 126px;
+  padding: 16px;
+  border-radius: 20px;
+  background: linear-gradient(145deg, #ffffff, #fff7e7);
+  text-align: left;
+}
+
+.word-helper-grid button:nth-child(2) {
+  background: linear-gradient(145deg, #ffffff, #eef8ff);
+}
+
+.word-helper-grid button:nth-child(3) {
+  background: linear-gradient(145deg, #ffffff, #f3efff);
+}
+
+.word-helper-grid button:nth-child(4) {
+  background: linear-gradient(145deg, #ffffff, #eefaf5);
+}
+
+.word-helper-grid strong {
+  color: var(--ink);
+  font-family: "Baloo 2", "Nunito", system-ui, sans-serif;
+  font-size: 1.3rem;
+  line-height: 1.05;
+}
+
+.word-helper-grid span {
+  color: var(--muted);
+  font-weight: 850;
+  line-height: 1.38;
+}
+
+.reading-question-card {
+  max-width: 760px;
+}
+
+.reading-question-card strong {
+  color: var(--ink);
+  font-family: "Baloo 2", "Nunito", system-ui, sans-serif;
+  font-size: clamp(1.3rem, 3vw, 2rem);
+  line-height: 1.08;
+}
+
+.reading-answer-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.reading-answer-grid button {
+  min-height: 48px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.reading-answer-grid button.is-correct {
+  color: #16453e;
+  border-color: rgba(39, 185, 167, 0.24);
+  background: #e8fbf6;
+}
+
+.reading-answer-grid button.is-wrong {
+  color: #9d3f2e;
+  border-color: rgba(255, 114, 95, 0.24);
+  background: #fff0ea;
+}
+
+.routine-day-road {
+  display: grid;
+  grid-template-columns: auto 1fr auto 1fr auto;
+  gap: 10px;
+  align-items: center;
+  color: #16453e;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.routine-day-road i {
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--sun), var(--teal), var(--lilac));
+}
+
+.routine-day-road strong {
+  display: inline-grid;
+  place-items: center;
+  min-width: 76px;
+  min-height: 76px;
+  color: #fff;
+  border: 6px solid #ffffff;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #0c756c, #27b9a7);
+  box-shadow: 0 16px 34px rgba(39, 185, 167, 0.22);
+}
+
+.routine-verb-section,
+.routine-speaking-section,
+.routine-practice-section {
+  display: grid;
+  gap: 14px;
+}
+
+.routine-verb-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.routine-verb-grid button {
+  display: grid;
+  gap: 6px;
+  min-height: 148px;
+  padding: 15px;
+  color: var(--ink);
+  border: 1px solid rgba(31, 49, 66, 0.08);
+  border-radius: 20px;
+  background: linear-gradient(145deg, #ffffff, #fff7e7);
+  box-shadow: 0 14px 34px rgba(31, 49, 66, 0.07);
+  cursor: pointer;
+  text-align: left;
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.routine-verb-grid button:nth-child(3n + 2) {
+  background: linear-gradient(145deg, #ffffff, #eef8ff);
+}
+
+.routine-verb-grid button:nth-child(3n) {
+  background: linear-gradient(145deg, #ffffff, #eefaf5);
+}
+
+.routine-verb-grid button:hover,
+.routine-verb-grid button:focus,
+.routine-verb-grid button.is-reading {
+  transform: translateY(-3px);
+  box-shadow: 0 20px 44px rgba(31, 49, 66, 0.11);
+}
+
+.routine-verb-grid button.is-reading {
+  border-color: rgba(255, 114, 95, 0.24);
+  background: linear-gradient(145deg, #fff0ea, #ffffff);
+}
+
+.routine-verb-grid span {
+  width: 34px;
+  height: 34px;
+  display: inline-grid;
+  place-items: center;
+  color: #16453e;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--sun), var(--mint));
+  font-weight: 950;
+}
+
+.routine-verb-grid strong {
+  font-family: "Baloo 2", "Nunito", system-ui, sans-serif;
+  font-size: 1.24rem;
+  line-height: 1.05;
+}
+
+.routine-verb-grid p {
+  color: var(--muted);
+  font-size: 0.92rem;
+  font-weight: 850;
+  line-height: 1.35;
+}
+
+.routine-builder,
+.routine-practice-lab,
+.routine-prompt-card {
+  display: grid;
+  gap: 12px;
+  padding: clamp(16px, 3vw, 24px);
+  border: 1px solid rgba(31, 49, 66, 0.08);
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 12% 16%, rgba(255, 216, 111, 0.28), transparent 26%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.96), rgba(238, 248, 255, 0.82));
+  box-shadow: 0 18px 46px rgba(31, 49, 66, 0.08);
+}
+
+.routine-builder {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: end;
+}
+
+.routine-builder label {
+  display: grid;
+  gap: 7px;
+  color: #16453e;
+  font-weight: 950;
+}
+
+.routine-builder select {
+  width: 100%;
+  min-height: 46px;
+  padding: 10px 12px;
+  color: var(--ink);
+  border: 1px solid rgba(31, 49, 66, 0.1);
+  border-radius: 14px;
+  background: #fff;
+  font-weight: 850;
+}
+
+.routine-built-sentence {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 8px;
+  padding: 16px;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 12px 30px rgba(31, 49, 66, 0.07);
+}
+
+.routine-built-sentence span,
+.routine-prompt-card span {
+  color: #0c756c;
+  font-size: 0.76rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.routine-built-sentence strong,
+.routine-prompt-card strong {
+  color: #16453e;
+  font-family: "Baloo 2", "Nunito", system-ui, sans-serif;
+  font-size: clamp(1.35rem, 3vw, 2rem);
+  line-height: 1.08;
+}
+
+.routine-prompt-card p {
+  color: var(--muted);
+  font-weight: 850;
+}
+
+.routine-prompt-card div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.routine-practice-lab .practice-writing-box,
+.routine-practice-lab .practice-feedback-card,
+.routine-practice-lab .practice-rule-meter {
+  grid-column: 1 / -1;
+}
+
+.lab-cta-section {
+  background:
+    radial-gradient(circle at 88% 12%, rgba(255, 216, 111, 0.28), transparent 24%),
+    linear-gradient(135deg, #16453e, #0c756c);
+  color: #ffffff;
+}
+
+.lab-cta-section .eyebrow,
+.lab-cta-section h2,
+.lab-cta-section p {
+  color: #ffffff;
+}
+
+.lab-cta-card {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 20px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.lab-cta-card span {
+  padding: 9px 11px;
+  color: #16453e;
+  border-radius: 999px;
+  background: #ffffff;
+  font-weight: 950;
+}
+
+.founder-section {
+  display: grid;
+  grid-template-columns: minmax(0, 0.78fr) minmax(360px, 0.82fr);
+  gap: clamp(24px, 5vw, 58px);
+  align-items: center;
+  padding: clamp(30px, 5vw, 54px);
+  border: 1px solid rgba(31, 49, 66, 0.08);
+  border-radius: 34px;
+  background:
+    radial-gradient(circle at 10% 12%, rgba(255, 216, 111, 0.28), transparent 30%),
+    radial-gradient(circle at 96% 10%, rgba(39, 185, 167, 0.22), transparent 32%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.94), rgba(255, 250, 241, 0.9));
+  box-shadow: 0 28px 76px rgba(31, 49, 66, 0.1);
+}
+
+.founder-copy > p:not(.eyebrow) {
+  margin-top: 16px;
+  color: var(--muted);
+  font-size: 1.06rem;
+  line-height: 1.72;
+}
+
+.founder-points {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.founder-points span {
+  padding: 9px 12px;
+  color: #16453e;
+  border: 1px solid rgba(22, 69, 62, 0.12);
+  border-radius: 999px;
+  background: rgba(232, 251, 246, 0.88);
+  font-size: 0.9rem;
+  font-weight: 900;
+}
+
+.founder-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.founder-grid article {
+  overflow: hidden;
+  border: 1px solid rgba(31, 49, 66, 0.08);
+  border-radius: 26px;
+  background: #fff;
+  box-shadow: 0 20px 52px rgba(31, 49, 66, 0.12);
+}
+
+.founder-grid img {
+  width: 100%;
+  height: 330px;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.founder-grid div {
+  display: grid;
+  gap: 3px;
+  padding: 16px;
+}
+
+.founder-grid strong {
+  color: #16453e;
+  font-family: "Baloo 2", "Nunito", system-ui, sans-serif;
+  font-size: 1.2rem;
+}
+
+.founder-grid span {
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.rehan-leader-section {
+  display: grid;
+  gap: 18px;
+}
+
+.leader-grid,
+.process-steps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.leader-grid article,
+.process-steps article {
+  display: grid;
+  gap: 10px;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 18px 48px rgba(31, 49, 66, 0.08);
+}
+
+.leader-grid strong,
+.process-steps span {
+  width: 42px;
+  height: 42px;
+  display: inline-grid;
+  place-items: center;
+  color: #16453e;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--sun), var(--mint));
+  font-weight: 950;
+}
+
+.leader-grid p,
+.process-steps p {
+  color: var(--muted);
+  line-height: 1.58;
+}
+
+.admission-process {
+  display: grid;
+  grid-template-columns: minmax(240px, 0.42fr) minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+  padding: clamp(26px, 4vw, 42px);
+  border-radius: 30px;
+  background: linear-gradient(135deg, #16453e, #0c756c);
+  color: #fff;
+}
+
+.admission-process > * {
+  min-width: 0;
+}
+
+.admission-process .eyebrow,
+.admission-process h2 {
+  color: #fff;
+}
+
+.admission-process h2 {
+  font-size: clamp(1.85rem, 3.2vw, 2.85rem);
+  line-height: 1.06;
+}
+
+.process-steps {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+}
+
+.process-steps article {
+  border-color: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: none;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.process-steps h3,
+.process-steps p {
+  color: #fff;
+}
+
+.afterschool-process {
+  overflow: hidden;
+}
+
+.afterschool-process .process-steps {
+  align-self: stretch;
+}
+
+.contact-hero {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 0.82fr) minmax(320px, 0.6fr);
+  gap: clamp(24px, 5vw, 70px);
+  align-items: center;
+  padding: clamp(46px, 7vw, 86px) 0 42px;
+}
+
+.contact-hero-copy > p:not(.eyebrow) {
+  max-width: 720px;
+  margin-top: 18px;
+  color: var(--muted);
+  font-size: 1.1rem;
+  line-height: 1.72;
+}
+
+.contact-card-stack {
+  display: grid;
+  gap: 14px;
+}
+
+.contact-card-stack article,
+.contact-actions article {
+  display: grid;
+  gap: 10px;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.84);
+  box-shadow: 0 18px 48px rgba(31, 49, 66, 0.08);
+}
+
+.contact-card-stack span,
+.contact-actions span {
+  width: fit-content;
+  padding: 7px 10px;
+  color: #16453e;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--mint), var(--sun));
+  font-size: 0.78rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.contact-card-stack p,
+.contact-actions p {
+  color: var(--muted);
+  line-height: 1.62;
+}
+
+.contact-card-stack a {
+  color: var(--ink);
+}
+
+.map-frame {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  background: var(--white);
+  box-shadow: var(--shadow);
+}
+
+.map-frame iframe {
+  display: block;
+  width: 100%;
+  height: min(64vh, 520px);
+  min-height: 360px;
+  border: 0;
+}
+
+.contact-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.contact-actions a {
+  width: fit-content;
+  padding: 10px 13px;
+  color: var(--white);
+  border-radius: var(--radius);
+  background: var(--coral);
+  font-weight: 950;
+}
+
+.grade-ladder {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  padding: 20px;
+}
+
+.grade-ladder button {
+  min-height: 48px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--white);
+  cursor: pointer;
+  font-weight: 950;
+}
+
+.grade-ladder button.is-active {
+  color: var(--white);
+  background: linear-gradient(135deg, var(--teal), #178d83);
+}
+
+.grade-ladder article {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 10px;
+  padding: 22px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, var(--sky), var(--mint));
+}
+
+.grade-ladder article span {
+  color: #0c756c;
+  font-size: 0.78rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.grade-ladder article p {
+  color: #415260;
+}
+
+.why-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.why-grid article {
+  display: grid;
+  gap: 12px;
+  padding: 22px;
+}
+
+.why-grid p {
+  color: var(--muted);
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.gallery-grid img {
+  width: 100%;
+  height: 240px;
+  object-fit: cover;
+  border-radius: 18px;
+  box-shadow: 0 16px 34px rgba(31, 49, 66, 0.1);
+}
+
+.gallery-grid img:nth-child(2),
+.gallery-grid img:nth-child(4),
+.gallery-grid img:nth-child(5) {
+  height: 320px;
+}
+
+.gallery-grid img:nth-child(1),
+.gallery-grid img:nth-child(6) {
+  grid-column: span 2;
+}
+
+.admissions-section {
+  align-items: start;
+}
+
+.inquiry-form {
+  display: grid;
+  gap: 14px;
+  padding: clamp(20px, 3vw, 32px);
+}
+
+.inquiry-form label {
+  display: grid;
+  gap: 7px;
+  color: var(--ink);
+  font-weight: 900;
+}
+
+.inquiry-form input,
+.inquiry-form select {
+  min-height: 48px;
+  width: 100%;
+  padding: 0 13px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--white);
+}
+
+.kiya-widget {
+  position: fixed;
+  left: 0;
+  bottom: 18px;
+  z-index: 80;
+  display: grid;
+  justify-items: start;
+  gap: 10px;
+  transform: translateX(-54px);
+  transition: transform 0.42s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.kiya-widget.is-open {
+  transform: translateX(18px);
+}
+
+.kiya-toggle {
+  position: relative;
+  display: block;
+  min-height: 152px;
+  width: 218px;
+  padding: 0;
+  color: transparent;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  cursor: pointer;
+  backdrop-filter: none;
+}
+
+.kiya-toggle::before {
+  content: "";
+  position: absolute;
+  left: 18px;
+  bottom: 8px;
+  width: 82px;
+  height: 82px;
+  border: 2px solid rgba(255, 255, 255, 0.86);
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(255, 216, 111, 0.92), rgba(39, 185, 167, 0.9));
+  box-shadow: 0 12px 28px rgba(31, 49, 66, 0.18);
+}
+
+.kiya-avatar {
+  position: relative;
+  z-index: 1;
+  display: inline-block;
+  width: 138px;
+  height: 152px;
+  flex: 0 0 auto;
+  overflow: visible;
+  color: transparent;
+  border-radius: 0;
+  background: url("assets/kiya-girl-mascot.png") center bottom / contain no-repeat;
+  filter: drop-shadow(0 13px 18px rgba(121, 67, 143, 0.2)) drop-shadow(0 0 16px rgba(39, 185, 167, 0.22));
+  font-size: 0;
+  animation: kiyaMascotFloat 4.2s ease-in-out infinite;
+  transform-origin: 50% 82%;
+}
+
+.kiya-toggle:hover .kiya-avatar {
+  animation: kiyaMascotExcited 0.68s ease-in-out 3;
+}
+
+.kiya-toggle strong,
+.kiya-toggle small {
+  display: none;
+  line-height: 1;
+  text-align: left;
+}
+
+.kiya-toggle strong {
+  font-family: "Baloo 2", "Nunito", system-ui, sans-serif;
+  font-size: 1.03rem;
+}
+
+.kiya-toggle small {
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.kiya-panel {
+  width: min(340px, calc(100vw - 28px));
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(18px);
+}
+
+.kiya-widget:not(.is-open) .kiya-panel {
+  display: none;
+}
+
+.kiya-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 15px;
+  color: var(--white);
+  background: linear-gradient(135deg, #17443f, #27b9a7);
+}
+
+.kiya-head strong,
+.kiya-head span {
+  display: block;
+}
+
+.kiya-head span {
+  opacity: 0.86;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.kiya-head button {
+  min-height: 34px;
+  padding: 7px 10px;
+  color: var(--ink);
+  border: 0;
+  border-radius: 999px;
+  background: var(--white);
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 950;
+}
+
+.kiya-body {
+  display: grid;
+  gap: 14px;
+  padding: 15px;
+}
+
+.kiya-body p {
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+.kiya-links {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.kiya-links a,
+.kiya-whatsapp {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 8px 10px;
+  border-radius: 12px;
+  text-align: center;
+  font-size: 0.82rem;
+  font-weight: 950;
+}
+
+.kiya-links a {
+  color: #16453e;
+  background: linear-gradient(135deg, var(--mint), #ffffff);
+}
+
+.kiya-whatsapp {
+  color: var(--white);
+  background: #1fae62;
+}
+
+@keyframes kiyaMascotFloat {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  38% { transform: translateY(-5px) rotate(-2deg); }
+  72% { transform: translateY(-2px) rotate(2deg); }
+}
+
+@keyframes kiyaMascotExcited {
+  0%, 100% { transform: translateY(0) scale(1) rotate(0deg); }
+  30% { transform: translateY(-7px) scale(1.04) rotate(-3deg); }
+  58% { transform: translateY(1px) scale(0.99) rotate(3deg); }
+  82% { transform: translateY(-3px) scale(1.02) rotate(-1deg); }
+}
+
+.whatsapp-float {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 30;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 12px 18px;
+  color: var(--white);
+  border-radius: 999px;
+  background: #1fae62;
+  box-shadow: 0 16px 36px rgba(31, 174, 98, 0.34);
+  font-weight: 950;
+}
+
+.site-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 34px 0;
+  border-top: 1px solid var(--line);
+}
+
+.site-footer strong,
+.site-footer span {
+  display: block;
+}
+
+.site-footer span {
+  color: var(--muted);
+}
+
+@media (max-width: 1280px) {
+  .admission-process {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  .afterschool-process {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 22px;
+  }
+
+  .afterschool-process > div:first-child {
+    display: block;
+    width: 100%;
+  }
+
+  .afterschool-process .process-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 100%;
+    margin-top: 0;
+  }
+
+  .afterschool-process .process-steps article {
+    width: 100%;
+  }
+}
+
+@media (max-width: 1120px) {
+  .nav-links,
+  .header-cta {
+    display: none;
+  }
+
+  .menu-button {
+    display: inline-flex;
+  }
+
+  .site-header.is-open .nav-links {
+    position: absolute;
+    top: 100%;
+    left: 12px;
+    right: 12px;
+    display: grid;
+    gap: 10px;
+    padding: 14px;
+    border: 1px solid var(--line);
+    border-radius: 26px;
+    background:
+      radial-gradient(circle at 12% 12%, rgba(255, 216, 111, 0.24), transparent 34%),
+      radial-gradient(circle at 92% 18%, rgba(39, 185, 167, 0.2), transparent 32%),
+      linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(255, 250, 241, 0.98));
+    box-shadow: 0 26px 70px rgba(31, 49, 66, 0.18);
+    backdrop-filter: blur(20px);
+  }
+
+  .site-header.is-open .nav-links::before {
+    content: "Explore Kidsverse";
+    padding: 4px 6px 2px;
+    color: #0c756c;
+    font-family: "Baloo 2", "Nunito", system-ui, sans-serif;
+    font-size: 1.05rem;
+    font-weight: 950;
+  }
+
+  .site-header.is-open .nav-links > a {
+    min-height: 46px;
+    padding: 11px 13px;
+    color: #16453e;
+    border: 1px solid rgba(31, 49, 66, 0.08);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.78);
+    box-shadow: 0 12px 24px rgba(31, 49, 66, 0.06);
+  }
+
+  .site-header.is-open .nav-dropdown {
+    display: grid;
+    gap: 9px;
+    padding: 10px;
+    border: 1px solid rgba(31, 49, 66, 0.08);
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.58);
+  }
+
+  .site-header.is-open .nav-parent {
+    justify-content: space-between;
+    width: 100%;
+    min-height: 46px;
+    padding: 9px 11px;
+    color: #16453e;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #e8fbf6, #fff7e7);
+    font-weight: 950;
+  }
+
+  .site-header.is-open .nav-parent::after {
+    display: inline-block;
+    transform: translateY(-2px) rotate(45deg);
+  }
+
+  .site-header.is-open .nav-menu {
+    position: static;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 8px;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 14px;
+    background: transparent;
+    opacity: 1;
+    pointer-events: auto;
+    transform: none;
+    box-shadow: none;
+  }
+
+  .site-header.is-open .nav-menu a,
+  .site-header.is-open .nav-menu span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 9px 10px;
+    color: #405161;
+    border: 1px solid rgba(31, 49, 66, 0.08);
+    border-radius: 13px;
+    background: rgba(255, 255, 255, 0.86);
+    text-align: center;
+    line-height: 1.15;
+    box-shadow: 0 10px 22px rgba(31, 49, 66, 0.06);
+  }
+
+  .site-header.is-open .nav-menu span {
+    color: rgba(64, 81, 97, 0.58);
+    border-style: dashed;
+    box-shadow: none;
+  }
+
+  .site-header.is-open .menu-button::before {
+    height: 14px;
+    border: 0;
+    box-shadow: none;
+    background:
+      linear-gradient(45deg, transparent 44%, currentColor 46%, currentColor 54%, transparent 56%),
+      linear-gradient(-45deg, transparent 44%, currentColor 46%, currentColor 54%, transparent 56%);
+  }
+
+  .hero,
+  .program-hero,
+  .faq-hero,
+  .about-hero,
+  .events-hero,
+  .intro-section,
+  .campus-story,
+  .playgroup-intro,
+  .day-rhythm,
+  .faq-page-section,
+  .faq-reference,
+  .parent-hub-teaser,
+  .parent-hub-hero,
+  .blog-hero,
+  .blog-body,
+  .blog-feature-card,
+  .contact-hero,
+  .contact-actions,
+  .founder-section,
+  .about-story,
+  .mission-vision,
+  .admission-process,
+  .event-promise,
+  .event-reference,
+  .celebration-flow,
+  .readiness-section,
+  .afterschool-section,
+  .afterschool-advantage,
+  .admissions-section {
+    grid-template-columns: 1fr;
+  }
+
+  .story-wide {
+    width: 78%;
+  }
+
+  .trust-bar,
+  .program-strip,
+  .about-stat-band,
+  .events-band,
+  .program-card-grid,
+  .why-grid,
+  .philosophy-grid,
+  .learning-grid,
+  .event-grid,
+  .ramayana-grid,
+  .faq-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .gallery-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .afterschool-benefit-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .home-trust-grid,
+  .program-roadmap,
+  .join-reasons-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ai-guide-section,
+  .reading-preview-section,
+  .journey-section,
+  .google-review-section,
+  .school-tour-cta,
+  .stonefield-soft-section {
+    grid-template-columns: 1fr;
+  }
+
+  .tour-steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .home-icon-grid,
+  .parent-story-grid,
+  .google-review-wall,
+  .readiness-tool {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .leader-grid,
+  .process-steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  html,
+  body {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  .top-strip {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 6px;
+    padding: 9px 14px;
+    text-align: center;
+    font-size: 0.86rem;
+  }
+
+  .site-header {
+    padding: 9px 12px;
+  }
+
+  .site-header.is-open .nav-links {
+    left: 10px;
+    right: 10px;
+    gap: 9px;
+    max-height: calc(100vh - 110px);
+    overflow-y: auto;
+    padding: 12px;
+  }
+
+  .site-header.is-open .nav-menu {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .site-header.is-open .nav-menu a {
+    min-height: 40px;
+    padding: 9px 8px;
+    font-size: 0.86rem;
+  }
+
+  .brand img {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+  }
+
+  .brand strong {
+    font-size: 1.05rem;
+  }
+
+  .brand small {
+    font-size: 0.58rem;
+  }
+
+  .brand {
+    gap: 8px;
+    padding: 5px 8px 5px 5px;
+    border-radius: 17px;
+  }
+
+  .menu-button {
+    min-height: 40px;
+    padding: 9px 12px;
+    font-size: 0.86rem;
+  }
+
+  .hero,
+  .program-hero,
+  .faq-hero,
+  .about-hero,
+  .events-hero,
+  .parent-hub-hero,
+  .blog-hero,
+  .blog-body,
+  .contact-hero,
+  .section,
+  .program-strip,
+  .about-stat-band,
+  .events-band,
+  .ramayana-showcase,
+  .playgroup-intro,
+  .day-rhythm,
+  .faq-page-section,
+  .about-story,
+  .mission-vision,
+  .celebration-flow,
+  .readiness-section,
+  .trust-bar,
+  .site-footer {
+    width: min(100% - 24px, 1180px);
+  }
+
+  .hero {
+    min-height: auto;
+    padding: 34px 0 42px;
+  }
+
+  .program-hero {
+    min-height: auto;
+    padding: 34px 0 28px;
+  }
+
+  .faq-hero {
+    min-height: auto;
+    padding: 34px 0 28px;
+  }
+
+  .about-hero {
+    min-height: auto;
+    padding: 34px 0 28px;
+  }
+
+  .events-hero {
+    min-height: auto;
+    padding: 34px 0 28px;
+  }
+
+  h1 {
+    font-size: clamp(2.1rem, 11vw, 3.15rem);
+    line-height: 1;
+  }
+
+  h2 {
+    font-size: clamp(1.76rem, 8vw, 2.55rem);
+    line-height: 1.05;
+  }
+
+  .hero-visual {
+    min-height: auto;
+  }
+
+  .hero-visual img {
+    height: auto;
+    min-height: 300px;
+  }
+
+  .program-hero-panel > img {
+    height: 330px;
+    border-radius: 22px;
+  }
+
+  .about-hero-visual img {
+    height: auto;
+    min-height: 300px;
+    border-radius: 24px;
+  }
+
+  .about-hero-visual::before {
+    inset: 14px -8px -8px 14px;
+    border-radius: 24px;
+  }
+
+  .events-hero-visual {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .events-hero-visual img:first-child,
+  .events-hero-visual img:last-child {
+    height: 280px;
+    margin-bottom: 0;
+  }
+
+  .quick-facts,
+  .program-strip,
+  .learning-grid,
+  .faq-grid,
+  .faq-reference,
+  .event-reference,
+  .event-promise,
+  .rhythm-board,
+  .readiness-list {
+    grid-template-columns: 1fr;
+  }
+
+  .faq-reference {
+    padding: 22px;
+  }
+
+  .event-reference,
+  .parent-hub-teaser,
+  .founder-section,
+  .admission-process,
+  .blog-cta,
+  .event-promise {
+    padding: 22px;
+  }
+
+  .afterschool-process {
+    gap: 18px;
+    padding: 22px 18px;
+  }
+
+  .afterschool-process h2 {
+    font-size: clamp(1.7rem, 8vw, 2.2rem);
+    line-height: 1.08;
+  }
+
+  .afterschool-process .process-steps {
+    gap: 12px;
+  }
+
+  .afterschool-process .process-steps article {
+    padding: 18px;
+  }
+
+  .quick-facts article:nth-child(3) {
+    grid-column: auto;
+  }
+
+  .hero-card {
+    position: relative;
+    inset: auto;
+    margin-top: 10px;
+  }
+
+  .hero-actions,
+  .hero-actions a,
+  .afterschool-copy .primary-button {
+    width: 100%;
+  }
+
+  .trust-bar,
+  .home-trust-grid,
+  .parent-resource-strip,
+  .promise-grid,
+  .about-stat-band,
+  .events-band,
+  .program-card-grid,
+  .program-roadmap,
+  .home-icon-grid,
+  .parent-story-grid,
+  .join-reasons-grid,
+  .readiness-tool,
+  .why-grid,
+  .philosophy-grid,
+  .event-grid,
+  .ramayana-grid,
+  .gallery-grid,
+  .comparison-panel,
+  .insight-grid,
+  .founder-grid,
+  .google-review-wall,
+  .leader-grid,
+  .process-steps,
+  .grade-ladder {
+    grid-template-columns: 1fr;
+  }
+
+  .google-review-section {
+    gap: 14px;
+    padding: 20px;
+    border-radius: 24px;
+  }
+
+  .google-review-copy h2 {
+    font-size: clamp(1.9rem, 10vw, 2.5rem);
+    line-height: 1.02;
+  }
+
+  .google-review-actions,
+  .google-review-actions a {
+    width: 100%;
+  }
+
+  .google-review-card {
+    min-height: 220px;
+    padding: 20px;
+    border-radius: 22px;
+  }
+
+  .google-review-embed iframe {
+    height: 210px;
+  }
+
+  .founder-section {
+    gap: 18px;
+    border-radius: 26px;
+  }
+
+  .founder-grid img {
+    height: 300px;
+  }
+
+  .founder-grid article,
+  .leader-grid article,
+  .process-steps article {
+    border-radius: 20px;
+  }
+
+  .home-trust-grid,
+  .program-roadmap,
+  .parent-story-grid,
+  .join-reasons-grid {
+    width: min(100% - 24px, 1180px);
+  }
+
+  .home-trust-grid article,
+  .program-roadmap a {
+    min-height: auto;
+    padding: 18px;
+  }
+
+  .reading-steps {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .school-tour-cta,
+  .stonefield-soft-section {
+    padding: 22px;
+    border-radius: 24px;
+  }
+
+  .tour-steps {
+    grid-template-columns: 1fr;
+    gap: 9px;
+  }
+
+  .tour-steps span {
+    display: grid;
+    gap: 6px;
+    min-height: auto;
+    padding: 12px;
+    border-radius: 16px;
+  }
+
+  .tour-steps strong {
+    font-size: 1.08rem;
+  }
+
+  .tour-steps small {
+    font-size: 0.84rem;
+  }
+
+  .stonefield-path {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .stonefield-soft-section .primary-button {
+    width: 100%;
+  }
+
+  .school-tour-cta .inquiry-form {
+    grid-template-columns: 1fr;
+  }
+
+  .school-tour-cta .inquiry-form button {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .readiness-tool button,
+  .readiness-result-actions a,
+  .ai-guide-actions a {
+    width: 100%;
+  }
+
+  .afterschool-benefit-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .afterschool-benefit-grid article {
+    padding: 18px;
+    border-radius: 20px;
+  }
+
+  .contact-hero {
+    gap: 20px;
+    padding: 34px 0 24px;
+  }
+
+  .contact-hero h1 {
+    font-size: clamp(2.1rem, 11vw, 3.1rem);
+  }
+
+  .contact-hero-copy > p:not(.eyebrow) {
+    font-size: 0.98rem;
+    line-height: 1.62;
+  }
+
+  .contact-card-stack article,
+  .contact-actions article {
+    padding: 18px;
+    border-radius: 20px;
+  }
+
+  .map-frame {
+    border-radius: 22px;
+  }
+
+  .map-frame iframe {
+    height: 360px;
+    min-height: 320px;
+  }
+
+  .contact-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .parent-hub-visual,
+  .blog-hero img,
+  .parent-hub-visual img {
+    min-height: 0;
+  }
+
+  .blog-sidebar {
+    position: static;
+  }
+
+  .blog-feature-card img {
+    min-height: 260px;
+  }
+
+  .parent-hub-hero,
+  .blog-hero {
+    gap: 20px;
+    padding: 28px 0 18px;
+  }
+
+  .parent-hub-hero p:not(.eyebrow),
+  .blog-hero p:not(.eyebrow) {
+    margin-top: 12px;
+    font-size: 0.98rem;
+    line-height: 1.62;
+  }
+
+  .blog-meta {
+    gap: 8px;
+    margin-top: 16px;
+  }
+
+  .blog-meta span,
+  .blog-feature-card span,
+  .comparison-panel span {
+    max-width: 100%;
+    white-space: normal;
+    line-height: 1.2;
+  }
+
+  .blog-hero img,
+  .parent-hub-visual {
+    width: 100%;
+    height: auto;
+    max-height: 300px;
+    border-radius: 22px;
+  }
+
+  .blog-hero img,
+  .parent-hub-visual img {
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+  }
+
+  .parent-hub-visual div {
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    padding: 12px;
+    border-radius: 16px;
+  }
+
+  .blog-body {
+    gap: 18px;
+  }
+
+  .blog-sidebar {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 10px;
+    border-radius: 16px;
+    scrollbar-width: none;
+  }
+
+  .blog-sidebar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .blog-sidebar strong {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    padding: 9px 11px;
+    border-radius: 999px;
+    background: #fff7e7;
+    font-size: 0.9rem;
+    white-space: nowrap;
+  }
+
+  .blog-sidebar a {
+    flex: 0 0 auto;
+    padding: 9px 11px;
+    border-radius: 999px;
+    background: #e8fbf6;
+    color: #16453e;
+    font-size: 0.82rem;
+    white-space: nowrap;
+  }
+
+  .blog-content {
+    gap: 16px;
+  }
+
+  .blog-content > section {
+    padding: 18px;
+    border-radius: 20px;
+  }
+
+  .blog-content p,
+  .blog-content li {
+    font-size: 0.98rem;
+    line-height: 1.68;
+  }
+
+  .comparison-panel div,
+  .insight-grid article {
+    padding: 15px;
+    border-radius: 16px;
+  }
+
+  .comparison-panel ul {
+    padding-left: 18px;
+  }
+
+  .parent-checklist span {
+    padding: 11px 12px;
+    border-radius: 14px;
+    font-size: 0.95rem;
+    line-height: 1.45;
+  }
+
+  .blog-content blockquote {
+    padding: 17px;
+    border-radius: 16px;
+    font-size: 1.14rem;
+    line-height: 1.28;
+  }
+
+  .blog-cta {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 20px 18px;
+    border-radius: 22px;
+    background:
+      radial-gradient(circle at 12% 12%, rgba(255, 216, 111, 0.26), transparent 38%),
+      radial-gradient(circle at 92% 18%, rgba(39, 185, 167, 0.18), transparent 34%),
+      linear-gradient(145deg, #ffffff, #fff7e7);
+    text-align: left;
+  }
+
+  .blog-cta .primary-button {
+    width: 100%;
+    min-height: 48px;
+  }
+
+  .blog-cta h2 {
+    font-size: clamp(1.65rem, 8vw, 2.25rem);
+    line-height: 1.08;
+  }
+
+  .blog-cta p:not(.eyebrow) {
+    margin-top: 10px;
+    font-size: 0.96rem;
+    line-height: 1.58;
+  }
+
+  .blog-cta .eyebrow {
+    display: inline-flex;
+    width: fit-content;
+    margin-bottom: 10px;
+    padding: 7px 10px;
+    border-radius: 999px;
+    background: #e8fbf6;
+  }
+
+  .blog-feature-card {
+    gap: 0;
+    border-radius: 22px;
+  }
+
+  .blog-feature-card img {
+    height: 230px;
+    min-height: 0;
+  }
+
+  .blog-feature-card div {
+    padding: 18px;
+  }
+
+  .campus-story {
+    gap: 24px;
+  }
+
+  .story-visual {
+    min-height: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .story-wide,
+  .story-tall {
+    position: static;
+    width: 100%;
+    height: 230px;
+    border-width: 0;
+    transform: none;
+  }
+
+  .story-wide {
+    grid-column: 1 / -1;
+  }
+
+  .premium-program-card {
+    min-height: 0;
+  }
+
+  .premium-program-card img {
+    height: 220px;
+  }
+
+  .afterschool-section {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .curriculum-section {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .faq-hero-card img {
+    height: 280px;
+  }
+
+  .readiness-photo-stack {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .readiness-photo-stack img {
+    height: 280px;
+    border-radius: 20px;
+  }
+
+  .readiness-photo-stack img:nth-child(2) {
+    margin-top: 34px;
+  }
+
+  .gallery-grid img,
+  .event-photo-grid img,
+  .event-photo-grid img:first-child,
+  .event-photo-grid img:nth-child(4),
+  .ramayana-grid img,
+  .story-feature img,
+  .gallery-grid img:nth-child(1),
+  .gallery-grid img:nth-child(2),
+  .gallery-grid img:nth-child(4),
+  .gallery-grid img:nth-child(5),
+  .gallery-grid img:nth-child(6) {
+    grid-column: auto;
+    height: 230px;
+  }
+
+  .event-photo-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .story-feature {
+    grid-template-columns: 1fr;
+  }
+
+  .playway-page .program-hero {
+    width: 100%;
+    gap: 0;
+    padding: 0 0 28px;
+  }
+
+  .playway-page .program-hero-panel {
+    order: -1;
+    gap: 0;
+  }
+
+  .playway-page .program-hero-panel > img {
+    height: min(74vw, 360px);
+    border: 0;
+    border-radius: 0 0 28px 28px;
+    box-shadow: 0 18px 42px rgba(31, 49, 66, 0.14);
+  }
+
+  .playway-page .quick-facts {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    margin: -38px 12px 0;
+    padding: 0 0 8px;
+    scrollbar-width: none;
+  }
+
+  .playway-page .quick-facts::-webkit-scrollbar {
+    display: none;
+  }
+
+  .playway-page .quick-facts article,
+  .playway-page .quick-facts article:nth-child(3) {
+    flex: 0 0 min(74vw, 245px);
+    min-height: 92px;
+    padding: 14px;
+    border-color: rgba(255, 255, 255, 0.78);
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 16px 34px rgba(31, 49, 66, 0.14);
+    backdrop-filter: blur(14px);
+  }
+
+  .playway-page .program-hero-copy {
+    width: calc(100% - 24px);
+    margin: 12px auto 0;
+    padding: 22px 18px;
+    border: 1px solid rgba(31, 49, 66, 0.08);
+    border-radius: 24px;
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.94), rgba(238, 250, 245, 0.92)),
+      #ffffff;
+    box-shadow: 0 18px 42px rgba(31, 49, 66, 0.1);
+  }
+
+  .playway-page .program-hero-copy h1 {
+    font-size: clamp(2.25rem, 12vw, 3.35rem);
+    line-height: 0.96;
+  }
+
+  .playway-page .program-hero-copy > p:not(.eyebrow) {
+    margin-top: 14px;
+    font-size: 1rem;
+    line-height: 1.62;
+  }
+
+  .playway-page .hero-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 9px;
+    margin-top: 18px;
+  }
+
+  .playway-page .hero-actions a {
+    min-height: 46px;
+    padding: 11px 12px;
+    font-size: 0.9rem;
+  }
+
+  .playway-page .program-strip {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    width: 100%;
+    padding: 4px 12px 24px;
+    scrollbar-width: none;
+  }
+
+  .playway-page .program-strip::-webkit-scrollbar {
+    display: none;
+  }
+
+  .playway-page .program-strip article {
+    flex: 0 0 min(76vw, 280px);
+    min-height: 126px;
+    padding: 18px;
+    border-radius: 20px;
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(255, 247, 231, 0.9)),
+      #ffffff;
+  }
+
+  .playway-page .playgroup-intro {
+    padding: 34px 18px;
+    border-radius: 0;
+    background: linear-gradient(135deg, #fffaf1, #eefaf5);
+  }
+
+  .playway-page .playgroup-intro h2 {
+    font-size: clamp(1.85rem, 9vw, 2.7rem);
+  }
+
+  .playway-page .playgroup-intro > p {
+    font-size: 1rem;
+    line-height: 1.65;
+  }
+
+  .playway-page .curriculum-section {
+    padding-top: 46px;
+    padding-bottom: 46px;
+  }
+
+  .playway-page .section-heading {
+    margin-bottom: 22px;
+  }
+
+  .playway-page .section-heading h2 {
+    font-size: clamp(1.9rem, 9vw, 2.8rem);
+  }
+
+  .playway-page .learning-grid {
+    gap: 12px;
+  }
+
+  .playway-page .learning-grid article {
+    position: relative;
+    overflow: hidden;
+    min-height: 176px;
+    padding: 18px;
+    border-radius: 22px;
+    background: linear-gradient(145deg, #ffffff, #fff7e7);
+  }
+
+  .playway-page .learning-grid article:nth-child(even) {
+    background: linear-gradient(145deg, #ffffff, #e8fbf6);
+  }
+
+  .playway-page .learning-grid article::after {
+    content: "";
+    position: absolute;
+    right: -22px;
+    bottom: -22px;
+    width: 78px;
+    height: 78px;
+    border-radius: 999px;
+    background: rgba(39, 185, 167, 0.12);
+  }
+
+  .playway-page .learning-grid span,
+  .playway-page .rhythm-board span {
+    position: relative;
+    z-index: 1;
+  }
+
+  .playway-page .day-rhythm {
+    width: calc(100% - 24px);
+    gap: 18px;
+    padding: 42px 0;
+  }
+
+  .playway-page .day-copy {
+    padding: 0 6px;
+  }
+
+  .playway-page .day-copy h2 {
+    font-size: clamp(1.85rem, 9vw, 2.65rem);
+  }
+
+  .playway-page .rhythm-board {
+    position: relative;
+    gap: 10px;
+  }
+
+  .playway-page .rhythm-board article {
+    grid-template-columns: 44px minmax(0, 1fr);
+    column-gap: 12px;
+    padding: 16px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.86);
+  }
+
+  .playway-page .rhythm-board article span {
+    grid-row: span 2;
+  }
+
+  .playway-page .rhythm-board article p {
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  .playway-page .readiness-section {
+    width: 100%;
+    gap: 20px;
+    padding: 44px 12px;
+    background: linear-gradient(135deg, #fffaf1, #eefaf5);
+  }
+
+  .playway-page .readiness-card {
+    padding: 22px 18px;
+    border-radius: 24px;
+  }
+
+  .playway-page .readiness-card h2 {
+    font-size: clamp(1.85rem, 9vw, 2.7rem);
+  }
+
+  .playway-page .readiness-list {
+    gap: 8px;
+    margin-top: 18px;
+  }
+
+  .playway-page .readiness-list span {
+    border-radius: 14px;
+    font-size: 0.93rem;
+    line-height: 1.35;
+  }
+
+  .playway-page .readiness-photo-stack {
+    gap: 10px;
+  }
+
+  .playway-page .readiness-photo-stack img {
+    height: 240px;
+    border-radius: 22px;
+  }
+
+  .playway-page .readiness-photo-stack img:nth-child(2) {
+    margin-top: 22px;
+  }
+
+  .playway-page .faq-section {
+    padding-top: 44px;
+    padding-bottom: 44px;
+  }
+
+  .playway-page .faq-grid article {
+    padding: 18px;
+    border-radius: 20px;
+  }
+
+  .playway-page .admissions-section {
+    width: calc(100% - 24px);
+    padding-top: 42px;
+    padding-bottom: 42px;
+  }
+
+  .playway-page .inquiry-form {
+    border-radius: 24px;
+  }
+
+  .site-footer {
+    align-items: flex-start;
+    flex-direction: column;
+    padding-bottom: 84px;
+  }
+
+  .whatsapp-float {
+    right: 12px;
+    bottom: 12px;
+  }
+
+  .kiya-widget {
+    left: 0;
+    bottom: 12px;
+    max-width: calc(100vw - 24px);
+    transform: translateX(-36px);
+  }
+
+  .kiya-widget.is-open {
+    transform: translateX(12px);
+  }
+
+  .kiya-toggle {
+    max-width: calc(100vw - 24px);
+    width: 158px;
+    min-height: 106px;
+    padding: 0;
+  }
+
+  .kiya-toggle::before {
+    left: 10px;
+    bottom: 5px;
+    width: 58px;
+    height: 58px;
+  }
+
+  .kiya-avatar {
+    width: 96px;
+    height: 106px;
+  }
+
+  .kiya-toggle small {
+    display: none;
+  }
+
+  .kiya-panel {
+    width: min(328px, calc(100vw - 24px));
+  }
+
+  .kiya-links {
+    grid-template-columns: 1fr;
+  }
+}
+
+.teacher-page {
+  background: #f6fbf8;
+}
+
+.teacher-page.is-locked {
+  overflow: hidden;
+}
+
+.teacher-page.is-locked .teacher-header,
+.teacher-page.is-locked .teacher-assessment-shell {
+  filter: blur(12px);
+  pointer-events: none;
+  user-select: none;
+}
+
+.teacher-lock {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  align-items: start;
+  justify-items: center;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 20px;
+  background:
+    radial-gradient(circle at 18% 16%, rgba(255, 215, 111, 0.28), transparent 24rem),
+    radial-gradient(circle at 84% 22%, rgba(191, 232, 255, 0.45), transparent 22rem),
+    rgba(246, 251, 248, 0.94);
+}
+
+.teacher-lock[hidden] {
+  display: none;
+}
+
+.teacher-lock-card {
+  width: min(100%, 430px);
+  margin: auto 0;
+  padding: 30px;
+  border: 1px solid rgba(34, 49, 63, 0.1);
+  border-radius: 24px;
+  background: white;
+  box-shadow: var(--shadow);
+}
+
+.teacher-lock-card img {
+  width: 86px;
+  height: 86px;
+  object-fit: contain;
+  margin-bottom: 18px;
+  border-radius: 18px;
+  background: #020202;
+}
+
+.teacher-lock-card h1 {
+  font-size: clamp(2.1rem, 8vw, 3.1rem);
+}
+
+.teacher-lock-card p {
+  color: var(--muted);
+}
+
+.teacher-lock-card label {
+  display: grid;
+  gap: 8px;
+  margin: 18px 0;
+  font-weight: 900;
+}
+
+.teacher-lock-card input,
+.teacher-lock-card select {
+  width: 100%;
+  min-height: 48px;
+  padding: 11px 12px;
+  border: 1px solid rgba(34, 49, 63, 0.16);
+  border-radius: 12px;
+  background: #ffffff;
+  font: inherit;
+  font-weight: 850;
+}
+
+.lock-error {
+  display: block;
+  margin-top: 12px;
+  color: #c0392b;
+  font-weight: 900;
+}
+
+.teacher-header,
+.teacher-assessment-shell {
+  width: min(100% - 32px, 1240px);
+  margin: 0 auto;
+}
+
+.teacher-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 18px 0;
+}
+
+.teacher-private-badge {
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: #22313f;
+  color: white;
+  font-weight: 900;
+}
+
+.teacher-tool-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.teacher-tool-links a {
+  padding: 8px 12px;
+  border: 1px solid rgba(34, 49, 63, 0.12);
+  border-radius: 999px;
+  background: white;
+  color: var(--ink);
+  font-size: 0.9rem;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.teacher-tool-links a[aria-current="page"] {
+  border-color: transparent;
+  background: #d8f5e7;
+  color: #0f867c;
+}
+
+.teacher-switch-button {
+  border: 0;
+  cursor: pointer;
+}
+
+.teacher-hero {
+  padding: 44px 0 28px;
+}
+
+.teacher-hero h1 {
+  max-width: 820px;
+}
+
+.teacher-hero p {
+  max-width: 780px;
+  color: var(--muted);
+}
+
+.teacher-resource-hero {
+  display: grid;
+  gap: 12px;
+}
+
+.resource-confidential-warning {
+  display: block;
+  max-width: 880px;
+  padding: 13px 14px;
+  color: #8f1f16;
+  border: 1px solid rgba(192, 57, 43, 0.22);
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 94% 16%, rgba(255, 216, 111, 0.18), transparent 28%),
+    linear-gradient(135deg, #fff2ef, #ffffff);
+  box-shadow: 0 12px 26px rgba(143, 31, 22, 0.08);
+  font-size: 0.94rem;
+  font-weight: 950;
+  line-height: 1.45;
+}
+
+.resource-active-class {
+  width: fit-content;
+  padding: 9px 13px;
+  color: #16453e;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #d8f5e7, #fff7e7);
+  box-shadow: 0 10px 24px rgba(31, 49, 66, 0.07);
+  font-weight: 950;
+}
+
+.resource-center-layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.32fr) minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+  padding-bottom: 42px;
+}
+
+.resource-side-panel,
+.resource-class-section,
+.resource-common-section {
+  border: 1px solid rgba(34, 49, 63, 0.08);
+  border-radius: 24px;
+  background: #ffffff;
+  box-shadow: var(--shadow);
+}
+
+.resource-side-panel {
+  position: sticky;
+  top: 16px;
+  display: grid;
+  gap: 12px;
+  padding: 18px;
+}
+
+.resource-side-panel h2 {
+  font-size: clamp(1.6rem, 4vw, 2.25rem);
+}
+
+.resource-side-panel p {
+  color: var(--muted);
+  font-weight: 800;
+  line-height: 1.55;
+}
+
+.resource-class-list {
+  display: grid;
+  gap: 8px;
+}
+
+.resource-class-list button {
+  min-height: 44px;
+  padding: 10px 12px;
+  color: #16453e;
+  border: 1px solid rgba(34, 49, 63, 0.08);
+  border-radius: 14px;
+  background: linear-gradient(135deg, #ffffff, #eefaf5);
+  cursor: pointer;
+  font-weight: 950;
+  text-align: left;
+}
+
+.resource-class-list button:hover,
+.resource-class-list button:focus,
+.resource-class-list button.is-active {
+  outline: 0;
+  border-color: rgba(39, 185, 167, 0.28);
+  background: linear-gradient(135deg, #fff7e7, #d8f5e7);
+  transform: translateY(-1px);
+}
+
+.resource-content {
+  display: grid;
+  gap: 18px;
+}
+
+.resource-class-section,
+.resource-common-section {
+  overflow: hidden;
+}
+
+.resource-class-section[hidden] {
+  display: none;
+}
+
+.resource-class-head {
+  padding: 22px;
+  color: #ffffff;
+  background:
+    radial-gradient(circle at 88% 20%, rgba(255, 216, 111, 0.32), transparent 28%),
+    linear-gradient(135deg, #17443f, #27b9a7);
+}
+
+.resource-common-section .resource-class-head {
+  background:
+    radial-gradient(circle at 82% 18%, rgba(255, 216, 111, 0.32), transparent 28%),
+    linear-gradient(135deg, #43268f, #9b36ff);
+}
+
+.resource-class-head span {
+  display: inline-flex;
+  width: fit-content;
+  margin-bottom: 8px;
+  padding: 5px 9px;
+  color: #16453e;
+  border-radius: 999px;
+  background: #fff7e7;
+  font-size: 0.78rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.resource-class-head h2 {
+  max-width: 740px;
+  font-family: "Baloo 2", "Nunito", system-ui, sans-serif;
+  font-size: clamp(1.8rem, 4vw, 2.7rem);
+  line-height: 1;
+}
+
+.resource-card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  padding: 18px;
+}
+
+.resource-card-grid article {
+  min-width: 0;
+  padding: 17px;
+  border: 1px solid rgba(34, 49, 63, 0.08);
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255, 216, 111, 0.18), transparent 28%),
+    linear-gradient(145deg, #ffffff, #f6fbf8);
+}
+
+.resource-audio-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 28px;
+  margin-left: 8px;
+  padding: 5px 9px;
+  color: #16453e;
+  border: 1px solid rgba(39, 185, 167, 0.22);
+  border-radius: 999px;
+  background: linear-gradient(135deg, #d8f5e7, #fff7e7);
+  box-shadow: 0 8px 18px rgba(31, 49, 66, 0.06);
+  cursor: pointer;
+  font-size: 0.72rem;
+  font-weight: 950;
+  vertical-align: middle;
+}
+
+.resource-audio-button:hover,
+.resource-audio-button:focus,
+.resource-audio-button.is-reading {
+  outline: 0;
+  color: #ffffff;
+  background: linear-gradient(135deg, #17443f, #27b9a7);
+}
+
+.resource-card-grid article:nth-child(even) {
+  background:
+    radial-gradient(circle at 90% 12%, rgba(191, 232, 255, 0.28), transparent 28%),
+    linear-gradient(145deg, #ffffff, #fff7e7);
+}
+
+.resource-card-grid h3 {
+  margin-bottom: 10px;
+  color: #16453e;
+  font-family: "Baloo 2", "Nunito", system-ui, sans-serif;
+  font-size: 1.35rem;
+  line-height: 1.05;
+}
+
+.resource-card-grid ul,
+.resource-card-grid ol {
+  display: grid;
+  gap: 7px;
+  margin: 0;
+  padding-left: 20px;
+  color: #3d5562;
+  font-weight: 850;
+  line-height: 1.45;
+}
+
+.resource-card-grid li {
+  padding-right: 2px;
+}
+
+.resource-card-grid p {
+  margin: 0;
+  color: #3d5562;
+  font-weight: 850;
+  line-height: 1.55;
+}
+
+.assessment-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(430px, 0.8fr);
+  gap: 22px;
+  align-items: start;
+}
+
+.culture-form,
+.culture-report,
+.assessment-history {
+  border: 1px solid rgba(34, 49, 63, 0.08);
+  border-radius: 22px;
+  background: white;
+  box-shadow: var(--shadow);
+}
+
+.culture-form {
+  padding: 22px;
+}
+
+.form-block + .form-block {
+  margin-top: 24px;
+}
+
+.form-block h2,
+.assessment-history h2 {
+  margin-bottom: 16px;
+}
+
+.teacher-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.teacher-form-grid label {
+  display: grid;
+  gap: 7px;
+  color: var(--ink);
+  font-weight: 800;
+}
+
+.teacher-form-grid input,
+.teacher-form-grid select,
+.teacher-form-grid textarea {
+  width: 100%;
+  min-height: 46px;
+  padding: 10px 12px;
+  border: 1px solid rgba(34, 49, 63, 0.14);
+  border-radius: 12px;
+  background: #fbfdfb;
+}
+
+.teacher-form-grid textarea {
+  resize: vertical;
+}
+
+.student-photo-upload {
+  grid-column: 1 / -1;
+}
+
+.student-photo-upload span {
+  color: var(--muted);
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+.student-photo-upload input[type="file"] {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.assessment-intro p {
+  color: var(--muted);
+}
+
+.culture-area-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.culture-area {
+  margin: 0;
+  padding: 20px;
+  border: 1px solid rgba(34, 49, 63, 0.1);
+  border-radius: 16px;
+  background: #fffdf7;
+}
+
+.culture-area legend {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: calc(100% - 16px);
+  padding: 0 8px;
+  color: var(--ink);
+  font-weight: 900;
+}
+
+.auto-score {
+  flex: 0 0 auto;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: rgba(216, 245, 231, 0.82);
+  color: #0f867c;
+  font-size: 0.86rem;
+  font-weight: 900;
+}
+
+.culture-area input[type="checkbox"] {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  margin: 2px 0 0;
+}
+
+.culture-area label:not(.score-label) {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 10px;
+  color: #4c5966;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.teacher-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.teacher-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
+  box-shadow: none;
+}
+
+.assessment-validation {
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #fff3ee;
+  color: #b6462f;
+  font-weight: 900;
+}
+
+.assessment-validation[hidden] {
+  display: none;
+}
+
+.culture-report {
+  position: sticky;
+  top: 18px;
+  overflow: hidden;
+  padding: 0;
+  border: 0;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(246, 251, 248, 0.96)),
+    #ffffff;
+}
+
+.report-placeholder p,
+.report-card p,
+.report-card li,
+.history-list p {
+  color: var(--muted);
+}
+
+.report-placeholder {
+  min-height: 520px;
+  display: grid;
+  align-content: center;
+  gap: 10px;
+  padding: 34px;
+  background:
+    radial-gradient(circle at 80% 10%, rgba(255, 215, 111, 0.28), transparent 12rem),
+    radial-gradient(circle at 6% 90%, rgba(43, 183, 168, 0.18), transparent 12rem),
+    #ffffff;
+}
+
+.report-placeholder h2 {
+  max-width: 420px;
+}
+
+.score-ring {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  place-items: center;
+  width: 148px;
+  min-height: 156px;
+  margin: 0;
+  padding: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 50% 38%, rgba(255, 255, 255, 0.2), transparent 3.8rem),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.06));
+  color: #ffffff;
+  box-shadow: 0 18px 42px rgba(34, 49, 63, 0.18);
+}
+
+.score-ring strong {
+  display: grid;
+  place-items: center;
+  width: 92px;
+  height: 92px;
+  border-radius: 50%;
+  background: conic-gradient(var(--teal) 0 82%, rgba(255, 255, 255, 0.28) 82% 100%);
+  color: #ffffff;
+  font-size: 2rem;
+  line-height: 1;
+  box-shadow: inset 0 0 0 8px rgba(34, 49, 63, 0.22), 0 12px 26px rgba(0, 0, 0, 0.14);
+}
+
+.score-ring span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 34px;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.94);
+  color: #22313f;
+  font-size: 0.86rem;
+  font-weight: 900;
+  line-height: 1.1;
+  text-align: center;
+}
+
+.score-ring.excellent {
+  background:
+    radial-gradient(circle at 50% 38%, rgba(255, 255, 255, 0.2), transparent 3.8rem),
+    linear-gradient(145deg, rgba(31, 174, 98, 0.92), rgba(15, 134, 124, 0.88));
+}
+
+.score-ring.excellent strong {
+  background: conic-gradient(#d8f5e7 0 92%, rgba(255, 255, 255, 0.34) 92% 100%);
+  color: #0b5f48;
+}
+
+.score-ring.good {
+  background:
+    radial-gradient(circle at 50% 38%, rgba(255, 255, 255, 0.2), transparent 3.8rem),
+    linear-gradient(145deg, rgba(43, 183, 168, 0.96), rgba(25, 122, 174, 0.88));
+}
+
+.score-ring.good strong {
+  background: conic-gradient(#e6fbff 0 78%, rgba(255, 255, 255, 0.34) 78% 100%);
+  color: #0f6674;
+}
+
+.score-ring.needs {
+  background:
+    radial-gradient(circle at 50% 38%, rgba(255, 255, 255, 0.2), transparent 3.8rem),
+    linear-gradient(145deg, rgba(246, 166, 91, 0.96), rgba(220, 126, 72, 0.9));
+}
+
+.score-ring.needs strong {
+  background: conic-gradient(#fff2d4 0 64%, rgba(255, 255, 255, 0.34) 64% 100%);
+  color: #8d4e13;
+}
+
+.score-ring.attention {
+  background:
+    radial-gradient(circle at 50% 38%, rgba(255, 255, 255, 0.2), transparent 3.8rem),
+    linear-gradient(145deg, rgba(255, 114, 95, 0.96), rgba(184, 66, 61, 0.9));
+}
+
+.score-ring.attention strong {
+  background: conic-gradient(#ffe3df 0 48%, rgba(255, 255, 255, 0.34) 48% 100%);
+  color: #922e25;
+}
+
+.star-row {
+  color: #f6a65b;
+  font-size: 1.6rem;
+  letter-spacing: 0.06em;
+}
+
+.score-table {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px 14px;
+  padding: 14px;
+  border-radius: 14px;
+  background: #f6fbf8;
+}
+
+.score-table small {
+  display: block;
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.assessment-history {
+  margin: 24px 0 60px;
+  padding: 24px;
+}
+
+.history-list {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.history-list article {
+  padding: 14px;
+  border-radius: 14px;
+  background: #fffdf7;
+}
+
+.history-list span {
+  display: block;
+  color: var(--muted);
+}
+
+.report-dashboard {
+  display: grid;
+  gap: 18px;
+  padding: 24px;
+}
+
+.report-topline {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 18px;
+  align-items: center;
+  margin: -24px -24px 0;
+  padding: 26px 24px;
+  background:
+    linear-gradient(135deg, rgba(34, 49, 63, 0.95), rgba(15, 134, 124, 0.86)),
+    #22313f;
+  color: white;
+}
+
+.report-topline h2 {
+  margin-bottom: 8px;
+  color: white;
+}
+
+.report-topline .eyebrow,
+.report-topline p {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.report-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.report-stat-grid article,
+.report-panel {
+  border: 1px solid rgba(34, 49, 63, 0.08);
+  border-radius: 16px;
+  padding: 16px;
+  background: #f7fbff;
+  box-shadow: 0 10px 24px rgba(34, 49, 63, 0.06);
+}
+
+.report-stat-grid article:nth-child(2) {
+  background: #fff8e8;
+}
+
+.report-stat-grid article:nth-child(3) {
+  background: #eefaf5;
+}
+
+.report-stat-grid article:nth-child(4) {
+  background: #fff3ee;
+}
+
+.report-stat-grid span,
+.report-stat-grid small,
+.score-bar-row small {
+  display: block;
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.report-stat-grid strong {
+  display: block;
+  margin: 6px 0;
+  color: var(--ink);
+  font-size: 1.16rem;
+  line-height: 1.15;
+}
+
+.score-bars {
+  display: grid;
+  gap: 10px;
+}
+
+.score-bar-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px 12px;
+  align-items: center;
+  padding: 13px 14px;
+  border-radius: 14px;
+  background: #ffffff;
+  border: 1px solid rgba(34, 49, 63, 0.08);
+  box-shadow: 0 8px 20px rgba(34, 49, 63, 0.05);
+}
+
+.score-bar-row span {
+  color: #0f867c;
+  font-weight: 900;
+}
+
+.score-bar-row progress {
+  grid-column: 1 / -1;
+  width: 100%;
+  height: 12px;
+  overflow: hidden;
+  border: 0;
+  border-radius: 999px;
+  background: #e5ece8;
+}
+
+.score-bar-row progress::-webkit-progress-bar {
+  background: #e5ece8;
+}
+
+.score-bar-row progress::-webkit-progress-value {
+  border-radius: 999px;
+  background: linear-gradient(90deg, #2bb7a8, #1fae62);
+}
+
+.score-bar-row progress::-moz-progress-bar {
+  border-radius: 999px;
+  background: linear-gradient(90deg, #2bb7a8, #1fae62);
+}
+
+.report-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.strengths-panel {
+  background: #eefaf5;
+}
+
+.improvement-panel {
+  background: #fff3ee;
+}
+
+.suggestion-panel {
+  background: #fff8e8;
+}
+
+.student-report-title {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+.student-report-photo {
+  flex: 0 0 auto;
+  width: 132px;
+  height: 132px;
+  padding: 5px;
+  border: 3px solid rgba(255, 215, 111, 0.9);
+  border-radius: 28px;
+  object-fit: cover;
+  background:
+    linear-gradient(#ffffff, #ffffff) padding-box,
+    linear-gradient(135deg, #ffd76f, #2bb7a8, #ffffff) border-box;
+  box-shadow: 0 20px 44px rgba(0, 0, 0, 0.24);
+}
+
+.student-report-photo.is-placeholder {
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #ffd76f, #2bb7a8);
+  color: white;
+  font-family: "Baloo 2", "Nunito", system-ui, sans-serif;
+  font-size: 3.8rem;
+  font-weight: 900;
+}
+
+.student-report-layout {
+  grid-template-columns: minmax(0, 0.86fr) minmax(450px, 0.86fr);
+}
+
+.student-rating-list {
+  display: grid;
+  gap: 12px;
+}
+
+.student-rating-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin: 0;
+  padding: 16px;
+  border: 1px solid rgba(34, 49, 63, 0.1);
+  border-radius: 16px;
+  background: #fffdf7;
+}
+
+.student-rating-row legend {
+  display: grid;
+  gap: 4px;
+  max-width: 360px;
+  padding: 0;
+  color: var(--ink);
+}
+
+.student-rating-row legend strong {
+  font-size: 1rem;
+  font-weight: 900;
+}
+
+.student-rating-row legend span {
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.star-rating {
+  display: grid;
+  grid-template-columns: repeat(5, 42px);
+  gap: 7px;
+}
+
+.star-rating input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.star-rating span {
+  display: grid;
+  place-items: center;
+  min-height: 42px;
+  border: 1px solid rgba(34, 49, 63, 0.12);
+  border-radius: 12px;
+  background: white;
+  color: #c8d0d5;
+  cursor: pointer;
+  font-size: 1.15rem;
+  font-weight: 900;
+  transition: transform 160ms ease, background 160ms ease, color 160ms ease;
+}
+
+.star-rating small {
+  display: block;
+  margin-top: -4px;
+  color: inherit;
+  font-size: 0.62rem;
+  line-height: 1;
+}
+
+.star-rating label.is-filled span,
+.star-rating input:checked + span {
+  transform: translateY(-2px);
+  border-color: transparent;
+  background: linear-gradient(135deg, #ffd76f, #f6a65b);
+  color: #22313f;
+  box-shadow: 0 12px 24px rgba(246, 166, 91, 0.22);
+}
+
+.student-feedback-panel {
+  background: #f7fbff;
+}
+
+.teacher-suggestion-panel {
+  background: #eef7ff;
+}
+
+@media (max-width: 980px) {
+  .assessment-layout,
+  .resource-center-layout,
+  .teacher-form-grid,
+  .culture-area-grid,
+  .history-list,
+  .report-topline,
+  .report-stat-grid,
+  .report-columns {
+    grid-template-columns: 1fr;
+  }
+
+  .resource-side-panel {
+    position: static;
+  }
+
+  .resource-class-list,
+  .resource-card-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .student-rating-row {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .star-rating {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .student-report-title {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .student-report-photo {
+    width: 118px;
+    height: 118px;
+  }
+
+  .culture-report {
+    position: static;
+  }
+
+  .report-topline {
+    margin: -24px -24px 0;
+  }
+}
+
+@media (max-width: 560px) {
+  .teacher-lock {
+    display: block;
+    padding: 12px;
+  }
+
+  .teacher-lock-card {
+    width: 100%;
+    margin: 0 auto;
+    padding: 18px;
+    border-radius: 20px;
+  }
+
+  .teacher-lock-card img {
+    width: 58px;
+    height: 58px;
+    margin-bottom: 10px;
+    border-radius: 14px;
+  }
+
+  .teacher-lock-card h1 {
+    font-size: clamp(1.8rem, 10vw, 2.35rem);
+    line-height: 1;
+  }
+
+  .teacher-lock-card label {
+    margin: 12px 0;
+  }
+
+  .resource-confidential-warning {
+    padding: 10px 11px;
+    font-size: 0.82rem;
+    line-height: 1.35;
+  }
+}
+
+@media print {
+  body {
+    background: white;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .teacher-header,
+  .teacher-hero,
+  .culture-form,
+  .student-report-form,
+  .assessment-history,
+  .teacher-lock {
+    display: none;
+  }
+
+  .teacher-assessment-shell,
+  .assessment-layout {
+    width: 100%;
+    display: block;
+  }
+
+  .culture-report {
+    position: static;
+    box-shadow: none;
+    border: 0;
+    padding: 0;
+  }
+
+  .report-dashboard {
+    gap: 12px;
+  }
+
+  .score-ring {
+    width: 142px;
+    min-height: 150px;
+  }
+
+  .score-ring strong {
+    width: 86px;
+    height: 86px;
+    font-size: 1.8rem;
+  }
+}
+
+.feedback-page {
+  background:
+    radial-gradient(circle at 10% 10%, rgba(255, 215, 111, 0.22), transparent 22rem),
+    radial-gradient(circle at 90% 14%, rgba(43, 183, 168, 0.16), transparent 24rem),
+    #fffdf7;
+}
+
+.feedback-hero,
+.feedback-shell {
+  width: min(100% - 32px, 1180px);
+  margin: 0 auto;
+}
+
+.feedback-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 28px;
+  align-items: center;
+  padding: 58px 0 34px;
+}
+
+.feedback-hero h1 {
+  max-width: 800px;
+}
+
+.feedback-hero p {
+  max-width: 720px;
+  color: var(--muted);
+}
+
+.feedback-index-card {
+  padding: 26px;
+  border: 1px solid rgba(34, 49, 63, 0.08);
+  border-radius: 28px;
+  background:
+    linear-gradient(145deg, rgba(34, 49, 63, 0.96), rgba(15, 134, 124, 0.86)),
+    #22313f;
+  color: white;
+  box-shadow: var(--shadow);
+}
+
+.feedback-index-card span,
+.feedback-index-card p {
+  color: rgba(255, 255, 255, 0.78);
+  font-weight: 900;
+}
+
+.feedback-index-card strong {
+  display: block;
+  margin: 10px 0;
+  font-family: "Baloo 2", "Nunito", system-ui, sans-serif;
+  font-size: clamp(3rem, 8vw, 5rem);
+  line-height: 0.95;
+}
+
+.feedback-index-card progress {
+  width: 100%;
+  height: 14px;
+  overflow: hidden;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.feedback-index-card progress::-webkit-progress-bar {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.feedback-index-card progress::-webkit-progress-value {
+  border-radius: 999px;
+  background: linear-gradient(90deg, #ffd76f, #d8f5e7);
+}
+
+.feedback-index-card progress::-moz-progress-bar {
+  border-radius: 999px;
+  background: linear-gradient(90deg, #ffd76f, #d8f5e7);
+}
+
+.feedback-shell {
+  padding-bottom: 70px;
+}
+
+.parent-feedback-form {
+  display: grid;
+  gap: 20px;
+  padding: 24px;
+  border: 1px solid rgba(34, 49, 63, 0.08);
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: var(--shadow);
+}
+
+.feedback-details,
+.rating-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.feedback-details-heading {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 4px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, rgba(255, 215, 111, 0.28), rgba(43, 183, 168, 0.12));
+}
+
+.feedback-details-heading span {
+  color: var(--green);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.feedback-details-heading strong {
+  color: var(--ink);
+  font-family: "Baloo 2", "Nunito", system-ui, sans-serif;
+  font-size: 1.25rem;
+  line-height: 1.1;
+}
+
+.feedback-details label,
+.suggestion-box {
+  display: grid;
+  gap: 8px;
+  color: var(--ink);
+  font-weight: 900;
+}
+
+.feedback-details input,
+.feedback-details select,
+.suggestion-box textarea {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 14px;
+  border: 1px solid rgba(34, 49, 63, 0.14);
+  border-radius: 14px;
+  background: #fbfdfb;
+}
+
+.suggestion-box textarea {
+  resize: vertical;
+}
+
+.rating-card {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 20px;
+  border: 1px solid rgba(34, 49, 63, 0.08);
+  border-radius: 22px;
+  background: linear-gradient(145deg, #ffffff, #f6fbf8);
+}
+
+.rating-card:nth-child(2) {
+  background: linear-gradient(145deg, #ffffff, #fff8e8);
+}
+
+.rating-card:nth-child(3) {
+  background: linear-gradient(145deg, #ffffff, #eef8ff);
+}
+
+.rating-card:nth-child(4) {
+  background: linear-gradient(145deg, #ffffff, #fff3ee);
+}
+
+.rating-card legend {
+  padding: 0 8px;
+  color: var(--ink);
+  font-size: 1.15rem;
+  font-weight: 900;
+}
+
+.rating-card p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.detailed-feedback-grid {
+  align-items: start;
+}
+
+.detailed-rating-card {
+  gap: 16px;
+}
+
+.question-rating {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid rgba(34, 49, 63, 0.08);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.74);
+}
+
+.question-rating > span {
+  color: var(--ink);
+  font-weight: 900;
+  line-height: 1.35;
+}
+
+.rating-options {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+
+.rating-options input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.rating-options span {
+  display: grid;
+  place-items: center;
+  min-height: 64px;
+  border: 1px solid rgba(34, 49, 63, 0.12);
+  border-radius: 14px;
+  background: white;
+  color: var(--ink);
+  font-weight: 900;
+  cursor: pointer;
+  transition: transform 160ms ease, background 160ms ease, color 160ms ease;
+}
+
+.rating-face {
+  gap: 2px;
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
+.rating-face small {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.68rem;
+  line-height: 1;
+}
+
+.rating-options input:checked + span {
+  transform: translateY(-2px);
+  border-color: transparent;
+  background: linear-gradient(135deg, #2bb7a8, #1fae62);
+  color: white;
+  box-shadow: 0 12px 24px rgba(43, 183, 168, 0.22);
+}
+
+.feedback-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.feedback-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
+  box-shadow: none;
+}
+
+.feedback-actions span {
+  color: #b6462f;
+  font-weight: 900;
+}
+
+.feedback-actions span[hidden] {
+  display: none;
+}
+
+.feedback-thank-you {
+  display: grid;
+  gap: 10px;
+  padding: 22px;
+  border: 1px solid rgba(31, 174, 98, 0.18);
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at 92% 12%, rgba(255, 215, 111, 0.32), transparent 10rem),
+    linear-gradient(145deg, #eefaf5, #ffffff);
+  box-shadow: 0 16px 36px rgba(34, 49, 63, 0.08);
+}
+
+.feedback-thank-you[hidden] {
+  display: none;
+}
+
+.feedback-thank-you strong {
+  color: var(--ink);
+  font-family: "Baloo 2", "Nunito", system-ui, sans-serif;
+  font-size: 1.45rem;
+  line-height: 1.1;
+}
+
+.feedback-thank-you p {
+  margin: 0;
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.feedback-thank-you .primary-button {
+  width: fit-content;
+}
+
+.teacher-reading-layout {
+  align-items: start;
+}
+
+.teacher-reading-form .field-helper,
+.student-photo-upload span {
+  color: var(--muted);
+  font-size: 0.84rem;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.teacher-reading-form [data-teacher-reading-other-wrap][hidden] {
+  display: none;
+}
+
+.teacher-reading-photo-preview {
+  width: fit-content;
+  margin-top: 16px;
+  padding: 10px;
+  border: 1px solid rgba(34, 49, 63, 0.08);
+  border-radius: 20px;
+  background: linear-gradient(145deg, #ffffff, #eefaf5);
+  box-shadow: 0 14px 30px rgba(31, 49, 66, 0.08);
+}
+
+.teacher-reading-photo-preview[hidden] {
+  display: none;
+}
+
+.teacher-reading-photo-preview img {
+  display: block;
+  width: 128px;
+  height: 128px;
+  border-radius: 16px;
+  object-fit: cover;
+}
+
+.teacher-reading-passages {
+  display: grid;
+  gap: 14px;
+}
+
+.teacher-reading-passage-card {
+  display: grid;
+  gap: 14px;
+  padding: clamp(16px, 3vw, 22px);
+  border: 1px solid rgba(31, 49, 66, 0.08);
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at 92% 12%, rgba(255, 216, 111, 0.26), transparent 22%),
+    linear-gradient(145deg, #ffffff, #eef8ff);
+  box-shadow: 0 16px 42px rgba(31, 49, 66, 0.08);
+}
+
+.teacher-reading-passage-card:nth-child(even) {
+  background:
+    radial-gradient(circle at 10% 12%, rgba(222, 215, 255, 0.34), transparent 22%),
+    linear-gradient(145deg, #ffffff, #fff7e7);
+}
+
+.teacher-reading-passage-card span {
+  width: fit-content;
+  padding: 5px 9px;
+  color: #16453e;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--mint), var(--sun));
+  font-size: 0.72rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.teacher-reading-passage-card p {
+  margin: 8px 0 0;
+  color: var(--ink);
+  font-family: "Baloo 2", "Nunito", system-ui, sans-serif;
+  font-size: clamp(1.1rem, 2vw, 1.42rem);
+  font-weight: 800;
+  line-height: 1.36;
+}
+
+.teacher-reading-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.teacher-reading-card-actions button[hidden] {
+  display: none;
+}
+
+.teacher-reading-live-result {
+  display: grid;
+  gap: 6px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: inset 0 0 0 1px rgba(31, 49, 66, 0.06);
+}
+
+.teacher-reading-live-result strong {
+  color: #16453e;
+  font-family: "Baloo 2", "Nunito", system-ui, sans-serif;
+  font-size: 1.2rem;
+  line-height: 1.05;
+}
+
+.teacher-reading-live-result p {
+  margin: 0;
+  color: var(--muted);
+  font-family: "Nunito", system-ui, sans-serif;
+  font-size: 0.95rem;
+  font-weight: 850;
+}
+
+.teacher-reading-report-card .student-report-photo {
+  border: 4px solid #ffffff;
+  box-shadow: 0 14px 30px rgba(31, 49, 66, 0.12);
+}
+
+.teacher-submit-status {
+  border: 1px solid rgba(39, 185, 167, 0.2);
+  background: linear-gradient(145deg, #ffffff, #e8fbf6);
+}
+
+.teacher-submit-status.is-practice {
+  border-color: rgba(255, 114, 95, 0.2);
+  background: linear-gradient(145deg, #ffffff, #fff0ea);
+}
+
+.teacher-submit-status h3 {
+  color: #16453e;
+}
+
+.teacher-submit-status.is-practice h3 {
+  color: #9d3f2e;
+}
+
+@media (max-width: 820px) {
+  .feedback-hero,
+  .feedback-details,
+  .rating-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .feedback-index-card {
+    max-width: 420px;
+  }
+}
+
+@media (max-width: 520px) {
+  .rating-options {
+    gap: 5px;
+  }
+
+  .rating-options span {
+    min-height: 58px;
+    border-radius: 10px;
+    padding: 6px 2px;
+  }
+
+  .rating-face {
+    font-size: 1.05rem;
+  }
+
+  .rating-face small {
+    display: block;
+    margin-top: 5px;
+    font-size: 0.56rem;
+    line-height: 1;
+  }
+
+  .question-rating {
+    padding: 12px;
+  }
+}
+
+.powered-by-tivoro {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.powered-by-tivoro a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.25s ease;
+}
+
+.powered-by-tivoro a:hover {
+  color: #ffffff;
+}
+
+@media (max-width: 980px) {
+  .english-lab-preview,
+  .tense-hero,
+  .tense-detail-panel,
+  .tense-tool-section,
+  .sentence-transformer,
+  .tense-practice-lab,
+  .reading-lab-shell,
+  .lab-cta-section {
+    grid-template-columns: 1fr;
+  }
+
+  .tense-hero {
+    padding-top: 38px;
+  }
+
+  .tense-card-grid,
+  .english-lab-grid,
+  .tense-next-grid,
+  .routine-verb-grid,
+  .routine-builder,
+  .reading-grade-tabs,
+  .reading-level-tabs,
+  .word-helper-grid,
+  .reading-answer-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .tense-card-grid button {
+    min-height: 0;
+  }
+}
+
+@media (max-width: 700px) {
+  .tense-hero,
+  .learning-lab-page .section {
+    width: min(100% - 24px, 1180px);
+  }
+
+  .tense-hero-copy h1 {
+    font-size: clamp(2.55rem, 15vw, 3.5rem);
+  }
+
+  .tense-card-grid,
+  .english-lab-grid,
+  .tense-next-grid,
+  .routine-verb-grid,
+  .routine-builder,
+  .reading-select-panel,
+  .reading-grade-tabs,
+  .reading-level-tabs,
+  .word-helper-grid,
+  .reading-answer-grid,
+  .tense-choice-tool,
+  .quiz-options {
+    grid-template-columns: 1fr;
+  }
+
+  .time-road,
+  .big-time-road,
+  .big-time-road div {
+    gap: 7px;
+  }
+
+  .time-road strong,
+  .big-time-road strong {
+    min-width: 58px;
+    min-height: 58px;
+    border-width: 4px;
+  }
+
+  .tense-hero-board,
+  .tense-detail-panel,
+  .tense-tool-section,
+  .sentence-transformer,
+  .tense-practice-lab,
+  .routine-builder,
+  .routine-practice-lab,
+  .routine-prompt-card,
+  .reading-lab-shell,
+  .reading-passage-card,
+  .reading-result-panel,
+  .reading-question-card,
+  .quiz-shell,
+  .lab-cta-section,
+  .english-lab-preview {
+    border-radius: 22px;
+    padding: 18px;
+  }
+
+  .reading-controls .primary-button,
+  .reading-controls .secondary-button,
+  .reading-controls .tense-audio-button {
+    width: 100%;
+  }
+
+  .reading-certificate-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .reading-certificate-preview {
+    padding: 12px;
+  }
+
+  .sentence-transformer article {
+    min-height: 0;
+  }
+
+  .practice-rule-meter {
+    grid-template-columns: 1fr;
+  }
+
+  .practice-intent-buttons button,
+  .practice-rule-meter span,
+  .tense-rule-list summary,
+  .tense-rule-list code,
+  .tense-rule-list p {
+    overflow-wrap: anywhere;
+  }
+
+  .tense-rule-list code {
+    width: 100%;
+    font-size: 0.9rem;
+  }
+
+  .lab-cta-card .primary-button,
+  .lab-cta-card .secondary-button,
+  .english-lab-copy .primary-button {
+    width: 100%;
+  }
+}
+
+/* Hidden staff access page */
+.staff-login-page {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 14% 16%, rgba(255, 216, 111, 0.52), transparent 28%),
+    radial-gradient(circle at 88% 12%, rgba(201, 236, 255, 0.78), transparent 32%),
+    radial-gradient(circle at 84% 86%, rgba(217, 247, 232, 0.82), transparent 30%),
+    linear-gradient(135deg, #fff8ec 0%, #eef9ff 54%, #fffaf1 100%);
+  color: var(--ink);
+}
+
+.staff-login-shell {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 28px;
+}
+
+.staff-login-card {
+  position: relative;
+  width: min(520px, 100%);
+  overflow: hidden;
+  padding: clamp(24px, 5vw, 40px);
+  border: 1px solid rgba(31, 49, 66, 0.1);
+  border-radius: 30px;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 28px 90px rgba(31, 49, 66, 0.16);
+  backdrop-filter: blur(18px);
+}
+
+.staff-login-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(31, 49, 66, 0.045) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(31, 49, 66, 0.045) 1px, transparent 1px);
+  background-size: 30px 30px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.9), transparent 76%);
+}
+
+.staff-login-brand,
+.staff-login-copy,
+.staff-login-result,
+.staff-login-note,
+.staff-login-card .g_id_signin {
+  position: relative;
+  z-index: 1;
+}
+
+.staff-login-brand {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.staff-login-brand img {
+  width: 66px;
+  height: 66px;
+  border-radius: 22px;
+  object-fit: contain;
+  background: #fff;
+  box-shadow: 0 16px 34px rgba(31, 49, 66, 0.12);
+}
+
+.staff-login-brand h1 {
+  margin: 2px 0 0;
+  font-size: clamp(2rem, 6vw, 3.2rem);
+  line-height: 0.96;
+  color: #183047;
+}
+
+.staff-login-copy {
+  margin: 0 0 24px;
+  color: rgba(31, 49, 66, 0.72);
+  font-weight: 800;
+}
+
+.staff-login-result {
+  display: grid;
+  gap: 4px;
+  margin-top: 22px;
+  padding: 16px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, rgba(217, 247, 232, 0.95), rgba(201, 236, 255, 0.86));
+  color: #17344a;
+  border: 1px solid rgba(39, 185, 167, 0.18);
+}
+
+.staff-login-result span {
+  font-weight: 950;
+  color: #0f8c7e;
+}
+
+.staff-login-result strong {
+  font-size: 1.2rem;
+}
+
+.staff-login-result small {
+  color: rgba(31, 49, 66, 0.68);
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
+.staff-login-alert {
+  position: relative;
+  z-index: 1;
+  margin-top: 18px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: rgba(255, 244, 204, 0.9);
+  border: 1px solid rgba(255, 184, 77, 0.32);
+  color: #765100;
+  font-weight: 900;
+  overflow-wrap: anywhere;
+}
+
+.staff-login-note {
+  margin: 22px 0 0;
+  padding-top: 18px;
+  border-top: 1px solid rgba(31, 49, 66, 0.1);
+  color: rgba(31, 49, 66, 0.58);
+  font-size: 0.92rem;
+  font-weight: 800;
+}
+
+@media (max-width: 620px) {
+  .staff-login-shell {
+    align-items: stretch;
+    padding: 18px;
+  }
+
+  .staff-login-card {
+    margin: auto 0;
+    border-radius: 24px;
+  }
+
+  .staff-login-brand {
+    align-items: flex-start;
+  }
+
+  .staff-login-brand img {
+    width: 56px;
+    height: 56px;
+    border-radius: 18px;
+  }
+}
