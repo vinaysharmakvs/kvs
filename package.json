@@ -1,0 +1,11 @@
+{
+  "name": "kidsverse-premium",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "node --check kidsverse-app.js && node --check speaksmart-ai.js && node --check api/speaking-feedback.js && node --check api/staff-login.js"
+  },
+  "dependencies": {
+    "pg": "^8.13.1"
+  }
+}
