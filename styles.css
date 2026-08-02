@@ -9012,3 +9012,153 @@ body:has(.about-hero) .about-hero::before {
     width: 100%;
   }
 }
+
+/* Hidden staff access page */
+.staff-login-page {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 14% 16%, rgba(255, 216, 111, 0.52), transparent 28%),
+    radial-gradient(circle at 88% 12%, rgba(201, 236, 255, 0.78), transparent 32%),
+    radial-gradient(circle at 84% 86%, rgba(217, 247, 232, 0.82), transparent 30%),
+    linear-gradient(135deg, #fff8ec 0%, #eef9ff 54%, #fffaf1 100%);
+  color: var(--ink);
+}
+
+.staff-login-shell {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 28px;
+}
+
+.staff-login-card {
+  position: relative;
+  width: min(520px, 100%);
+  overflow: hidden;
+  padding: clamp(24px, 5vw, 40px);
+  border: 1px solid rgba(31, 49, 66, 0.1);
+  border-radius: 30px;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 28px 90px rgba(31, 49, 66, 0.16);
+  backdrop-filter: blur(18px);
+}
+
+.staff-login-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(31, 49, 66, 0.045) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(31, 49, 66, 0.045) 1px, transparent 1px);
+  background-size: 30px 30px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.9), transparent 76%);
+}
+
+.staff-login-brand,
+.staff-login-copy,
+.staff-login-result,
+.staff-login-note,
+.staff-login-card .g_id_signin {
+  position: relative;
+  z-index: 1;
+}
+
+.staff-login-brand {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.staff-login-brand img {
+  width: 66px;
+  height: 66px;
+  border-radius: 22px;
+  object-fit: contain;
+  background: #fff;
+  box-shadow: 0 16px 34px rgba(31, 49, 66, 0.12);
+}
+
+.staff-login-brand h1 {
+  margin: 2px 0 0;
+  font-size: clamp(2rem, 6vw, 3.2rem);
+  line-height: 0.96;
+  color: #183047;
+}
+
+.staff-login-copy {
+  margin: 0 0 24px;
+  color: rgba(31, 49, 66, 0.72);
+  font-weight: 800;
+}
+
+.staff-login-result {
+  display: grid;
+  gap: 4px;
+  margin-top: 22px;
+  padding: 16px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, rgba(217, 247, 232, 0.95), rgba(201, 236, 255, 0.86));
+  color: #17344a;
+  border: 1px solid rgba(39, 185, 167, 0.18);
+}
+
+.staff-login-result span {
+  font-weight: 950;
+  color: #0f8c7e;
+}
+
+.staff-login-result strong {
+  font-size: 1.2rem;
+}
+
+.staff-login-result small {
+  color: rgba(31, 49, 66, 0.68);
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
+.staff-login-alert {
+  position: relative;
+  z-index: 1;
+  margin-top: 18px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: rgba(255, 244, 204, 0.9);
+  border: 1px solid rgba(255, 184, 77, 0.32);
+  color: #765100;
+  font-weight: 900;
+  overflow-wrap: anywhere;
+}
+
+.staff-login-note {
+  margin: 22px 0 0;
+  padding-top: 18px;
+  border-top: 1px solid rgba(31, 49, 66, 0.1);
+  color: rgba(31, 49, 66, 0.58);
+  font-size: 0.92rem;
+  font-weight: 800;
+}
+
+@media (max-width: 620px) {
+  .staff-login-shell {
+    align-items: stretch;
+    padding: 18px;
+  }
+
+  .staff-login-card {
+    margin: auto 0;
+    border-radius: 24px;
+  }
+
+  .staff-login-brand {
+    align-items: flex-start;
+  }
+
+  .staff-login-brand img {
+    width: 56px;
+    height: 56px;
+    border-radius: 18px;
+  }
+}
