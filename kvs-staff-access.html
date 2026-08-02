@@ -80,7 +80,34 @@
         }).join("")));
       }
 
-      function handleKidsverseGoogleLogin(response) {
+      async function saveKidsverseLoginAudit(credential) {
+        const auditPayload = {
+          credential,
+          sourceApp: "kidsverse-staff-access",
+          device: {
+            pageUrl: window.location.href,
+            origin: window.location.origin,
+            userAgent: navigator.userAgent,
+            language: navigator.language,
+            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+            screenSize: `${window.screen.width}x${window.screen.height}`,
+            platform: navigator.platform
+          }
+        };
+
+        const auditResponse = await fetch("/api/staff-login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(auditPayload)
+        });
+        const auditData = await auditResponse.json().catch(() => ({}));
+        if (!auditResponse.ok || !auditData.ok) {
+          throw new Error(auditData.error || "Login saved locally, but database audit failed.");
+        }
+        return auditData.record;
+      }
+
+      async function handleKidsverseGoogleLogin(response) {
         const result = document.querySelector("[data-login-result]");
         try {
           const profile = decodeKidsverseCredential(response.credential);
@@ -93,13 +120,19 @@
           sessionStorage.setItem("kidsverseStaffLogin", JSON.stringify(loginRecord));
           result.hidden = false;
           result.innerHTML = `
-            <span>Signed in successfully</span>
+            <span>Saving secure login record...</span>
             <strong>${loginRecord.name}</strong>
             <small>${loginRecord.email}</small>
           `;
+          const savedRecord = await saveKidsverseLoginAudit(response.credential);
+          result.innerHTML = `
+            <span>Signed in and recorded successfully</span>
+            <strong>${savedRecord.name || loginRecord.name}</strong>
+            <small>${savedRecord.email || loginRecord.email}</small>
+          `;
         } catch (error) {
           result.hidden = false;
-          result.innerHTML = "<span>Login received, but profile could not be read. Please try again.</span>";
+          result.innerHTML = `<span>${error.message || "Login received, but profile could not be saved. Please try again."}</span>`;
         }
       }
 
