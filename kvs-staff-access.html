@@ -29,7 +29,7 @@
   </head>
   <body class="staff-login-page">
     <main class="staff-login-shell" aria-label="Kidsverse private login">
-      <section class="staff-login-card">
+      <section class="staff-login-card" data-login-card>
         <div class="staff-login-brand">
           <img src="assets/logo.png" alt="Kidsverse School logo" />
           <div>
@@ -39,28 +39,43 @@
         </div>
 
         <p class="staff-login-copy">
-          This page is for authorised Kidsverse team members only. Please continue with the approved Google account.
+          This page is for authorised Kidsverse team members only. Enter the school access code, then continue with the approved Google account.
         </p>
 
-        <div
-          id="g_id_onload"
-          data-client_id="344047535994-9a2s1tl3kf9etkkht33ciba13f32k5b8.apps.googleusercontent.com"
-          data-callback="handleKidsverseGoogleLogin"
-          data-auto_prompt="false"
-          data-ux_mode="popup"
-          data-context="signin"
-          data-itp_support="true"
-          data-use_fedcm_for_prompt="true"
-        ></div>
-        <div
-          class="g_id_signin"
-          data-type="standard"
-          data-size="large"
-          data-theme="outline"
-          data-text="signin_with"
-          data-shape="pill"
-          data-logo_alignment="left"
-        ></div>
+        <form class="staff-access-code-form" data-access-code-form>
+          <label>
+            School access code
+            <input type="password" name="accessCode" placeholder="Enter access code" autocomplete="off" required data-access-code-input />
+          </label>
+          <label class="staff-show-code">
+            <input type="checkbox" data-show-access-code />
+            <span>Show access code</span>
+          </label>
+          <button class="primary-button" type="submit">Unlock Google Login</button>
+          <span class="staff-access-error" data-access-code-error hidden>Incorrect access code. Please try again.</span>
+        </form>
+
+        <div class="staff-google-login" data-google-login hidden>
+          <div
+            id="g_id_onload"
+            data-client_id="344047535994-9a2s1tl3kf9etkkht33ciba13f32k5b8.apps.googleusercontent.com"
+            data-callback="handleKidsverseGoogleLogin"
+            data-auto_prompt="false"
+            data-ux_mode="popup"
+            data-context="signin"
+            data-itp_support="true"
+            data-use_fedcm_for_prompt="true"
+          ></div>
+          <div
+            class="g_id_signin"
+            data-type="standard"
+            data-size="large"
+            data-theme="outline"
+            data-text="signin_with"
+            data-shape="pill"
+            data-logo_alignment="left"
+          ></div>
+        </div>
 
         <div class="staff-login-result" data-login-result hidden></div>
         <div class="staff-login-alert" data-login-alert hidden></div>
@@ -68,9 +83,96 @@
           For privacy, this page is intentionally not shown in the Kidsverse website menu.
         </p>
       </section>
+
+      <section class="staff-dashboard" data-staff-dashboard hidden>
+        <div class="staff-dashboard-head">
+          <div>
+            <p class="eyebrow">Internal dashboard</p>
+            <h1>Welcome to Kidsverse</h1>
+            <p data-staff-welcome>Choose the internal page you want to open.</p>
+          </div>
+          <button class="secondary-button" type="button" data-staff-signout>Sign Out</button>
+        </div>
+
+        <div class="staff-dashboard-grid" aria-label="Kidsverse internal pages">
+          <a class="staff-tool-card is-featured" href="teacher-resource-center.html">
+            <span>Teacher Resources</span>
+            <strong>Classroom Resource Center</strong>
+            <small>Class-wise English lines, listening support and confidential teaching material.</small>
+          </a>
+          <a class="staff-tool-card" href="student-assessment.html">
+            <span>Student Reports</span>
+            <strong>Monthly Student Assessment</strong>
+            <small>Create structured progress reports with strengths, improvement areas and parent guidance.</small>
+          </a>
+          <a class="staff-tool-card" href="teacher-assessment.html">
+            <span>Observation</span>
+            <strong>Class Culture Assessment</strong>
+            <small>Review classroom habits, discipline, greetings, routines and learning culture.</small>
+          </a>
+          <a class="staff-tool-card" href="teacher-reading-assessment.html">
+            <span>Teacher Growth</span>
+            <strong>Teacher Reading Assessment</strong>
+            <small>Record teacher reading skill, auto-rate performance and generate a self-assessment report.</small>
+          </a>
+          <a class="staff-tool-card" href="parent-feedback.html">
+            <span>Parent Voice</span>
+            <strong>Parent Feedback</strong>
+            <small>Open the parent happiness and school experience feedback form.</small>
+          </a>
+          <a class="staff-tool-card" href="kidsverse-3d-classroom.html">
+            <span>Experience Lab</span>
+            <strong>3D Kidsverse Classroom</strong>
+            <small>Preview the interactive classroom concept for future parent engagement.</small>
+          </a>
+        </div>
+
+        <p class="staff-dashboard-note">
+          Internal pages may still ask for their own class or form passcode where needed.
+        </p>
+      </section>
     </main>
 
     <script>
+      const internalPages = [
+        "teacher-resource-center.html",
+        "student-assessment.html",
+        "teacher-assessment.html",
+        "teacher-reading-assessment.html",
+        "parent-feedback.html",
+        "kidsverse-3d-classroom.html"
+      ];
+      const schoolAccessCode = "Kidsverse@2021";
+
+      function unlockGoogleLogin() {
+        const form = document.querySelector("[data-access-code-form]");
+        const googleLogin = document.querySelector("[data-google-login]");
+        if (form) form.hidden = true;
+        if (googleLogin) googleLogin.hidden = false;
+      }
+
+      function showKidsverseDashboard(loginRecord = {}) {
+        const loginCard = document.querySelector("[data-login-card]");
+        const dashboard = document.querySelector("[data-staff-dashboard]");
+        const welcome = document.querySelector("[data-staff-welcome]");
+        document.body.classList.add("is-dashboard");
+        if (loginCard) loginCard.hidden = true;
+        if (dashboard) dashboard.hidden = false;
+        if (welcome) {
+          welcome.textContent = loginRecord.name
+            ? `Hello ${loginRecord.name}. Choose the internal page you want to open.`
+            : "Choose the internal page you want to open.";
+        }
+      }
+
+      function getStoredKidsverseLogin() {
+        try {
+          return JSON.parse(sessionStorage.getItem("kidsverseStaffLogin") || "{}");
+        } catch (error) {
+          return {};
+        }
+      }
+
       function decodeKidsverseCredential(token) {
         const payload = token.split(".")[1] || "";
         const base64 = payload.replace(/-/g, "+").replace(/_/g, "/");
@@ -125,11 +227,20 @@
             <small>${loginRecord.email}</small>
           `;
           const savedRecord = await saveKidsverseLoginAudit(response.credential);
+          const savedLoginRecord = {
+            ...loginRecord,
+            name: savedRecord.name || loginRecord.name,
+            email: savedRecord.email || loginRecord.email,
+            loginCount: savedRecord.loginCount,
+            signedInAt: savedRecord.signed_in_at || loginRecord.signedInAt
+          };
+          sessionStorage.setItem("kidsverseStaffLogin", JSON.stringify(savedLoginRecord));
           result.innerHTML = `
             <span>Signed in and recorded successfully</span>
-            <strong>${savedRecord.name || loginRecord.name}</strong>
-            <small>${savedRecord.email || loginRecord.email}</small>
+            <strong>${savedLoginRecord.name}</strong>
+            <small>${savedLoginRecord.email}</small>
           `;
+          window.setTimeout(() => showKidsverseDashboard(savedLoginRecord), 650);
         } catch (error) {
           result.hidden = false;
           result.innerHTML = `<span>${error.message || "Login received, but profile could not be saved. Please try again."}</span>`;
@@ -145,6 +256,42 @@
         loginAlert.hidden = false;
         loginAlert.textContent = `This domain must be added in Google Cloud OAuth settings: ${window.location.origin}`;
       }
+
+      const existingLogin = getStoredKidsverseLogin();
+      if (existingLogin.email) {
+        showKidsverseDashboard(existingLogin);
+      }
+
+      if (sessionStorage.getItem("kidsverseAccessCodeOk") === "true") {
+        unlockGoogleLogin();
+      }
+
+      document.querySelector("[data-access-code-form]")?.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const form = event.currentTarget;
+        const error = document.querySelector("[data-access-code-error]");
+        const code = String(new FormData(form).get("accessCode") || "").trim();
+        if (code === schoolAccessCode) {
+          sessionStorage.setItem("kidsverseAccessCodeOk", "true");
+          if (error) error.hidden = true;
+          unlockGoogleLogin();
+          return;
+        }
+        if (error) error.hidden = false;
+        form.querySelector("input")?.focus();
+      });
+
+      document.querySelector("[data-show-access-code]")?.addEventListener("change", (event) => {
+        const input = document.querySelector("[data-access-code-input]");
+        if (input) input.type = event.currentTarget.checked ? "text" : "password";
+      });
+
+      document.querySelector("[data-staff-signout]")?.addEventListener("click", () => {
+        sessionStorage.removeItem("kidsverseStaffLogin");
+        sessionStorage.removeItem("kidsverseAccessCodeOk");
+        document.body.classList.remove("is-dashboard");
+        window.location.reload();
+      });
     </script>
   </body>
 </html>
