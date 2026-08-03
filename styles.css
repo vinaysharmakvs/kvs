@@ -7412,13 +7412,17 @@ body:has(.about-hero) .about-hero::before {
 
 .teacher-tool-links {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 8px;
   margin-left: auto;
+  overflow-x: auto;
+  max-width: 100%;
+  scrollbar-width: thin;
 }
 
 .teacher-tool-links a {
-  padding: 8px 12px;
+  flex: 0 0 auto;
+  padding: 8px 11px;
   border: 1px solid rgba(34, 49, 63, 0.12);
   border-radius: 999px;
   background: white;
@@ -7426,6 +7430,24 @@ body:has(.about-hero) .about-hero::before {
   font-size: 0.9rem;
   font-weight: 900;
   text-decoration: none;
+}
+
+@media (max-width: 860px) {
+  .teacher-header {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  .teacher-tool-links {
+    order: 3;
+    width: 100%;
+    margin-left: 0;
+    padding-bottom: 4px;
+  }
+
+  .teacher-private-badge {
+    margin-left: auto;
+  }
 }
 
 .teacher-tool-links a[aria-current="page"] {
