@@ -10,7 +10,7 @@ const defaultAllowedOrigins = [
   "http://127.0.0.1:8765",
 ];
 
-const databaseUrl = process.env.DATABASE_URL || process.env.POSTGRES_URL;
+const databaseUrl = process.env.KIDSVERSE_DATABASE_URL || process.env.DATABASE_URL || process.env.POSTGRES_URL;
 const pool = databaseUrl
   ? new Pool({
       connectionString: databaseUrl,
@@ -111,7 +111,7 @@ export default async function handler(req, res) {
   }
 
   if (!databaseUrl) {
-    return res.status(500).json({ error: "Database is not configured. Add DATABASE_URL on your hosting platform." });
+    return res.status(500).json({ error: "Database is not configured. Add KIDSVERSE_DATABASE_URL or DATABASE_URL on your hosting platform." });
   }
 
   try {
