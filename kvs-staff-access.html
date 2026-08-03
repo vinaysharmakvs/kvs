@@ -28,6 +28,20 @@
     <script src="https://accounts.google.com/gsi/client" async defer></script>
   </head>
   <body class="staff-login-page">
+    <header class="staff-access-header" data-staff-header hidden>
+      <a class="staff-access-brand" href="kvs-staff-access.html" aria-label="Kidsverse internal home">
+        <img src="assets/logo.png" alt="Kidsverse School logo" />
+        <span><strong>Kidsverse</strong><small>Internal</small></span>
+      </a>
+      <nav class="staff-access-nav" aria-label="Internal navigation">
+        <a href="teacher-resource-center.html">Resources</a>
+        <a href="student-assessment.html">Student Reports</a>
+        <a href="teacher-assessment.html">Class Culture</a>
+        <a href="teacher-reading-assessment.html">Teacher Reading</a>
+      </nav>
+      <button class="staff-signout-button" type="button" data-staff-signout>Sign Out</button>
+    </header>
+
     <main class="staff-login-shell" aria-label="Kidsverse private login">
       <section class="staff-login-card" data-login-card>
         <div class="staff-login-brand">
@@ -91,7 +105,6 @@
             <h1>Welcome to Kidsverse</h1>
             <p data-staff-welcome>Choose the internal page you want to open.</p>
           </div>
-          <button class="secondary-button" type="button" data-staff-signout>Sign Out</button>
         </div>
 
         <div class="staff-dashboard-grid" aria-label="Kidsverse internal pages">
@@ -115,20 +128,10 @@
             <strong>Teacher Reading Assessment</strong>
             <small>Record teacher reading skill, auto-rate performance and generate a self-assessment report.</small>
           </a>
-          <a class="staff-tool-card" href="parent-feedback.html">
-            <span>Parent Voice</span>
-            <strong>Parent Feedback</strong>
-            <small>Open the parent happiness and school experience feedback form.</small>
-          </a>
-          <a class="staff-tool-card" href="kidsverse-3d-classroom.html">
-            <span>Experience Lab</span>
-            <strong>3D Kidsverse Classroom</strong>
-            <small>Preview the interactive classroom concept for future parent engagement.</small>
-          </a>
         </div>
 
         <p class="staff-dashboard-note">
-          Internal pages may still ask for their own class or form passcode where needed.
+          Internal pages open from this dashboard after staff login. Do not share these links outside Kidsverse.
         </p>
       </section>
     </main>
@@ -138,9 +141,7 @@
         "teacher-resource-center.html",
         "student-assessment.html",
         "teacher-assessment.html",
-        "teacher-reading-assessment.html",
-        "parent-feedback.html",
-        "kidsverse-3d-classroom.html"
+        "teacher-reading-assessment.html"
       ];
       const schoolAccessCode = "Kidsverse@2021";
 
@@ -154,10 +155,12 @@
       function showKidsverseDashboard(loginRecord = {}) {
         const loginCard = document.querySelector("[data-login-card]");
         const dashboard = document.querySelector("[data-staff-dashboard]");
+        const header = document.querySelector("[data-staff-header]");
         const welcome = document.querySelector("[data-staff-welcome]");
         document.body.classList.add("is-dashboard");
         if (loginCard) loginCard.hidden = true;
         if (dashboard) dashboard.hidden = false;
+        if (header) header.hidden = false;
         if (welcome) {
           welcome.textContent = loginRecord.name
             ? `Hello ${loginRecord.name}. Choose the internal page you want to open.`
