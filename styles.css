@@ -1244,6 +1244,19 @@ h3,
   transform: translateY(-1px);
 }
 
+.nav-links a.nav-staff-login {
+  color: #173047;
+  border: 1px solid rgba(31, 49, 66, 0.12);
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.72);
+}
+
+.nav-links a.nav-staff-login:hover,
+.nav-links a.nav-staff-login:focus {
+  color: #0f8c7e;
+  background: linear-gradient(135deg, rgba(217, 247, 232, 0.96), rgba(201, 236, 255, 0.86));
+}
+
 .nav-dropdown {
   position: relative;
   padding: 0;
