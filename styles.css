@@ -9017,18 +9017,115 @@ body:has(.about-hero) .about-hero::before {
 .staff-login-page {
   min-height: 100vh;
   background:
-    radial-gradient(circle at 14% 16%, rgba(255, 216, 111, 0.52), transparent 28%),
-    radial-gradient(circle at 88% 12%, rgba(201, 236, 255, 0.78), transparent 32%),
-    radial-gradient(circle at 84% 86%, rgba(217, 247, 232, 0.82), transparent 30%),
-    linear-gradient(135deg, #fff8ec 0%, #eef9ff 54%, #fffaf1 100%);
+    radial-gradient(circle at 12% 10%, rgba(255, 216, 111, 0.34), transparent 26%),
+    radial-gradient(circle at 88% 18%, rgba(201, 236, 255, 0.64), transparent 30%),
+    linear-gradient(135deg, #fff8ec 0%, #eff9ff 56%, #f6fff9 100%);
   color: var(--ink);
 }
 
+.staff-access-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  width: min(1180px, calc(100% - 28px));
+  margin: 14px auto 0;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+  padding: 10px 12px;
+  border: 1px solid rgba(31, 49, 66, 0.1);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 18px 48px rgba(31, 49, 66, 0.1);
+  backdrop-filter: blur(16px);
+}
+
+.staff-access-header[hidden] {
+  display: none;
+}
+
+.staff-access-brand {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  color: #173047;
+  text-decoration: none;
+}
+
+.staff-access-brand img {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  object-fit: contain;
+  background: #fff;
+  box-shadow: 0 10px 24px rgba(31, 49, 66, 0.1);
+}
+
+.staff-access-brand strong,
+.staff-access-brand small {
+  display: block;
+  line-height: 1;
+}
+
+.staff-access-brand strong {
+  font-size: 1.05rem;
+  font-weight: 950;
+}
+
+.staff-access-brand small {
+  margin-top: 3px;
+  color: rgba(31, 49, 66, 0.58);
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.staff-access-nav {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.staff-access-nav a,
+.staff-signout-button {
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  border-radius: 999px;
+  font-size: 0.88rem;
+  font-weight: 950;
+  text-decoration: none;
+}
+
+.staff-access-nav a {
+  padding: 0 12px;
+  color: rgba(31, 49, 66, 0.72);
+  background: rgba(31, 49, 66, 0.045);
+}
+
+.staff-access-nav a:hover {
+  color: #0f8c7e;
+  background: rgba(39, 185, 167, 0.12);
+}
+
+.staff-signout-button {
+  border: 0;
+  padding: 0 16px;
+  color: #fff;
+  background: #173047;
+  cursor: pointer;
+}
+
 .staff-login-shell {
-  min-height: 100vh;
+  min-height: calc(100vh - 28px);
   display: grid;
   place-items: center;
-  padding: 28px;
+  padding: 24px 18px;
 }
 
 .staff-login-shell:has(.staff-dashboard:not([hidden])) {
@@ -9037,17 +9134,19 @@ body:has(.about-hero) .about-hero::before {
 
 .staff-login-page.is-dashboard .staff-login-shell {
   place-items: start center;
+  min-height: auto;
+  padding-top: 18px;
 }
 
 .staff-login-card {
   position: relative;
-  width: min(520px, 100%);
+  width: min(460px, 100%);
   overflow: hidden;
-  padding: clamp(24px, 5vw, 40px);
+  padding: clamp(20px, 4vw, 30px);
   border: 1px solid rgba(31, 49, 66, 0.1);
-  border-radius: 30px;
-  background: rgba(255, 255, 255, 0.88);
-  box-shadow: 0 28px 90px rgba(31, 49, 66, 0.16);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 24px 72px rgba(31, 49, 66, 0.14);
   backdrop-filter: blur(18px);
 }
 
@@ -9074,15 +9173,15 @@ body:has(.about-hero) .about-hero::before {
 
 .staff-login-brand {
   display: flex;
-  gap: 14px;
+  gap: 12px;
   align-items: center;
-  margin-bottom: 18px;
+  margin-bottom: 14px;
 }
 
 .staff-login-brand img {
-  width: 66px;
-  height: 66px;
-  border-radius: 22px;
+  width: 56px;
+  height: 56px;
+  border-radius: 18px;
   object-fit: contain;
   background: #fff;
   box-shadow: 0 16px 34px rgba(31, 49, 66, 0.12);
@@ -9090,15 +9189,16 @@ body:has(.about-hero) .about-hero::before {
 
 .staff-login-brand h1 {
   margin: 2px 0 0;
-  font-size: clamp(2rem, 6vw, 3.2rem);
-  line-height: 0.96;
+  font-size: clamp(1.9rem, 5vw, 2.7rem);
+  line-height: 0.98;
   color: #183047;
 }
 
 .staff-login-copy {
-  margin: 0 0 24px;
+  margin: 0 0 18px;
   color: rgba(31, 49, 66, 0.72);
   font-weight: 800;
+  font-size: 0.98rem;
 }
 
 .staff-access-code-form,
@@ -9110,7 +9210,7 @@ body:has(.about-hero) .about-hero::before {
 .staff-access-code-form {
   display: grid;
   gap: 12px;
-  margin: 4px 0 18px;
+  margin: 0 0 16px;
 }
 
 .staff-access-code-form[hidden],
@@ -9128,7 +9228,7 @@ body:has(.about-hero) .about-hero::before {
 
 .staff-access-code-form input {
   width: 100%;
-  min-height: 54px;
+  min-height: 50px;
   padding: 0 16px;
   border: 1px solid rgba(31, 49, 66, 0.14);
   border-radius: 16px;
@@ -9184,7 +9284,7 @@ body:has(.about-hero) .about-hero::before {
 .staff-login-result {
   display: grid;
   gap: 4px;
-  margin-top: 22px;
+  margin-top: 16px;
   padding: 16px;
   border-radius: 18px;
   background: linear-gradient(135deg, rgba(217, 247, 232, 0.95), rgba(201, 236, 255, 0.86));
@@ -9221,8 +9321,8 @@ body:has(.about-hero) .about-hero::before {
 }
 
 .staff-login-note {
-  margin: 22px 0 0;
-  padding-top: 18px;
+  margin: 16px 0 0;
+  padding-top: 14px;
   border-top: 1px solid rgba(31, 49, 66, 0.1);
   color: rgba(31, 49, 66, 0.58);
   font-size: 0.92rem;
@@ -9231,9 +9331,9 @@ body:has(.about-hero) .about-hero::before {
 
 .staff-dashboard {
   width: min(1180px, 100%);
-  margin: 18px auto;
+  margin: 0 auto 28px;
   display: grid;
-  gap: 22px;
+  gap: 16px;
 }
 
 .staff-dashboard[hidden] {
@@ -9243,17 +9343,13 @@ body:has(.about-hero) .about-hero::before {
 .staff-dashboard-head {
   position: relative;
   overflow: hidden;
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-  align-items: flex-start;
-  padding: clamp(24px, 5vw, 44px);
+  padding: clamp(20px, 4vw, 34px);
   border: 1px solid rgba(31, 49, 66, 0.1);
-  border-radius: 30px;
+  border-radius: 24px;
   background:
     radial-gradient(circle at 88% 22%, rgba(255, 216, 111, 0.42), transparent 26%),
     linear-gradient(135deg, rgba(255, 255, 255, 0.94), rgba(239, 249, 255, 0.88));
-  box-shadow: 0 28px 90px rgba(31, 49, 66, 0.14);
+  box-shadow: 0 22px 62px rgba(31, 49, 66, 0.12);
 }
 
 .staff-dashboard-head::before {
@@ -9274,10 +9370,10 @@ body:has(.about-hero) .about-hero::before {
 }
 
 .staff-dashboard-head h1 {
-  margin: 4px 0 10px;
+  margin: 4px 0 8px;
   color: #183047;
-  font-size: clamp(2.4rem, 7vw, 5.6rem);
-  line-height: 0.92;
+  font-size: clamp(2.1rem, 5vw, 4rem);
+  line-height: 0.96;
 }
 
 .staff-dashboard-head p:not(.eyebrow) {
@@ -9290,24 +9386,24 @@ body:has(.about-hero) .about-hero::before {
 
 .staff-dashboard-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(3, minmax(220px, 1fr));
+  gap: 14px;
 }
 
 .staff-tool-card {
   position: relative;
   overflow: hidden;
-  min-height: 220px;
+  min-height: 178px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 18px;
-  padding: 22px;
+  gap: 14px;
+  padding: 18px;
   border: 1px solid rgba(31, 49, 66, 0.1);
-  border-radius: 24px;
-  background: rgba(255, 255, 255, 0.88);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.9);
   color: #173047;
-  box-shadow: 0 22px 56px rgba(31, 49, 66, 0.11);
+  box-shadow: 0 16px 42px rgba(31, 49, 66, 0.1);
   text-decoration: none;
   transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
 }
@@ -9316,7 +9412,7 @@ body:has(.about-hero) .about-hero::before {
   content: "";
   position: absolute;
   inset: auto -18% -36% 20%;
-  height: 150px;
+  height: 120px;
   pointer-events: none;
   background: radial-gradient(circle, rgba(201, 236, 255, 0.84), transparent 68%);
 }
@@ -9346,7 +9442,7 @@ body:has(.about-hero) .about-hero::before {
 
 .staff-tool-card span {
   width: fit-content;
-  padding: 7px 10px;
+  padding: 6px 9px;
   border-radius: 999px;
   background: rgba(15, 140, 126, 0.1);
   color: #0f8c7e;
@@ -9359,20 +9455,19 @@ body:has(.about-hero) .about-hero::before {
 .staff-tool-card strong {
   display: block;
   color: #173047;
-  font-size: clamp(1.4rem, 3vw, 2.05rem);
-  line-height: 1;
+  font-size: clamp(1.22rem, 2vw, 1.58rem);
+  line-height: 1.06;
 }
 
 .staff-tool-card small {
   display: block;
   color: rgba(31, 49, 66, 0.66);
-  font-size: 0.98rem;
+  font-size: 0.92rem;
   font-weight: 850;
 }
 
 .staff-tool-card.is-featured {
-  grid-column: span 2;
-  min-height: 240px;
+  min-height: 178px;
   background:
     linear-gradient(135deg, rgba(255, 255, 255, 0.93), rgba(217, 247, 232, 0.82)),
     #fff;
@@ -9389,14 +9484,30 @@ body:has(.about-hero) .about-hero::before {
 }
 
 @media (max-width: 620px) {
+  .staff-access-header {
+    position: static;
+    grid-template-columns: 1fr;
+    width: min(100% - 24px, 1180px);
+    margin-top: 12px;
+  }
+
+  .staff-access-nav {
+    justify-content: flex-start;
+    padding-bottom: 4px;
+  }
+
+  .staff-signout-button {
+    width: 100%;
+  }
+
   .staff-login-shell {
     align-items: stretch;
-    padding: 18px;
+    padding: 16px 12px;
   }
 
   .staff-login-card {
     margin: auto 0;
-    border-radius: 24px;
+    border-radius: 20px;
   }
 
   .staff-login-brand {
@@ -9414,12 +9525,7 @@ body:has(.about-hero) .about-hero::before {
   }
 
   .staff-dashboard-head {
-    flex-direction: column;
-    border-radius: 24px;
-  }
-
-  .staff-dashboard-head .secondary-button {
-    width: 100%;
+    border-radius: 20px;
   }
 
   .staff-dashboard-grid {
@@ -9429,7 +9535,7 @@ body:has(.about-hero) .about-hero::before {
   .staff-tool-card,
   .staff-tool-card.is-featured {
     grid-column: auto;
-    min-height: 180px;
-    border-radius: 22px;
+    min-height: 150px;
+    border-radius: 18px;
   }
 }
