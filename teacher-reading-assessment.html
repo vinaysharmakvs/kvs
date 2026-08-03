@@ -15,6 +15,18 @@
     <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="512x512" href="assets/favicon.png" />
     <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+    <script>
+      (function guardKidsverseInternalPage() {
+        try {
+          if (!sessionStorage.getItem("kidsverseStaffLogin")) {
+            sessionStorage.setItem("kidsverseInternalTarget", "teacher-reading-assessment.html");
+            window.location.replace("kvs-staff-access.html");
+          }
+        } catch (error) {
+          window.location.replace("kvs-staff-access.html");
+        }
+      })();
+    </script>
     <link rel="stylesheet" href="styles.css" />
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-0ZT634EM99"></script>
@@ -26,32 +38,13 @@
     gtag('config', 'G-0ZT634EM99');
   </script>
 </head>
-  <body class="teacher-page teacher-reading-page is-locked">
-    <section class="teacher-lock" data-teacher-lock>
-      <form class="teacher-lock-card" data-teacher-login>
-        <img src="assets/logo.png" alt="Kidsverse School logo" />
-        <p class="eyebrow">Teacher self check</p>
-        <h1>Reading Self Assessment Login</h1>
-        <p>Enter the passcode to open your teacher reading self assessment.</p>
-        <label>
-          Passcode
-          <input type="password" name="passcode" placeholder="Enter passcode" autocomplete="current-password" required />
-        </label>
-        <button class="primary-button" type="submit">Open Reading Test</button>
-        <span class="lock-error" data-lock-error hidden>Incorrect passcode. Please try again.</span>
-      </form>
-    </section>
-
+  <body class="teacher-page teacher-reading-page">
     <header class="teacher-header">
       <a class="brand" href="index.html#top" aria-label="Kidsverse School home">
         <img src="assets/logo.png" alt="Kidsverse School logo" />
         <span><strong>Kidsverse</strong><small>Teacher Self Assessment</small></span>
       </a>
-      <nav class="teacher-tool-links" aria-label="Teacher tools">
-        <a href="teacher-assessment.html">Class Culture</a>
-        <a href="student-assessment.html">Student Reports</a>
-        <a href="teacher-reading-assessment.html" aria-current="page">Teacher Reading</a>
-      </nav>
+      <nav class="teacher-tool-links" aria-label="Internal tools"><a href="kvs-staff-access.html">Internal Home</a><a href="teacher-resource-center.html">Resources</a><a href="student-assessment.html">Student Reports</a><a href="teacher-assessment.html">Class Culture</a><a href="teacher-reading-assessment.html" aria-current="page">Teacher Reading</a><a href="parent-feedback.html">Parent Feedback</a></nav>
       <span class="teacher-private-badge">Hidden internal form</span>
     </header>
 
@@ -129,6 +122,6 @@
       </section>
     </main>
 
-    <script src="script.js"></script>
+    <script src="kidsverse-app.js?v=20260801-site-fix"></script>
   </body>
 </html>
