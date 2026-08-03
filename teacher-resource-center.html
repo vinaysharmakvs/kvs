@@ -15,6 +15,18 @@
     <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="512x512" href="assets/favicon.png" />
     <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+    <script>
+      (function guardKidsverseInternalPage() {
+        try {
+          if (!sessionStorage.getItem("kidsverseStaffLogin")) {
+            sessionStorage.setItem("kidsverseInternalTarget", "teacher-resource-center.html");
+            window.location.replace("kvs-staff-access.html");
+          }
+        } catch (error) {
+          window.location.replace("kvs-staff-access.html");
+        }
+      })();
+    </script>
     <link rel="stylesheet" href="styles.css" />
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-0ZT634EM99"></script>
@@ -26,47 +38,14 @@
       gtag('config', 'G-0ZT634EM99');
     </script>
   </head>
-  <body class="teacher-page teacher-resource-page is-locked">
-    <section class="teacher-lock" data-resource-lock>
-      <form class="teacher-lock-card teacher-resource-login" data-resource-login>
-        <img src="assets/logo.png" alt="Kidsverse School logo" />
-        <p class="eyebrow">Internal use only</p>
-        <h1>Teacher Resource Center</h1>
-        <p>Select your class and enter the class passcode to open daily classroom English resources.</p>
-        <strong class="resource-confidential-warning">
-          SCHOOL CONFIDENTIAL DATA: Sharing this page, passcode, screenshots or content with anyone outside Kidsverse is strictly prohibited. Strict action will be taken against the responsible person, as all access and usage is properly tracked in our system.
-        </strong>
-        <label>
-          Class
-          <select name="resourceClass" data-resource-class-select required>
-            <option value="">Select class</option>
-            <option value="playway">Playway</option>
-            <option value="nursery">Nursery</option>
-            <option value="lkg">LKG</option>
-            <option value="ukg">UKG</option>
-            <option value="grade1">Grade 1</option>
-          </select>
-        </label>
-        <label>
-          Passcode
-          <input type="password" name="passcode" placeholder="Enter class passcode" autocomplete="current-password" required />
-        </label>
-        <button class="primary-button" type="submit">Open Resources</button>
-        <span class="lock-error" data-resource-lock-error hidden>Incorrect class or passcode. Please try again.</span>
-      </form>
-    </section>
-
+  <body class="teacher-page teacher-resource-page">
     <header class="teacher-header">
       <a class="brand" href="index.html#top" aria-label="Kidsverse School home">
         <img src="assets/logo.png" alt="Kidsverse School logo" />
         <span><strong>Kidsverse</strong><small>Teacher Resource Center</small></span>
       </a>
-      <nav class="teacher-tool-links" aria-label="Teacher tools">
-        <a href="teacher-resource-center.html" aria-current="page">Resources</a>
-        <a href="teacher-reading-assessment.html">Teacher Reading</a>
-        <a href="student-assessment.html">Student Reports</a>
-      </nav>
-      <button class="teacher-private-badge teacher-switch-button" type="button" data-resource-switch>Switch class</button>
+      <nav class="teacher-tool-links" aria-label="Internal tools"><a href="kvs-staff-access.html">Internal Home</a><a href="teacher-resource-center.html" aria-current="page">Resources</a><a href="student-assessment.html">Student Reports</a><a href="teacher-assessment.html">Class Culture</a><a href="teacher-reading-assessment.html">Teacher Reading</a><a href="parent-feedback.html">Parent Feedback</a></nav>
+      <a class="teacher-private-badge teacher-switch-button" href="kvs-staff-access.html">Internal Home</a>
     </header>
 
     <main class="teacher-assessment-shell teacher-resource-shell">
@@ -79,16 +58,16 @@
           children hear and use English naturally every day.
         </p>
         <strong class="resource-confidential-warning">
-          SCHOOL CONFIDENTIAL DATA: Do not share this content, passcode or screenshots outside Kidsverse. Strict action will be taken against the responsible person, as all access and usage is properly tracked in our system.
+          SCHOOL CONFIDENTIAL DATA: Do not share this content, screenshots or internal links outside Kidsverse. Strict action will be taken against the responsible person, as all access and usage is properly tracked in our system.
         </strong>
-        <div class="resource-active-class" data-resource-active-label>Class resources will appear after login.</div>
+        <div class="resource-active-class" data-resource-active-label>All class resources are available after staff login.</div>
       </section>
 
       <section class="resource-center-layout">
         <aside class="resource-side-panel">
           <p class="eyebrow">Classwise Access</p>
-          <h2>Open the right resource.</h2>
-          <p>Each class opens with its own passcode so teachers see only the age-appropriate classroom language first.</p>
+          <h2>Jump to the right resource.</h2>
+          <p>Use the class buttons to move quickly to age-appropriate classroom language.</p>
           <div class="resource-class-list">
             <button type="button" data-resource-class-jump="playway">Playway</button>
             <button type="button" data-resource-class-jump="nursery">Nursery</button>
@@ -180,6 +159,6 @@
       </section>
     </main>
 
-    <script src="script.js"></script>
+    <script src="kidsverse-app.js?v=20260801-site-fix"></script>
   </body>
 </html>
