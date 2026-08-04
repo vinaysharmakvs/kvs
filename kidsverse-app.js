@@ -3935,9 +3935,60 @@ function initLearningJourneyDashboard() {
   const dashboard = document.querySelector("[data-learning-dashboard]");
   if (!form || !dashboard) return;
 
+  const googleStep = document.querySelector("[data-parent-google-step]");
+  const previewLogin = document.querySelector("[data-parent-preview-login]");
+  const parentNameInput = document.querySelector("[data-parent-name-input]");
   const parentNameTarget = document.querySelector("[data-learning-parent-name]");
   const childNameTarget = document.querySelector("[data-learning-child-name]");
   const note = document.querySelector("[data-learning-login-note]");
+  const completeReadingTest = document.querySelector("[data-complete-reading-test]");
+  const readingTestStatus = document.querySelector("[data-reading-test-status]");
+
+  const isLocalPreview = window.location.protocol === "file:" || ["localhost", "127.0.0.1"].includes(window.location.hostname);
+  if (previewLogin) previewLogin.hidden = !isLocalPreview;
+
+  function decodeGoogleCredential(token) {
+    const payload = token.split(".")[1] || "";
+    const base64 = payload.replace(/-/g, "+").replace(/_/g, "/");
+    const decoded = atob(base64);
+    return JSON.parse(decodeURIComponent(Array.from(decoded).map((character) => {
+      return "%" + ("00" + character.charCodeAt(0).toString(16)).slice(-2);
+    }).join("")));
+  }
+
+  function showChildDetails(parentProfile = {}) {
+    if (googleStep) googleStep.classList.remove("is-active");
+    form.hidden = false;
+    form.classList.add("is-active");
+    if (parentNameInput && parentProfile.name) parentNameInput.value = parentProfile.name;
+    if (note) note.textContent = "Google sign-in completed. Add child details to open the dashboard.";
+    form.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
+  window.handleKidsverseParentGoogleLogin = (response) => {
+    try {
+      const profile = decodeGoogleCredential(response.credential);
+      const parentProfile = {
+        name: profile.name || "Parent",
+        email: profile.email || "",
+        signedInAt: new Date().toISOString()
+      };
+      sessionStorage.setItem("kidsverseParentLogin", JSON.stringify(parentProfile));
+      showChildDetails(parentProfile);
+    } catch (error) {
+      if (note) note.textContent = "Google sign-in was received, but the parent profile could not be read. Please try again.";
+    }
+  };
+
+  previewLogin?.addEventListener("click", () => {
+    const previewProfile = {
+      name: "",
+      email: "preview-parent@kidsverse.local",
+      signedInAt: new Date().toISOString()
+    };
+    sessionStorage.setItem("kidsverseParentLogin", JSON.stringify(previewProfile));
+    showChildDetails(previewProfile);
+  });
 
   form.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -3949,14 +4000,91 @@ function initLearningJourneyDashboard() {
     const formData = new FormData(form);
     const parentName = String(formData.get("parentName") || "").trim();
     const childName = String(formData.get("childName") || "").trim();
+    const childGrade = String(formData.get("childGrade") || "").trim();
+    const childSection = String(formData.get("childSection") || "").trim();
 
     if (parentNameTarget) parentNameTarget.textContent = parentName || "Parent";
     if (childNameTarget) childNameTarget.textContent = childName || "Your child";
-    if (note) note.textContent = "Dashboard opened. Live records can be connected once the database API is enabled.";
+    if (note) note.textContent = `${childName || "Child"} mapped to ${childGrade}${childSection ? ` ${childSection}` : ""}. Complete a test to unlock progress.`;
 
     dashboard.hidden = false;
     document.body.classList.add("learning-dashboard-open");
     dashboard.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+
+  completeReadingTest?.addEventListener("click", () => {
+    const progressValues = {
+      letters: 100,
+      sounds: 96,
+      blends: 82,
+      words: 68,
+      sentences: 52,
+      paragraphs: 28
+    };
+    Object.entries(progressValues).forEach(([key, value]) => {
+      const bar = document.querySelector(`[data-progress-bar="${key}"]`);
+      const label = document.querySelector(`[data-progress-value="${key}"]`);
+      if (bar) bar.style.width = `${value}%`;
+      if (label) label.textContent = `${value}%`;
+    });
+
+    const setText = (selector, value) => {
+      const element = document.querySelector(selector);
+      if (element) element.textContent = value;
+    };
+
+    setText("[data-overall-progress]", "42%");
+    setText("[data-overall-status]", "First test completed");
+    setText("[data-reading-mission]", "Reading check completed");
+    setText("[data-reading-test-status]", "Completed just now");
+    setText("[data-insight-heading]", "First activity completed.");
+    setText("[data-recommendation-text]", "Reading is strongest at letters, sounds and blends. Practice words and short sentences for 15 minutes daily this week.");
+    setText("[data-badge-status='reading']", "Unlocked");
+    setText("[data-badge-status='streak']", "1 day streak");
+
+    const coachScores = {
+      pronunciation: "84%",
+      fluency: "78%",
+      confidence: "88%",
+      speed: "72%",
+      accuracy: "82%"
+    };
+    Object.entries(coachScores).forEach(([key, value]) => setText(`[data-coach-score="${key}"]`, value));
+
+    const weeklyScores = {
+      reading: ["82%", "Good start"],
+      writing: ["--", "Not tested"],
+      grammar: ["--", "Not tested"],
+      math: ["--", "Not tested"],
+      confidence: ["88%", "Confident"]
+    };
+    Object.entries(weeklyScores).forEach(([key, [score, label]]) => {
+      setText(`[data-weekly-score="${key}"]`, score);
+      setText(`[data-weekly-label="${key}"]`, label);
+    });
+
+    const blueprintScores = {
+      reading: "82%",
+      writing: "--",
+      speaking: "--",
+      confidence: "88%",
+      creativity: "--",
+      logical: "--"
+    };
+    Object.entries(blueprintScores).forEach(([key, value]) => setText(`[data-blueprint-score="${key}"]`, value));
+
+    const insightList = document.querySelector("[data-insight-list]");
+    if (insightList) {
+      insightList.innerHTML = `
+        <li>Completed the first reading fluency check.</li>
+        <li>Strong comfort with letters, sounds and blends.</li>
+        <li>Needs more practice with words, sentences and short paragraphs.</li>
+        <li>Recommended home practice: 15 minutes read-aloud daily.</li>
+      `;
+    }
+    completeReadingTest.disabled = true;
+    completeReadingTest.textContent = "Reading Check Completed";
+    if (readingTestStatus) readingTestStatus.classList.add("is-complete");
   });
 }
 
