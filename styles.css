@@ -10085,6 +10085,201 @@ body:has(.about-hero) .about-hero::before {
     linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 250, 241, 0.86));
 }
 
+.learning-platform-panel,
+.homework-generator-panel,
+.weakness-panel {
+  display: grid;
+  grid-template-columns: 0.46fr 1fr;
+  gap: 20px;
+  align-items: center;
+  background:
+    radial-gradient(circle at 92% 10%, rgba(255, 216, 111, 0.32), transparent 26%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(237, 249, 255, 0.84));
+}
+
+.duo-path {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.duo-path article {
+  position: relative;
+  display: grid;
+  gap: 8px;
+  min-height: 150px;
+  align-content: center;
+  padding: 15px;
+  border: 1px solid rgba(31, 49, 66, 0.1);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 16px 34px rgba(31, 49, 66, 0.08);
+}
+
+.duo-path article:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: -12px;
+  width: 12px;
+  height: 3px;
+  background: rgba(31, 49, 66, 0.16);
+}
+
+.duo-path span,
+.mastery-stage-row span,
+.learn-flow-row article,
+.challenge-actions + small,
+.homework-output span {
+  font-weight: 950;
+}
+
+.duo-path span {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #1f3142;
+  background: #edf9ff;
+}
+
+.duo-path strong {
+  color: #1f3142;
+}
+
+.duo-path small {
+  color: rgba(31, 49, 66, 0.62);
+  font-weight: 900;
+}
+
+.duo-path .is-mastered span,
+.duo-path .is-mastered {
+  background: rgba(217, 247, 232, 0.88);
+}
+
+.duo-path .is-practicing span,
+.duo-path .is-practicing {
+  background: rgba(255, 216, 111, 0.28);
+}
+
+.duo-path .is-learning span,
+.duo-path .is-learning {
+  background: rgba(222, 215, 255, 0.45);
+}
+
+.challenge-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.mastery-stage-row,
+.learn-flow-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.mastery-stage-row span,
+.learn-flow-row article {
+  padding: 10px 12px;
+  border: 1px solid rgba(31, 49, 66, 0.1);
+  border-radius: 999px;
+  color: #1f3142;
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.learn-flow-row {
+  margin-top: 16px;
+}
+
+.learn-flow-row article {
+  border-radius: 16px;
+  background: rgba(217, 247, 232, 0.68);
+}
+
+.word-day-card,
+.homework-output {
+  display: grid;
+  gap: 8px;
+  margin: 12px 0;
+  padding: 16px;
+  border: 1px solid rgba(31, 49, 66, 0.1);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.word-day-card strong {
+  color: #1f3142;
+  font-size: 1.75rem;
+}
+
+.word-day-card span,
+.word-day-card small {
+  color: rgba(31, 49, 66, 0.68);
+  font-weight: 850;
+}
+
+.homework-generator-form {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.homework-generator-form label {
+  display: grid;
+  gap: 7px;
+  color: #1f3142;
+  font-weight: 950;
+}
+
+.homework-generator-form select {
+  min-height: 46px;
+  border: 1px solid rgba(31, 49, 66, 0.13);
+  border-radius: 16px;
+  padding: 0 12px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #1f3142;
+  font: inherit;
+  font-weight: 850;
+}
+
+.homework-output ol {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding-left: 22px;
+  color: #1f3142;
+  font-weight: 850;
+}
+
+.weakness-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.weakness-grid article {
+  display: grid;
+  gap: 7px;
+  min-height: 120px;
+  padding: 16px;
+  border: 1px solid rgba(31, 49, 66, 0.1);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.weakness-grid strong {
+  color: #1f3142;
+}
+
+.weakness-grid span {
+  color: #9a5a00;
+  font-weight: 900;
+}
+
 .reading-panel {
   display: grid;
   grid-template-columns: 0.6fr 1fr;
@@ -10484,13 +10679,22 @@ body:has(.about-hero) .about-hero::before {
   .achievement-panel,
   .learning-hub-teaser,
   .parent-login-flow,
-  .learning-test-panel {
+  .learning-test-panel,
+  .learning-platform-panel,
+  .homework-generator-panel,
+  .weakness-panel {
     grid-template-columns: 1fr;
   }
 
   .mission-grid,
-  .learning-login-grid {
+  .learning-login-grid,
+  .homework-generator-form {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .duo-path,
+  .weakness-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .learning-two-column,
@@ -10541,10 +10745,26 @@ body:has(.about-hero) .about-hero::before {
 
   .mission-grid,
   .learning-login-grid,
+  .homework-generator-form,
   .coach-score-grid,
   .weekly-report-grid,
-  .blueprint-grid {
+  .blueprint-grid,
+  .duo-path,
+  .weakness-grid {
     grid-template-columns: 1fr;
+  }
+
+  .duo-path article {
+    min-height: 104px;
+  }
+
+  .duo-path article:not(:last-child)::after {
+    top: auto;
+    right: auto;
+    left: 29px;
+    bottom: -12px;
+    width: 3px;
+    height: 12px;
   }
 
   .fluency-roadmap article {
