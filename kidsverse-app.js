@@ -102,6 +102,7 @@ function enhanceAfterSchoolMenu() {
         <a class="nav-sub-link" href="${root}after-school/present-tense.html">Present Tense</a>
         <a class="nav-sub-link" href="${root}after-school/past-tense.html">Past Tense</a>
         <a class="nav-sub-link" href="${root}after-school/future-tense.html">Future Tense</a>
+        <a class="nav-sub-link" href="${root}after-school/articles-a-an-the.html">A, An & The</a>
         <a class="nav-sub-link" href="${root}after-school/daily-routine-verbs.html">Daily Routine Verbs</a>
         <a class="nav-sub-link" href="${root}after-school/reading-fluency.html">Reading Fluency</a>
       </div>
@@ -168,6 +169,7 @@ function enhanceKiyaLearningLinks() {
       { href: `${labRoot}present-tense.html`, label: "Present Tense Lab" },
       { href: `${labRoot}past-tense.html`, label: "Past Tense Lab" },
       { href: `${labRoot}future-tense.html`, label: "Future Tense Lab" },
+      { href: `${labRoot}articles-a-an-the.html`, label: "A, An & The" },
       { href: `${labRoot}daily-routine-verbs.html`, label: "Daily Routine Verbs" },
       { href: `${labRoot}reading-fluency.html`, label: "Reading Fluency" },
     ];
@@ -4089,3 +4091,278 @@ function initLearningJourneyDashboard() {
 }
 
 initLearningJourneyDashboard();
+
+const articleRules = {
+  a: {
+    title: "A",
+    badge: "Consonant sound",
+    structure: "a + singular countable noun",
+    example: "I have a pencil.",
+    note: "Use a before one general thing when the next sound is a consonant sound.",
+    tips: ["a book", "a table", "a mango", "a uniform"]
+  },
+  an: {
+    title: "An",
+    badge: "Vowel sound",
+    structure: "an + singular countable noun",
+    example: "She ate an apple.",
+    note: "Use an before one general thing when the next sound is a vowel sound.",
+    tips: ["an egg", "an orange", "an umbrella", "an hour"]
+  },
+  the: {
+    title: "The",
+    badge: "Specific noun",
+    structure: "the + known or specific noun",
+    example: "Please close the door.",
+    note: "Use the when the noun is already known, unique, nearby or clearly specific.",
+    tips: ["the sun", "the school bus", "the red pencil", "the story we read"]
+  },
+  noArticle: {
+    title: "No Article",
+    badge: "General idea",
+    structure: "plural / uncountable noun used generally",
+    example: "Children love stories.",
+    note: "Use no article for general plural nouns, general uncountable nouns and many school subjects.",
+    tips: ["Books are useful.", "Water is important.", "I like music.", "Maths is fun."]
+  }
+};
+
+const articleChoiceQuestion = {
+  prompt: "I saw ___ owl on the tree.",
+  answer: "an",
+  explanation: "Owl starts with a vowel sound, so the correct article is an."
+};
+
+const articleFillQuestions = [
+  { prompt: "Riya has ___ pencil.", answer: "a", explanation: "Pencil begins with a consonant sound." },
+  { prompt: "I ate ___ orange.", answer: "an", explanation: "Orange begins with a vowel sound." },
+  { prompt: "Please open ___ window near you.", answer: "the", explanation: "The window is specific because it is near you." },
+  { prompt: "___ children should drink water.", answer: "none", explanation: "Children is a general plural noun here." },
+  { prompt: "He is ___ honest boy.", answer: "an", explanation: "Honest begins with a vowel sound because h is silent." }
+];
+
+const articleQuizQuestions = [
+  { prompt: "Choose the correct article: ___ apple", options: ["A", "An", "The", "No article"], answer: "An", explanation: "Apple begins with a vowel sound." },
+  { prompt: "Choose the correct article: ___ book on my table", options: ["A", "An", "The", "No article"], answer: "The", explanation: "The book is specific because it is on my table." },
+  { prompt: "Choose the correct sentence.", options: ["I saw a elephant.", "I saw an elephant.", "I saw the elephant first time.", "I saw an books."], answer: "I saw an elephant.", explanation: "Elephant begins with a vowel sound and is one general animal." },
+  { prompt: "Choose the correct article: ___ university", options: ["A", "An", "The", "No article"], answer: "A", explanation: "University starts with a yoo sound, which is a consonant sound." },
+  { prompt: "Choose the correct article: ___ moon", options: ["A", "An", "The", "No article"], answer: "The", explanation: "The moon is unique, so we use the." },
+  { prompt: "Choose the correct sentence.", options: ["Milk is good for health.", "A milk is good for health.", "An milk is good for health.", "The milk is good for health always."], answer: "Milk is good for health.", explanation: "Milk is used generally as an uncountable noun." },
+  { prompt: "Choose the correct article: ___ hour", options: ["A", "An", "The", "No article"], answer: "An", explanation: "Hour begins with a vowel sound because h is silent." },
+  { prompt: "Choose the correct sentence.", options: ["She has a umbrella.", "She has an umbrella.", "She has the umbrella first time.", "She has umbrella one."], answer: "She has an umbrella.", explanation: "Umbrella begins with a vowel sound." },
+  { prompt: "Choose the correct article: I like ___ stories.", options: ["a", "an", "the", "no article"], answer: "no article", explanation: "Stories is plural and used generally here." },
+  { prompt: "Choose the correct article: ___ principal is coming to class.", options: ["A", "An", "The", "No article"], answer: "The", explanation: "The principal is a specific person known in school." }
+];
+
+function initArticleRuleCards() {
+  const panel = document.querySelector("[data-article-detail]");
+  const cards = document.querySelectorAll("[data-article-card]");
+  if (!panel || !cards.length) return;
+
+  const render = (key) => {
+    const data = articleRules[key] || articleRules.a;
+    panel.innerHTML = `
+      <span class="eyebrow">${data.badge}</span>
+      <h3>${data.title}</h3>
+      <code>${data.structure}</code>
+      <strong>${data.example}</strong>
+      <p>${data.note}</p>
+      <div class="article-example-pills">${data.tips.map((tip) => `<span>${tip}</span>`).join("")}</div>
+    `;
+  };
+
+  cards.forEach((card) => {
+    card.addEventListener("click", () => {
+      cards.forEach((item) => item.classList.remove("is-active"));
+      card.classList.add("is-active");
+      render(card.dataset.articleCard);
+    });
+  });
+  render("a");
+}
+
+function initArticleChoiceTool() {
+  const tool = document.querySelector("[data-article-choice-tool]");
+  if (!tool) return;
+  const feedback = tool.querySelector("[data-article-choice-feedback]");
+  tool.querySelectorAll("[data-article-choice]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const correct = button.dataset.articleChoice === articleChoiceQuestion.answer;
+      tool.querySelectorAll("[data-article-choice]").forEach((item) => item.classList.remove("is-correct", "is-wrong"));
+      button.classList.add(correct ? "is-correct" : "is-wrong");
+      if (feedback) {
+        feedback.textContent = correct
+          ? `Correct. ${articleChoiceQuestion.explanation}`
+          : `Try again. ${articleChoiceQuestion.explanation}`;
+      }
+    });
+  });
+}
+
+function initArticlePractice() {
+  const practice = document.querySelector("[data-article-practice]");
+  if (!practice) return;
+  const buttons = practice.querySelectorAll("[data-article-intent]");
+  const input = practice.querySelector("[data-article-input]");
+  const feedback = practice.querySelector("[data-article-feedback]");
+  const rules = {
+    sentence: practice.querySelector("[data-article-rule='sentence']"),
+    article: practice.querySelector("[data-article-rule='article']"),
+    noun: practice.querySelector("[data-article-rule='noun']")
+  };
+  let active = "a";
+
+  function update() {
+    const value = input.value.trim();
+    const lower = value.toLowerCase();
+    const hasSentence = value.split(/\s+/).length >= 3 && /[a-z]/i.test(value);
+    const articlePattern = active === "none" ? !/\b(a|an|the)\b/i.test(value) : new RegExp(`\\b${active}\\b`, "i").test(value);
+    const hasNounIdea = /\b(book|pencil|apple|orange|owl|school|bag|table|door|children|water|music|story|stories|teacher|principal|hour|umbrella|uniform|university)\b/i.test(value);
+    Object.entries({ sentence: hasSentence, article: articlePattern, noun: hasNounIdea }).forEach(([key, passed]) => {
+      rules[key]?.classList.toggle("is-done", passed);
+    });
+    if (!value) {
+      feedback.innerHTML = `<span>Ready to check</span><strong>Start with a simple noun sentence.</strong><p>Example: I have a pencil.</p>`;
+      return;
+    }
+    const passed = hasSentence && articlePattern && hasNounIdea;
+    const example = articleRules[active === "none" ? "noArticle" : active].example;
+    feedback.innerHTML = passed
+      ? `<span>Good sentence</span><strong>This sentence matches the ${active === "none" ? "no article" : active.toUpperCase()} rule.</strong><p>Now try writing one more sentence with a different noun.</p>`
+      : `<span>Needs one correction</span><strong>Check the article and noun pattern.</strong><p>Example: ${example}</p>`;
+  }
+
+  buttons.forEach((button) => {
+    button.addEventListener("click", () => {
+      buttons.forEach((item) => item.classList.remove("is-active"));
+      button.classList.add("is-active");
+      active = button.dataset.articleIntent || "a";
+      input.placeholder = `Example: ${articleRules[active === "none" ? "noArticle" : active].example}`;
+      update();
+    });
+  });
+  input.addEventListener("input", update);
+}
+
+function initArticleFillPractice() {
+  const fill = document.querySelector("[data-article-fill]");
+  if (!fill) return;
+  const card = fill.querySelector("[data-fill-card]");
+  const progress = fill.querySelector("[data-fill-progress]");
+  const retry = fill.querySelector("[data-fill-retry]");
+  const scoreText = fill.querySelector("[data-fill-score]");
+  let index = 0;
+  let score = 0;
+
+  function render() {
+    if (progress) progress.value = index;
+    if (scoreText) scoreText.textContent = `Score: ${score}/${articleFillQuestions.length}`;
+    if (index >= articleFillQuestions.length) {
+      card.innerHTML = `<h3>Practice Complete</h3><p class="quiz-explanation">Final score: ${score}/${articleFillQuestions.length}. Use the quiz below to validate the learning.</p>`;
+      return;
+    }
+    const question = articleFillQuestions[index];
+    card.innerHTML = `
+      <span class="eyebrow">Blank ${index + 1} of ${articleFillQuestions.length}</span>
+      <h3>${question.prompt}</h3>
+      <div class="quiz-options">
+        ${["a", "an", "the", "none"].map((option) => `<button class="quiz-option" type="button" data-fill-option="${option}">${option === "none" ? "No article" : option}</button>`).join("")}
+      </div>
+      <p class="quiz-explanation" hidden></p>
+    `;
+    const explanation = card.querySelector(".quiz-explanation");
+    card.querySelectorAll("[data-fill-option]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const correct = button.dataset.fillOption === question.answer;
+        button.classList.add(correct ? "is-correct" : "is-wrong");
+        card.querySelectorAll("[data-fill-option]").forEach((item) => {
+          item.disabled = true;
+          if (item.dataset.fillOption === question.answer) item.classList.add("is-correct");
+        });
+        if (correct) score += 1;
+        if (explanation) {
+          explanation.hidden = false;
+          explanation.textContent = question.explanation;
+        }
+        window.setTimeout(() => {
+          index += 1;
+          render();
+        }, 850);
+      });
+    });
+  }
+  retry?.addEventListener("click", () => {
+    index = 0;
+    score = 0;
+    render();
+  });
+  render();
+}
+
+function initArticleQuiz() {
+  const quiz = document.querySelector("[data-article-quiz]");
+  if (!quiz) return;
+  const card = quiz.querySelector("[data-article-quiz-card]");
+  const progress = quiz.querySelector("[data-article-quiz-progress]");
+  const retry = quiz.querySelector("[data-article-quiz-retry]");
+  const scoreText = quiz.querySelector("[data-article-quiz-score]");
+  let index = 0;
+  let score = 0;
+
+  function render() {
+    if (progress) progress.value = index;
+    if (scoreText) scoreText.textContent = `Score: ${score}/${articleQuizQuestions.length}`;
+    if (index >= articleQuizQuestions.length) {
+      const grade = score >= 8 ? "Excellent" : score >= 6 ? "Good" : "Needs Practice";
+      card.innerHTML = `<h3>${grade} Articles Practice</h3><p class="quiz-explanation">Final score: ${score}/${articleQuizQuestions.length}. Retry the quiz or revise the rules above.</p>`;
+      if (progress) progress.value = articleQuizQuestions.length;
+      return;
+    }
+    const question = articleQuizQuestions[index];
+    card.innerHTML = `
+      <span class="eyebrow">Question ${index + 1} of ${articleQuizQuestions.length}</span>
+      <h3>${question.prompt}</h3>
+      <div class="quiz-options">
+        ${question.options.map((option) => `<button class="quiz-option" type="button" data-article-option="${option}">${option}</button>`).join("")}
+      </div>
+      <p class="quiz-explanation" hidden></p>
+    `;
+    const explanation = card.querySelector(".quiz-explanation");
+    card.querySelectorAll("[data-article-option]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const correct = button.dataset.articleOption === question.answer;
+        if (correct) score += 1;
+        card.querySelectorAll("[data-article-option]").forEach((item) => {
+          item.disabled = true;
+          if (item.dataset.articleOption === question.answer) item.classList.add("is-correct");
+        });
+        button.classList.add(correct ? "is-correct" : "is-wrong");
+        if (explanation) {
+          explanation.hidden = false;
+          explanation.textContent = question.explanation;
+        }
+        const nextButton = document.createElement("button");
+        nextButton.className = "primary-button";
+        nextButton.type = "button";
+        nextButton.textContent = index === articleQuizQuestions.length - 1 ? "Show Result" : "Next Question";
+        nextButton.addEventListener("click", () => {
+          index += 1;
+          render();
+        });
+        card.appendChild(nextButton);
+      });
+    });
+  }
+  retry?.addEventListener("click", () => {
+    index = 0;
+    score = 0;
+    render();
+  });
+  render();
+}
+
+initArticleRuleCards();
+initArticleChoiceTool();
+initArticlePractice();
+initArticleFillPractice();
+initArticleQuiz();
