@@ -80,6 +80,7 @@
         <a href="../contact.html">Contact</a>
       </nav>
       <a class="header-cta" href="#reading-practice">Start Reading</a>
+      <button class="header-login-pill" type="button" data-reading-parent-login-open>Parent Login</button>
       <button class="menu-button" type="button" aria-label="Open menu" data-menu-button>Menu</button>
     </header>
 
@@ -119,6 +120,24 @@
             <input type="text" data-reading-student-name placeholder="Enter student name for certificate" autocomplete="name" />
           </label>
           <p>Your certificate will be created after the reading assessment.</p>
+        </div>
+        <div class="reading-parent-login-card" data-reading-parent-status-card>
+          <div>
+            <p class="eyebrow">Parent progress login</p>
+            <h3 data-reading-parent-status-title>Login to save the reading journey.</h3>
+            <p data-reading-parent-status-copy>
+              Read the first paragraph freely. From the next paragraph, parent login saves progress, streaks and resume point inside Learning Journey.
+            </p>
+            <div class="reading-parent-streak-grid">
+              <span><strong data-reading-parent-streak>0 days</strong><small>Reading streak</small></span>
+              <span><strong data-reading-parent-today>0</strong><small>Today sessions</small></span>
+              <span><strong data-reading-parent-resume>First paragraph</strong><small>Resume point</small></span>
+            </div>
+          </div>
+          <div class="reading-parent-login-actions">
+            <button class="primary-button" type="button" data-reading-parent-login-open>Parent Login</button>
+            <a class="secondary-button" href="../learning-journey.html">View Learning Journey</a>
+          </div>
         </div>
         <div class="reading-select-panel" aria-label="Reading settings">
           <label>
