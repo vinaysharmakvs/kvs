@@ -3929,3 +3929,35 @@ function initReadingWordHelper() {
 
 initReadingFluencyLab();
 initReadingWordHelper();
+
+function initLearningJourneyDashboard() {
+  const form = document.querySelector("[data-learning-login-form]");
+  const dashboard = document.querySelector("[data-learning-dashboard]");
+  if (!form || !dashboard) return;
+
+  const parentNameTarget = document.querySelector("[data-learning-parent-name]");
+  const childNameTarget = document.querySelector("[data-learning-child-name]");
+  const note = document.querySelector("[data-learning-login-note]");
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+
+    const formData = new FormData(form);
+    const parentName = String(formData.get("parentName") || "").trim();
+    const childName = String(formData.get("childName") || "").trim();
+
+    if (parentNameTarget) parentNameTarget.textContent = parentName || "Parent";
+    if (childNameTarget) childNameTarget.textContent = childName || "Your child";
+    if (note) note.textContent = "Dashboard opened. Live records can be connected once the database API is enabled.";
+
+    dashboard.hidden = false;
+    document.body.classList.add("learning-dashboard-open");
+    dashboard.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+}
+
+initLearningJourneyDashboard();
