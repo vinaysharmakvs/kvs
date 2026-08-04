@@ -2692,6 +2692,35 @@ function saveKidsverseParentLogin(data) {
   return login;
 }
 
+function updateKidsverseReadingParentStatus() {
+  const login = getKidsverseParentLogin();
+  const isLoggedIn = Boolean(login.parentName && login.childName);
+  const title = document.querySelector("[data-reading-parent-status-title]");
+  const copy = document.querySelector("[data-reading-parent-status-copy]");
+  const card = document.querySelector("[data-reading-parent-status-card]");
+  const studentName = document.querySelector("[data-reading-student-name]");
+  const buttons = document.querySelectorAll("[data-reading-parent-login-open]");
+
+  if (card) card.classList.toggle("is-logged-in", isLoggedIn);
+  if (title) {
+    title.textContent = isLoggedIn
+      ? `Logged in: ${login.childName}'s journey is being saved.`
+      : "Login to save the reading journey.";
+  }
+  if (copy) {
+    copy.textContent = isLoggedIn
+      ? `${login.parentName} can now resume ${login.childName}'s Reading Fluency progress from the Learning Journey dashboard.`
+      : "Read the first paragraph freely. From the next paragraph, parent login saves progress, streaks and resume point inside Learning Journey.";
+  }
+  buttons.forEach((button) => {
+    button.textContent = isLoggedIn ? "Switch Parent" : "Parent Login";
+    button.setAttribute("aria-label", isLoggedIn ? "Switch parent login" : "Open parent login");
+  });
+  if (isLoggedIn && studentName && !studentName.value.trim()) {
+    studentName.value = login.childName;
+  }
+}
+
 function showKidsverseParentLoginGate(onComplete) {
   let modal = document.querySelector("[data-learning-login-modal]");
   if (!modal) {
@@ -2704,6 +2733,12 @@ function showKidsverseParentLoginGate(onComplete) {
         <p class="eyebrow">Parent Login Required</p>
         <h2>Login once to save reading progress and streaks.</h2>
         <p>From the next paragraph onwards, Kidsverse will remember where the child stopped and show it inside Learning Journey.</p>
+        <div class="learning-google-note">
+          <span>G</span>
+          <strong>Parent Google sign-in</strong>
+          <small data-learning-google-status>Use this parent login flow before adding child details.</small>
+        </div>
+        <button class="learning-google-button" type="button" data-learning-google-preview><span>G</span> Continue with Google</button>
         <form data-learning-modal-form>
           <label>Parent name<input type="text" name="parentName" placeholder="Parent name" required /></label>
           <label>Child name<input type="text" name="childName" placeholder="Child name" required /></label>
@@ -2715,6 +2750,14 @@ function showKidsverseParentLoginGate(onComplete) {
     document.body.appendChild(modal);
     modal.querySelector("[data-learning-login-close]")?.addEventListener("click", () => {
       modal.hidden = true;
+    });
+    modal.querySelector("[data-learning-google-preview]")?.addEventListener("click", () => {
+      const status = modal.querySelector("[data-learning-google-status]");
+      const parentField = modal.querySelector('[name="parentName"]');
+      const childField = modal.querySelector('[name="childName"]');
+      if (status) status.textContent = "Google sign-in preview completed. Add child name and grade to save the dashboard.";
+      if (parentField && !parentField.value.trim()) parentField.value = "Parent";
+      childField?.focus();
     });
   }
   const saved = getKidsverseParentLogin();
@@ -2738,6 +2781,7 @@ function showKidsverseParentLoginGate(onComplete) {
       section: ""
     });
     modal.hidden = true;
+    updateKidsverseReadingParentStatus();
     onComplete?.();
   };
 }
@@ -3433,6 +3477,44 @@ function initReadingFluencyLab() {
     }
   }
 
+  function renderReadingStreakStatus(extra = {}) {
+    const saved = loadKidsverseLearningProgress();
+    const reading = { ...(saved.reading || {}), ...extra };
+    const localStreak = loadReadingStreak();
+    const streak = Number(reading.streak ?? localStreak.streak) || 0;
+    const todayCount = Number(reading.todayCount ?? localStreak.todayCount) || 0;
+    const titleText = reading.title || activePassage()?.title || "First paragraph";
+    const streakTarget = document.querySelector("[data-reading-parent-streak]");
+    const todayTarget = document.querySelector("[data-reading-parent-today]");
+    const resumeTarget = document.querySelector("[data-reading-parent-resume]");
+
+    if (streakTarget) streakTarget.textContent = `${streak} day${streak === 1 ? "" : "s"}`;
+    if (todayTarget) todayTarget.textContent = `${todayCount}`;
+    if (resumeTarget) resumeTarget.textContent = titleText;
+  }
+
+  function syncReadingJourneyWithStreak(extra = {}) {
+    const localStreak = loadReadingStreak();
+    const readingPatch = {
+      grade,
+      level,
+      passageIndex,
+      nextPassageIndex: extra.nextPassageIndex ?? passageIndex,
+      title: activePassage().title,
+      levelLabel: activePassage().label,
+      gradeLabel: readingGradeLabels[grade],
+      streak: Number(extra.streak ?? localStreak.streak) || 0,
+      todayCount: Number(extra.todayCount ?? localStreak.todayCount) || 0,
+      lastDate: extra.lastDate || localStreak.lastDate || "",
+      status: extra.status || "Reading progress saved",
+      ...extra
+    };
+    saveKidsverseLearningProgress({ reading: readingPatch });
+    renderReadingStreakStatus(readingPatch);
+    updateKidsverseReadingParentStatus();
+    return readingPatch;
+  }
+
   function recordReadingStreak() {
     const today = getTodayDateKey();
     const saved = loadReadingStreak();
@@ -3446,6 +3528,7 @@ function initReadingFluencyLab() {
     }
     const next = { lastDate: today, streak, todayCount };
     saveReadingStreak(next);
+    renderReadingStreakStatus(next);
     return next;
   }
 
@@ -3499,21 +3582,16 @@ function initReadingFluencyLab() {
     if (certificateStreak) certificateStreak.innerHTML = `Current Streak<br>${streak.streak}<br>Day${streak.streak === 1 ? "" : "s"}`;
     if (shareNote) shareNote.textContent = "Certificate ready. Share it with family or friends.";
     if (certificateCard) certificateCard.hidden = false;
-    saveKidsverseLearningProgress({
-      reading: {
-        grade,
-        level,
-        passageIndex,
-        nextPassageIndex: (passageIndex + 1) % currentReadingLevels[level].length,
-        title: activePassage().title,
-        levelLabel: levelText,
-        gradeLabel,
-        lastAccuracy: accuracy,
-        streak: streak.streak,
-        todayCount: streak.todayCount,
-        lastCompletedAt: new Date().toISOString(),
-        status: "Reading paragraph completed"
-      }
+    syncReadingJourneyWithStreak({
+      nextPassageIndex: (passageIndex + 1) % currentReadingLevels[level].length,
+      levelLabel: levelText,
+      gradeLabel,
+      lastAccuracy: accuracy,
+      streak: streak.streak,
+      todayCount: streak.todayCount,
+      lastDate: streak.lastDate,
+      lastCompletedAt: new Date().toISOString(),
+      status: "Reading paragraph completed"
     });
   }
 
@@ -3821,6 +3899,16 @@ function initReadingFluencyLab() {
   } catch {
     /* Optional student name restore. */
   }
+  updateKidsverseReadingParentStatus();
+  renderReadingStreakStatus();
+
+  document.querySelectorAll("[data-reading-parent-login-open]").forEach((button) => {
+    button.addEventListener("click", () => {
+      showKidsverseParentLoginGate(() => {
+        syncReadingJourneyWithStreak({ status: "Parent login completed" });
+      });
+    });
+  });
 
   async function getCurrentMicPermission() {
     if (!navigator.permissions?.query) return getSavedMicPermission();
@@ -3919,17 +4007,9 @@ function initReadingFluencyLab() {
   nextButton?.addEventListener("click", () => {
     const continueToNext = () => {
       passageIndex = (passageIndex + 1) % currentReadingLevels[level].length;
-      saveKidsverseLearningProgress({
-        reading: {
-          grade,
-          level,
-          passageIndex,
-          nextPassageIndex: passageIndex,
-          title: activePassage().title,
-          levelLabel: activePassage().label,
-          gradeLabel: readingGradeLabels[grade],
-          status: "Next paragraph opened"
-        }
+      syncReadingJourneyWithStreak({
+        nextPassageIndex: passageIndex,
+        status: "Next paragraph opened"
       });
       renderPassage();
     };
@@ -3940,17 +4020,9 @@ function initReadingFluencyLab() {
     }
 
     passageIndex = (passageIndex + 1) % currentReadingLevels[level].length;
-    saveKidsverseLearningProgress({
-      reading: {
-        grade,
-        level,
-        passageIndex,
-        nextPassageIndex: passageIndex,
-        title: activePassage().title,
-        levelLabel: activePassage().label,
-        gradeLabel: readingGradeLabels[grade],
-        status: "Next paragraph opened"
-      }
+    syncReadingJourneyWithStreak({
+      nextPassageIndex: passageIndex,
+      status: "Next paragraph opened"
     });
     renderPassage();
   });
