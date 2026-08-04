@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Kidsverse Learning Journey parent dashboard for English Lab, reading fluency, grammar, writing, speaking, maths, badges and weekly learning insights."
+    />
+    <title>Kidsverse Learning Journey | Parent Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="shortcut icon" href="favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="assets/favicon.png" />
+    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+    <link rel="stylesheet" href="styles.css" />
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-0ZT634EM99"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-0ZT634EM99');
+  </script>
+</head>
+  <body class="learning-journey-page">
+    <div class="top-strip">
+      <span>Kidsverse Learning Journey</span>
+      <strong>Parents can track English Lab, reading, speaking and overall growth</strong>
+      <a href="#parent-login">Login</a>
+    </div>
+
+    <header class="site-header">
+      <a class="brand" href="index.html#top" aria-label="Kidsverse School home">
+        <img src="assets/logo.png" alt="Kidsverse School logo" />
+        <span><strong>Kidsverse</strong><small>School Rehan</small></span>
+      </a>
+      <nav class="nav-links" aria-label="Primary navigation"><a href="about.html">About</a><a href="activities.html">Activities</a>
+        <div class="nav-dropdown">
+          <a class="nav-parent" href="index.html#programs">Programs</a>
+          <div class="nav-menu">
+            <a href="playway.html">Playway</a>
+            <a href="nursery.html">Nursery</a>
+            <a href="lkg.html">LKG</a>
+            <a href="ukg.html">UKG</a>
+            <a href="grade-1.html">Grade 1</a>
+          </div>
+        </div>
+        <a href="after-school.html">After School</a>
+        <div class="nav-dropdown">
+          <a class="nav-parent" href="parent-hub.html">Parent Hub</a>
+          <div class="nav-menu">
+            <a href="parent-hub.html">Parent Hub</a>
+            <a href="learning-journey.html">Learning Journey</a>
+            <a href="parent-feedback.html">Parent Feedback</a>
+            <a href="faq.html">Parent FAQ</a>
+          </div>
+        </div>
+        <a href="contact.html">Contact</a>
+      </nav>
+      <a class="header-cta" href="#parent-login">Parent Login</a>
+      <button class="menu-button" type="button" aria-label="Open menu" data-menu-button>Menu</button>
+    </header>
+
+    <main id="top">
+      <section class="learning-hero">
+        <div class="learning-hero-copy">
+          <p class="eyebrow">My Learning Dashboard</p>
+          <h1>See your child's learning journey, not just homework.</h1>
+          <p>
+            A parent-first dashboard for English Lab progress, reading fluency, speaking confidence, writing, maths, badges, weekly insights and next-step recommendations.
+          </p>
+          <div class="hero-actions">
+            <a class="primary-button" href="#parent-login">Access Child Dashboard</a>
+            <a class="secondary-button" href="after-school.html#english-learning-lab">Explore English Lab</a>
+          </div>
+          <div class="learning-hero-pills" aria-label="Learning dashboard highlights">
+            <span>Reading fluency</span>
+            <span>Grammar roadmap</span>
+            <span>Weekly insight</span>
+            <span>Badges</span>
+          </div>
+        </div>
+        <div class="learning-phone-preview" aria-label="Learning dashboard preview">
+          <div class="learning-phone-top"><span></span><strong>Kidsverse</strong><small>82%</small></div>
+          <div class="learning-ring"><strong>82%</strong><span>Overall Progress</span></div>
+          <div class="learning-mini-missions">
+            <article><strong>Reading</strong><span>2 stories left</span></article>
+            <article><strong>Grammar</strong><span>Past tense active</span></article>
+            <article><strong>Speaking</strong><span>Challenge complete</span></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section learning-login-section" id="parent-login">
+        <form class="learning-login-card" data-learning-login-form>
+          <p class="eyebrow">Parent access</p>
+          <h2>Login to your child's learning dashboard.</h2>
+          <p>Enter parent details to open the dashboard preview. Later this will connect with the Kidsverse database and secure parent login.</p>
+          <div class="learning-login-grid">
+            <label>Parent name<input type="text" name="parentName" placeholder="Example: Mrs. Sharma" required /></label>
+            <label>Mobile number<input type="tel" name="parentPhone" placeholder="+91" required /></label>
+            <label>Child name<input type="text" name="childName" placeholder="Example: Rehan" required /></label>
+            <label>Class<input type="text" name="childClass" placeholder="Example: UKG Alpha" required /></label>
+          </div>
+          <button class="primary-button" type="submit">Access My Child's Dashboard</button>
+          <small data-learning-login-note>Use this page as the parent-facing experience. Database login can be connected once student records are uploaded.</small>
+        </form>
+      </section>
+
+      <section class="section learning-dashboard" data-learning-dashboard hidden>
+        <div class="learning-dashboard-head">
+          <div>
+            <p class="eyebrow">Welcome back</p>
+            <h2>Hello, <span data-learning-parent-name>Mrs. Sharma</span>.</h2>
+            <p><strong data-learning-child-name>Rehan</strong>'s learning journey is moving steadily across reading, grammar, communication and confidence.</p>
+          </div>
+          <div class="learning-score-card">
+            <span>Overall Progress</span>
+            <strong>82%</strong>
+            <small>Excellent direction</small>
+          </div>
+        </div>
+
+        <div class="mission-grid">
+          <article><span>Reading</span><strong>2 stories remaining</strong><a href="after-school/reading-fluency.html">Continue</a></article>
+          <article><span>Grammar</span><strong>Past Tense - 60% complete</strong><a href="after-school/past-tense.html">Practice</a></article>
+          <article><span>Mathematics</span><strong>Fractions practice ready</strong><a href="#math-lab">View</a></article>
+          <article><span>Speaking</span><strong>Today's challenge complete</strong><a href="#communication-builder">Review</a></article>
+        </div>
+
+        <section class="learning-panel reading-panel">
+          <div class="learning-panel-copy">
+            <p class="eyebrow">Flagship feature</p>
+            <h2>Reading Fluency Roadmap</h2>
+            <p>Parents can instantly see where the child is confident and where practice is needed.</p>
+          </div>
+          <div class="fluency-roadmap">
+            <article><span>Letters</span><div><i style="width: 100%"></i></div><strong>100%</strong></article>
+            <article><span>Sounds</span><div><i style="width: 100%"></i></div><strong>100%</strong></article>
+            <article><span>Blends</span><div><i style="width: 82%"></i></div><strong>82%</strong></article>
+            <article><span>Words</span><div><i style="width: 65%"></i></div><strong>65%</strong></article>
+            <article><span>Sentences</span><div><i style="width: 45%"></i></div><strong>45%</strong></article>
+            <article><span>Paragraphs</span><div><i style="width: 20%"></i></div><strong>20%</strong></article>
+            <article class="is-locked"><span>Stories</span><div><i style="width: 0%"></i></div><strong>Locked</strong></article>
+          </div>
+        </section>
+
+        <div class="learning-two-column">
+          <section class="learning-panel">
+            <p class="eyebrow">English Lab</p>
+            <h2>Grammar Roadmap</h2>
+            <div class="roadmap-list">
+              <a href="after-school/present-tense.html" class="is-done"><span>Done</span><strong>Present Tense</strong></a>
+              <a href="after-school/past-tense.html" class="is-active"><span>Live</span><strong>Past Tense</strong></a>
+              <a href="after-school/future-tense.html"><span>Next</span><strong>Future Tense</strong></a>
+              <article><span>Soon</span><strong>Active Passive</strong></article>
+              <article><span>Soon</span><strong>Reported Speech</strong></article>
+            </div>
+          </section>
+
+          <section class="learning-panel" id="reading-coach">
+            <p class="eyebrow">AI Reading Coach</p>
+            <h2>Today's Reading: Little Red Hen</h2>
+            <div class="coach-score-grid">
+              <article><span>Pronunciation</span><strong>86%</strong></article>
+              <article><span>Fluency</span><strong>78%</strong></article>
+              <article><span>Confidence</span><strong>91%</strong></article>
+              <article><span>Speed</span><strong>74%</strong></article>
+              <article><span>Accuracy</span><strong>84%</strong></article>
+            </div>
+          </section>
+        </div>
+
+        <div class="learning-three-column">
+          <section class="learning-panel">
+            <p class="eyebrow">Vocabulary Builder</p>
+            <h2>Today's Words</h2>
+            <div class="word-chip-grid">
+              <button type="button">Beautiful</button>
+              <button type="button">Brilliant</button>
+              <button type="button">Curious</button>
+              <button type="button">Adventure</button>
+              <button type="button">Discover</button>
+            </div>
+          </section>
+          <section class="learning-panel" id="communication-builder">
+            <p class="eyebrow">Communication Builder</p>
+            <h2>Topic: My Best Friend</h2>
+            <p>Speak for 60 seconds. Feedback covers confidence, grammar, vocabulary and pronunciation.</p>
+          </section>
+          <section class="learning-panel">
+            <p class="eyebrow">Smart Writing Lab</p>
+            <h2>My Dream School</h2>
+            <p>Grammar, spelling, vocabulary and sentence structure are checked in a parent-friendly way.</p>
+          </section>
+        </div>
+
+        <section class="learning-panel" id="math-lab">
+          <div class="learning-panel-copy">
+            <p class="eyebrow">Mathematics Lab</p>
+            <h2>Concept roadmap with visible practice status.</h2>
+          </div>
+          <div class="math-roadmap">
+            <article class="is-done">Addition</article>
+            <article class="is-done">Subtraction</article>
+            <article class="is-active">Fractions</article>
+            <article>Decimals</article>
+            <article>Word Problems</article>
+          </div>
+        </section>
+
+        <div class="learning-two-column">
+          <section class="learning-panel">
+            <p class="eyebrow">Weekly Report</p>
+            <h2>Simple progress language for parents.</h2>
+            <div class="weekly-report-grid">
+              <article><strong>92%</strong><span>Reading</span><small>Excellent</small></article>
+              <article><strong>78%</strong><span>Writing</span><small>Good</small></article>
+              <article><strong>83%</strong><span>Grammar</span><small>Good</small></article>
+              <article><strong>89%</strong><span>Math</span><small>Excellent</small></article>
+              <article><strong>95%</strong><span>Confidence</span><small>Excellent</small></article>
+            </div>
+          </section>
+          <section class="learning-panel">
+            <p class="eyebrow">Parent Insights</p>
+            <h2>This week your child completed:</h2>
+            <ul class="insight-list">
+              <li>Learned Past Perfect basics</li>
+              <li>Read 3 stories with guided support</li>
+              <li>Added 25 new vocabulary words</li>
+              <li>Improved reading speed by 18%</li>
+            </ul>
+          </section>
+        </div>
+
+        <section class="learning-panel achievement-panel">
+          <div>
+            <p class="eyebrow">Achievement System</p>
+            <h2>Badges and certificates that children feel proud to unlock.</h2>
+          </div>
+          <div class="badge-row">
+            <article><strong>Reading Champion</strong><span>Unlocked</span></article>
+            <article><strong>Grammar Star</strong><span>Unlocked</span></article>
+            <article><strong>Consistent Learner</strong><span>16 day streak</span></article>
+            <article><strong>Vocabulary Hero</strong><span>Next target</span></article>
+          </div>
+        </section>
+
+        <div class="learning-two-column">
+          <section class="learning-panel recommendation-panel">
+            <p class="eyebrow">AI Recommendation Engine</p>
+            <h2>Recommended for next week</h2>
+            <p>Reading practice for 15 minutes daily, followed by two spoken sentences from the story.</p>
+            <a class="primary-button" href="after-school/reading-fluency.html">Start Reading Practice</a>
+          </section>
+          <section class="learning-panel blueprint-panel">
+            <p class="eyebrow">Child Blueprint</p>
+            <h2>Growth beyond academics.</h2>
+            <div class="blueprint-grid">
+              <span>Reading <strong>82%</strong></span>
+              <span>Writing <strong>74%</strong></span>
+              <span>Speaking <strong>91%</strong></span>
+              <span>Confidence <strong>89%</strong></span>
+              <span>Creativity <strong>94%</strong></span>
+              <span>Logical Thinking <strong>80%</strong></span>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <section class="kiya-widget" data-kiya-widget aria-label="Kiya AI parent assistant">
+      <button class="kiya-toggle" type="button" data-kiya-toggle aria-expanded="false" aria-controls="kiya-panel">
+        <span class="kiya-avatar" aria-hidden="true"></span>
+      </button>
+      <div class="kiya-panel" id="kiya-panel" data-kiya-panel hidden>
+        <div class="kiya-head">
+          <div><strong>Kiya AI</strong><span>Your Kidsverse parent guide</span></div>
+          <button type="button" data-kiya-close aria-label="Close Kiya AI chat">Close</button>
+        </div>
+        <div class="kiya-body">
+          <p>Namaste. I can help you open English Lab, reading fluency, programmes and parent-support pages.</p>
+          <div class="kiya-links" aria-label="Kidsverse quick links">
+            <a href="after-school/reading-fluency.html">Reading Fluency</a>
+            <a href="after-school/present-tense.html">Present Tense</a>
+            <a href="after-school/past-tense.html">Past Tense</a>
+            <a href="after-school/future-tense.html">Future Tense</a>
+            <a href="parent-hub.html">Parent Hub</a>
+            <a href="parent-feedback.html">Parent Feedback</a>
+            <a href="faq.html">Parent FAQ</a>
+          </div>
+          <a class="kiya-whatsapp" href="https://wa.me/918826758881?text=Hello%20Kidsverse%20School%2C%20I%20need%20help%20with%20the%20learning%20dashboard" target="_blank" rel="noopener noreferrer">Ask on WhatsApp</a>
+        </div>
+      </div>
+    </section>
+
+    <a class="whatsapp-float" href="https://wa.me/918826758881?text=Hello%20Kidsverse%20School%2C%20I%20want%20to%20know%20about%20the%20Learning%20Journey%20dashboard" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+    <footer class="site-footer">
+      <strong>Kidsverse School Rehan</strong>
+      <span>Premium preschool, Grade 1 and after-school learning in Rehan.</span>
+      <span class="powered-by-tivoro"><a href="https://tivoro.in" target="_blank" rel="noopener noreferrer">Powered by Tivoro - Your digital growth partner</a></span>
+    </footer>
+    <script src="kidsverse-app.js?v=20260804-learning-journey"></script>
+  </body>
+</html>
