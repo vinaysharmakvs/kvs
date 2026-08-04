@@ -9987,6 +9987,80 @@ body:has(.about-hero) .about-hero::before {
   font-size: 1.25rem;
 }
 
+.learning-login-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  overflow: auto;
+  background: rgba(16, 28, 42, 0.48);
+  backdrop-filter: blur(14px);
+}
+
+.learning-login-modal[hidden] {
+  display: none;
+}
+
+.learning-login-modal-card {
+  position: relative;
+  width: min(560px, 100%);
+  max-height: calc(100vh - 36px);
+  overflow: auto;
+  display: grid;
+  gap: 14px;
+  padding: clamp(22px, 4vw, 34px);
+  border: 1px solid rgba(31, 49, 66, 0.12);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255, 216, 111, 0.36), transparent 28%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(237, 249, 255, 0.94));
+  box-shadow: 0 30px 90px rgba(9, 22, 35, 0.28);
+}
+
+.learning-login-modal-card h2,
+.learning-login-modal-card p {
+  margin: 0;
+}
+
+.learning-login-modal-card form {
+  display: grid;
+  gap: 12px;
+}
+
+.learning-login-modal-card label {
+  display: grid;
+  gap: 7px;
+  color: #1f3142;
+  font-weight: 950;
+}
+
+.learning-login-modal-card input,
+.learning-login-modal-card select {
+  min-height: 48px;
+  width: 100%;
+  border: 1px solid rgba(31, 49, 66, 0.13);
+  border-radius: 16px;
+  padding: 0 14px;
+  color: #1f3142;
+  background: rgba(255, 255, 255, 0.92);
+  font: inherit;
+  font-weight: 850;
+}
+
+.learning-login-modal-close {
+  justify-self: end;
+  min-height: 36px;
+  border: 1px solid rgba(31, 49, 66, 0.1);
+  border-radius: 999px;
+  padding: 0 12px;
+  color: #1f3142;
+  background: rgba(255, 255, 255, 0.78);
+  font-weight: 950;
+  cursor: pointer;
+}
+
 .learning-dashboard {
   display: grid;
   gap: 18px;
