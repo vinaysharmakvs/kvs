@@ -185,6 +185,53 @@
           <article><span>Speaking</span><strong data-speaking-mission>Speaking challenge pending</strong><a href="#communication-builder">Start</a></article>
         </div>
 
+        <section class="learning-panel learning-platform-panel">
+          <div>
+            <p class="eyebrow">Learning Path</p>
+            <h2>One journey. Clear unlocks. Visible mastery.</h2>
+            <p>Children move step by step from sounds to stories. Parents see whether each concept is not started, learning, practicing, mastered or expert.</p>
+          </div>
+          <div class="duo-path" aria-label="Kidsverse learning path">
+            <article class="is-mastered"><span>01</span><strong>Letters</strong><small>Mastered</small></article>
+            <article class="is-practicing"><span>02</span><strong>Phonics</strong><small>Practicing</small></article>
+            <article class="is-learning"><span>03</span><strong>Blends</strong><small>Learning</small></article>
+            <article><span>04</span><strong>CVC Words</strong><small>Locked</small></article>
+            <article><span>05</span><strong>Sentences</strong><small>Locked</small></article>
+            <article><span>06</span><strong>Stories</strong><small>Locked</small></article>
+          </div>
+        </section>
+
+        <div class="learning-two-column">
+          <section class="learning-panel daily-challenge-panel">
+            <p class="eyebrow">Daily 10-Minute Challenge</p>
+            <h2 data-daily-challenge-title>Read 10 words aloud</h2>
+            <p data-daily-challenge-text>Complete one small task daily to build consistency without pressure.</p>
+            <div class="challenge-actions">
+              <button class="secondary-button" type="button" data-new-daily-challenge>New Challenge</button>
+              <button class="primary-button" type="button" data-complete-daily-challenge>Mark Challenge Done</button>
+            </div>
+            <small data-daily-challenge-status>Challenge not completed today.</small>
+          </section>
+          <section class="learning-panel mastery-panel">
+            <p class="eyebrow">Concept Mastery</p>
+            <h2>Status should mean learning quality, not just completion.</h2>
+            <div class="mastery-stage-row">
+              <span>Not Started</span>
+              <span>Learning</span>
+              <span>Practicing</span>
+              <span>Mastered</span>
+              <span>Expert</span>
+            </div>
+            <div class="learn-flow-row">
+              <article>Concept</article>
+              <article>Practice</article>
+              <article>Quiz</article>
+              <article>Mission</article>
+              <article>Certificate</article>
+            </div>
+          </section>
+        </div>
+
         <section class="learning-panel learning-test-panel" id="reading-test">
           <div>
             <p class="eyebrow">First Activity</p>
@@ -245,9 +292,15 @@
         </div>
 
         <div class="learning-three-column">
-          <section class="learning-panel">
+          <section class="learning-panel word-day-panel">
             <p class="eyebrow">Vocabulary Builder</p>
-            <h2>Today's Words</h2>
+            <h2>Word of the Day</h2>
+            <article class="word-day-card">
+              <strong data-word-day>Beautiful</strong>
+              <span>Pleasing to look at.</span>
+              <p>The garden is beautiful.</p>
+              <small>Synonym: Pretty | Antonym: Ugly</small>
+            </article>
             <div class="word-chip-grid">
               <button type="button">Beautiful</button>
               <button type="button">Brilliant</button>
@@ -257,9 +310,10 @@
             </div>
           </section>
           <section class="learning-panel" id="communication-builder">
-            <p class="eyebrow">Communication Builder</p>
+            <p class="eyebrow">Speaking Club</p>
             <h2>Topic: My Best Friend</h2>
-            <p>Speak for 60 seconds. Feedback covers confidence, grammar, vocabulary and pronunciation.</p>
+            <p>Speak for 60 seconds. Feedback covers pronunciation, grammar, confidence and vocabulary.</p>
+            <button class="secondary-button" type="button" data-speaking-complete>Mark Speaking Practice Done</button>
           </section>
           <section class="learning-panel">
             <p class="eyebrow">Smart Writing Lab</p>
@@ -304,6 +358,46 @@
           </section>
         </div>
 
+        <section class="learning-panel homework-generator-panel">
+          <div>
+            <p class="eyebrow">AI Homework Generator</p>
+            <h2>Create a 10-minute practice sheet instantly.</h2>
+            <p>Choose grade, topic and difficulty. The dashboard creates a simple worksheet-style task for home practice.</p>
+          </div>
+          <form class="homework-generator-form" data-homework-generator>
+            <label>Grade
+              <select name="grade" required>
+                <option>UKG</option>
+                <option>Grade 1</option>
+                <option>Grade 2</option>
+                <option>Grade 3</option>
+              </select>
+            </label>
+            <label>Topic
+              <select name="topic" required>
+                <option>Reading</option>
+                <option>A, An & The</option>
+                <option>Nouns</option>
+                <option>Mathematics</option>
+                <option>Speaking</option>
+              </select>
+            </label>
+            <label>Difficulty
+              <select name="difficulty" required>
+                <option>Gentle</option>
+                <option>Practice</option>
+                <option>Challenge</option>
+              </select>
+            </label>
+            <button class="primary-button" type="submit">Generate Worksheet</button>
+          </form>
+          <article class="homework-output" data-homework-output>
+            <span>Worksheet preview</span>
+            <strong>Select options and generate a home task.</strong>
+            <p>The result will include five small questions and one parent activity.</p>
+          </article>
+        </section>
+
         <section class="learning-panel achievement-panel">
           <div>
             <p class="eyebrow">Achievement System</p>
@@ -325,18 +419,35 @@
             <a class="primary-button" href="after-school/reading-fluency.html">Start Reading Practice</a>
           </section>
           <section class="learning-panel blueprint-panel">
-            <p class="eyebrow">Child Blueprint</p>
-            <h2>Growth beyond academics.</h2>
+            <p class="eyebrow">Child Growth Blueprint</p>
+            <h2>The signature Kidsverse view for holistic development.</h2>
             <div class="blueprint-grid">
               <span>Reading <strong data-blueprint-score="reading">--</strong></span>
+              <span>Communication <strong data-blueprint-score="communication">--</strong></span>
               <span>Writing <strong data-blueprint-score="writing">--</strong></span>
-              <span>Speaking <strong data-blueprint-score="speaking">--</strong></span>
+              <span>Maths <strong data-blueprint-score="maths">--</strong></span>
+              <span>Logical Thinking <strong data-blueprint-score="logical">--</strong></span>
               <span>Confidence <strong data-blueprint-score="confidence">--</strong></span>
               <span>Creativity <strong data-blueprint-score="creativity">--</strong></span>
-              <span>Logical Thinking <strong data-blueprint-score="logical">--</strong></span>
+              <span>Social Skills <strong data-blueprint-score="social">--</strong></span>
+              <span>Problem Solving <strong data-blueprint-score="problem">--</strong></span>
+              <span>Overall Growth <strong data-blueprint-score="overall">--</strong></span>
             </div>
           </section>
         </div>
+
+        <section class="learning-panel weakness-panel">
+          <div>
+            <p class="eyebrow">AI Weakness Detector</p>
+            <h2>Parents should not have to guess weak areas.</h2>
+            <p data-weakness-summary>Complete reading, grammar and speaking activities to detect weak areas.</p>
+          </div>
+          <div class="weakness-grid" data-weakness-grid>
+            <article><strong>Reading speed</strong><span>Awaiting test</span></article>
+            <article><strong>Sentence formation</strong><span>Awaiting grammar practice</span></article>
+            <article><strong>Speaking confidence</strong><span>Awaiting speaking prompt</span></article>
+          </div>
+        </section>
       </section>
     </main>
 
