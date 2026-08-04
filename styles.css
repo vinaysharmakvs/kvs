@@ -10295,6 +10295,188 @@ body:has(.about-hero) .about-hero::before {
   margin-left: 10px;
 }
 
+/* Articles Learning Lab */
+.articles-lab-page {
+  background:
+    radial-gradient(circle at 10% 10%, rgba(255, 216, 111, 0.32), transparent 24rem),
+    radial-gradient(circle at 88% 14%, rgba(39, 185, 167, 0.2), transparent 25rem),
+    radial-gradient(circle at 78% 82%, rgba(222, 215, 255, 0.46), transparent 26rem),
+    linear-gradient(180deg, #fffaf1, #f4fbff 52%, #fffaf1);
+}
+
+.articles-hero .tense-hero-copy {
+  background:
+    linear-gradient(90deg, rgba(31, 49, 66, 0.035) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(31, 49, 66, 0.035) 1px, transparent 1px),
+    radial-gradient(circle at 92% 12%, rgba(255, 216, 111, 0.3), transparent 28%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(217, 247, 232, 0.78));
+  background-size: 34px 34px, 34px 34px, auto, auto;
+}
+
+.article-hero-board {
+  background:
+    radial-gradient(circle at 18% 16%, rgba(255, 216, 111, 0.42), transparent 30%),
+    linear-gradient(145deg, #1d2e47, #245f63 58%, #27b9a7);
+}
+
+.article-picker-preview {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 26px 0;
+}
+
+.article-picker-preview strong {
+  display: grid;
+  place-items: center;
+  min-height: 92px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 24px;
+  color: #1f3142;
+  background: rgba(255, 255, 255, 0.9);
+  font-size: clamp(2.4rem, 6vw, 4.8rem);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.16);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.article-picker-preview strong:hover {
+  transform: translateY(-5px) rotate(-2deg);
+  background: #ffd86f;
+}
+
+.article-method-grid,
+.article-structure-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.article-method-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.article-structure-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.article-method-grid article,
+.article-structure-grid article,
+.article-fill-card {
+  border: 1px solid rgba(31, 49, 66, 0.1);
+  border-radius: 26px;
+  padding: 22px;
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 18px 44px rgba(31, 49, 66, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.article-method-grid article:hover,
+.article-structure-grid article:hover {
+  transform: translateY(-4px);
+  border-color: rgba(39, 185, 167, 0.24);
+  box-shadow: 0 28px 70px rgba(31, 49, 66, 0.13);
+}
+
+.article-method-grid span,
+.article-structure-grid span {
+  display: inline-flex;
+  margin-bottom: 12px;
+  padding: 7px 10px;
+  border-radius: 999px;
+  color: #0b7f73;
+  background: rgba(217, 247, 232, 0.9);
+  font-size: 0.82rem;
+  font-weight: 950;
+}
+
+.article-method-grid strong,
+.article-structure-grid strong {
+  display: block;
+  color: #1f3142;
+  font-size: 1.16rem;
+}
+
+.article-method-grid p,
+.article-structure-grid p {
+  color: rgba(31, 49, 66, 0.68);
+  font-weight: 800;
+  line-height: 1.55;
+}
+
+.article-example-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 14px;
+}
+
+.article-example-pills span {
+  padding: 8px 10px;
+  border-radius: 999px;
+  color: #16453e;
+  background: rgba(217, 247, 232, 0.8);
+  font-weight: 900;
+}
+
+.article-tool-section .tense-choice-tool button.is-correct,
+.article-fill-card .quiz-option.is-correct {
+  color: #0a5f55;
+  border-color: rgba(39, 185, 167, 0.38);
+  background: #d9f7e8;
+}
+
+.article-tool-section .tense-choice-tool button.is-wrong,
+.article-fill-card .quiz-option.is-wrong {
+  color: #8c2f1d;
+  border-color: rgba(255, 114, 95, 0.4);
+  background: #ffd8c5;
+}
+
+.article-fill-card {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.article-fill-card progress {
+  width: 100%;
+  height: 14px;
+  overflow: hidden;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(31, 49, 66, 0.08);
+}
+
+.article-fill-card progress::-webkit-progress-bar {
+  background: rgba(31, 49, 66, 0.08);
+}
+
+.article-fill-card progress::-webkit-progress-value {
+  border-radius: 999px;
+  background: linear-gradient(90deg, #27b9a7, #ffd86f);
+}
+
+@media (max-width: 960px) {
+  .article-method-grid,
+  .article-structure-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 620px) {
+  .article-picker-preview {
+    gap: 8px;
+  }
+
+  .article-picker-preview strong {
+    min-height: 74px;
+    border-radius: 18px;
+  }
+
+  .article-method-grid,
+  .article-structure-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 960px) {
   .learning-hero,
   .reading-panel,
