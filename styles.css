@@ -4707,6 +4707,112 @@ body:has(.about-hero) .about-hero::before {
   box-shadow: 0 18px 46px rgba(31, 49, 66, 0.09);
 }
 
+.header-login-pill {
+  min-height: 42px;
+  border: 1px solid rgba(31, 49, 66, 0.1);
+  border-radius: 999px;
+  padding: 0 16px;
+  color: #16453e;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(217, 247, 232, 0.9));
+  box-shadow: 0 10px 24px rgba(31, 49, 66, 0.08);
+  font: inherit;
+  font-weight: 950;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.header-login-pill:hover,
+.header-login-pill:focus {
+  transform: translateY(-2px);
+  background:
+    linear-gradient(135deg, rgba(255, 216, 111, 0.9), rgba(217, 247, 232, 0.98));
+  box-shadow: 0 16px 34px rgba(31, 49, 66, 0.14);
+}
+
+.reading-parent-login-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: center;
+  padding: clamp(16px, 3vw, 22px);
+  border: 1px solid rgba(31, 49, 66, 0.08);
+  border-radius: 26px;
+  background:
+    radial-gradient(circle at 8% 20%, rgba(255, 216, 111, 0.36), transparent 28%),
+    radial-gradient(circle at 92% 18%, rgba(39, 185, 167, 0.22), transparent 30%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(240, 255, 249, 0.94));
+  box-shadow: 0 20px 54px rgba(31, 49, 66, 0.1);
+}
+
+.reading-parent-login-card.is-logged-in {
+  border-color: rgba(39, 185, 167, 0.32);
+  background:
+    radial-gradient(circle at 8% 20%, rgba(39, 185, 167, 0.25), transparent 28%),
+    radial-gradient(circle at 92% 18%, rgba(255, 216, 111, 0.36), transparent 30%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(217, 247, 232, 0.94));
+}
+
+.reading-parent-login-card h3,
+.reading-parent-login-card p {
+  margin: 0;
+}
+
+.reading-parent-login-card h3 {
+  color: #183145;
+  font-size: clamp(1.2rem, 2vw, 1.55rem);
+}
+
+.reading-parent-login-card p:not(.eyebrow) {
+  margin-top: 5px;
+  color: #49606f;
+  font-weight: 800;
+  line-height: 1.55;
+}
+
+.reading-parent-streak-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.reading-parent-streak-grid span {
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid rgba(31, 49, 66, 0.08);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.reading-parent-streak-grid strong,
+.reading-parent-streak-grid small {
+  display: block;
+}
+
+.reading-parent-streak-grid strong {
+  color: #16453e;
+  font-size: 1rem;
+  font-weight: 950;
+  overflow-wrap: anywhere;
+}
+
+.reading-parent-streak-grid small {
+  margin-top: 2px;
+  color: #607280;
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.reading-parent-login-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
 .reading-select-panel label {
   display: grid;
   gap: 8px;
@@ -9056,12 +9162,27 @@ body:has(.about-hero) .about-hero::before {
   .routine-verb-grid,
   .routine-builder,
   .reading-select-panel,
+  .reading-parent-login-card,
   .reading-grade-tabs,
   .reading-level-tabs,
   .word-helper-grid,
   .reading-answer-grid,
   .tense-choice-tool,
   .quiz-options {
+    grid-template-columns: 1fr;
+  }
+
+  .reading-parent-login-actions,
+  .reading-parent-login-actions .primary-button,
+  .reading-parent-login-actions .secondary-button {
+    width: 100%;
+  }
+
+  .reading-parent-login-actions {
+    justify-content: stretch;
+  }
+
+  .reading-parent-streak-grid {
     grid-template-columns: 1fr;
   }
 
@@ -10022,6 +10143,75 @@ body:has(.about-hero) .about-hero::before {
 .learning-login-modal-card h2,
 .learning-login-modal-card p {
   margin: 0;
+}
+
+.learning-google-note {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 2px 12px;
+  align-items: center;
+  padding: 12px;
+  border: 1px solid rgba(31, 49, 66, 0.1);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.74);
+}
+
+.learning-google-note span {
+  grid-row: span 2;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  color: #ffffff;
+  background: linear-gradient(135deg, #4285f4, #34a853 48%, #fbbc05 72%, #ea4335);
+  font-weight: 950;
+}
+
+.learning-google-note strong {
+  color: #183145;
+  font-weight: 950;
+}
+
+.learning-google-note small {
+  color: #5a6d78;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.learning-google-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 50px;
+  width: 100%;
+  border: 1px solid rgba(31, 49, 66, 0.14);
+  border-radius: 16px;
+  color: #183145;
+  background: #ffffff;
+  box-shadow: 0 12px 28px rgba(31, 49, 66, 0.08);
+  font: inherit;
+  font-weight: 950;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.learning-google-button:hover,
+.learning-google-button:focus {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 36px rgba(31, 49, 66, 0.13);
+}
+
+.learning-google-button span {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  color: #ffffff;
+  background: linear-gradient(135deg, #4285f4, #34a853 48%, #fbbc05 72%, #ea4335);
+  font-weight: 950;
 }
 
 .learning-login-modal-card form {
