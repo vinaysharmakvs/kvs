@@ -44,7 +44,7 @@
         <img src="assets/logo.png" alt="Kidsverse School logo" />
         <span><strong>Kidsverse</strong><small>Student Report Tool</small></span>
       </a>
-      <nav class="teacher-tool-links" aria-label="Internal tools"><a href="kvs-staff-access.html">Internal Home</a><a href="teacher-resource-center.html">Resources</a><a href="student-assessment.html" aria-current="page">Student Reports</a><a href="teacher-assessment.html">Class Culture</a><a href="teacher-reading-assessment.html">Teacher Reading</a><a href="parent-feedback.html">Parent Feedback</a></nav>
+      <nav class="teacher-tool-links" aria-label="Internal tools"><a href="kvs-staff-access.html">Internal Home</a><a href="teacher-resource-center.html">Resources</a><a href="student-assessment.html" aria-current="page">Student Reports</a><a href="teacher-assessment.html">Class Culture</a><a href="teacher-reading-assessment.html">Teacher Reading</a></nav>
       <span class="teacher-private-badge">Hidden internal form</span>
     </header>
 
@@ -231,7 +231,7 @@
 
           <div class="teacher-actions">
             <button class="primary-button" type="submit" data-student-report-action disabled>Generate Report</button>
-            <button class="secondary-button" type="button" data-student-report-pdf data-student-report-action disabled>Download PDF Report</button>
+            <button class="secondary-button" type="button" data-student-report-png data-student-report-action disabled>Download PNG Report</button>
           </div>
           <p class="assessment-validation" data-student-report-validation>Please select class, student, teacher, month, upload photo, complete all 10 ratings, and add teacher remarks plus area to improve.</p>
         </form>
@@ -246,6 +246,7 @@
       </section>
     </main>
 
-    <script src="kidsverse-app.js?v=20260801-site-fix"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script src="kidsverse-app.js?v=20260804-png-report"></script>
   </body>
 </html>
