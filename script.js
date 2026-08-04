@@ -334,6 +334,7 @@ const teacherReadingReport = document.querySelector("[data-teacher-reading-repor
 const teacherReadingValidation = document.querySelector("[data-teacher-reading-validation]");
 const teacherReadingPrint = document.querySelector("[data-teacher-reading-print]");
 let studentPhotoDataUrl = "";
+let latestStudentReportData = null;
 let teacherReadingPhotoDataUrl = "";
 const studentRosters = {
   "Playway - Alpha": {
@@ -1019,6 +1020,9 @@ function updateStudentReportValidation() {
   studentReportButtons.forEach((button) => {
     button.disabled = !valid;
   });
+  if (studentReportPng) {
+    studentReportPng.disabled = !valid;
+  }
   if (studentReportValidation) studentReportValidation.hidden = valid;
   return valid;
 }
@@ -1030,6 +1034,11 @@ function updateStudentStarVisuals() {
       label.classList.toggle("is-filled", index < selected);
     });
   });
+}
+
+function invalidateStudentReportDownload() {
+  latestStudentReportData = null;
+  if (studentReportPng) studentReportPng.disabled = !isStudentReportValid();
 }
 
 function applyStudentRosterTags() {
@@ -1131,10 +1140,12 @@ function renderStudentReport(data) {
 }
 
 studentReportForm?.addEventListener("input", () => {
+  invalidateStudentReportDownload();
   applyStudentRosterTags();
   updateStudentReportValidation();
 });
 studentReportForm?.addEventListener("change", () => {
+  invalidateStudentReportDownload();
   applyStudentRosterTags();
   updateStudentStarVisuals();
   updateStudentReportValidation();
@@ -1144,6 +1155,7 @@ studentPhotoInput?.addEventListener("change", () => {
   const file = studentPhotoInput.files?.[0];
   if (!file) {
     studentPhotoDataUrl = "";
+    invalidateStudentReportDownload();
     updateStudentReportValidation();
     return;
   }
@@ -1151,6 +1163,7 @@ studentPhotoInput?.addEventListener("change", () => {
   const reader = new FileReader();
   reader.addEventListener("load", () => {
     studentPhotoDataUrl = String(reader.result || "");
+    invalidateStudentReportDownload();
     updateStudentReportValidation();
   });
   reader.readAsDataURL(file);
@@ -1159,12 +1172,20 @@ studentPhotoInput?.addEventListener("change", () => {
 studentReportForm?.addEventListener("submit", (event) => {
   event.preventDefault();
   if (!updateStudentReportValidation()) return;
-  renderStudentReport(getStudentReportData());
+  latestStudentReportData = getStudentReportData();
+  renderStudentReport(latestStudentReportData);
+  if (studentReportPng) studentReportPng.disabled = false;
 });
 
 studentReportPng?.addEventListener("click", async () => {
-  const data = getStudentReportData();
-  if (!data || !updateStudentReportValidation()) return;
+  if (!updateStudentReportValidation()) return;
+  const data = latestStudentReportData || getStudentReportData();
+  if (!data) {
+    studentReportValidation.hidden = false;
+    studentReportValidation.textContent = "Please generate the report before downloading the PNG.";
+    return;
+  }
+  latestStudentReportData = data;
   renderStudentReport(data);
   const report = studentReportOutput?.querySelector(".student-monthly-report");
   if (!report) return;
