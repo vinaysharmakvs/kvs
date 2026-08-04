@@ -3945,9 +3945,41 @@ function initLearningJourneyDashboard() {
   const note = document.querySelector("[data-learning-login-note]");
   const completeReadingTest = document.querySelector("[data-complete-reading-test]");
   const readingTestStatus = document.querySelector("[data-reading-test-status]");
+  const dailyChallengeTitle = document.querySelector("[data-daily-challenge-title]");
+  const dailyChallengeText = document.querySelector("[data-daily-challenge-text]");
+  const newDailyChallenge = document.querySelector("[data-new-daily-challenge]");
+  const completeDailyChallenge = document.querySelector("[data-complete-daily-challenge]");
+  const dailyChallengeStatus = document.querySelector("[data-daily-challenge-status]");
+  const speakingComplete = document.querySelector("[data-speaking-complete]");
+  const homeworkGenerator = document.querySelector("[data-homework-generator]");
+  const homeworkOutput = document.querySelector("[data-homework-output]");
+  const weaknessSummary = document.querySelector("[data-weakness-summary]");
+  const weaknessGrid = document.querySelector("[data-weakness-grid]");
 
   const isLocalPreview = window.location.protocol === "file:" || ["localhost", "127.0.0.1"].includes(window.location.hostname);
   if (previewLogin) previewLogin.hidden = !isLocalPreview;
+
+  const dailyChallenges = [
+    ["Read 10 words aloud", "Focus on clear sounds and steady speed."],
+    ["Spell 5 new words", "Say the word, spell it, then use it in one sentence."],
+    ["Find 3 nouns around you", "Name one person, one place and one thing nearby."],
+    ["Speak one complete sentence", "Use today's word in a confident sentence."],
+    ["Solve 5 maths questions", "Keep the practice short, neat and calm."]
+  ];
+
+  function setText(selector, value) {
+    const element = document.querySelector(selector);
+    if (element) element.textContent = value;
+  }
+
+  function renderDailyChallenge(offset = 0) {
+    if (!dailyChallengeTitle || !dailyChallengeText) return;
+    const daySeed = Math.floor(Date.now() / 86400000) + offset;
+    const challenge = dailyChallenges[daySeed % dailyChallenges.length];
+    dailyChallengeTitle.textContent = challenge[0];
+    dailyChallengeText.textContent = challenge[1];
+    if (dailyChallengeStatus) dailyChallengeStatus.textContent = "Challenge not completed today.";
+  }
 
   function decodeGoogleCredential(token) {
     const payload = token.split(".")[1] || "";
@@ -4030,11 +4062,6 @@ function initLearningJourneyDashboard() {
       if (label) label.textContent = `${value}%`;
     });
 
-    const setText = (selector, value) => {
-      const element = document.querySelector(selector);
-      if (element) element.textContent = value;
-    };
-
     setText("[data-overall-progress]", "42%");
     setText("[data-overall-status]", "First test completed");
     setText("[data-reading-mission]", "Reading check completed");
@@ -4067,13 +4094,26 @@ function initLearningJourneyDashboard() {
 
     const blueprintScores = {
       reading: "82%",
+      communication: "--",
       writing: "--",
-      speaking: "--",
+      maths: "--",
+      logical: "64%",
       confidence: "88%",
       creativity: "--",
-      logical: "--"
+      social: "--",
+      problem: "68%",
+      overall: "42%"
     };
     Object.entries(blueprintScores).forEach(([key, value]) => setText(`[data-blueprint-score="${key}"]`, value));
+
+    if (weaknessSummary) weaknessSummary.textContent = "First reading check completed. Kidsverse has detected the first practice areas.";
+    if (weaknessGrid) {
+      weaknessGrid.innerHTML = `
+        <article><strong>Words to sentences</strong><span>Needs practice</span></article>
+        <article><strong>Short paragraphs</strong><span>Develop slowly</span></article>
+        <article><strong>Reading speed</strong><span>Improving</span></article>
+      `;
+    }
 
     const insightList = document.querySelector("[data-insight-list]");
     if (insightList) {
@@ -4088,6 +4128,59 @@ function initLearningJourneyDashboard() {
     completeReadingTest.textContent = "Reading Check Completed";
     if (readingTestStatus) readingTestStatus.classList.add("is-complete");
   });
+
+  let dailyOffset = 0;
+  newDailyChallenge?.addEventListener("click", () => {
+    dailyOffset += 1;
+    renderDailyChallenge(dailyOffset);
+  });
+
+  completeDailyChallenge?.addEventListener("click", () => {
+    if (dailyChallengeStatus) dailyChallengeStatus.textContent = "Daily challenge completed. Streak updated to 1 day.";
+    setText("[data-badge-status='streak']", "1 day streak");
+    setText("[data-overall-progress]", "48%");
+    setText("[data-overall-status]", "Daily challenge done");
+    setText("[data-blueprint-score='overall']", "48%");
+  });
+
+  speakingComplete?.addEventListener("click", () => {
+    setText("[data-speaking-mission]", "Speaking challenge completed");
+    setText("[data-weekly-score='confidence']", "90%");
+    setText("[data-weekly-label='confidence']", "Confident");
+    setText("[data-blueprint-score='communication']", "81%");
+    setText("[data-blueprint-score='confidence']", "90%");
+    setText("[data-blueprint-score='social']", "86%");
+    setText("[data-overall-progress]", "56%");
+    setText("[data-overall-status]", "Speaking added");
+    speakingComplete.disabled = true;
+    speakingComplete.textContent = "Speaking Practice Completed";
+  });
+
+  homeworkGenerator?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const formData = new FormData(homeworkGenerator);
+    const grade = String(formData.get("grade") || "Grade 1");
+    const topic = String(formData.get("topic") || "Reading");
+    const difficulty = String(formData.get("difficulty") || "Practice");
+    const questionMap = {
+      Reading: ["Read 8 words aloud.", "Circle two difficult words.", "Read one sentence slowly.", "Tell the meaning of one word.", "Read the same sentence again with confidence."],
+      "A, An & The": ["Fill: ___ apple", "Fill: ___ book", "Fill: ___ sun", "Write one sentence with an.", "Write one sentence with the."],
+      Nouns: ["Find 2 people nouns.", "Find 2 place nouns.", "Find 2 thing nouns.", "Write one animal noun.", "Write one sentence using any noun."],
+      Mathematics: ["Solve 4 + 3.", "Solve 9 - 2.", "Count by 2s till 20.", "Draw 3 circles.", "Write one number story."],
+      Speaking: ["Speak about your favourite food.", "Use one new word.", "Speak for 30 seconds.", "Say one polite sentence.", "Ask one question clearly."]
+    };
+    const questions = questionMap[topic] || questionMap.Reading;
+    if (homeworkOutput) {
+      homeworkOutput.innerHTML = `
+        <span>${grade} | ${topic} | ${difficulty}</span>
+        <strong>10-minute home worksheet</strong>
+        <ol>${questions.map((question) => `<li>${question}</li>`).join("")}</ol>
+        <p><b>Parent activity:</b> Appreciate effort first, then correct only one mistake.</p>
+      `;
+    }
+  });
+
+  renderDailyChallenge();
 }
 
 initLearningJourneyDashboard();
