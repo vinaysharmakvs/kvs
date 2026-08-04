@@ -33,7 +33,7 @@
   <body class="learning-journey-page">
     <div class="top-strip">
       <span>Kidsverse Learning Journey</span>
-      <strong>Parents can track English Lab, reading, speaking and overall growth</strong>
+      <strong>Parents can track Reading Fluency and Daily Routine Verbs</strong>
       <a href="#parent-login">Login</a>
     </div>
 
@@ -72,10 +72,10 @@
     <main id="top">
       <section class="learning-hero">
         <div class="learning-hero-copy">
-          <p class="eyebrow">My Learning Dashboard</p>
-          <h1>See your child's learning journey, not just homework.</h1>
+          <p class="eyebrow">My English Learning Dashboard</p>
+          <h1>Continue reading and speaking practice from where your child stopped.</h1>
           <p>
-            A parent-first dashboard for English Lab progress, reading fluency, speaking confidence, writing, maths, badges, weekly insights and next-step recommendations.
+            Kidsverse Learning Journey connects the live Reading Fluency Lab and Daily Routine Verbs Lab so parents can see saved progress, streaks and next steps.
           </p>
           <div class="hero-actions">
             <a class="primary-button" href="#parent-login">Access Child Dashboard</a>
@@ -83,18 +83,18 @@
           </div>
           <div class="learning-hero-pills" aria-label="Learning dashboard highlights">
             <span>Reading fluency</span>
-            <span>Grammar roadmap</span>
-            <span>Weekly insight</span>
-            <span>Badges</span>
+            <span>Daily verbs</span>
+            <span>Saved streaks</span>
+            <span>Resume practice</span>
           </div>
         </div>
         <div class="learning-phone-preview" aria-label="Learning dashboard preview">
           <div class="learning-phone-top"><span></span><strong>Kidsverse</strong><small>Parent Login</small></div>
           <div class="learning-ring"><strong>Login</strong><span>View child progress</span></div>
           <div class="learning-mini-missions">
-            <article><strong>Reading</strong><span>Unlock after test</span></article>
-            <article><strong>Grammar</strong><span>Track after lesson</span></article>
-            <article><strong>Speaking</strong><span>Review after challenge</span></article>
+            <article><strong>Reading</strong><span>Resume next paragraph</span></article>
+            <article><strong>Daily Verbs</strong><span>Track sentence practice</span></article>
+            <article><strong>Streak</strong><span>Saved after login</span></article>
           </div>
         </div>
       </section>
@@ -103,9 +103,9 @@
         <div class="learning-login-card">
           <div class="learning-login-intro">
             <p class="eyebrow">Parent Login</p>
-            <h2>Sign in with Google to access your child's learning dashboard.</h2>
+            <h2>Login to track Reading Fluency and Daily Routine Verbs.</h2>
             <p>
-              Parents first sign in securely. After sign-in, we ask only the child details needed to show the correct Kidsverse Learning Journey.
+              Use the same parent details when the reading page asks for login after the first paragraph. The dashboard will then remember where your child stopped.
             </p>
           </div>
 
@@ -152,10 +152,22 @@
                     <option>LKG</option>
                     <option>UKG</option>
                     <option>Grade 1</option>
+                    <option>Grade 2</option>
+                    <option>Grade 3</option>
+                    <option>Grade 4</option>
+                    <option>Grade 5</option>
+                    <option>Grade 6</option>
+                    <option>Grade 7</option>
+                    <option>Grade 8</option>
+                    <option>Grade 9</option>
+                    <option>Grade 10</option>
+                    <option>Grade 11</option>
+                    <option>Grade 12</option>
+                    <option>College Student</option>
+                    <option>Working Professional</option>
                     <option>After School</option>
                   </select>
                 </label>
-                <label>Section / Batch<input type="text" name="childSection" placeholder="Example: Alpha" required /></label>
               </div>
               <button class="primary-button" type="submit">Open Learning Dashboard</button>
               <small data-learning-login-note>Dashboard will show pending progress until the child completes a test or learning activity.</small>
@@ -178,78 +190,29 @@
           </div>
         </div>
 
-        <div class="mission-grid">
-          <article><span>Reading</span><strong data-reading-mission>Reading check pending</strong><a href="#reading-test">Start</a></article>
-          <article><span>Grammar</span><strong data-grammar-mission>Grammar activity not started</strong><a href="after-school/present-tense.html">Practice</a></article>
-          <article><span>Mathematics</span><strong data-math-mission>Math practice not started</strong><a href="#math-lab">View</a></article>
-          <article><span>Speaking</span><strong data-speaking-mission>Speaking challenge pending</strong><a href="#communication-builder">Start</a></article>
-        </div>
-
-        <section class="learning-panel learning-platform-panel">
-          <div>
-            <p class="eyebrow">Learning Path</p>
-            <h2>One journey. Clear unlocks. Visible mastery.</h2>
-            <p>Children move step by step from sounds to stories. Parents see whether each concept is not started, learning, practicing, mastered or expert.</p>
-          </div>
-          <div class="duo-path" aria-label="Kidsverse learning path">
-            <article class="is-mastered"><span>01</span><strong>Letters</strong><small>Mastered</small></article>
-            <article class="is-practicing"><span>02</span><strong>Phonics</strong><small>Practicing</small></article>
-            <article class="is-learning"><span>03</span><strong>Blends</strong><small>Learning</small></article>
-            <article><span>04</span><strong>CVC Words</strong><small>Locked</small></article>
-            <article><span>05</span><strong>Sentences</strong><small>Locked</small></article>
-            <article><span>06</span><strong>Stories</strong><small>Locked</small></article>
-          </div>
-        </section>
-
-        <div class="learning-two-column">
-          <section class="learning-panel daily-challenge-panel">
-            <p class="eyebrow">Daily 10-Minute Challenge</p>
-            <h2 data-daily-challenge-title>Read 10 words aloud</h2>
-            <p data-daily-challenge-text>Complete one small task daily to build consistency without pressure.</p>
-            <div class="challenge-actions">
-              <button class="secondary-button" type="button" data-new-daily-challenge>New Challenge</button>
-              <button class="primary-button" type="button" data-complete-daily-challenge>Mark Challenge Done</button>
-            </div>
-            <small data-daily-challenge-status>Challenge not completed today.</small>
-          </section>
-          <section class="learning-panel mastery-panel">
-            <p class="eyebrow">Concept Mastery</p>
-            <h2>Status should mean learning quality, not just completion.</h2>
-            <div class="mastery-stage-row">
-              <span>Not Started</span>
-              <span>Learning</span>
-              <span>Practicing</span>
-              <span>Mastered</span>
-              <span>Expert</span>
-            </div>
-            <div class="learn-flow-row">
-              <article>Concept</article>
-              <article>Practice</article>
-              <article>Quiz</article>
-              <article>Mission</article>
-              <article>Certificate</article>
-            </div>
-          </section>
+        <div class="mission-grid learning-feature-grid">
+          <article><span>Reading Fluency</span><strong data-reading-mission>Start first paragraph</strong><a data-reading-continue-link href="after-school/reading-fluency.html">Continue Reading</a></article>
+          <article><span>Daily Routine Verbs</span><strong data-routine-mission>Practice words and sentences</strong><a href="after-school/daily-routine-verbs.html">Continue Verbs</a></article>
         </div>
 
         <section class="learning-panel learning-test-panel" id="reading-test">
           <div>
-            <p class="eyebrow">First Activity</p>
-            <h2>Reading Fluency Check</h2>
-            <p>
-              Ask the child to read one small paragraph. After the check is completed, the dashboard will unlock the first progress summary.
+            <p class="eyebrow">Resume Reading</p>
+            <h2 data-reading-resume-title>Start from the first paragraph.</h2>
+            <p data-reading-resume-copy>
+              Read the first paragraph freely. When the child clicks Next paragraph, parent login will save progress from that point onwards.
             </p>
           </div>
           <div class="test-action-card">
-            <span data-reading-test-status>Not started</span>
-            <strong>Short reading test</strong>
-            <button class="primary-button" type="button" data-complete-reading-test>Mark Reading Check Completed</button>
+            <span data-reading-streak-label>Streak not started</span>
+            <strong data-reading-last-score>Accuracy pending</strong>
+            <a class="primary-button" data-reading-continue-link href="after-school/reading-fluency.html">Open Reading Fluency</a>
           </div>
         </section>
 
         <section class="learning-panel reading-panel">
           <div class="learning-panel-copy">
-            <p class="eyebrow">Flagship feature</p>
+            <p class="eyebrow">Reading Fluency</p>
             <h2>Reading Fluency Roadmap</h2>
             <p>Parents can instantly see where the child is confident and where practice is needed.</p>
           </div>
@@ -265,22 +228,19 @@
         </section>
 
         <div class="learning-two-column">
-          <section class="learning-panel">
-            <p class="eyebrow">English Lab</p>
-            <h2>Grammar Roadmap</h2>
+          <section class="learning-panel routine-dashboard-panel">
+            <p class="eyebrow">Daily Routine Verbs</p>
+            <h2>Track vocabulary, sentence building and speaking prompts.</h2>
             <div class="roadmap-list">
-              <a href="after-school/present-tense.html" class="is-active"><span>Ready</span><strong>Present Tense</strong></a>
-              <a href="after-school/past-tense.html"><span>Next</span><strong>Past Tense</strong></a>
-              <a href="after-school/future-tense.html"><span>Next</span><strong>Future Tense</strong></a>
-              <a href="after-school/articles-a-an-the.html"><span>Ready</span><strong>A, An & The</strong></a>
-              <article><span>Soon</span><strong>Active Passive</strong></article>
-              <article><span>Soon</span><strong>Reported Speech</strong></article>
+              <a href="after-school/daily-routine-verbs.html#routine-verbs"><span data-routine-verbs-status>Ready</span><strong>Verb Cards</strong></a>
+              <a href="after-school/daily-routine-verbs.html#routine-practice"><span data-routine-writing-status>Pending</span><strong>Five Routine Sentences</strong></a>
+              <a href="after-school/daily-routine-verbs.html#routine-practice"><span data-routine-speaking-status>Pending</span><strong>Speaking Practice</strong></a>
             </div>
           </section>
 
           <section class="learning-panel" id="reading-coach">
             <p class="eyebrow">AI Reading Coach</p>
-            <h2>Today's Reading: Little Red Hen</h2>
+            <h2 data-reading-coach-title>Reading result will appear after practice.</h2>
             <div class="coach-score-grid">
               <article><span>Pronunciation</span><strong data-coach-score="pronunciation">--</strong></article>
               <article><span>Fluency</span><strong data-coach-score="fluency">--</strong></article>
@@ -291,163 +251,58 @@
           </section>
         </div>
 
-        <div class="learning-three-column">
-          <section class="learning-panel word-day-panel">
-            <p class="eyebrow">Vocabulary Builder</p>
-            <h2>Word of the Day</h2>
-            <article class="word-day-card">
-              <strong data-word-day>Beautiful</strong>
-              <span>Pleasing to look at.</span>
-              <p>The garden is beautiful.</p>
-              <small>Synonym: Pretty | Antonym: Ugly</small>
-            </article>
-            <div class="word-chip-grid">
-              <button type="button">Beautiful</button>
-              <button type="button">Brilliant</button>
-              <button type="button">Curious</button>
-              <button type="button">Adventure</button>
-              <button type="button">Discover</button>
-            </div>
-          </section>
-          <section class="learning-panel" id="communication-builder">
-            <p class="eyebrow">Speaking Club</p>
-            <h2>Topic: My Best Friend</h2>
-            <p>Speak for 60 seconds. Feedback covers pronunciation, grammar, confidence and vocabulary.</p>
-            <button class="secondary-button" type="button" data-speaking-complete>Mark Speaking Practice Done</button>
-          </section>
-          <section class="learning-panel">
-            <p class="eyebrow">Smart Writing Lab</p>
-            <h2>My Dream School</h2>
-            <p>Grammar, spelling, vocabulary and sentence structure are checked in a parent-friendly way.</p>
-          </section>
-        </div>
-
-        <section class="learning-panel" id="math-lab">
-          <div class="learning-panel-copy">
-            <p class="eyebrow">Mathematics Lab</p>
-            <h2>Concept roadmap with visible practice status.</h2>
-          </div>
-          <div class="math-roadmap">
-            <article class="is-done">Addition</article>
-            <article class="is-done">Subtraction</article>
-            <article class="is-active">Fractions</article>
-            <article>Decimals</article>
-            <article>Word Problems</article>
-          </div>
-        </section>
-
         <div class="learning-two-column">
           <section class="learning-panel">
             <p class="eyebrow">Weekly Report</p>
-            <h2>Simple progress language for parents.</h2>
+            <h2>Only live Kidsverse English features are tracked here.</h2>
             <div class="weekly-report-grid">
               <article><strong data-weekly-score="reading">--</strong><span>Reading</span><small data-weekly-label="reading">Awaiting test</small></article>
-              <article><strong data-weekly-score="writing">--</strong><span>Writing</span><small data-weekly-label="writing">Not started</small></article>
-              <article><strong data-weekly-score="grammar">--</strong><span>Grammar</span><small data-weekly-label="grammar">Not started</small></article>
-              <article><strong data-weekly-score="math">--</strong><span>Math</span><small data-weekly-label="math">Not started</small></article>
-              <article><strong data-weekly-score="confidence">--</strong><span>Confidence</span><small data-weekly-label="confidence">Awaiting test</small></article>
+              <article><strong data-weekly-score="routine">--</strong><span>Routine Verbs</span><small data-weekly-label="routine">Awaiting practice</small></article>
+              <article><strong data-weekly-score="streak">--</strong><span>Streak</span><small data-weekly-label="streak">Login to save</small></article>
             </div>
           </section>
           <section class="learning-panel">
             <p class="eyebrow">Parent Insights</p>
             <h2 data-insight-heading>No activity completed yet.</h2>
             <ul class="insight-list" data-insight-list>
-              <li>Complete the first reading check to unlock parent insights.</li>
-              <li>Grammar, writing and speaking progress will appear after each activity.</li>
+              <li>Read the first paragraph in Reading Fluency.</li>
+              <li>Click Next paragraph to login and start saving the journey.</li>
+              <li>Daily Routine Verbs progress appears after sentence practice.</li>
             </ul>
           </section>
         </div>
 
-        <section class="learning-panel homework-generator-panel">
-          <div>
-            <p class="eyebrow">AI Homework Generator</p>
-            <h2>Create a 10-minute practice sheet instantly.</h2>
-            <p>Choose grade, topic and difficulty. The dashboard creates a simple worksheet-style task for home practice.</p>
-          </div>
-          <form class="homework-generator-form" data-homework-generator>
-            <label>Grade
-              <select name="grade" required>
-                <option>UKG</option>
-                <option>Grade 1</option>
-                <option>Grade 2</option>
-                <option>Grade 3</option>
-              </select>
-            </label>
-            <label>Topic
-              <select name="topic" required>
-                <option>Reading</option>
-                <option>A, An & The</option>
-                <option>Nouns</option>
-                <option>Mathematics</option>
-                <option>Speaking</option>
-              </select>
-            </label>
-            <label>Difficulty
-              <select name="difficulty" required>
-                <option>Gentle</option>
-                <option>Practice</option>
-                <option>Challenge</option>
-              </select>
-            </label>
-            <button class="primary-button" type="submit">Generate Worksheet</button>
-          </form>
-          <article class="homework-output" data-homework-output>
-            <span>Worksheet preview</span>
-            <strong>Select options and generate a home task.</strong>
-            <p>The result will include five small questions and one parent activity.</p>
-          </article>
-        </section>
-
         <section class="learning-panel achievement-panel">
           <div>
-            <p class="eyebrow">Achievement System</p>
-            <h2>Badges and certificates that children feel proud to unlock.</h2>
+            <p class="eyebrow">Saved Streaks</p>
+            <h2>Continue from where the child left off.</h2>
           </div>
           <div class="badge-row">
             <article><strong>Reading Champion</strong><span data-badge-status="reading">Locked</span></article>
-            <article><strong>Grammar Star</strong><span data-badge-status="grammar">Locked</span></article>
             <article><strong>Consistent Learner</strong><span data-badge-status="streak">Start streak</span></article>
-            <article><strong>Vocabulary Hero</strong><span data-badge-status="vocabulary">Next target</span></article>
+            <article><strong>Routine Speaker</strong><span data-badge-status="routine">Locked</span></article>
           </div>
         </section>
 
         <div class="learning-two-column">
           <section class="learning-panel recommendation-panel">
-            <p class="eyebrow">AI Recommendation Engine</p>
-            <h2>Recommended for next week</h2>
-            <p data-recommendation-text>Complete the first reading check. Kidsverse will then recommend the next reading, grammar or speaking activity.</p>
-            <a class="primary-button" href="after-school/reading-fluency.html">Start Reading Practice</a>
+            <p class="eyebrow">Next Best Action</p>
+            <h2>Recommended now</h2>
+            <p data-recommendation-text>Start Reading Fluency. After the first paragraph, login to save the next paragraph and streak.</p>
+            <a class="primary-button" data-reading-continue-link href="after-school/reading-fluency.html">Continue Reading</a>
           </section>
           <section class="learning-panel blueprint-panel">
-            <p class="eyebrow">Child Growth Blueprint</p>
-            <h2>The signature Kidsverse view for holistic development.</h2>
+            <p class="eyebrow">English Growth Snapshot</p>
+            <h2>Focused on live Kidsverse English tools.</h2>
             <div class="blueprint-grid">
               <span>Reading <strong data-blueprint-score="reading">--</strong></span>
-              <span>Communication <strong data-blueprint-score="communication">--</strong></span>
-              <span>Writing <strong data-blueprint-score="writing">--</strong></span>
-              <span>Maths <strong data-blueprint-score="maths">--</strong></span>
-              <span>Logical Thinking <strong data-blueprint-score="logical">--</strong></span>
+              <span>Routine Verbs <strong data-blueprint-score="routine">--</strong></span>
+              <span>Sentence Formation <strong data-blueprint-score="sentence">--</strong></span>
               <span>Confidence <strong data-blueprint-score="confidence">--</strong></span>
-              <span>Creativity <strong data-blueprint-score="creativity">--</strong></span>
-              <span>Social Skills <strong data-blueprint-score="social">--</strong></span>
-              <span>Problem Solving <strong data-blueprint-score="problem">--</strong></span>
               <span>Overall Growth <strong data-blueprint-score="overall">--</strong></span>
             </div>
           </section>
         </div>
-
-        <section class="learning-panel weakness-panel">
-          <div>
-            <p class="eyebrow">AI Weakness Detector</p>
-            <h2>Parents should not have to guess weak areas.</h2>
-            <p data-weakness-summary>Complete reading, grammar and speaking activities to detect weak areas.</p>
-          </div>
-          <div class="weakness-grid" data-weakness-grid>
-            <article><strong>Reading speed</strong><span>Awaiting test</span></article>
-            <article><strong>Sentence formation</strong><span>Awaiting grammar practice</span></article>
-            <article><strong>Speaking confidence</strong><span>Awaiting speaking prompt</span></article>
-          </div>
-        </section>
       </section>
     </main>
 
