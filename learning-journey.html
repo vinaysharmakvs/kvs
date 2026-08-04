@@ -19,6 +19,7 @@
     <link rel="icon" type="image/png" sizes="512x512" href="assets/favicon.png" />
     <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
     <link rel="stylesheet" href="styles.css" />
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-0ZT634EM99"></script>
   <script>
@@ -88,52 +89,116 @@
           </div>
         </div>
         <div class="learning-phone-preview" aria-label="Learning dashboard preview">
-          <div class="learning-phone-top"><span></span><strong>Kidsverse</strong><small>82%</small></div>
-          <div class="learning-ring"><strong>82%</strong><span>Overall Progress</span></div>
+          <div class="learning-phone-top"><span></span><strong>Kidsverse</strong><small>Parent Login</small></div>
+          <div class="learning-ring"><strong>Login</strong><span>View child progress</span></div>
           <div class="learning-mini-missions">
-            <article><strong>Reading</strong><span>2 stories left</span></article>
-            <article><strong>Grammar</strong><span>Past tense active</span></article>
-            <article><strong>Speaking</strong><span>Challenge complete</span></article>
+            <article><strong>Reading</strong><span>Unlock after test</span></article>
+            <article><strong>Grammar</strong><span>Track after lesson</span></article>
+            <article><strong>Speaking</strong><span>Review after challenge</span></article>
           </div>
         </div>
       </section>
 
       <section class="section learning-login-section" id="parent-login">
-        <form class="learning-login-card" data-learning-login-form>
-          <p class="eyebrow">Parent access</p>
-          <h2>Login to your child's learning dashboard.</h2>
-          <p>Enter parent details to open the dashboard preview. Later this will connect with the Kidsverse database and secure parent login.</p>
-          <div class="learning-login-grid">
-            <label>Parent name<input type="text" name="parentName" placeholder="Example: Mrs. Sharma" required /></label>
-            <label>Mobile number<input type="tel" name="parentPhone" placeholder="+91" required /></label>
-            <label>Child name<input type="text" name="childName" placeholder="Example: Rehan" required /></label>
-            <label>Class<input type="text" name="childClass" placeholder="Example: UKG Alpha" required /></label>
+        <div class="learning-login-card">
+          <div class="learning-login-intro">
+            <p class="eyebrow">Parent Login</p>
+            <h2>Sign in with Google to access your child's learning dashboard.</h2>
+            <p>
+              Parents first sign in securely. After sign-in, we ask only the child details needed to show the correct Kidsverse Learning Journey.
+            </p>
           </div>
-          <button class="primary-button" type="submit">Access My Child's Dashboard</button>
-          <small data-learning-login-note>Use this page as the parent-facing experience. Database login can be connected once student records are uploaded.</small>
-        </form>
+
+          <div class="parent-login-flow">
+            <section class="parent-login-step is-active" data-parent-google-step>
+              <span>Step 1</span>
+              <h3>Google Sign-In</h3>
+              <p>Use the parent Google account registered with Kidsverse.</p>
+              <div
+                id="g_id_onload"
+                data-client_id="344047535994-9a2s1tl3kf9etkkht33ciba13f32k5b8.apps.googleusercontent.com"
+                data-callback="handleKidsverseParentGoogleLogin"
+                data-auto_prompt="false"
+                data-ux_mode="popup"
+                data-context="signin"
+                data-itp_support="true"
+                data-use_fedcm_for_prompt="true"
+              ></div>
+              <div
+                class="g_id_signin"
+                data-type="standard"
+                data-size="large"
+                data-theme="outline"
+                data-text="signin_with"
+                data-shape="pill"
+                data-logo_alignment="left"
+              ></div>
+              <button class="secondary-button parent-preview-login" type="button" data-parent-preview-login>Preview dashboard flow</button>
+              <small data-parent-google-note>Google Sign-In works on the secure live website after the domain is added in Google OAuth settings.</small>
+            </section>
+
+            <form class="parent-login-step learning-details-form" data-learning-login-form hidden>
+              <span>Step 2</span>
+              <h3>Child Details</h3>
+              <p>These details help Kidsverse map the parent login to the correct child record.</p>
+              <div class="learning-login-grid">
+                <label>Parent name<input type="text" name="parentName" placeholder="Parent name" required data-parent-name-input /></label>
+                <label>Child name<input type="text" name="childName" placeholder="Child name" required /></label>
+                <label>Grade
+                  <select name="childGrade" required>
+                    <option value="">Select grade</option>
+                    <option>Playway</option>
+                    <option>Nursery</option>
+                    <option>LKG</option>
+                    <option>UKG</option>
+                    <option>Grade 1</option>
+                    <option>After School</option>
+                  </select>
+                </label>
+                <label>Section / Batch<input type="text" name="childSection" placeholder="Example: Alpha" required /></label>
+              </div>
+              <button class="primary-button" type="submit">Open Learning Dashboard</button>
+              <small data-learning-login-note>Dashboard will show pending progress until the child completes a test or learning activity.</small>
+            </form>
+          </div>
+        </div>
       </section>
 
       <section class="section learning-dashboard" data-learning-dashboard hidden>
         <div class="learning-dashboard-head">
           <div>
             <p class="eyebrow">Welcome back</p>
-            <h2>Hello, <span data-learning-parent-name>Mrs. Sharma</span>.</h2>
-            <p><strong data-learning-child-name>Rehan</strong>'s learning journey is moving steadily across reading, grammar, communication and confidence.</p>
+            <h2>Hello, <span data-learning-parent-name>Parent</span>.</h2>
+            <p><strong data-learning-child-name>Your child</strong>'s dashboard is ready. Progress will update after a test or learning activity is completed.</p>
           </div>
           <div class="learning-score-card">
             <span>Overall Progress</span>
-            <strong>82%</strong>
-            <small>Excellent direction</small>
+            <strong data-overall-progress>0%</strong>
+            <small data-overall-status>Start first activity</small>
           </div>
         </div>
 
         <div class="mission-grid">
-          <article><span>Reading</span><strong>2 stories remaining</strong><a href="after-school/reading-fluency.html">Continue</a></article>
-          <article><span>Grammar</span><strong>Past Tense - 60% complete</strong><a href="after-school/past-tense.html">Practice</a></article>
-          <article><span>Mathematics</span><strong>Fractions practice ready</strong><a href="#math-lab">View</a></article>
-          <article><span>Speaking</span><strong>Today's challenge complete</strong><a href="#communication-builder">Review</a></article>
+          <article><span>Reading</span><strong data-reading-mission>Reading check pending</strong><a href="#reading-test">Start</a></article>
+          <article><span>Grammar</span><strong data-grammar-mission>Grammar activity not started</strong><a href="after-school/present-tense.html">Practice</a></article>
+          <article><span>Mathematics</span><strong data-math-mission>Math practice not started</strong><a href="#math-lab">View</a></article>
+          <article><span>Speaking</span><strong data-speaking-mission>Speaking challenge pending</strong><a href="#communication-builder">Start</a></article>
         </div>
+
+        <section class="learning-panel learning-test-panel" id="reading-test">
+          <div>
+            <p class="eyebrow">First Activity</p>
+            <h2>Reading Fluency Check</h2>
+            <p>
+              Ask the child to read one small paragraph. After the check is completed, the dashboard will unlock the first progress summary.
+            </p>
+          </div>
+          <div class="test-action-card">
+            <span data-reading-test-status>Not started</span>
+            <strong>Short reading test</strong>
+            <button class="primary-button" type="button" data-complete-reading-test>Mark Reading Check Completed</button>
+          </div>
+        </section>
 
         <section class="learning-panel reading-panel">
           <div class="learning-panel-copy">
@@ -142,12 +207,12 @@
             <p>Parents can instantly see where the child is confident and where practice is needed.</p>
           </div>
           <div class="fluency-roadmap">
-            <article><span>Letters</span><div><i style="width: 100%"></i></div><strong>100%</strong></article>
-            <article><span>Sounds</span><div><i style="width: 100%"></i></div><strong>100%</strong></article>
-            <article><span>Blends</span><div><i style="width: 82%"></i></div><strong>82%</strong></article>
-            <article><span>Words</span><div><i style="width: 65%"></i></div><strong>65%</strong></article>
-            <article><span>Sentences</span><div><i style="width: 45%"></i></div><strong>45%</strong></article>
-            <article><span>Paragraphs</span><div><i style="width: 20%"></i></div><strong>20%</strong></article>
+            <article><span>Letters</span><div><i data-progress-bar="letters" style="width: 0%"></i></div><strong data-progress-value="letters">Pending</strong></article>
+            <article><span>Sounds</span><div><i data-progress-bar="sounds" style="width: 0%"></i></div><strong data-progress-value="sounds">Pending</strong></article>
+            <article><span>Blends</span><div><i data-progress-bar="blends" style="width: 0%"></i></div><strong data-progress-value="blends">Pending</strong></article>
+            <article><span>Words</span><div><i data-progress-bar="words" style="width: 0%"></i></div><strong data-progress-value="words">Pending</strong></article>
+            <article><span>Sentences</span><div><i data-progress-bar="sentences" style="width: 0%"></i></div><strong data-progress-value="sentences">Pending</strong></article>
+            <article><span>Paragraphs</span><div><i data-progress-bar="paragraphs" style="width: 0%"></i></div><strong data-progress-value="paragraphs">Pending</strong></article>
             <article class="is-locked"><span>Stories</span><div><i style="width: 0%"></i></div><strong>Locked</strong></article>
           </div>
         </section>
@@ -157,8 +222,8 @@
             <p class="eyebrow">English Lab</p>
             <h2>Grammar Roadmap</h2>
             <div class="roadmap-list">
-              <a href="after-school/present-tense.html" class="is-done"><span>Done</span><strong>Present Tense</strong></a>
-              <a href="after-school/past-tense.html" class="is-active"><span>Live</span><strong>Past Tense</strong></a>
+              <a href="after-school/present-tense.html" class="is-active"><span>Ready</span><strong>Present Tense</strong></a>
+              <a href="after-school/past-tense.html"><span>Next</span><strong>Past Tense</strong></a>
               <a href="after-school/future-tense.html"><span>Next</span><strong>Future Tense</strong></a>
               <article><span>Soon</span><strong>Active Passive</strong></article>
               <article><span>Soon</span><strong>Reported Speech</strong></article>
@@ -169,11 +234,11 @@
             <p class="eyebrow">AI Reading Coach</p>
             <h2>Today's Reading: Little Red Hen</h2>
             <div class="coach-score-grid">
-              <article><span>Pronunciation</span><strong>86%</strong></article>
-              <article><span>Fluency</span><strong>78%</strong></article>
-              <article><span>Confidence</span><strong>91%</strong></article>
-              <article><span>Speed</span><strong>74%</strong></article>
-              <article><span>Accuracy</span><strong>84%</strong></article>
+              <article><span>Pronunciation</span><strong data-coach-score="pronunciation">--</strong></article>
+              <article><span>Fluency</span><strong data-coach-score="fluency">--</strong></article>
+              <article><span>Confidence</span><strong data-coach-score="confidence">--</strong></article>
+              <article><span>Speed</span><strong data-coach-score="speed">--</strong></article>
+              <article><span>Accuracy</span><strong data-coach-score="accuracy">--</strong></article>
             </div>
           </section>
         </div>
@@ -221,21 +286,19 @@
             <p class="eyebrow">Weekly Report</p>
             <h2>Simple progress language for parents.</h2>
             <div class="weekly-report-grid">
-              <article><strong>92%</strong><span>Reading</span><small>Excellent</small></article>
-              <article><strong>78%</strong><span>Writing</span><small>Good</small></article>
-              <article><strong>83%</strong><span>Grammar</span><small>Good</small></article>
-              <article><strong>89%</strong><span>Math</span><small>Excellent</small></article>
-              <article><strong>95%</strong><span>Confidence</span><small>Excellent</small></article>
+              <article><strong data-weekly-score="reading">--</strong><span>Reading</span><small data-weekly-label="reading">Awaiting test</small></article>
+              <article><strong data-weekly-score="writing">--</strong><span>Writing</span><small data-weekly-label="writing">Not started</small></article>
+              <article><strong data-weekly-score="grammar">--</strong><span>Grammar</span><small data-weekly-label="grammar">Not started</small></article>
+              <article><strong data-weekly-score="math">--</strong><span>Math</span><small data-weekly-label="math">Not started</small></article>
+              <article><strong data-weekly-score="confidence">--</strong><span>Confidence</span><small data-weekly-label="confidence">Awaiting test</small></article>
             </div>
           </section>
           <section class="learning-panel">
             <p class="eyebrow">Parent Insights</p>
-            <h2>This week your child completed:</h2>
-            <ul class="insight-list">
-              <li>Learned Past Perfect basics</li>
-              <li>Read 3 stories with guided support</li>
-              <li>Added 25 new vocabulary words</li>
-              <li>Improved reading speed by 18%</li>
+            <h2 data-insight-heading>No activity completed yet.</h2>
+            <ul class="insight-list" data-insight-list>
+              <li>Complete the first reading check to unlock parent insights.</li>
+              <li>Grammar, writing and speaking progress will appear after each activity.</li>
             </ul>
           </section>
         </div>
@@ -246,10 +309,10 @@
             <h2>Badges and certificates that children feel proud to unlock.</h2>
           </div>
           <div class="badge-row">
-            <article><strong>Reading Champion</strong><span>Unlocked</span></article>
-            <article><strong>Grammar Star</strong><span>Unlocked</span></article>
-            <article><strong>Consistent Learner</strong><span>16 day streak</span></article>
-            <article><strong>Vocabulary Hero</strong><span>Next target</span></article>
+            <article><strong>Reading Champion</strong><span data-badge-status="reading">Locked</span></article>
+            <article><strong>Grammar Star</strong><span data-badge-status="grammar">Locked</span></article>
+            <article><strong>Consistent Learner</strong><span data-badge-status="streak">Start streak</span></article>
+            <article><strong>Vocabulary Hero</strong><span data-badge-status="vocabulary">Next target</span></article>
           </div>
         </section>
 
@@ -257,19 +320,19 @@
           <section class="learning-panel recommendation-panel">
             <p class="eyebrow">AI Recommendation Engine</p>
             <h2>Recommended for next week</h2>
-            <p>Reading practice for 15 minutes daily, followed by two spoken sentences from the story.</p>
+            <p data-recommendation-text>Complete the first reading check. Kidsverse will then recommend the next reading, grammar or speaking activity.</p>
             <a class="primary-button" href="after-school/reading-fluency.html">Start Reading Practice</a>
           </section>
           <section class="learning-panel blueprint-panel">
             <p class="eyebrow">Child Blueprint</p>
             <h2>Growth beyond academics.</h2>
             <div class="blueprint-grid">
-              <span>Reading <strong>82%</strong></span>
-              <span>Writing <strong>74%</strong></span>
-              <span>Speaking <strong>91%</strong></span>
-              <span>Confidence <strong>89%</strong></span>
-              <span>Creativity <strong>94%</strong></span>
-              <span>Logical Thinking <strong>80%</strong></span>
+              <span>Reading <strong data-blueprint-score="reading">--</strong></span>
+              <span>Writing <strong data-blueprint-score="writing">--</strong></span>
+              <span>Speaking <strong data-blueprint-score="speaking">--</strong></span>
+              <span>Confidence <strong data-blueprint-score="confidence">--</strong></span>
+              <span>Creativity <strong data-blueprint-score="creativity">--</strong></span>
+              <span>Logical Thinking <strong data-blueprint-score="logical">--</strong></span>
             </div>
           </section>
         </div>
