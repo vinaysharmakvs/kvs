@@ -2626,6 +2626,122 @@ function getRoutineVerb(action, subject) {
   return action;
 }
 
+const kidsverseLearningStoreKey = "kidsverseLearningJourneyProgress";
+const kidsverseParentLoginKey = "kidsverseParentLearningLogin";
+
+function getKidsverseDateKey(date = new Date()) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function loadKidsverseLearningProgress() {
+  try {
+    return JSON.parse(localStorage.getItem(kidsverseLearningStoreKey) || "{}");
+  } catch {
+    return {};
+  }
+}
+
+function saveKidsverseLearningProgress(patch) {
+  if (!patch.parent && !isKidsverseParentLoggedIn()) return loadKidsverseLearningProgress();
+  const current = loadKidsverseLearningProgress();
+  const next = {
+    ...current,
+    ...patch,
+    reading: { ...(current.reading || {}), ...(patch.reading || {}) },
+    routine: { ...(current.routine || {}), ...(patch.routine || {}) },
+    updatedAt: new Date().toISOString()
+  };
+  try {
+    localStorage.setItem(kidsverseLearningStoreKey, JSON.stringify(next));
+  } catch {
+    /* Progress saving is optional in private browsing. */
+  }
+  return next;
+}
+
+function getKidsverseParentLogin() {
+  try {
+    return JSON.parse(localStorage.getItem(kidsverseParentLoginKey) || "{}");
+  } catch {
+    return {};
+  }
+}
+
+function isKidsverseParentLoggedIn() {
+  const login = getKidsverseParentLogin();
+  return Boolean(login.parentName && login.childName);
+}
+
+function saveKidsverseParentLogin(data) {
+  const login = {
+    parentName: String(data.parentName || "").trim(),
+    childName: String(data.childName || "").trim(),
+    grade: String(data.grade || "").trim(),
+    section: String(data.section || "").trim(),
+    signedInAt: new Date().toISOString()
+  };
+  try {
+    localStorage.setItem(kidsverseParentLoginKey, JSON.stringify(login));
+  } catch {
+    /* Parent login can still work for this session without storage. */
+  }
+  saveKidsverseLearningProgress({ parent: login });
+  return login;
+}
+
+function showKidsverseParentLoginGate(onComplete) {
+  let modal = document.querySelector("[data-learning-login-modal]");
+  if (!modal) {
+    modal = document.createElement("section");
+    modal.className = "learning-login-modal";
+    modal.dataset.learningLoginModal = "true";
+    modal.innerHTML = `
+      <div class="learning-login-modal-card">
+        <button class="learning-login-modal-close" type="button" aria-label="Close parent login" data-learning-login-close>Close</button>
+        <p class="eyebrow">Parent Login Required</p>
+        <h2>Login once to save reading progress and streaks.</h2>
+        <p>From the next paragraph onwards, Kidsverse will remember where the child stopped and show it inside Learning Journey.</p>
+        <form data-learning-modal-form>
+          <label>Parent name<input type="text" name="parentName" placeholder="Parent name" required /></label>
+          <label>Child name<input type="text" name="childName" placeholder="Child name" required /></label>
+          <label>Grade<select name="grade" required><option value="">Select grade</option><option>UKG</option><option>Grade 1</option><option>Grade 2</option><option>Grade 3</option><option>Grade 4</option><option>Grade 5</option><option>Grade 6</option><option>Grade 7</option><option>Grade 8</option><option>Grade 9</option><option>Grade 10</option><option>Grade 11</option><option>Grade 12</option><option>College Student</option><option>Working Professional</option></select></label>
+          <button class="primary-button" type="submit">Login & Continue</button>
+        </form>
+      </div>
+    `;
+    document.body.appendChild(modal);
+    modal.querySelector("[data-learning-login-close]")?.addEventListener("click", () => {
+      modal.hidden = true;
+    });
+  }
+  const saved = getKidsverseParentLogin();
+  Object.entries({ parentName: saved.parentName, childName: saved.childName, grade: saved.grade }).forEach(([name, value]) => {
+    const field = modal.querySelector(`[name="${name}"]`);
+    if (field && value) field.value = value;
+  });
+  modal.hidden = false;
+  modal.querySelector("[data-learning-modal-form]").onsubmit = (event) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+    const formData = new FormData(form);
+    saveKidsverseParentLogin({
+      parentName: formData.get("parentName"),
+      childName: formData.get("childName"),
+      grade: formData.get("grade"),
+      section: ""
+    });
+    modal.hidden = true;
+    onComplete?.();
+  };
+}
+
 function initRoutineBuilder() {
   const builder = document.querySelector("[data-routine-builder]");
   if (!builder) return;
@@ -2638,6 +2754,13 @@ function initRoutineBuilder() {
   function renderSentence() {
     const sentence = `${subject.value} ${getRoutineVerb(action.value, subject.value)} ${time.value}.`;
     output.textContent = sentence;
+    saveKidsverseLearningProgress({
+      routine: {
+        lastSentence: sentence,
+        sentenceBuiltAt: new Date().toISOString(),
+        status: "Sentence builder used"
+      }
+    });
     resetTenseAudioButton(readButton);
     readButton.textContent = "Read sentence";
   }
@@ -2678,6 +2801,13 @@ function initRoutinePrompts() {
   });
   nextButton?.addEventListener("click", () => {
     index = (index + 1) % routinePrompts.length;
+    saveKidsverseLearningProgress({
+      routine: {
+        promptIndex: index,
+        promptStatus: `Prompt ${index + 1} opened`,
+        status: "Speaking prompts started"
+      }
+    });
     stopTenseReading();
     renderPrompt();
   });
@@ -2723,6 +2853,15 @@ function initRoutinePractice() {
 
     if (passed) {
       feedback.innerHTML = `<span>Speaking ready</span><strong>Good routine paragraph.</strong><p>Now read it aloud slowly and clearly.</p>`;
+      saveKidsverseLearningProgress({
+        routine: {
+          practiceText: value,
+          sentenceCount: sentences.length,
+          actionVerbCount: new Set(verbs.map((verb) => verb.toLowerCase())).size,
+          completedAt: new Date().toISOString(),
+          status: "Daily routine practice completed"
+        }
+      });
       return;
     }
 
@@ -2873,6 +3012,10 @@ const readingGradeLabels = {
   8: "Grade 8",
   9: "Grade 9",
   10: "Grade 10",
+  11: "Grade 11",
+  12: "Grade 12",
+  college: "College Student",
+  professional: "Working Professional",
 };
 
 const readingLevelLabels = {
@@ -2938,6 +3081,10 @@ const readingGradeThemes = {
   8: ["leadership in groups", "financial awareness", "cyber safety", "scientific thinking", "sustainable living", "community research", "critical reading", "presentation skills", "problem analysis", "future planning"],
   9: ["career exploration", "digital discipline", "environment policy", "communication skills", "project research", "personal responsibility", "exam strategy", "social impact", "technology ethics", "leadership decisions"],
   10: ["board exam planning", "career readiness", "responsible AI", "public speaking", "research-based projects", "time ownership", "mental focus", "digital portfolio", "social innovation", "future goals"],
+  11: ["academic focus", "career clarity", "communication skills", "research habits", "presentation confidence", "interview basics", "critical reading", "subject mastery", "digital discipline", "future planning"],
+  12: ["board exam readiness", "college preparation", "career interviews", "personal statement", "advanced reading", "presentation skills", "time ownership", "exam strategy", "decision making", "future goals"],
+  college: ["campus communication", "interview confidence", "presentation skills", "professional email", "group discussion", "career readiness", "critical reading", "project explanation", "internship preparation", "public speaking"],
+  professional: ["workplace communication", "meeting confidence", "client conversation", "presentation clarity", "email writing", "leadership communication", "interview answers", "business vocabulary", "active listening", "professional storytelling"],
 };
 
 const readingLevelPatterns = {
@@ -3173,6 +3320,21 @@ function initReadingFluencyLab() {
   const micSessionKey = "kidsverseReadingMicPermission";
   const streakStorageKey = "kidsverseReadingPracticeStreak";
   const studentNameStorageKey = "kidsverseReadingStudentName";
+  const savedJourney = loadKidsverseLearningProgress();
+  const urlReadingParams = new URLSearchParams(window.location.search);
+
+  if (isKidsverseParentLoggedIn() && savedJourney.reading) {
+    grade = savedJourney.reading.grade || grade;
+    level = savedJourney.reading.level || level;
+    passageIndex = Number(savedJourney.reading.passageIndex) || 0;
+    if (urlReadingParams.get("resume") === "1") {
+      passageIndex = Number(savedJourney.reading.nextPassageIndex ?? savedJourney.reading.passageIndex) || passageIndex;
+    }
+    if (gradeSelect) gradeSelect.value = grade;
+    if (levelSelect) levelSelect.value = level;
+    currentReadingLevels = getReadingLevelsForGrade(grade);
+    passageIndex = Math.min(Math.max(0, passageIndex), currentReadingLevels[level].length - 1);
+  }
 
   function activePassage() {
     return currentReadingLevels[level][passageIndex];
@@ -3337,6 +3499,22 @@ function initReadingFluencyLab() {
     if (certificateStreak) certificateStreak.innerHTML = `Current Streak<br>${streak.streak}<br>Day${streak.streak === 1 ? "" : "s"}`;
     if (shareNote) shareNote.textContent = "Certificate ready. Share it with family or friends.";
     if (certificateCard) certificateCard.hidden = false;
+    saveKidsverseLearningProgress({
+      reading: {
+        grade,
+        level,
+        passageIndex,
+        nextPassageIndex: (passageIndex + 1) % currentReadingLevels[level].length,
+        title: activePassage().title,
+        levelLabel: levelText,
+        gradeLabel,
+        lastAccuracy: accuracy,
+        streak: streak.streak,
+        todayCount: streak.todayCount,
+        lastCompletedAt: new Date().toISOString(),
+        status: "Reading paragraph completed"
+      }
+    });
   }
 
   function wrapCanvasText(context, text, x, y, maxWidth, lineHeight, maxLines = 3) {
@@ -3739,7 +3917,41 @@ function initReadingFluencyLab() {
   });
 
   nextButton?.addEventListener("click", () => {
+    const continueToNext = () => {
+      passageIndex = (passageIndex + 1) % currentReadingLevels[level].length;
+      saveKidsverseLearningProgress({
+        reading: {
+          grade,
+          level,
+          passageIndex,
+          nextPassageIndex: passageIndex,
+          title: activePassage().title,
+          levelLabel: activePassage().label,
+          gradeLabel: readingGradeLabels[grade],
+          status: "Next paragraph opened"
+        }
+      });
+      renderPassage();
+    };
+
+    if (!isKidsverseParentLoggedIn()) {
+      showKidsverseParentLoginGate(continueToNext);
+      return;
+    }
+
     passageIndex = (passageIndex + 1) % currentReadingLevels[level].length;
+    saveKidsverseLearningProgress({
+      reading: {
+        grade,
+        level,
+        passageIndex,
+        nextPassageIndex: passageIndex,
+        title: activePassage().title,
+        levelLabel: activePassage().label,
+        gradeLabel: readingGradeLabels[grade],
+        status: "Next paragraph opened"
+      }
+    });
     renderPassage();
   });
 
@@ -3937,6 +4149,7 @@ function initLearningJourneyDashboard() {
   const dashboard = document.querySelector("[data-learning-dashboard]");
   if (!form || !dashboard) return;
 
+  const loginSection = document.querySelector(".learning-login-section");
   const googleStep = document.querySelector("[data-parent-google-step]");
   const previewLogin = document.querySelector("[data-parent-preview-login]");
   const parentNameInput = document.querySelector("[data-parent-name-input]");
@@ -3981,6 +4194,77 @@ function initLearningJourneyDashboard() {
     if (dailyChallengeStatus) dailyChallengeStatus.textContent = "Challenge not completed today.";
   }
 
+  function renderSavedLearningJourney() {
+    const login = getKidsverseParentLogin();
+    const saved = loadKidsverseLearningProgress();
+    const reading = saved.reading || {};
+    const routine = saved.routine || {};
+    const hasReading = Boolean(reading.lastAccuracy || reading.title || reading.status);
+    const hasRoutine = Boolean(routine.completedAt || routine.lastSentence || routine.promptStatus);
+    const readingScore = Number(reading.lastAccuracy) || 0;
+    const routineScore = routine.completedAt ? 80 : routine.lastSentence ? 45 : 0;
+    const overall = Math.round(((hasReading ? readingScore : 0) + routineScore) / (hasReading && hasRoutine ? 2 : hasReading || hasRoutine ? 1 : 1));
+
+    if (parentNameTarget) parentNameTarget.textContent = login.parentName || "Parent";
+    if (childNameTarget) childNameTarget.textContent = login.childName || "Your child";
+    setText("[data-overall-progress]", `${overall || 0}%`);
+    setText("[data-overall-status]", hasReading || hasRoutine ? "Saved learning journey" : "Start Reading Fluency");
+    setText("[data-reading-mission]", hasReading ? `${reading.title || "Paragraph"} saved` : "Start first paragraph");
+    setText("[data-routine-mission]", hasRoutine ? routine.status || "Routine practice started" : "Practice words and sentences");
+    setText("[data-reading-resume-title]", hasReading ? `Continue: ${reading.title || "Next paragraph"}` : "Start from the first paragraph.");
+    setText("[data-reading-resume-copy]", hasReading ? `${reading.gradeLabel || "Reading"} | ${reading.levelLabel || "Level"} | Last accuracy ${reading.lastAccuracy || "--"}%.` : "Read the first paragraph freely. When the child clicks Next paragraph, parent login will save progress from that point onwards.");
+    setText("[data-reading-streak-label]", reading.streak ? `Reading streak: ${reading.streak} day${Number(reading.streak) === 1 ? "" : "s"}` : "Streak not started");
+    setText("[data-reading-last-score]", reading.lastAccuracy ? `Last accuracy ${reading.lastAccuracy}%` : "Accuracy pending");
+    setText("[data-reading-coach-title]", hasReading ? `Last Reading: ${reading.title || "Saved paragraph"}` : "Reading result will appear after practice.");
+
+    document.querySelectorAll("[data-reading-continue-link]").forEach((link) => {
+      link.href = hasReading ? "after-school/reading-fluency.html?resume=1" : "after-school/reading-fluency.html";
+      link.textContent = hasReading ? "Resume Reading" : "Open Reading Fluency";
+    });
+
+    const readingProgressValues = hasReading
+      ? { letters: 100, sounds: 96, blends: Math.max(70, readingScore), words: Math.max(45, readingScore - 12), sentences: Math.max(25, readingScore - 28), paragraphs: Math.max(10, readingScore - 42) }
+      : { letters: 0, sounds: 0, blends: 0, words: 0, sentences: 0, paragraphs: 0 };
+    Object.entries(readingProgressValues).forEach(([key, value]) => {
+      const bar = document.querySelector(`[data-progress-bar="${key}"]`);
+      const label = document.querySelector(`[data-progress-value="${key}"]`);
+      if (bar) bar.style.width = `${value}%`;
+      if (label) label.textContent = value ? `${value}%` : "Pending";
+    });
+
+    const coach = hasReading
+      ? { pronunciation: `${Math.min(100, readingScore + 2)}%`, fluency: `${Math.max(0, readingScore - 4)}%`, confidence: `${Math.min(100, readingScore + 6)}%`, speed: `${Math.max(0, readingScore - 8)}%`, accuracy: `${readingScore}%` }
+      : { pronunciation: "--", fluency: "--", confidence: "--", speed: "--", accuracy: "--" };
+    Object.entries(coach).forEach(([key, value]) => setText(`[data-coach-score="${key}"]`, value));
+
+    setText("[data-weekly-score='reading']", hasReading ? `${readingScore}%` : "--");
+    setText("[data-weekly-label='reading']", hasReading ? "Saved" : "Awaiting test");
+    setText("[data-weekly-score='routine']", hasRoutine ? `${routineScore}%` : "--");
+    setText("[data-weekly-label='routine']", hasRoutine ? "In progress" : "Awaiting practice");
+    setText("[data-weekly-score='streak']", reading.streak ? `${reading.streak}` : "--");
+    setText("[data-weekly-label='streak']", reading.streak ? "Day streak" : "Login to save");
+    setText("[data-routine-writing-status]", routine.completedAt ? "Done" : routine.lastSentence ? "Started" : "Pending");
+    setText("[data-routine-speaking-status]", routine.promptStatus ? "Started" : "Pending");
+    setText("[data-badge-status='reading']", readingScore >= 70 ? "Unlocked" : "Locked");
+    setText("[data-badge-status='streak']", reading.streak ? `${reading.streak} day streak` : "Start streak");
+    setText("[data-badge-status='routine']", routine.completedAt ? "Unlocked" : "Locked");
+    setText("[data-recommendation-text]", hasReading ? "Resume Reading Fluency from the next saved paragraph, then practise Daily Routine Verbs for sentence confidence." : "Start Reading Fluency. After the first paragraph, login to save the next paragraph and streak.");
+    setText("[data-blueprint-score='reading']", hasReading ? `${readingScore}%` : "--");
+    setText("[data-blueprint-score='routine']", hasRoutine ? `${routineScore}%` : "--");
+    setText("[data-blueprint-score='sentence']", routine.completedAt ? "78%" : routine.lastSentence ? "42%" : "--");
+    setText("[data-blueprint-score='confidence']", hasReading ? `${Math.min(100, readingScore + 6)}%` : "--");
+    setText("[data-blueprint-score='overall']", overall ? `${overall}%` : "--");
+
+    const insights = [];
+    if (hasReading) insights.push(`Reading saved: ${reading.title || "paragraph"} with ${reading.lastAccuracy || "--"}% accuracy.`);
+    if (reading.streak) insights.push(`Current reading streak: ${reading.streak} day${Number(reading.streak) === 1 ? "" : "s"}.`);
+    if (hasRoutine) insights.push(`Daily Routine Verbs: ${routine.status || "practice started"}.`);
+    if (!insights.length) insights.push("Read the first paragraph, then click Next paragraph to start saving progress.");
+    const insightList = document.querySelector("[data-insight-list]");
+    if (insightList) insightList.innerHTML = insights.map((item) => `<li>${item}</li>`).join("");
+    setText("[data-insight-heading]", insights.length > 1 ? "Saved learning activity found." : "Ready to start tracking.");
+  }
+
   function decodeGoogleCredential(token) {
     const payload = token.split(".")[1] || "";
     const base64 = payload.replace(/-/g, "+").replace(/_/g, "/");
@@ -4008,6 +4292,7 @@ function initLearningJourneyDashboard() {
         signedInAt: new Date().toISOString()
       };
       sessionStorage.setItem("kidsverseParentLogin", JSON.stringify(parentProfile));
+      saveKidsverseParentLogin({ parentName: parentProfile.name, childName: "", grade: "", section: "" });
       showChildDetails(parentProfile);
     } catch (error) {
       if (note) note.textContent = "Google sign-in was received, but the parent profile could not be read. Please try again.";
@@ -4035,14 +4320,16 @@ function initLearningJourneyDashboard() {
     const parentName = String(formData.get("parentName") || "").trim();
     const childName = String(formData.get("childName") || "").trim();
     const childGrade = String(formData.get("childGrade") || "").trim();
-    const childSection = String(formData.get("childSection") || "").trim();
 
     if (parentNameTarget) parentNameTarget.textContent = parentName || "Parent";
     if (childNameTarget) childNameTarget.textContent = childName || "Your child";
-    if (note) note.textContent = `${childName || "Child"} mapped to ${childGrade}${childSection ? ` ${childSection}` : ""}. Complete a test to unlock progress.`;
+    if (note) note.textContent = `${childName || "Child"} mapped to ${childGrade}. Complete a test to unlock progress.`;
+    saveKidsverseParentLogin({ parentName, childName, grade: childGrade, section: "" });
 
     dashboard.hidden = false;
+    if (loginSection) loginSection.hidden = true;
     document.body.classList.add("learning-dashboard-open");
+    renderSavedLearningJourney();
     dashboard.scrollIntoView({ behavior: "smooth", block: "start" });
   });
 
@@ -4181,6 +4468,12 @@ function initLearningJourneyDashboard() {
   });
 
   renderDailyChallenge();
+  if (isKidsverseParentLoggedIn()) {
+    if (loginSection) loginSection.hidden = true;
+    dashboard.hidden = false;
+    document.body.classList.add("learning-dashboard-open");
+    renderSavedLearningJourney();
+  }
 }
 
 initLearningJourneyDashboard();
