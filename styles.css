@@ -10402,3 +10402,2001 @@ body.reading-mission-page .reading-hero .about-hero-visual img {
     min-height: 40px !important;
   }
 }
+
+/* Reading fluency certificate repair */
+.reading-certificate-card {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+  margin-top: 16px;
+  padding: clamp(16px, 2.8vw, 24px);
+  overflow: hidden;
+  border: 1px solid rgba(31, 49, 66, 0.08);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 14% 12%, rgba(255, 216, 111, 0.38), transparent 30%),
+    radial-gradient(circle at 86% 16%, rgba(39, 185, 167, 0.2), transparent 32%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(255, 247, 231, 0.92));
+  box-shadow: 0 22px 58px rgba(31, 49, 66, 0.12);
+}
+
+.reading-certificate-card[hidden] {
+  display: none !important;
+}
+
+.reading-certificate-preview {
+  position: relative;
+  display: grid;
+  place-items: center;
+  gap: 9px;
+  min-height: 250px;
+  padding: clamp(22px, 4vw, 34px);
+  overflow: hidden;
+  border: 2px solid rgba(245, 164, 0, 0.34);
+  border-radius: 26px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(255, 253, 245, 0.96)),
+    radial-gradient(circle at 18% 18%, rgba(255, 216, 111, 0.38), transparent 30%);
+  text-align: center;
+}
+
+.reading-certificate-preview::before,
+.reading-certificate-preview::after {
+  content: "";
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  border-radius: 999px;
+  pointer-events: none;
+}
+
+.reading-certificate-preview::before {
+  left: -40px;
+  top: -42px;
+  background: rgba(255, 216, 111, 0.32);
+}
+
+.reading-certificate-preview::after {
+  right: -42px;
+  bottom: -48px;
+  background: rgba(39, 185, 167, 0.16);
+}
+
+.reading-certificate-preview > * {
+  position: relative;
+  z-index: 1;
+}
+
+.reading-certificate-preview span {
+  width: fit-content;
+  padding: 7px 12px;
+  color: #16453e;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--sun), var(--mint));
+  font-size: 0.78rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.reading-certificate-preview strong {
+  color: #153144;
+  font-family: "Baloo 2", "Nunito", system-ui, sans-serif;
+  font-size: clamp(2.15rem, 5vw, 4.2rem);
+  line-height: 0.95;
+  overflow-wrap: anywhere;
+}
+
+.reading-certificate-preview p {
+  max-width: 520px;
+  color: #526779;
+  font-weight: 900;
+  line-height: 1.42;
+}
+
+.reading-certificate-preview em {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 11px 18px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--medal-accent, #ffd86f), var(--medal-color, #f5a400));
+  color: #ffffff;
+  box-shadow: 0 16px 34px rgba(31, 49, 66, 0.14);
+  font-style: normal;
+  font-weight: 950;
+}
+
+.reading-certificate-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.reading-certificate-stats small {
+  display: grid;
+  place-items: center;
+  min-height: 86px;
+  padding: 12px;
+  border: 1px solid rgba(31, 49, 66, 0.08);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.86);
+  color: #16453e;
+  box-shadow: 0 12px 28px rgba(31, 49, 66, 0.07);
+  font-size: 0.82rem;
+  font-weight: 950;
+  line-height: 1.28;
+  text-align: center;
+}
+
+.reading-certificate-card .primary-button {
+  width: 100%;
+  justify-content: center;
+}
+
+.reading-certificate-card [data-reading-share-note] {
+  margin: 0;
+  color: #607280;
+  font-size: 0.92rem;
+  font-weight: 850;
+  line-height: 1.45;
+  text-align: center;
+}
+
+@media (max-width: 900px) {
+  .reading-certificate-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 620px) {
+  .reading-certificate-card {
+    padding: 14px;
+    border-radius: 24px;
+  }
+
+  .reading-certificate-preview {
+    min-height: 210px;
+    padding: 18px 14px;
+    border-radius: 22px;
+  }
+
+  .reading-certificate-preview strong {
+    font-size: clamp(1.9rem, 9vw, 2.75rem);
+  }
+
+  .reading-certificate-preview p {
+    font-size: 0.94rem;
+  }
+
+  .reading-certificate-preview em {
+    width: 100%;
+    border-radius: 16px;
+  }
+
+  .reading-certificate-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .reading-certificate-stats small {
+    min-height: 72px;
+  }
+}
+
+/* Kidsverse global mobile compatibility pass */
+@media (max-width: 760px) {
+  html,
+  body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden !important;
+  }
+
+  .top-strip {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 6px !important;
+    min-height: 0 !important;
+    padding: 8px 12px !important;
+    text-align: center !important;
+    font-size: 0.78rem !important;
+    line-height: 1.25 !important;
+  }
+
+  .top-strip span,
+  .top-strip strong,
+  .top-strip a {
+    max-width: 100% !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  .site-header {
+    position: sticky !important;
+    top: 0 !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    padding: 8px 10px !important;
+    gap: 8px !important;
+  }
+
+  .brand {
+    max-width: 182px !important;
+    min-width: 0 !important;
+  }
+
+  .brand img {
+    width: 42px !important;
+    height: 42px !important;
+  }
+
+  .brand strong {
+    font-size: 1.03rem !important;
+  }
+
+  .brand small {
+    font-size: 0.66rem !important;
+  }
+
+  .menu-button {
+    display: inline-flex !important;
+    min-height: 38px !important;
+    padding: 8px 11px !important;
+    font-size: 0.85rem !important;
+  }
+
+  .nav-links {
+    grid-column: 1 / -1 !important;
+    max-height: calc(100vh - 96px) !important;
+    overflow-y: auto !important;
+  }
+
+  .hero,
+  .about-hero,
+  .home-hero,
+  .reading-hero,
+  .events-hero,
+  .program-hero,
+  .faq-hero,
+  .contact-hero,
+  .parent-hub-hero,
+  .blog-hero,
+  .platform-hero,
+  .learning-hero,
+  .tense-hero,
+  .feedback-hero,
+  .speaksmart-hero {
+    width: min(100% - 22px, 1180px) !important;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    min-height: 0 !important;
+    gap: 16px !important;
+    padding-top: 22px !important;
+    padding-bottom: 22px !important;
+  }
+
+  h1,
+  .hero h1,
+  .about-hero h1,
+  .program-hero h1,
+  .events-hero h1,
+  .faq-hero h1,
+  .contact-hero h1,
+  .parent-hub-hero h1,
+  .blog-hero h1,
+  .platform-hero h1,
+  .learning-hero h1,
+  .tense-hero h1,
+  .feedback-hero h1,
+  .speaksmart-hero h1 {
+    max-width: 100% !important;
+    font-size: clamp(2rem, 8.8vw, 2.9rem) !important;
+    line-height: 1.02 !important;
+  }
+
+  h2,
+  .section-heading h2,
+  .admissions-copy h2,
+  .platform-hero-copy h1,
+  .learning-hero h1,
+  .tense-hero-copy h1 {
+    font-size: clamp(1.85rem, 8vw, 2.65rem) !important;
+    line-height: 1.04 !important;
+  }
+
+  .hero p:not(.eyebrow),
+  .about-hero p:not(.eyebrow),
+  .program-hero p:not(.eyebrow),
+  .events-hero p:not(.eyebrow),
+  .contact-hero p:not(.eyebrow),
+  .platform-hero p:not(.eyebrow),
+  .learning-hero p:not(.eyebrow),
+  .tense-hero p:not(.eyebrow),
+  .feedback-hero p:not(.eyebrow),
+  .section-heading p {
+    font-size: 0.98rem !important;
+    line-height: 1.55 !important;
+  }
+
+  .hero-actions,
+  .ai-guide-actions,
+  .google-review-actions,
+  .reading-parent-login-actions,
+  .reading-controls,
+  .feedback-actions {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 9px !important;
+    width: 100% !important;
+  }
+
+  .hero-actions .primary-button,
+  .hero-actions .secondary-button,
+  .primary-button,
+  .secondary-button,
+  .header-cta {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .hero-visual,
+  .about-hero-visual,
+  .events-hero-visual,
+  .program-hero-panel,
+  .faq-hero-card,
+  .parent-hub-visual,
+  .blog-hero img,
+  .tense-hero-board,
+  .reading-hero-board,
+  .article-hero-board,
+  .learning-phone-preview,
+  .platform-hero-visual,
+  .speaksmart-camera-mock {
+    min-width: 0 !important;
+    min-height: 0 !important;
+    max-width: 100% !important;
+  }
+
+  .hero-visual img,
+  .about-hero-visual img,
+  .program-hero-panel > img,
+  .faq-hero-card img,
+  .parent-hub-visual img,
+  .blog-hero img,
+  .blog-feature-card img,
+  .story-feature img {
+    width: 100% !important;
+    height: 220px !important;
+    min-height: 0 !important;
+    max-height: 240px !important;
+    object-fit: cover !important;
+    border-radius: 22px !important;
+  }
+
+  .events-hero-visual {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+  }
+
+  .events-hero-visual img,
+  .events-hero-visual img:first-child,
+  .events-hero-visual img:last-child,
+  .event-photo-grid img,
+  .event-photo-grid img:first-child,
+  .event-photo-grid img:nth-child(4),
+  .ramayana-grid img {
+    height: 190px !important;
+    min-height: 0 !important;
+    max-height: 210px !important;
+    margin: 0 !important;
+    object-fit: cover !important;
+  }
+
+  .section,
+  .reading-fluency-page .word-helper-section,
+  .reading-fluency-page .tense-next-section,
+  .reading-fluency-page .lab-cta-section,
+  .learning-lab-page .section,
+  .platform-hero.section,
+  .platform-journey-section.section,
+  .reading-platform-section.section,
+  .english-lab-preview.section,
+  .studio-lab-section.section,
+  .parent-dashboard-preview.section,
+  .growth-blueprint-section.section,
+  .future-platform-section.section,
+  .admissions-section.section {
+    width: min(100% - 22px, 1180px) !important;
+    padding-top: 24px !important;
+    padding-bottom: 24px !important;
+  }
+
+  .home-trust-grid,
+  .why-grid,
+  .home-icon-grid,
+  .program-roadmap,
+  .parent-story-grid,
+  .google-review-wall,
+  .event-grid,
+  .events-band,
+  .ramayana-grid,
+  .event-photo-grid,
+  .parent-resource-strip,
+  .blog-body,
+  .blog-feature-card,
+  .comparison-panel,
+  .insight-grid,
+  .reading-steps,
+  .journey-section,
+  .journey-line,
+  .ai-guide-section,
+  .reading-preview-section,
+  .school-tour-cta,
+  .event-reference,
+  .parent-hub-teaser,
+  .blog-cta,
+  .mission-vision,
+  .philosophy-grid,
+  .readiness-section,
+  .intro-section,
+  .afterschool-section,
+  .admissions-section,
+  .contact-map-section,
+  .contact-google-review,
+  .contact-actions,
+  .reading-lab-shell,
+  .reading-theme-panel,
+  .reading-parent-login-card,
+  .tense-road,
+  .tense-card-grid,
+  .tense-rule-grid,
+  .tense-tool-grid,
+  .sentence-transformer,
+  .tense-practice-lab,
+  .tense-next-grid,
+  .lab-cta-section,
+  .routine-verb-grid,
+  .routine-builder,
+  .routine-practice-lab,
+  .learning-command-preview,
+  .learning-hero-metrics,
+  .learning-mini-missions,
+  .mission-grid,
+  .reading-journey-board,
+  .word-mission-grid,
+  .future-platform-section,
+  .studio-lab-section,
+  .growth-blueprint-section,
+  .detailed-feedback-grid,
+  .feedback-details {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  .blog-body {
+    width: min(100% - 22px, 1180px) !important;
+  }
+
+  .blog-sidebar {
+    position: static !important;
+  }
+
+  .journey-line,
+  .afterschool-tags,
+  .learning-hero-pills,
+  .platform-hero .afterschool-tags {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+
+  .home-trust-grid article,
+  .why-grid article,
+  .home-icon-grid article,
+  .program-roadmap a,
+  .parent-story-grid article,
+  .google-review-wall article,
+  .event-grid article,
+  .events-band article,
+  .ramayana-grid article,
+  .parent-resource-strip article,
+  .blog-feature-card,
+  .blog-content > section,
+  .reading-passage-card,
+  .reading-result-panel,
+  .reading-question-card,
+  .tense-hero-board,
+  .article-hero-board,
+  .learning-phone-preview,
+  .learning-command-preview article,
+  .mission-grid article,
+  .mission-tile,
+  .reading-journey-board article,
+  .rating-card,
+  .inquiry-form {
+    min-width: 0 !important;
+    min-height: 0 !important;
+    max-width: 100% !important;
+    padding: 16px !important;
+    border-radius: 22px !important;
+  }
+
+  .inquiry-form,
+  .admissions-section .inquiry-form,
+  .school-tour-cta .inquiry-form {
+    grid-template-columns: 1fr !important;
+    width: 100% !important;
+  }
+
+  .inquiry-form label,
+  .inquiry-form input,
+  .inquiry-form select,
+  .inquiry-form textarea,
+  .feedback-details label,
+  .feedback-details input,
+  .feedback-details select,
+  .suggestion-box textarea {
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+
+  .rating-options {
+    display: grid !important;
+    grid-template-columns: repeat(5, minmax(54px, 1fr)) !important;
+    gap: 7px !important;
+    overflow-x: auto !important;
+    padding-bottom: 4px !important;
+  }
+
+  .rating-face {
+    min-height: 70px !important;
+    font-size: 1.4rem !important;
+  }
+
+  .rating-face small {
+    display: block !important;
+    font-size: 0.66rem !important;
+  }
+
+  .reading-passage {
+    padding: 16px !important;
+    font-size: clamp(1.3rem, 6.5vw, 1.9rem) !important;
+    line-height: 1.35 !important;
+  }
+
+  .reading-theme-buttons,
+  .word-helper-grid,
+  .reading-certificate-stats {
+    grid-template-columns: 1fr !important;
+  }
+
+  .reading-theme-buttons button,
+  .word-helper-grid button,
+  .routine-verb-grid button {
+    width: 100% !important;
+    min-height: 0 !important;
+  }
+
+  .kiya-panel {
+    left: auto !important;
+    right: 0 !important;
+    width: min(342px, calc(100vw - 24px)) !important;
+  }
+
+  .whatsapp-float {
+    max-width: calc(100vw - 96px) !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .site-header {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+
+  .brand {
+    max-width: 165px !important;
+  }
+
+  .brand strong {
+    font-size: 0.98rem !important;
+  }
+
+  .menu-button {
+    font-size: 0.8rem !important;
+  }
+
+  .hero,
+  .about-hero,
+  .home-hero,
+  .reading-hero,
+  .events-hero,
+  .program-hero,
+  .faq-hero,
+  .contact-hero,
+  .parent-hub-hero,
+  .blog-hero,
+  .platform-hero,
+  .learning-hero,
+  .tense-hero,
+  .feedback-hero,
+  .speaksmart-hero,
+  .section {
+    width: min(100% - 18px, 1180px) !important;
+  }
+}
+
+
+
+/* Kidsverse mobile rescue pass: form, lab, assistant and certificate alignment */
+@media (max-width: 760px) {
+  body {
+    min-width: 0 !important;
+  }
+
+  main {
+    overflow: hidden !important;
+  }
+
+  .site-header {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 80 !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    width: 100% !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+  }
+
+  .site-header .header-cta,
+  .site-header .header-login-pill {
+    display: none !important;
+  }
+
+  .nav-links {
+    display: none !important;
+  }
+
+  .nav-links.is-open {
+    display: grid !important;
+    grid-column: 1 / -1 !important;
+    grid-template-columns: 1fr !important;
+    width: 100% !important;
+    padding: 10px !important;
+    border-radius: 18px !important;
+    background: rgba(255, 255, 255, 0.96) !important;
+    box-shadow: 0 18px 44px rgba(31, 49, 66, 0.14) !important;
+  }
+
+  .nav-dropdown,
+  .nav-parent,
+  .nav-links > a {
+    width: 100% !important;
+  }
+
+  .nav-menu {
+    position: static !important;
+    display: grid !important;
+    width: 100% !important;
+    margin-top: 8px !important;
+    padding: 8px !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+    box-shadow: none !important;
+  }
+
+  .hero,
+  .home-hero,
+  .about-hero,
+  .program-hero,
+  .events-hero,
+  .faq-hero,
+  .contact-hero,
+  .parent-hub-hero,
+  .blog-hero,
+  .feedback-hero,
+  .tense-hero,
+  .reading-hero,
+  .platform-hero,
+  .learning-hero {
+    width: min(100% - 22px, 1180px) !important;
+    margin: 14px auto 0 !important;
+    padding: 18px 0 18px !important;
+    gap: 14px !important;
+    min-height: 0 !important;
+  }
+
+  .hero h1,
+  .home-hero h1,
+  .about-hero h1,
+  .program-hero h1,
+  .events-hero h1,
+  .faq-hero h1,
+  .contact-hero h1,
+  .parent-hub-hero h1,
+  .blog-hero h1,
+  .feedback-hero h1,
+  .tense-hero h1,
+  .reading-hero h1,
+  .platform-hero h1,
+  .learning-hero h1,
+  .home-hero .about-hero-copy h1,
+  .reading-hero .about-hero-copy h1,
+  .feedback-page .feedback-hero h1,
+  .contact-hero-copy h1,
+  .program-hero-copy h1,
+  .platform-hero-copy h1,
+  .learning-hero-copy h1 {
+    font-size: clamp(2.05rem, 9.2vw, 3.1rem) !important;
+    line-height: 1.02 !important;
+    max-width: 100% !important;
+  }
+
+  .section-heading h2,
+  .section-copy h2,
+  .admissions-copy h2,
+  .about-story-copy h2,
+  .contact-map-section .section-heading h2 {
+    font-size: clamp(1.8rem, 8vw, 2.55rem) !important;
+    line-height: 1.05 !important;
+  }
+
+  .about-hero-copy,
+  .home-hero .about-hero-copy,
+  .program-hero-copy,
+  .contact-hero-copy,
+  .tense-hero-copy,
+  .platform-hero-copy,
+  .learning-hero-copy {
+    min-width: 0 !important;
+    padding: 0 !important;
+  }
+
+  .program-hero-panel,
+  .contact-card-stack,
+  .feedback-index-card,
+  .tense-hero-board,
+  .reading-hero-board,
+  .routine-hero-board,
+  .learning-phone-preview,
+  .platform-phone-demo,
+  .platform-hero-visual {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    padding: 14px !important;
+    border-radius: 22px !important;
+  }
+
+  .program-hero-panel > img,
+  .about-hero-visual img,
+  .home-hero .about-hero-visual img,
+  .reading-hero .about-hero-visual img,
+  .parent-hub-visual img,
+  .founder-grid img {
+    height: 210px !important;
+    max-height: 210px !important;
+    object-fit: cover !important;
+    object-position: center !important;
+  }
+
+  .quick-facts,
+  .contact-card-stack,
+  .learning-hero-metrics,
+  .learning-mini-missions,
+  .reading-parent-streak-grid,
+  .reading-select-panel,
+  .reading-lab-shell,
+  .reading-theme-panel,
+  .routine-builder,
+  .routine-practice-lab,
+  .feedback-details,
+  .contact-actions,
+  .contact-map-section,
+  .contact-google-review {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  .afterschool-tags,
+  .learning-hero-pills {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 7px !important;
+  }
+
+  .afterschool-tags span,
+  .learning-hero-pills span,
+  .quick-facts article,
+  .learning-hero-metrics article,
+  .learning-mini-missions article,
+  .contact-card-stack article,
+  .contact-actions article {
+    min-height: 0 !important;
+    padding: 10px !important;
+    border-radius: 16px !important;
+    line-height: 1.25 !important;
+  }
+
+  .platform-phone-demo .mini-progress-list,
+  .platform-phone-demo .mission-tile,
+  .learning-phone-preview .learning-mini-missions {
+    gap: 8px !important;
+  }
+
+  .learning-ring {
+    width: 132px !important;
+    height: 132px !important;
+    margin: 0 auto !important;
+  }
+
+  .reading-theme-buttons,
+  .routine-verb-grid,
+  .word-helper-grid,
+  .tense-next-grid,
+  .program-roadmap,
+  .reading-steps {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  .reading-theme-buttons button,
+  .routine-verb-grid button,
+  .word-helper-grid button,
+  .tense-next-grid a,
+  .program-roadmap a,
+  .reading-steps span {
+    display: grid !important;
+    grid-template-columns: auto minmax(0, 1fr) !important;
+    align-items: center !important;
+    gap: 8px 12px !important;
+    width: 100% !important;
+    min-height: 0 !important;
+    padding: 13px 14px !important;
+    border: 1px solid rgba(31, 49, 66, 0.08) !important;
+    border-radius: 18px !important;
+    background: linear-gradient(145deg, rgba(255,255,255,0.98), rgba(238,248,255,0.9)) !important;
+    box-shadow: 0 14px 34px rgba(31, 49, 66, 0.08) !important;
+    color: var(--ink) !important;
+    text-align: left !important;
+    text-decoration: none !important;
+    font: inherit !important;
+  }
+
+  .reading-theme-buttons button strong,
+  .routine-verb-grid button strong,
+  .word-helper-grid button strong,
+  .tense-next-grid a strong,
+  .program-roadmap a strong,
+  .reading-steps span strong,
+  .reading-steps span h3 {
+    grid-column: 2 !important;
+    color: #16453e !important;
+    font-family: "Baloo 2", "Nunito", system-ui, sans-serif !important;
+    font-size: 1.08rem !important;
+    line-height: 1.1 !important;
+  }
+
+  .routine-verb-grid button span,
+  .word-helper-grid button span,
+  .tense-next-grid a span,
+  .program-roadmap a span,
+  .reading-steps span::before {
+    grid-row: 1 / span 2 !important;
+  }
+
+  .reading-theme-buttons button small,
+  .routine-verb-grid button p,
+  .word-helper-grid button span,
+  .tense-next-grid a p,
+  .program-roadmap a p,
+  .reading-steps span p {
+    grid-column: 2 !important;
+    margin: 0 !important;
+    color: #607280 !important;
+    font-size: 0.9rem !important;
+    line-height: 1.35 !important;
+    font-weight: 850 !important;
+  }
+
+  .routine-builder label,
+  .routine-practice-lab label,
+  .feedback-details label,
+  .inquiry-form label,
+  .contact-form label,
+  .school-tour-cta label,
+  .admissions-section .inquiry-form label {
+    display: grid !important;
+    gap: 7px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    color: #16453e !important;
+    font-size: 0.86rem !important;
+    font-weight: 950 !important;
+  }
+
+  input,
+  select,
+  textarea,
+  .inquiry-form input,
+  .inquiry-form select,
+  .inquiry-form textarea,
+  .feedback-details input,
+  .feedback-details select,
+  .suggestion-box textarea,
+  .routine-builder select,
+  .routine-practice-lab textarea {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 50px !important;
+    padding: 12px 14px !important;
+    border: 1px solid rgba(31, 49, 66, 0.12) !important;
+    border-radius: 16px !important;
+    background: rgba(255, 255, 255, 0.96) !important;
+    box-shadow: 0 10px 24px rgba(31, 49, 66, 0.06) !important;
+    color: var(--ink) !important;
+    font: inherit !important;
+    font-weight: 850 !important;
+  }
+
+  textarea,
+  .suggestion-box textarea,
+  .routine-practice-lab textarea {
+    min-height: 130px !important;
+    resize: vertical !important;
+  }
+
+  .inquiry-form,
+  .school-tour-cta .inquiry-form,
+  .admissions-section .inquiry-form,
+  .parent-feedback-form,
+  .rating-card,
+  .suggestion-box,
+  .feedback-details-final,
+  .reading-parent-login-card,
+  .reading-select-panel,
+  .reading-theme-panel,
+  .reading-lab-shell,
+  .reading-passage-card,
+  .reading-result-panel,
+  .routine-builder,
+  .routine-practice-lab,
+  .routine-prompt-card,
+  .reading-certificate-card {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    padding: 15px !important;
+    border-radius: 22px !important;
+    background: rgba(255, 255, 255, 0.92) !important;
+    box-shadow: 0 18px 42px rgba(31, 49, 66, 0.08) !important;
+  }
+
+  .feedback-page .feedback-hero,
+  .feedback-shell,
+  .parent-feedback-form,
+  .detailed-feedback-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+
+  .question-rating {
+    display: grid !important;
+    gap: 10px !important;
+    padding: 12px 0 !important;
+    border-top: 1px solid rgba(31, 49, 66, 0.07) !important;
+  }
+
+  .question-rating > span {
+    display: block !important;
+    color: #183145 !important;
+    font-size: 0.96rem !important;
+    line-height: 1.35 !important;
+    font-weight: 950 !important;
+  }
+
+  .rating-options {
+    display: grid !important;
+    grid-template-columns: repeat(5, minmax(52px, 1fr)) !important;
+    gap: 6px !important;
+    overflow: visible !important;
+  }
+
+  .rating-face {
+    display: grid !important;
+    place-items: center !important;
+    gap: 3px !important;
+    min-height: 62px !important;
+    padding: 7px 4px !important;
+    border-radius: 14px !important;
+    font-size: 1.32rem !important;
+  }
+
+  .rating-face small {
+    display: block !important;
+    font-size: 0.62rem !important;
+    line-height: 1 !important;
+    white-space: normal !important;
+  }
+
+  .reading-passage {
+    padding: 14px !important;
+    font-size: clamp(1.24rem, 6.6vw, 1.85rem) !important;
+    line-height: 1.35 !important;
+  }
+
+  .reading-controls,
+  .hero-actions,
+  .feedback-actions,
+  .contact-actions,
+  .routine-prompt-card > div {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 9px !important;
+    width: 100% !important;
+  }
+
+  .primary-button,
+  .secondary-button,
+  .tense-audio-button,
+  .feedback-actions button,
+  .reading-controls button,
+  .hero-actions a,
+  .hero-actions button {
+    width: 100% !important;
+    min-width: 0 !important;
+    justify-content: center !important;
+    min-height: 48px !important;
+    padding: 12px 15px !important;
+    border-radius: 16px !important;
+  }
+
+  .kiya-widget {
+    position: fixed !important;
+    right: 14px !important;
+    bottom: 78px !important;
+    left: auto !important;
+    z-index: 120 !important;
+    width: auto !important;
+    pointer-events: none !important;
+  }
+
+  .kiya-toggle,
+  .kiya-avatar {
+    width: 56px !important;
+    height: 56px !important;
+    pointer-events: auto !important;
+  }
+
+  .kiya-panel {
+    position: absolute !important;
+    right: 0 !important;
+    bottom: 68px !important;
+    left: auto !important;
+    width: min(330px, calc(100vw - 28px)) !important;
+    max-height: min(540px, calc(100vh - 140px)) !important;
+    overflow: auto !important;
+    padding: 14px !important;
+    border-radius: 22px !important;
+    background: rgba(255, 255, 255, 0.98) !important;
+    box-shadow: 0 22px 70px rgba(31, 49, 66, 0.2) !important;
+    pointer-events: auto !important;
+  }
+
+  .kiya-panel[hidden] {
+    display: none !important;
+  }
+
+  .kiya-head {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 10px !important;
+  }
+
+  .kiya-head strong,
+  .kiya-head span,
+  .kiya-body p,
+  .kiya-links a {
+    line-height: 1.3 !important;
+  }
+
+  .kiya-links {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+
+  .kiya-links a {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    min-height: 42px !important;
+    padding: 10px 12px !important;
+    border-radius: 14px !important;
+    background: #f6fbff !important;
+    text-decoration: none !important;
+  }
+
+  .contact-map-section .map-frame,
+  .contact-google-review .google-review-embed,
+  .contact-map-section .map-frame iframe,
+  .contact-google-review .google-review-embed iframe {
+    width: 100% !important;
+    min-height: 300px !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .rating-options {
+    grid-template-columns: repeat(5, minmax(44px, 1fr)) !important;
+    gap: 5px !important;
+  }
+
+  .rating-face {
+    min-height: 58px !important;
+    font-size: 1.18rem !important;
+  }
+
+  .rating-face small {
+    font-size: 0.56rem !important;
+  }
+
+  .afterschool-tags,
+  .learning-hero-pills {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+
+/* Kidsverse mobile rescue pass 2: remove radio overflow and compact dashboard heroes */
+@media (max-width: 760px) {
+  .rating-options label {
+    position: relative !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    overflow: hidden !important;
+  }
+
+  .rating-options input[type="radio"],
+  .rating-options input[type="checkbox"],
+  input[type="radio"],
+  input[type="checkbox"] {
+    position: absolute !important;
+    width: 1px !important;
+    min-width: 1px !important;
+    height: 1px !important;
+    min-height: 1px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    opacity: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .learning-hero-copy {
+    display: grid !important;
+    gap: 10px !important;
+  }
+
+  .learning-hero-copy .eyebrow,
+  .learning-hero-copy h1,
+  .learning-hero-copy p,
+  .learning-hero-copy .hero-actions,
+  .learning-hero-copy .learning-hero-pills,
+  .learning-hero-copy .learning-hero-metrics {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+  }
+
+  .learning-hero-pills {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 7px !important;
+  }
+
+  .learning-hero-pills span {
+    display: inline-flex !important;
+    align-items: center !important;
+    width: auto !important;
+    min-height: 0 !important;
+    padding: 7px 10px !important;
+    border-radius: 999px !important;
+    font-size: 0.78rem !important;
+    line-height: 1.1 !important;
+  }
+
+  .learning-hero-metrics {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+  }
+
+  .learning-hero-metrics article {
+    display: grid !important;
+    place-items: center !important;
+    min-height: 76px !important;
+    padding: 9px 6px !important;
+    text-align: center !important;
+  }
+
+  .learning-hero-metrics strong {
+    font-size: 1.35rem !important;
+    line-height: 1 !important;
+  }
+
+  .learning-hero-metrics span {
+    font-size: 0.66rem !important;
+    line-height: 1.1 !important;
+  }
+
+  .learning-phone-preview {
+    display: grid !important;
+    gap: 10px !important;
+    max-height: none !important;
+  }
+
+  .learning-phone-preview .learning-ring {
+    width: 116px !important;
+    height: 116px !important;
+    margin: 4px auto !important;
+  }
+
+  .learning-phone-preview .learning-mini-missions {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 7px !important;
+  }
+
+  .learning-phone-preview .learning-mini-missions article {
+    min-height: 0 !important;
+    padding: 9px 10px !important;
+    border-radius: 16px !important;
+  }
+
+  .learning-phone-dock {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 7px !important;
+  }
+
+  .learning-phone-dock a {
+    min-height: 38px !important;
+    padding: 8px 6px !important;
+    border-radius: 13px !important;
+    font-size: 0.78rem !important;
+  }
+
+  .program-hero {
+    padding-bottom: 12px !important;
+  }
+
+  .program-hero-panel .quick-facts {
+    grid-template-columns: 1fr !important;
+  }
+
+  .program-hero-panel > img {
+    height: 180px !important;
+    max-height: 180px !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .learning-hero-metrics {
+    grid-template-columns: 1fr 1fr 1fr !important;
+  }
+}
+
+
+/* Kidsverse mobile rescue pass 3: preserve existing menu open behavior */
+@media (max-width: 760px) {
+  .site-header.is-open .nav-links {
+    display: grid !important;
+    grid-column: 1 / -1 !important;
+    grid-template-columns: 1fr !important;
+    width: 100% !important;
+    padding: 10px !important;
+    border-radius: 18px !important;
+    background: rgba(255, 255, 255, 0.96) !important;
+    box-shadow: 0 18px 44px rgba(31, 49, 66, 0.14) !important;
+  }
+}
+
+
+/* Kidsverse mobile rescue pass 4: clean floating action buttons */
+.whatsapp-float {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 48px !important;
+  padding: 0 16px !important;
+  border-radius: 999px !important;
+  background: linear-gradient(135deg, #20c76a, #0f9f5b) !important;
+  color: #ffffff !important;
+  box-shadow: 0 18px 38px rgba(15, 159, 91, 0.24) !important;
+  font-weight: 950 !important;
+  line-height: 1 !important;
+  text-decoration: none !important;
+}
+
+@media (max-width: 760px) {
+  body {
+    padding-bottom: 78px !important;
+  }
+
+  .whatsapp-float {
+    left: 12px !important;
+    right: auto !important;
+    bottom: 14px !important;
+    z-index: 88 !important;
+    max-width: calc(100vw - 92px) !important;
+    min-height: 44px !important;
+    padding: 0 13px !important;
+    font-size: 0.86rem !important;
+  }
+
+  .kiya-widget {
+    right: 12px !important;
+    bottom: 12px !important;
+    z-index: 90 !important;
+  }
+
+  .kiya-toggle,
+  .kiya-avatar {
+    width: 54px !important;
+    height: 54px !important;
+  }
+
+  .kiya-panel {
+    bottom: 64px !important;
+  }
+}
+
+
+/* Kidsverse mobile rescue pass 5: daily routine timeline spacing */
+.routine-day-road {
+  display: grid;
+  grid-template-columns: auto minmax(26px, 1fr) auto minmax(26px, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  color: #16453e;
+  font-weight: 950;
+}
+
+.routine-day-road b,
+.routine-day-road strong {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 10px 24px rgba(31, 49, 66, 0.08);
+}
+
+.routine-day-road i {
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--coral), var(--sun), var(--teal));
+}
+
+@media (max-width: 760px) {
+  .routine-day-road {
+    grid-template-columns: 1fr;
+    gap: 7px;
+  }
+
+  .routine-day-road i {
+    width: 6px;
+    height: 18px;
+    justify-self: center;
+  }
+
+  .routine-day-road b,
+  .routine-day-road strong {
+    width: 100%;
+    min-height: 38px;
+    padding: 8px 10px;
+  }
+
+  .hero-sentence-card {
+    padding: 16px !important;
+    animation: none !important;
+  }
+
+  .hero-sentence-card strong {
+    font-size: clamp(1.35rem, 7vw, 1.85rem) !important;
+  }
+}
+
+
+/* Kidsverse internal tools repair: keep staff pages independent from public mobile rescue */
+.teacher-page,
+.staff-login-page {
+  color: #173047;
+  background:
+    radial-gradient(circle at 8% 8%, rgba(255, 216, 111, 0.28), transparent 26rem),
+    radial-gradient(circle at 92% 12%, rgba(201, 236, 255, 0.56), transparent 28rem),
+    linear-gradient(135deg, #fff8ec 0%, #f5fbff 52%, #f6fff9 100%);
+}
+
+.teacher-page *,
+.staff-login-page * {
+  box-sizing: border-box;
+}
+
+.teacher-header {
+  position: sticky;
+  top: 0;
+  z-index: 70;
+  width: min(1180px, calc(100% - 28px));
+  margin: 14px auto 0;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+  padding: 10px 12px;
+  border: 1px solid rgba(31, 49, 66, 0.1);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 18px 48px rgba(31, 49, 66, 0.1);
+  backdrop-filter: blur(16px);
+}
+
+.teacher-tool-links {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.teacher-tool-links a,
+.teacher-private-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 13px;
+  white-space: nowrap;
+  border-radius: 999px;
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 950;
+}
+
+.teacher-tool-links a {
+  color: rgba(31, 49, 66, 0.72);
+  background: rgba(31, 49, 66, 0.045);
+}
+
+.teacher-tool-links a:hover,
+.teacher-tool-links a:focus,
+.teacher-tool-links a[aria-current="page"] {
+  color: #0f8c7e;
+  background: rgba(39, 185, 167, 0.14);
+}
+
+.teacher-private-badge {
+  color: #ffffff;
+  background: linear-gradient(135deg, #173047, #0f8c7e);
+}
+
+.teacher-assessment-shell {
+  width: min(1180px, calc(100% - 28px));
+  margin: 18px auto 42px;
+  display: grid;
+  gap: 18px;
+}
+
+.teacher-hero,
+.assessment-layout,
+.form-block,
+.culture-report,
+.report-placeholder {
+  min-width: 0;
+  border: 1px solid rgba(31, 49, 66, 0.1);
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 20px 56px rgba(31, 49, 66, 0.1);
+}
+
+.teacher-hero {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(22px, 4vw, 42px);
+  border-radius: 26px;
+  background:
+    radial-gradient(circle at 86% 18%, rgba(255, 216, 111, 0.38), transparent 28%),
+    linear-gradient(135deg, rgba(255,255,255,.94), rgba(239,249,255,.88));
+}
+
+.teacher-hero h1 {
+  max-width: 850px;
+  margin: 8px 0 10px;
+  color: #173047;
+  font-size: clamp(2rem, 5vw, 4.2rem);
+  line-height: 0.98;
+}
+
+.teacher-hero p:not(.eyebrow) {
+  max-width: 780px;
+  color: rgba(31, 49, 66, 0.72);
+  font-weight: 850;
+  line-height: 1.58;
+}
+
+.assessment-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 0.96fr) minmax(320px, 0.58fr);
+  gap: 18px;
+  align-items: start;
+  padding: clamp(14px, 2.4vw, 22px);
+  border-radius: 26px;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.teacher-reading-layout,
+.student-report-layout {
+  grid-template-columns: minmax(0, 1fr) minmax(340px, 0.62fr);
+}
+
+.culture-form,
+.student-report-form,
+.teacher-reading-form {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+
+.form-block {
+  display: grid;
+  gap: 14px;
+  padding: clamp(16px, 2.4vw, 24px);
+  border-radius: 24px;
+}
+
+.form-block h2,
+.assessment-intro h2 {
+  margin: 0;
+  color: #173047;
+  font-size: clamp(1.45rem, 3vw, 2.1rem);
+  line-height: 1.06;
+}
+
+.assessment-intro p,
+.form-block > p {
+  margin: 0;
+  color: rgba(31, 49, 66, 0.68);
+  font-weight: 850;
+  line-height: 1.48;
+}
+
+.teacher-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.teacher-form-grid label,
+.culture-area label,
+.student-photo-upload,
+.learning-details-form label {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+  color: #16453e;
+  font-size: 0.9rem;
+  font-weight: 950;
+}
+
+.teacher-page input:not([type="radio"]):not([type="checkbox"]),
+.teacher-page select,
+.teacher-page textarea,
+.staff-login-page input:not([type="checkbox"]),
+.staff-login-page select,
+.staff-login-page textarea {
+  width: 100%;
+  min-width: 0;
+  min-height: 50px;
+  padding: 12px 14px;
+  border: 1px solid rgba(31, 49, 66, 0.14);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.96);
+  color: #173047;
+  box-shadow: 0 10px 24px rgba(31, 49, 66, 0.06);
+  font: inherit;
+  font-weight: 850;
+}
+
+.teacher-page textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.teacher-page input[type="checkbox"],
+.staff-login-page input[type="checkbox"] {
+  position: static !important;
+  display: inline-block !important;
+  width: 18px !important;
+  min-width: 18px !important;
+  height: 18px !important;
+  min-height: 18px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  opacity: 1 !important;
+  accent-color: #0f8c7e;
+  box-shadow: none !important;
+  vertical-align: middle;
+}
+
+.culture-area-grid,
+.teacher-learning-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.culture-area,
+.student-rating-row,
+.teacher-learning-grid a {
+  min-width: 0;
+  margin: 0;
+  padding: 16px;
+  border: 1px solid rgba(31, 49, 66, 0.1);
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 16% 12%, rgba(255, 216, 111, 0.18), transparent 32%),
+    rgba(255, 255, 255, 0.88);
+  box-shadow: 0 14px 34px rgba(31, 49, 66, 0.07);
+}
+
+.culture-area legend,
+.student-rating-row legend {
+  color: #173047;
+  font-weight: 950;
+  line-height: 1.2;
+}
+
+.culture-area label {
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  margin-top: 10px;
+  color: rgba(31, 49, 66, 0.78);
+  line-height: 1.35;
+}
+
+.auto-score {
+  display: inline-flex;
+  margin-left: 6px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  color: #0f8c7e;
+  background: rgba(39, 185, 167, 0.12);
+  font-size: 0.78rem;
+}
+
+.student-rating-list {
+  display: grid;
+  gap: 12px;
+}
+
+.student-rating-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+}
+
+.student-rating-row legend strong,
+.student-rating-row legend span {
+  display: block;
+}
+
+.student-rating-row legend span {
+  margin-top: 4px;
+  color: rgba(31, 49, 66, 0.62);
+  font-size: 0.88rem;
+  font-weight: 850;
+}
+
+.star-rating {
+  display: flex;
+  gap: 7px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.star-rating label {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+
+.star-rating input[type="radio"] {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  min-width: 1px !important;
+  min-height: 1px !important;
+  opacity: 0 !important;
+}
+
+.star-rating span {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(31, 49, 66, 0.1);
+  border-radius: 14px;
+  background: #ffffff;
+  color: #d9a441;
+  font-size: 1.25rem;
+  font-weight: 950;
+  box-shadow: 0 10px 22px rgba(31, 49, 66, 0.06);
+  cursor: pointer;
+}
+
+.star-rating input:checked + span {
+  color: #ffffff;
+  background: linear-gradient(135deg, #ff9c62, #ffd86f);
+  border-color: rgba(255, 156, 98, 0.55);
+}
+
+.star-rating small {
+  display: none;
+}
+
+.student-photo-upload span,
+.field-helper {
+  color: rgba(31, 49, 66, 0.58);
+  font-size: 0.82rem;
+  font-weight: 850;
+  line-height: 1.35;
+}
+
+.teacher-reading-photo-preview img,
+.student-photo-preview img,
+.student-report-photo {
+  display: block;
+  width: min(220px, 100%);
+  max-height: 240px;
+  object-fit: cover;
+  border-radius: 20px;
+  box-shadow: 0 16px 34px rgba(31, 49, 66, 0.12);
+}
+
+.teacher-reading-passages {
+  display: grid;
+  gap: 12px;
+}
+
+.teacher-reading-passage-card {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid rgba(31, 49, 66, 0.1);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.teacher-reading-passage-card p {
+  margin: 0;
+  color: #173047;
+  font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+  font-weight: 900;
+  line-height: 1.45;
+}
+
+.teacher-reading-card-actions,
+.teacher-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.teacher-actions .primary-button,
+.teacher-actions .secondary-button,
+.teacher-reading-card-actions .primary-button,
+.teacher-reading-card-actions .secondary-button,
+.teacher-reading-card-actions .tense-audio-button {
+  width: auto;
+  min-width: 160px;
+}
+
+.teacher-reading-live-result {
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+  border-radius: 16px;
+  background: rgba(239, 249, 255, 0.9);
+}
+
+.teacher-reading-live-result strong {
+  color: #0f8c7e;
+  font-size: 1.05rem;
+}
+
+.teacher-reading-live-result p {
+  color: rgba(31, 49, 66, 0.66);
+  font-size: 0.95rem;
+  overflow-wrap: anywhere;
+}
+
+.culture-report {
+  position: sticky;
+  top: 96px;
+  padding: 16px;
+  border-radius: 24px;
+}
+
+.report-placeholder {
+  display: grid;
+  gap: 10px;
+  padding: 22px;
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 18% 12%, rgba(217, 247, 232, 0.54), transparent 34%),
+    rgba(255, 255, 255, 0.9);
+}
+
+.report-placeholder h2 {
+  margin: 0;
+  color: #173047;
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  line-height: 1;
+}
+
+.report-dashboard,
+.report-card {
+  max-width: 100%;
+  overflow: hidden;
+}
+
+@media (max-width: 900px) {
+  .teacher-header,
+  .staff-access-header {
+    position: static;
+    grid-template-columns: 1fr;
+    width: min(100% - 22px, 1180px);
+  }
+
+  .teacher-tool-links,
+  .staff-access-nav {
+    justify-content: flex-start;
+    padding-bottom: 4px;
+  }
+
+  .teacher-private-badge,
+  .staff-signout-button {
+    width: 100%;
+  }
+
+  .teacher-assessment-shell {
+    width: min(100% - 22px, 1180px);
+    margin-top: 14px;
+  }
+
+  .assessment-layout,
+  .teacher-reading-layout,
+  .student-report-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .culture-report {
+    position: static;
+  }
+
+  .teacher-form-grid,
+  .culture-area-grid,
+  .teacher-learning-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .student-rating-row {
+    grid-template-columns: 1fr;
+  }
+
+  .star-rating {
+    justify-content: stretch;
+  }
+
+  .star-rating label {
+    flex: 1 1 0;
+  }
+
+  .star-rating span {
+    width: 100%;
+    height: 42px;
+  }
+}
+
+@media (max-width: 620px) {
+  .teacher-page,
+  .staff-login-page {
+    padding-bottom: 18px !important;
+  }
+
+  .teacher-hero,
+  .assessment-layout,
+  .form-block,
+  .culture-report,
+  .staff-login-card,
+  .staff-dashboard-head,
+  .staff-tool-card {
+    border-radius: 20px;
+  }
+
+  .teacher-hero {
+    padding: 18px;
+  }
+
+  .teacher-hero h1 {
+    font-size: clamp(1.95rem, 9vw, 2.8rem);
+  }
+
+  .assessment-layout,
+  .form-block,
+  .culture-report {
+    padding: 14px;
+  }
+
+  .teacher-actions,
+  .teacher-reading-card-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .teacher-actions .primary-button,
+  .teacher-actions .secondary-button,
+  .teacher-reading-card-actions .primary-button,
+  .teacher-reading-card-actions .secondary-button,
+  .teacher-reading-card-actions .tense-audio-button {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+/* Kidsverse mobile WhatsApp final repair */
+@media (max-width: 760px) {
+  body:not(.teacher-page):not(.staff-login-page) {
+    padding-bottom: 86px !important;
+  }
+
+  body:not(.teacher-page):not(.staff-login-page) .whatsapp-float {
+    position: fixed !important;
+    left: 12px !important;
+    right: auto !important;
+    bottom: 14px !important;
+    z-index: 88 !important;
+    display: inline-flex !important;
+    width: auto !important;
+    max-width: calc(100vw - 92px) !important;
+    min-width: 92px !important;
+    min-height: 44px !important;
+    padding: 0 13px !important;
+    overflow: hidden !important;
+    border-radius: 999px !important;
+    background: linear-gradient(135deg, #20c76a, #0f9f5b) !important;
+    color: #ffffff !important;
+    box-shadow: 0 18px 38px rgba(15, 159, 91, 0.24) !important;
+    font-size: 0.84rem !important;
+    font-weight: 950 !important;
+    line-height: 1 !important;
+    text-decoration: none !important;
+    white-space: nowrap !important;
+    text-overflow: ellipsis !important;
+  }
+}
