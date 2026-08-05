@@ -18,7 +18,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="512x512" href="../assets/favicon.png" />
     <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png" />
-    <link rel="stylesheet" href="../styles.css" />
+    <link rel="stylesheet" href="../styles.css?v=20260805-reading-worlds" />
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-0ZT634EM99"></script>
   <script>
@@ -88,9 +88,9 @@
       <section class="tense-hero reading-hero">
         <div class="tense-hero-copy">
           <p class="eyebrow">Reading Fluency Lab</p>
-          <h1>Read aloud and see where to improve.</h1>
+          <h1>Choose a reading world and read aloud.</h1>
           <p>
-            Students listen first, read the paragraph aloud, then receive a friendly reading score with missed words, extra words and small practice tips.
+            Pick Sports, Adventure, History, Science or Army stories, listen first, then read aloud and get friendly fluency feedback.
           </p>
           <div class="hero-actions">
             <a class="primary-button" href="#reading-practice">Start Reading</a>
@@ -101,9 +101,9 @@
           <span>Listen - Read - Improve</span>
           <div class="reading-wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
           <div class="hero-sentence-card">
-            <small>Reading helper</small>
-            <strong>Pause after full stops. Read clearly. Try again with confidence.</strong>
-            <em>Gentle feedback for better fluency.</em>
+            <small>Fresh reading worlds</small>
+            <strong>Sports energy, adventure clues, science facts and brave teamwork stories.</strong>
+            <em>Choose what feels exciting today.</em>
           </div>
         </div>
       </section>
@@ -111,8 +111,8 @@
       <section class="section reading-level-section" id="reading-practice" data-reading-lab>
         <div class="section-heading">
           <p class="eyebrow">Choose Reading Level</p>
-          <h2>Select grade first, then choose the reading challenge.</h2>
-          <p>UKG starts with word reading. Grade 1 begins with familiar sentences, and higher grades move toward richer paragraphs.</p>
+          <h2>Select grade, level and the kind of story your child wants today.</h2>
+          <p>Every reading world gives fresh passages while keeping the same listening, microphone check, streak and Learning Journey tracking.</p>
         </div>
         <div class="reading-student-card">
           <label>
@@ -171,14 +171,44 @@
           </label>
         </div>
 
+        <div class="reading-theme-panel" aria-label="Reading interest selector">
+          <div class="reading-theme-copy">
+            <p class="eyebrow">Pick a reading world</p>
+            <h3>What do you want to read today?</h3>
+            <span data-reading-theme-label>Sports stories selected</span>
+          </div>
+          <div class="reading-theme-buttons" data-reading-theme-group>
+            <button class="is-active" type="button" data-reading-theme="sports">
+              <strong>Sports</strong>
+              <small>Matches, teamwork and practice energy</small>
+            </button>
+            <button type="button" data-reading-theme="adventure">
+              <strong>Adventure</strong>
+              <small>Clues, journeys and brave choices</small>
+            </button>
+            <button type="button" data-reading-theme="history">
+              <strong>History</strong>
+              <small>Forts, leaders and stories from the past</small>
+            </button>
+            <button type="button" data-reading-theme="science">
+              <strong>Science</strong>
+              <small>Experiments, nature and curious thinking</small>
+            </button>
+            <button type="button" data-reading-theme="army">
+              <strong>Army</strong>
+              <small>Discipline, service and courageous teamwork</small>
+            </button>
+          </div>
+        </div>
+
         <div class="reading-lab-shell">
           <article class="reading-passage-card">
             <div class="reading-card-top">
-              <span data-reading-level-label>Beginner</span>
-              <strong data-reading-title>My Morning</strong>
+              <span data-reading-level-label>UKG - Beginner | Sports</span>
+              <strong data-reading-title>The Practice Ground</strong>
             </div>
             <p class="reading-passage" data-reading-passage>
-              I wake up early. I brush my teeth. I eat breakfast. Then I go to school with a happy smile.
+              The children run on the ground. They pass the ball, cheer for friends and try again with a happy smile.
             </p>
             <div class="reading-controls">
               <button class="tense-audio-button" type="button" data-reading-listen>Listen first</button>
@@ -310,6 +340,6 @@
       <span>English Learning Lab for reading fluency, vocabulary and spoken confidence.</span>
       <span class="powered-by-tivoro"><a href="https://tivoro.in" target="_blank" rel="noopener noreferrer">Powered by Tivoro - Your digital growth partner</a></span>
     </footer>
-    <script src="../kidsverse-app.js?v=20260801-site-fix"></script>
+    <script src="../kidsverse-app.js?v=20260805-reading-worlds"></script>
   </body>
 </html>
