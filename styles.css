@@ -8932,6 +8932,89 @@ body:has(.about-hero) .about-hero::before {
   display: none;
 }
 
+.teacher-self-learning-block {
+  background:
+    radial-gradient(circle at 10% 12%, rgba(255, 216, 111, 0.28), transparent 25%),
+    radial-gradient(circle at 96% 10%, rgba(39, 185, 167, 0.16), transparent 28%),
+    linear-gradient(145deg, #ffffff, #f2fbff);
+}
+
+.teacher-learning-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.teacher-learning-grid a {
+  position: relative;
+  display: grid;
+  gap: 6px;
+  min-height: 126px;
+  padding: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(31, 49, 66, 0.08);
+  border-radius: 20px;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 14px 32px rgba(31, 49, 66, 0.07);
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+}
+
+.teacher-learning-grid a::after {
+  content: "";
+  position: absolute;
+  width: 92px;
+  height: 92px;
+  right: -30px;
+  bottom: -36px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 216, 111, 0.5), transparent 68%);
+  transition: transform 0.22s ease;
+}
+
+.teacher-learning-grid a:hover,
+.teacher-learning-grid a:focus {
+  transform: translateY(-4px);
+  border-color: rgba(39, 185, 167, 0.32);
+  box-shadow: 0 22px 46px rgba(31, 49, 66, 0.12);
+}
+
+.teacher-learning-grid a:hover::after,
+.teacher-learning-grid a:focus::after {
+  transform: scale(1.25);
+}
+
+.teacher-learning-grid span,
+.teacher-learning-grid strong,
+.teacher-learning-grid small {
+  position: relative;
+  z-index: 1;
+}
+
+.teacher-learning-grid span {
+  width: fit-content;
+  padding: 5px 9px;
+  color: #16453e;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--mint), var(--sun));
+  font-size: 0.72rem;
+  font-weight: 950;
+}
+
+.teacher-learning-grid strong {
+  color: #183145;
+  font-family: "Baloo 2", "Nunito", system-ui, sans-serif;
+  font-size: 1.28rem;
+  line-height: 1.05;
+}
+
+.teacher-learning-grid small {
+  color: var(--muted);
+  font-weight: 850;
+  line-height: 1.35;
+}
+
 .teacher-reading-photo-preview {
   width: fit-content;
   margin-top: 16px;
@@ -9054,6 +9137,16 @@ body:has(.about-hero) .about-hero::before {
 
 .teacher-submit-status.is-practice h3 {
   color: #9d3f2e;
+}
+
+@media (max-width: 720px) {
+  .teacher-learning-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .teacher-learning-grid a {
+    min-height: 112px;
+  }
 }
 
 @media (max-width: 820px) {
