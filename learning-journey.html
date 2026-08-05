@@ -83,20 +83,48 @@
           </div>
           <div class="learning-hero-pills" aria-label="Learning dashboard highlights">
             <span>Reading fluency</span>
+            <span>Grammar Lab</span>
             <span>Daily verbs</span>
             <span>Saved streaks</span>
-            <span>Resume practice</span>
+          </div>
+          <div class="learning-hero-metrics" aria-label="Live learning snapshot">
+            <article><strong data-lj-overall>0%</strong><span>Overall growth</span></article>
+            <article><strong data-lj-reading>0%</strong><span>Reading</span></article>
+            <article><strong data-lj-grammar>0%</strong><span>Grammar</span></article>
           </div>
         </div>
         <div class="learning-phone-preview" aria-label="Learning dashboard preview">
-          <div class="learning-phone-top"><span></span><strong>Kidsverse</strong><small>Parent Login</small></div>
-          <div class="learning-ring"><strong>Login</strong><span>View child progress</span></div>
+          <div class="learning-phone-top"><span></span><strong>Kidsverse OS</strong><small>Live Journey</small></div>
+          <a class="learning-ring" href="#parent-login" aria-label="Login to view child progress"><strong data-lj-overall>0%</strong><span>View child progress</span></a>
           <div class="learning-mini-missions">
-            <article><strong>Reading</strong><span>Resume next paragraph</span></article>
-            <article><strong>Daily Verbs</strong><span>Track sentence practice</span></article>
-            <article><strong>Streak</strong><span>Saved after login</span></article>
+            <article><strong>Reading</strong><span data-reading-mission>Start first paragraph</span></article>
+            <article><strong>Grammar</strong><span data-grammar-mission>Start grammar practice</span></article>
+            <article><strong>Routine</strong><span data-routine-mission>Practice words and sentences</span></article>
+          </div>
+          <div class="learning-phone-dock" aria-label="Learning quick actions">
+            <a href="after-school/reading-fluency.html">Read</a>
+            <a href="after-school/articles-a-an-the.html">Grammar</a>
+            <a href="after-school/daily-routine-verbs.html">Speak</a>
           </div>
         </div>
+      </section>
+
+      <section class="section learning-command-preview" aria-label="Kidsverse learning dashboard preview">
+        <article>
+          <span>01</span>
+          <strong>Learn</strong>
+          <p>Open Reading Fluency, Grammar Lab or Daily Routine Verbs.</p>
+        </article>
+        <article>
+          <span>02</span>
+          <strong>Practise</strong>
+          <p>Child reads, answers, writes or speaks inside connected labs.</p>
+        </article>
+        <article>
+          <span>03</span>
+          <strong>Track</strong>
+          <p>Parent dashboard updates only after real activity is saved.</p>
+        </article>
       </section>
 
       <section class="section learning-login-section" id="parent-login">
@@ -177,6 +205,13 @@
       </section>
 
       <section class="section learning-dashboard" data-learning-dashboard hidden>
+        <div class="learning-dashboard-toolbar" aria-label="Learning dashboard navigation">
+          <a href="after-school/reading-fluency.html">Reading Lab</a>
+          <a href="after-school/articles-a-an-the.html">Grammar Lab</a>
+          <a href="after-school/daily-routine-verbs.html">Routine Verbs</a>
+          <a href="after-school.html#english-learning-lab">English Lab</a>
+        </div>
+
         <div class="learning-dashboard-head">
           <div>
             <p class="eyebrow">Welcome back</p>
@@ -190,8 +225,16 @@
           </div>
         </div>
 
+        <div class="learning-live-grid" aria-label="Live skill dashboard">
+          <article class="is-reading"><span>Reading</span><strong data-lj-reading>0%</strong><small>Accuracy and fluency</small></article>
+          <article class="is-grammar"><span>Grammar</span><strong data-lj-grammar>0%</strong><small>Rules and quizzes</small></article>
+          <article class="is-speaking"><span>Speaking</span><strong data-lj-speaking>0%</strong><small>Routine confidence</small></article>
+          <article class="is-confidence"><span>Confidence</span><strong data-lj-confidence>0%</strong><small>Expression growth</small></article>
+        </div>
+
         <div class="mission-grid learning-feature-grid">
           <article><span>Reading Fluency</span><strong data-reading-mission>Start first paragraph</strong><a data-reading-continue-link href="after-school/reading-fluency.html">Continue Reading</a></article>
+          <article><span>Grammar Lab</span><strong data-grammar-mission>Start grammar practice</strong><a href="after-school/articles-a-an-the.html">Continue Grammar</a></article>
           <article><span>Daily Routine Verbs</span><strong data-routine-mission>Practice words and sentences</strong><a href="after-school/daily-routine-verbs.html">Continue Verbs</a></article>
         </div>
 
@@ -207,6 +250,19 @@
             <span data-reading-streak-label>Streak not started</span>
             <strong data-reading-last-score>Accuracy pending</strong>
             <a class="primary-button" data-reading-continue-link href="after-school/reading-fluency.html">Open Reading Fluency</a>
+          </div>
+        </section>
+
+        <section class="learning-panel learning-quest-panel">
+          <div>
+            <p class="eyebrow">Today’s Quest Board</p>
+            <h2>One short mission keeps the journey alive.</h2>
+            <p data-recommendation-text>Start Reading Fluency. After the first paragraph, login to save the next paragraph and streak.</p>
+          </div>
+          <div class="quest-action-stack">
+            <a class="primary-button" data-reading-continue-link href="after-school/reading-fluency.html">Continue Reading</a>
+            <a class="secondary-button" href="after-school/articles-a-an-the.html">Open Grammar Lab</a>
+            <a class="secondary-button" href="after-school/daily-routine-verbs.html">Practise Speaking</a>
           </div>
         </section>
 
@@ -257,6 +313,7 @@
             <h2>Only live Kidsverse English features are tracked here.</h2>
             <div class="weekly-report-grid">
               <article><strong data-weekly-score="reading">--</strong><span>Reading</span><small data-weekly-label="reading">Awaiting test</small></article>
+              <article><strong data-weekly-score="grammar">--</strong><span>Grammar</span><small data-weekly-label="grammar">Awaiting quiz</small></article>
               <article><strong data-weekly-score="routine">--</strong><span>Routine Verbs</span><small data-weekly-label="routine">Awaiting practice</small></article>
               <article><strong data-weekly-score="streak">--</strong><span>Streak</span><small data-weekly-label="streak">Login to save</small></article>
             </div>
@@ -286,18 +343,23 @@
 
         <div class="learning-two-column">
           <section class="learning-panel recommendation-panel">
-            <p class="eyebrow">Next Best Action</p>
-            <h2>Recommended now</h2>
-            <p data-recommendation-text>Start Reading Fluency. After the first paragraph, login to save the next paragraph and streak.</p>
-            <a class="primary-button" data-reading-continue-link href="after-school/reading-fluency.html">Continue Reading</a>
+            <p class="eyebrow">Journey Health</p>
+            <h2>What should improve next?</h2>
+            <div class="journey-health-list">
+              <span>Reading <strong data-lj-reading>0%</strong></span>
+              <span>Grammar <strong data-lj-grammar>0%</strong></span>
+              <span>Speaking <strong data-lj-speaking>0%</strong></span>
+            </div>
           </section>
           <section class="learning-panel blueprint-panel">
             <p class="eyebrow">English Growth Snapshot</p>
             <h2>Focused on live Kidsverse English tools.</h2>
             <div class="blueprint-grid">
               <span>Reading <strong data-blueprint-score="reading">--</strong></span>
+              <span>Grammar <strong data-blueprint-score="grammar">--</strong></span>
               <span>Routine Verbs <strong data-blueprint-score="routine">--</strong></span>
               <span>Sentence Formation <strong data-blueprint-score="sentence">--</strong></span>
+              <span>Speaking <strong data-blueprint-score="speaking">--</strong></span>
               <span>Confidence <strong data-blueprint-score="confidence">--</strong></span>
               <span>Overall Growth <strong data-blueprint-score="overall">--</strong></span>
             </div>
@@ -337,6 +399,6 @@
       <span>Premium preschool, Grade 1 and after-school learning in Rehan.</span>
       <span class="powered-by-tivoro"><a href="https://tivoro.in" target="_blank" rel="noopener noreferrer">Powered by Tivoro - Your digital growth partner</a></span>
     </footer>
-    <script src="kidsverse-app.js?v=20260804-learning-journey"></script>
+    <script src="kidsverse-app.js?v=20260805-ultra-dashboard"></script>
   </body>
 </html>
