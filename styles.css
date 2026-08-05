@@ -9025,6 +9025,8 @@ body:has(.about-hero) .about-hero::before {
 
 .teacher-reading-live-result p {
   margin: 0;
+  max-height: 8.5rem;
+  overflow: auto;
   color: var(--muted);
   font-family: "Nunito", system-ui, sans-serif;
   font-size: 0.95rem;
