@@ -102,6 +102,7 @@ function enhanceAfterSchoolMenu() {
         <a class="nav-sub-link" href="${root}after-school/present-tense.html">Present Tense</a>
         <a class="nav-sub-link" href="${root}after-school/past-tense.html">Past Tense</a>
         <a class="nav-sub-link" href="${root}after-school/future-tense.html">Future Tense</a>
+        <a class="nav-sub-link" href="${root}after-school/articles-a-an-the.html">A, An & The</a>
         <a class="nav-sub-link" href="${root}after-school/daily-routine-verbs.html">Daily Routine Verbs</a>
         <a class="nav-sub-link" href="${root}after-school/reading-fluency.html">Reading Fluency</a>
       </div>
@@ -168,6 +169,7 @@ function enhanceKiyaLearningLinks() {
       { href: `${labRoot}present-tense.html`, label: "Present Tense Lab" },
       { href: `${labRoot}past-tense.html`, label: "Past Tense Lab" },
       { href: `${labRoot}future-tense.html`, label: "Future Tense Lab" },
+      { href: `${labRoot}articles-a-an-the.html`, label: "A, An & The" },
       { href: `${labRoot}daily-routine-verbs.html`, label: "Daily Routine Verbs" },
       { href: `${labRoot}reading-fluency.html`, label: "Reading Fluency" },
     ];
@@ -273,6 +275,14 @@ teacherResourceLogin?.addEventListener("submit", (event) => {
   if (teacherResourceError) teacherResourceError.hidden = false;
 });
 
+if (!teacherResourceLogin && document.body.classList.contains("teacher-resource-page")) {
+  document.body.classList.remove("is-locked");
+  if (teacherResourceActiveLabel) teacherResourceActiveLabel.textContent = "All class resources are available after staff login.";
+  document.querySelectorAll("[data-resource-class]").forEach((section) => {
+    section.hidden = false;
+  });
+}
+
 teacherResourceSwitch?.addEventListener("click", () => {
   sessionStorage.removeItem(teacherResourceAccessKey);
   lockTeacherResource();
@@ -281,6 +291,11 @@ teacherResourceSwitch?.addEventListener("click", () => {
 teacherResourceClassButtons.forEach((button) => {
   button.addEventListener("click", () => {
     const classKey = button.dataset.resourceClassJump;
+    if (!teacherResourceLogin && document.body.classList.contains("teacher-resource-page")) {
+      showTeacherResourceClass(classKey);
+      document.querySelector(`[data-resource-class="${classKey}"]`)?.scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
     const savedClass = sessionStorage.getItem(teacherResourceAccessKey);
     if (savedClass === classKey) {
       showTeacherResourceClass(classKey);
@@ -1256,7 +1271,7 @@ const teacherReadingState = teacherReadingPassages.map(() => ({ transcript: "", 
 
 function scoreTeacherReading(expectedText, spokenText) {
   const expectedWords = normalizeReadingWords(expectedText);
-  const spokenWords = normalizeReadingWords(spokenText);
+  const spokenWords = normalizeReadingWords(cleanReadingTranscript(spokenText));
   const spokenPool = [...spokenWords];
   let correct = 0;
   const missed = [];
@@ -1478,24 +1493,34 @@ function initTeacherReadingAssessment() {
     if (transcriptEl) transcriptEl.textContent = "Listening. Read slowly and clearly.";
 
     recognition.onresult = (speechEvent) => {
-      let interim = "";
+      let interimText = "";
       for (let resultIndex = speechEvent.resultIndex; resultIndex < speechEvent.results.length; resultIndex += 1) {
         const text = speechEvent.results[resultIndex][0].transcript;
-        if (speechEvent.results[resultIndex].isFinal) finalText += ` ${text}`;
-        else interim += ` ${text}`;
+        if (speechEvent.results[resultIndex].isFinal) {
+          finalText = mergeReadingTranscript(finalText, text);
+        } else {
+          interimText = mergeReadingTranscript(interimText, text);
+        }
       }
-      latestText = `${finalText} ${interim}`.trim();
-      if (transcriptEl) transcriptEl.textContent = latestText || "Listening...";
+      latestText = mergeReadingTranscript(finalText, interimText);
+      if (transcriptEl) {
+        transcriptEl.textContent = getReadingDisplayTranscript(latestText, teacherReadingPassages[index], 26) || "Listening...";
+      }
     };
 
     recognition.onend = () => {
       startButton.disabled = false;
       if (passageStop) passageStop.hidden = true;
       if (indicator) indicator.hidden = true;
-      const result = scoreTeacherReading(teacherReadingPassages[index], latestText || finalText);
-      teacherReadingState[index] = { ...result, transcript: latestText || finalText, attempted: Boolean(latestText || finalText) };
+      const cleanTranscript = cleanReadingTranscript(latestText || finalText);
+      const result = scoreTeacherReading(teacherReadingPassages[index], cleanTranscript);
+      teacherReadingState[index] = { ...result, transcript: cleanTranscript, attempted: Boolean(normalizeReadingWords(cleanTranscript).length) };
       if (scoreEl) scoreEl.textContent = teacherReadingState[index].attempted ? `${result.accuracy}% accuracy` : "Try again";
-      if (transcriptEl) transcriptEl.textContent = latestText || "No clear reading captured. Please try again close to the microphone.";
+      if (transcriptEl) {
+        transcriptEl.textContent = teacherReadingState[index].attempted
+          ? getReadingDisplayTranscript(cleanTranscript, teacherReadingPassages[index], 32)
+          : "No clear reading captured. Please try again close to the microphone.";
+      }
       updateTeacherReadingValidation();
     };
 
@@ -2611,6 +2636,166 @@ function getRoutineVerb(action, subject) {
   return action;
 }
 
+const kidsverseLearningStoreKey = "kidsverseLearningJourneyProgress";
+const kidsverseParentLoginKey = "kidsverseParentLearningLogin";
+
+function getKidsverseDateKey(date = new Date()) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function loadKidsverseLearningProgress() {
+  try {
+    return JSON.parse(localStorage.getItem(kidsverseLearningStoreKey) || "{}");
+  } catch {
+    return {};
+  }
+}
+
+function saveKidsverseLearningProgress(patch) {
+  if (!patch.parent && !isKidsverseParentLoggedIn()) return loadKidsverseLearningProgress();
+  const current = loadKidsverseLearningProgress();
+  const next = {
+    ...current,
+    ...patch,
+    reading: { ...(current.reading || {}), ...(patch.reading || {}) },
+    routine: { ...(current.routine || {}), ...(patch.routine || {}) },
+    updatedAt: new Date().toISOString()
+  };
+  try {
+    localStorage.setItem(kidsverseLearningStoreKey, JSON.stringify(next));
+  } catch {
+    /* Progress saving is optional in private browsing. */
+  }
+  return next;
+}
+
+function getKidsverseParentLogin() {
+  try {
+    return JSON.parse(localStorage.getItem(kidsverseParentLoginKey) || "{}");
+  } catch {
+    return {};
+  }
+}
+
+function isKidsverseParentLoggedIn() {
+  const login = getKidsverseParentLogin();
+  return Boolean(login.parentName && login.childName);
+}
+
+function saveKidsverseParentLogin(data) {
+  const login = {
+    parentName: String(data.parentName || "").trim(),
+    childName: String(data.childName || "").trim(),
+    grade: String(data.grade || "").trim(),
+    section: String(data.section || "").trim(),
+    signedInAt: new Date().toISOString()
+  };
+  try {
+    localStorage.setItem(kidsverseParentLoginKey, JSON.stringify(login));
+  } catch {
+    /* Parent login can still work for this session without storage. */
+  }
+  saveKidsverseLearningProgress({ parent: login });
+  return login;
+}
+
+function updateKidsverseReadingParentStatus() {
+  const login = getKidsverseParentLogin();
+  const isLoggedIn = Boolean(login.parentName && login.childName);
+  const title = document.querySelector("[data-reading-parent-status-title]");
+  const copy = document.querySelector("[data-reading-parent-status-copy]");
+  const card = document.querySelector("[data-reading-parent-status-card]");
+  const studentName = document.querySelector("[data-reading-student-name]");
+  const buttons = document.querySelectorAll("[data-reading-parent-login-open]");
+
+  if (card) card.classList.toggle("is-logged-in", isLoggedIn);
+  if (title) {
+    title.textContent = isLoggedIn
+      ? `Logged in: ${login.childName}'s journey is being saved.`
+      : "Login to save the reading journey.";
+  }
+  if (copy) {
+    copy.textContent = isLoggedIn
+      ? `${login.parentName} can now resume ${login.childName}'s Reading Fluency progress from the Learning Journey dashboard.`
+      : "Read the first paragraph freely. From the next paragraph, parent login saves progress, streaks and resume point inside Learning Journey.";
+  }
+  buttons.forEach((button) => {
+    button.textContent = isLoggedIn ? "Switch Parent" : "Parent Login";
+    button.setAttribute("aria-label", isLoggedIn ? "Switch parent login" : "Open parent login");
+  });
+  if (isLoggedIn && studentName && !studentName.value.trim()) {
+    studentName.value = login.childName;
+  }
+}
+
+function showKidsverseParentLoginGate(onComplete) {
+  let modal = document.querySelector("[data-learning-login-modal]");
+  if (!modal) {
+    modal = document.createElement("section");
+    modal.className = "learning-login-modal";
+    modal.dataset.learningLoginModal = "true";
+    modal.innerHTML = `
+      <div class="learning-login-modal-card">
+        <button class="learning-login-modal-close" type="button" aria-label="Close parent login" data-learning-login-close>Close</button>
+        <p class="eyebrow">Parent Login Required</p>
+        <h2>Login once to save reading progress and streaks.</h2>
+        <p>From the next paragraph onwards, Kidsverse will remember where the child stopped and show it inside Learning Journey.</p>
+        <div class="learning-google-note">
+          <span>G</span>
+          <strong>Parent Google sign-in</strong>
+          <small data-learning-google-status>Use this parent login flow before adding child details.</small>
+        </div>
+        <button class="learning-google-button" type="button" data-learning-google-preview><span>G</span> Continue with Google</button>
+        <form data-learning-modal-form>
+          <label>Parent name<input type="text" name="parentName" placeholder="Parent name" required /></label>
+          <label>Child name<input type="text" name="childName" placeholder="Child name" required /></label>
+          <label>Grade<select name="grade" required><option value="">Select grade</option><option>UKG</option><option>Grade 1</option><option>Grade 2</option><option>Grade 3</option><option>Grade 4</option><option>Grade 5</option><option>Grade 6</option><option>Grade 7</option><option>Grade 8</option><option>Grade 9</option><option>Grade 10</option><option>Grade 11</option><option>Grade 12</option><option>College Student</option><option>Working Professional</option></select></label>
+          <button class="primary-button" type="submit">Login & Continue</button>
+        </form>
+      </div>
+    `;
+    document.body.appendChild(modal);
+    modal.querySelector("[data-learning-login-close]")?.addEventListener("click", () => {
+      modal.hidden = true;
+    });
+    modal.querySelector("[data-learning-google-preview]")?.addEventListener("click", () => {
+      const status = modal.querySelector("[data-learning-google-status]");
+      const parentField = modal.querySelector('[name="parentName"]');
+      const childField = modal.querySelector('[name="childName"]');
+      if (status) status.textContent = "Google sign-in preview completed. Add child name and grade to save the dashboard.";
+      if (parentField && !parentField.value.trim()) parentField.value = "Parent";
+      childField?.focus();
+    });
+  }
+  const saved = getKidsverseParentLogin();
+  Object.entries({ parentName: saved.parentName, childName: saved.childName, grade: saved.grade }).forEach(([name, value]) => {
+    const field = modal.querySelector(`[name="${name}"]`);
+    if (field && value) field.value = value;
+  });
+  modal.hidden = false;
+  modal.querySelector("[data-learning-modal-form]").onsubmit = (event) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+    const formData = new FormData(form);
+    saveKidsverseParentLogin({
+      parentName: formData.get("parentName"),
+      childName: formData.get("childName"),
+      grade: formData.get("grade"),
+      section: ""
+    });
+    modal.hidden = true;
+    updateKidsverseReadingParentStatus();
+    onComplete?.();
+  };
+}
+
 function initRoutineBuilder() {
   const builder = document.querySelector("[data-routine-builder]");
   if (!builder) return;
@@ -2623,6 +2808,13 @@ function initRoutineBuilder() {
   function renderSentence() {
     const sentence = `${subject.value} ${getRoutineVerb(action.value, subject.value)} ${time.value}.`;
     output.textContent = sentence;
+    saveKidsverseLearningProgress({
+      routine: {
+        lastSentence: sentence,
+        sentenceBuiltAt: new Date().toISOString(),
+        status: "Sentence builder used"
+      }
+    });
     resetTenseAudioButton(readButton);
     readButton.textContent = "Read sentence";
   }
@@ -2663,6 +2855,13 @@ function initRoutinePrompts() {
   });
   nextButton?.addEventListener("click", () => {
     index = (index + 1) % routinePrompts.length;
+    saveKidsverseLearningProgress({
+      routine: {
+        promptIndex: index,
+        promptStatus: `Prompt ${index + 1} opened`,
+        status: "Speaking prompts started"
+      }
+    });
     stopTenseReading();
     renderPrompt();
   });
@@ -2708,6 +2907,15 @@ function initRoutinePractice() {
 
     if (passed) {
       feedback.innerHTML = `<span>Speaking ready</span><strong>Good routine paragraph.</strong><p>Now read it aloud slowly and clearly.</p>`;
+      saveKidsverseLearningProgress({
+        routine: {
+          practiceText: value,
+          sentenceCount: sentences.length,
+          actionVerbCount: new Set(verbs.map((verb) => verb.toLowerCase())).size,
+          completedAt: new Date().toISOString(),
+          status: "Daily routine practice completed"
+        }
+      });
       return;
     }
 
@@ -2858,6 +3066,10 @@ const readingGradeLabels = {
   8: "Grade 8",
   9: "Grade 9",
   10: "Grade 10",
+  11: "Grade 11",
+  12: "Grade 12",
+  college: "College Student",
+  professional: "Working Professional",
 };
 
 const readingLevelLabels = {
@@ -2923,6 +3135,10 @@ const readingGradeThemes = {
   8: ["leadership in groups", "financial awareness", "cyber safety", "scientific thinking", "sustainable living", "community research", "critical reading", "presentation skills", "problem analysis", "future planning"],
   9: ["career exploration", "digital discipline", "environment policy", "communication skills", "project research", "personal responsibility", "exam strategy", "social impact", "technology ethics", "leadership decisions"],
   10: ["board exam planning", "career readiness", "responsible AI", "public speaking", "research-based projects", "time ownership", "mental focus", "digital portfolio", "social innovation", "future goals"],
+  11: ["academic focus", "career clarity", "communication skills", "research habits", "presentation confidence", "interview basics", "critical reading", "subject mastery", "digital discipline", "future planning"],
+  12: ["board exam readiness", "college preparation", "career interviews", "personal statement", "advanced reading", "presentation skills", "time ownership", "exam strategy", "decision making", "future goals"],
+  college: ["campus communication", "interview confidence", "presentation skills", "professional email", "group discussion", "career readiness", "critical reading", "project explanation", "internship preparation", "public speaking"],
+  professional: ["workplace communication", "meeting confidence", "client conversation", "presentation clarity", "email writing", "leadership communication", "interview answers", "business vocabulary", "active listening", "professional storytelling"],
 };
 
 const readingLevelPatterns = {
@@ -3158,6 +3374,21 @@ function initReadingFluencyLab() {
   const micSessionKey = "kidsverseReadingMicPermission";
   const streakStorageKey = "kidsverseReadingPracticeStreak";
   const studentNameStorageKey = "kidsverseReadingStudentName";
+  const savedJourney = loadKidsverseLearningProgress();
+  const urlReadingParams = new URLSearchParams(window.location.search);
+
+  if (isKidsverseParentLoggedIn() && savedJourney.reading) {
+    grade = savedJourney.reading.grade || grade;
+    level = savedJourney.reading.level || level;
+    passageIndex = Number(savedJourney.reading.passageIndex) || 0;
+    if (urlReadingParams.get("resume") === "1") {
+      passageIndex = Number(savedJourney.reading.nextPassageIndex ?? savedJourney.reading.passageIndex) || passageIndex;
+    }
+    if (gradeSelect) gradeSelect.value = grade;
+    if (levelSelect) levelSelect.value = level;
+    currentReadingLevels = getReadingLevelsForGrade(grade);
+    passageIndex = Math.min(Math.max(0, passageIndex), currentReadingLevels[level].length - 1);
+  }
 
   function activePassage() {
     return currentReadingLevels[level][passageIndex];
@@ -3256,6 +3487,44 @@ function initReadingFluencyLab() {
     }
   }
 
+  function renderReadingStreakStatus(extra = {}) {
+    const saved = loadKidsverseLearningProgress();
+    const reading = { ...(saved.reading || {}), ...extra };
+    const localStreak = loadReadingStreak();
+    const streak = Number(reading.streak ?? localStreak.streak) || 0;
+    const todayCount = Number(reading.todayCount ?? localStreak.todayCount) || 0;
+    const titleText = reading.title || activePassage()?.title || "First paragraph";
+    const streakTarget = document.querySelector("[data-reading-parent-streak]");
+    const todayTarget = document.querySelector("[data-reading-parent-today]");
+    const resumeTarget = document.querySelector("[data-reading-parent-resume]");
+
+    if (streakTarget) streakTarget.textContent = `${streak} day${streak === 1 ? "" : "s"}`;
+    if (todayTarget) todayTarget.textContent = `${todayCount}`;
+    if (resumeTarget) resumeTarget.textContent = titleText;
+  }
+
+  function syncReadingJourneyWithStreak(extra = {}) {
+    const localStreak = loadReadingStreak();
+    const readingPatch = {
+      grade,
+      level,
+      passageIndex,
+      nextPassageIndex: extra.nextPassageIndex ?? passageIndex,
+      title: activePassage().title,
+      levelLabel: activePassage().label,
+      gradeLabel: readingGradeLabels[grade],
+      streak: Number(extra.streak ?? localStreak.streak) || 0,
+      todayCount: Number(extra.todayCount ?? localStreak.todayCount) || 0,
+      lastDate: extra.lastDate || localStreak.lastDate || "",
+      status: extra.status || "Reading progress saved",
+      ...extra
+    };
+    saveKidsverseLearningProgress({ reading: readingPatch });
+    renderReadingStreakStatus(readingPatch);
+    updateKidsverseReadingParentStatus();
+    return readingPatch;
+  }
+
   function recordReadingStreak() {
     const today = getTodayDateKey();
     const saved = loadReadingStreak();
@@ -3269,6 +3538,7 @@ function initReadingFluencyLab() {
     }
     const next = { lastDate: today, streak, todayCount };
     saveReadingStreak(next);
+    renderReadingStreakStatus(next);
     return next;
   }
 
@@ -3322,6 +3592,17 @@ function initReadingFluencyLab() {
     if (certificateStreak) certificateStreak.innerHTML = `Current Streak<br>${streak.streak}<br>Day${streak.streak === 1 ? "" : "s"}`;
     if (shareNote) shareNote.textContent = "Certificate ready. Share it with family or friends.";
     if (certificateCard) certificateCard.hidden = false;
+    syncReadingJourneyWithStreak({
+      nextPassageIndex: (passageIndex + 1) % currentReadingLevels[level].length,
+      levelLabel: levelText,
+      gradeLabel,
+      lastAccuracy: accuracy,
+      streak: streak.streak,
+      todayCount: streak.todayCount,
+      lastDate: streak.lastDate,
+      lastCompletedAt: new Date().toISOString(),
+      status: "Reading paragraph completed"
+    });
   }
 
   function wrapCanvasText(context, text, x, y, maxWidth, lineHeight, maxLines = 3) {
@@ -3628,6 +3909,16 @@ function initReadingFluencyLab() {
   } catch {
     /* Optional student name restore. */
   }
+  updateKidsverseReadingParentStatus();
+  renderReadingStreakStatus();
+
+  document.querySelectorAll("[data-reading-parent-login-open]").forEach((button) => {
+    button.addEventListener("click", () => {
+      showKidsverseParentLoginGate(() => {
+        syncReadingJourneyWithStreak({ status: "Parent login completed" });
+      });
+    });
+  });
 
   async function getCurrentMicPermission() {
     if (!navigator.permissions?.query) return getSavedMicPermission();
@@ -3724,7 +4015,25 @@ function initReadingFluencyLab() {
   });
 
   nextButton?.addEventListener("click", () => {
+    const continueToNext = () => {
+      passageIndex = (passageIndex + 1) % currentReadingLevels[level].length;
+      syncReadingJourneyWithStreak({
+        nextPassageIndex: passageIndex,
+        status: "Next paragraph opened"
+      });
+      renderPassage();
+    };
+
+    if (!isKidsverseParentLoggedIn()) {
+      showKidsverseParentLoginGate(continueToNext);
+      return;
+    }
+
     passageIndex = (passageIndex + 1) % currentReadingLevels[level].length;
+    syncReadingJourneyWithStreak({
+      nextPassageIndex: passageIndex,
+      status: "Next paragraph opened"
+    });
     renderPassage();
   });
 
@@ -3916,3 +4225,612 @@ function initReadingWordHelper() {
 
 initReadingFluencyLab();
 initReadingWordHelper();
+
+function initLearningJourneyDashboard() {
+  const form = document.querySelector("[data-learning-login-form]");
+  const dashboard = document.querySelector("[data-learning-dashboard]");
+  if (!form || !dashboard) return;
+
+  const loginSection = document.querySelector(".learning-login-section");
+  const googleStep = document.querySelector("[data-parent-google-step]");
+  const previewLogin = document.querySelector("[data-parent-preview-login]");
+  const parentNameInput = document.querySelector("[data-parent-name-input]");
+  const parentNameTarget = document.querySelector("[data-learning-parent-name]");
+  const childNameTarget = document.querySelector("[data-learning-child-name]");
+  const note = document.querySelector("[data-learning-login-note]");
+  const completeReadingTest = document.querySelector("[data-complete-reading-test]");
+  const readingTestStatus = document.querySelector("[data-reading-test-status]");
+  const dailyChallengeTitle = document.querySelector("[data-daily-challenge-title]");
+  const dailyChallengeText = document.querySelector("[data-daily-challenge-text]");
+  const newDailyChallenge = document.querySelector("[data-new-daily-challenge]");
+  const completeDailyChallenge = document.querySelector("[data-complete-daily-challenge]");
+  const dailyChallengeStatus = document.querySelector("[data-daily-challenge-status]");
+  const speakingComplete = document.querySelector("[data-speaking-complete]");
+  const homeworkGenerator = document.querySelector("[data-homework-generator]");
+  const homeworkOutput = document.querySelector("[data-homework-output]");
+  const weaknessSummary = document.querySelector("[data-weakness-summary]");
+  const weaknessGrid = document.querySelector("[data-weakness-grid]");
+
+  const isLocalPreview = window.location.protocol === "file:" || ["localhost", "127.0.0.1"].includes(window.location.hostname);
+  if (previewLogin) previewLogin.hidden = !isLocalPreview;
+
+  const dailyChallenges = [
+    ["Read 10 words aloud", "Focus on clear sounds and steady speed."],
+    ["Spell 5 new words", "Say the word, spell it, then use it in one sentence."],
+    ["Find 3 nouns around you", "Name one person, one place and one thing nearby."],
+    ["Speak one complete sentence", "Use today's word in a confident sentence."],
+    ["Solve 5 maths questions", "Keep the practice short, neat and calm."]
+  ];
+
+  function setText(selector, value) {
+    const element = document.querySelector(selector);
+    if (element) element.textContent = value;
+  }
+
+  function renderDailyChallenge(offset = 0) {
+    if (!dailyChallengeTitle || !dailyChallengeText) return;
+    const daySeed = Math.floor(Date.now() / 86400000) + offset;
+    const challenge = dailyChallenges[daySeed % dailyChallenges.length];
+    dailyChallengeTitle.textContent = challenge[0];
+    dailyChallengeText.textContent = challenge[1];
+    if (dailyChallengeStatus) dailyChallengeStatus.textContent = "Challenge not completed today.";
+  }
+
+  function renderSavedLearningJourney() {
+    const login = getKidsverseParentLogin();
+    const saved = loadKidsverseLearningProgress();
+    const reading = saved.reading || {};
+    const routine = saved.routine || {};
+    const hasReading = Boolean(reading.lastAccuracy || reading.title || reading.status);
+    const hasRoutine = Boolean(routine.completedAt || routine.lastSentence || routine.promptStatus);
+    const readingScore = Number(reading.lastAccuracy) || 0;
+    const routineScore = routine.completedAt ? 80 : routine.lastSentence ? 45 : 0;
+    const overall = Math.round(((hasReading ? readingScore : 0) + routineScore) / (hasReading && hasRoutine ? 2 : hasReading || hasRoutine ? 1 : 1));
+
+    if (parentNameTarget) parentNameTarget.textContent = login.parentName || "Parent";
+    if (childNameTarget) childNameTarget.textContent = login.childName || "Your child";
+    setText("[data-overall-progress]", `${overall || 0}%`);
+    setText("[data-overall-status]", hasReading || hasRoutine ? "Saved learning journey" : "Start Reading Fluency");
+    setText("[data-reading-mission]", hasReading ? `${reading.title || "Paragraph"} saved` : "Start first paragraph");
+    setText("[data-routine-mission]", hasRoutine ? routine.status || "Routine practice started" : "Practice words and sentences");
+    setText("[data-reading-resume-title]", hasReading ? `Continue: ${reading.title || "Next paragraph"}` : "Start from the first paragraph.");
+    setText("[data-reading-resume-copy]", hasReading ? `${reading.gradeLabel || "Reading"} | ${reading.levelLabel || "Level"} | Last accuracy ${reading.lastAccuracy || "--"}%.` : "Read the first paragraph freely. When the child clicks Next paragraph, parent login will save progress from that point onwards.");
+    setText("[data-reading-streak-label]", reading.streak ? `Reading streak: ${reading.streak} day${Number(reading.streak) === 1 ? "" : "s"}` : "Streak not started");
+    setText("[data-reading-last-score]", reading.lastAccuracy ? `Last accuracy ${reading.lastAccuracy}%` : "Accuracy pending");
+    setText("[data-reading-coach-title]", hasReading ? `Last Reading: ${reading.title || "Saved paragraph"}` : "Reading result will appear after practice.");
+
+    document.querySelectorAll("[data-reading-continue-link]").forEach((link) => {
+      link.href = hasReading ? "after-school/reading-fluency.html?resume=1" : "after-school/reading-fluency.html";
+      link.textContent = hasReading ? "Resume Reading" : "Open Reading Fluency";
+    });
+
+    const readingProgressValues = hasReading
+      ? { letters: 100, sounds: 96, blends: Math.max(70, readingScore), words: Math.max(45, readingScore - 12), sentences: Math.max(25, readingScore - 28), paragraphs: Math.max(10, readingScore - 42) }
+      : { letters: 0, sounds: 0, blends: 0, words: 0, sentences: 0, paragraphs: 0 };
+    Object.entries(readingProgressValues).forEach(([key, value]) => {
+      const bar = document.querySelector(`[data-progress-bar="${key}"]`);
+      const label = document.querySelector(`[data-progress-value="${key}"]`);
+      if (bar) bar.style.width = `${value}%`;
+      if (label) label.textContent = value ? `${value}%` : "Pending";
+    });
+
+    const coach = hasReading
+      ? { pronunciation: `${Math.min(100, readingScore + 2)}%`, fluency: `${Math.max(0, readingScore - 4)}%`, confidence: `${Math.min(100, readingScore + 6)}%`, speed: `${Math.max(0, readingScore - 8)}%`, accuracy: `${readingScore}%` }
+      : { pronunciation: "--", fluency: "--", confidence: "--", speed: "--", accuracy: "--" };
+    Object.entries(coach).forEach(([key, value]) => setText(`[data-coach-score="${key}"]`, value));
+
+    setText("[data-weekly-score='reading']", hasReading ? `${readingScore}%` : "--");
+    setText("[data-weekly-label='reading']", hasReading ? "Saved" : "Awaiting test");
+    setText("[data-weekly-score='routine']", hasRoutine ? `${routineScore}%` : "--");
+    setText("[data-weekly-label='routine']", hasRoutine ? "In progress" : "Awaiting practice");
+    setText("[data-weekly-score='streak']", reading.streak ? `${reading.streak}` : "--");
+    setText("[data-weekly-label='streak']", reading.streak ? "Day streak" : "Login to save");
+    setText("[data-routine-writing-status]", routine.completedAt ? "Done" : routine.lastSentence ? "Started" : "Pending");
+    setText("[data-routine-speaking-status]", routine.promptStatus ? "Started" : "Pending");
+    setText("[data-badge-status='reading']", readingScore >= 70 ? "Unlocked" : "Locked");
+    setText("[data-badge-status='streak']", reading.streak ? `${reading.streak} day streak` : "Start streak");
+    setText("[data-badge-status='routine']", routine.completedAt ? "Unlocked" : "Locked");
+    setText("[data-recommendation-text]", hasReading ? "Resume Reading Fluency from the next saved paragraph, then practise Daily Routine Verbs for sentence confidence." : "Start Reading Fluency. After the first paragraph, login to save the next paragraph and streak.");
+    setText("[data-blueprint-score='reading']", hasReading ? `${readingScore}%` : "--");
+    setText("[data-blueprint-score='routine']", hasRoutine ? `${routineScore}%` : "--");
+    setText("[data-blueprint-score='sentence']", routine.completedAt ? "78%" : routine.lastSentence ? "42%" : "--");
+    setText("[data-blueprint-score='confidence']", hasReading ? `${Math.min(100, readingScore + 6)}%` : "--");
+    setText("[data-blueprint-score='overall']", overall ? `${overall}%` : "--");
+
+    const insights = [];
+    if (hasReading) insights.push(`Reading saved: ${reading.title || "paragraph"} with ${reading.lastAccuracy || "--"}% accuracy.`);
+    if (reading.streak) insights.push(`Current reading streak: ${reading.streak} day${Number(reading.streak) === 1 ? "" : "s"}.`);
+    if (hasRoutine) insights.push(`Daily Routine Verbs: ${routine.status || "practice started"}.`);
+    if (!insights.length) insights.push("Read the first paragraph, then click Next paragraph to start saving progress.");
+    const insightList = document.querySelector("[data-insight-list]");
+    if (insightList) insightList.innerHTML = insights.map((item) => `<li>${item}</li>`).join("");
+    setText("[data-insight-heading]", insights.length > 1 ? "Saved learning activity found." : "Ready to start tracking.");
+  }
+
+  function decodeGoogleCredential(token) {
+    const payload = token.split(".")[1] || "";
+    const base64 = payload.replace(/-/g, "+").replace(/_/g, "/");
+    const decoded = atob(base64);
+    return JSON.parse(decodeURIComponent(Array.from(decoded).map((character) => {
+      return "%" + ("00" + character.charCodeAt(0).toString(16)).slice(-2);
+    }).join("")));
+  }
+
+  function showChildDetails(parentProfile = {}) {
+    if (googleStep) googleStep.classList.remove("is-active");
+    form.hidden = false;
+    form.classList.add("is-active");
+    if (parentNameInput && parentProfile.name) parentNameInput.value = parentProfile.name;
+    if (note) note.textContent = "Google sign-in completed. Add child details to open the dashboard.";
+    form.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
+  window.handleKidsverseParentGoogleLogin = (response) => {
+    try {
+      const profile = decodeGoogleCredential(response.credential);
+      const parentProfile = {
+        name: profile.name || "Parent",
+        email: profile.email || "",
+        signedInAt: new Date().toISOString()
+      };
+      sessionStorage.setItem("kidsverseParentLogin", JSON.stringify(parentProfile));
+      saveKidsverseParentLogin({ parentName: parentProfile.name, childName: "", grade: "", section: "" });
+      showChildDetails(parentProfile);
+    } catch (error) {
+      if (note) note.textContent = "Google sign-in was received, but the parent profile could not be read. Please try again.";
+    }
+  };
+
+  previewLogin?.addEventListener("click", () => {
+    const previewProfile = {
+      name: "",
+      email: "preview-parent@kidsverse.local",
+      signedInAt: new Date().toISOString()
+    };
+    sessionStorage.setItem("kidsverseParentLogin", JSON.stringify(previewProfile));
+    showChildDetails(previewProfile);
+  });
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+
+    const formData = new FormData(form);
+    const parentName = String(formData.get("parentName") || "").trim();
+    const childName = String(formData.get("childName") || "").trim();
+    const childGrade = String(formData.get("childGrade") || "").trim();
+
+    if (parentNameTarget) parentNameTarget.textContent = parentName || "Parent";
+    if (childNameTarget) childNameTarget.textContent = childName || "Your child";
+    if (note) note.textContent = `${childName || "Child"} mapped to ${childGrade}. Complete a test to unlock progress.`;
+    saveKidsverseParentLogin({ parentName, childName, grade: childGrade, section: "" });
+
+    dashboard.hidden = false;
+    if (loginSection) loginSection.hidden = true;
+    document.body.classList.add("learning-dashboard-open");
+    renderSavedLearningJourney();
+    dashboard.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+
+  completeReadingTest?.addEventListener("click", () => {
+    const progressValues = {
+      letters: 100,
+      sounds: 96,
+      blends: 82,
+      words: 68,
+      sentences: 52,
+      paragraphs: 28
+    };
+    Object.entries(progressValues).forEach(([key, value]) => {
+      const bar = document.querySelector(`[data-progress-bar="${key}"]`);
+      const label = document.querySelector(`[data-progress-value="${key}"]`);
+      if (bar) bar.style.width = `${value}%`;
+      if (label) label.textContent = `${value}%`;
+    });
+
+    setText("[data-overall-progress]", "42%");
+    setText("[data-overall-status]", "First test completed");
+    setText("[data-reading-mission]", "Reading check completed");
+    setText("[data-reading-test-status]", "Completed just now");
+    setText("[data-insight-heading]", "First activity completed.");
+    setText("[data-recommendation-text]", "Reading is strongest at letters, sounds and blends. Practice words and short sentences for 15 minutes daily this week.");
+    setText("[data-badge-status='reading']", "Unlocked");
+    setText("[data-badge-status='streak']", "1 day streak");
+
+    const coachScores = {
+      pronunciation: "84%",
+      fluency: "78%",
+      confidence: "88%",
+      speed: "72%",
+      accuracy: "82%"
+    };
+    Object.entries(coachScores).forEach(([key, value]) => setText(`[data-coach-score="${key}"]`, value));
+
+    const weeklyScores = {
+      reading: ["82%", "Good start"],
+      writing: ["--", "Not tested"],
+      grammar: ["--", "Not tested"],
+      math: ["--", "Not tested"],
+      confidence: ["88%", "Confident"]
+    };
+    Object.entries(weeklyScores).forEach(([key, [score, label]]) => {
+      setText(`[data-weekly-score="${key}"]`, score);
+      setText(`[data-weekly-label="${key}"]`, label);
+    });
+
+    const blueprintScores = {
+      reading: "82%",
+      communication: "--",
+      writing: "--",
+      maths: "--",
+      logical: "64%",
+      confidence: "88%",
+      creativity: "--",
+      social: "--",
+      problem: "68%",
+      overall: "42%"
+    };
+    Object.entries(blueprintScores).forEach(([key, value]) => setText(`[data-blueprint-score="${key}"]`, value));
+
+    if (weaknessSummary) weaknessSummary.textContent = "First reading check completed. Kidsverse has detected the first practice areas.";
+    if (weaknessGrid) {
+      weaknessGrid.innerHTML = `
+        <article><strong>Words to sentences</strong><span>Needs practice</span></article>
+        <article><strong>Short paragraphs</strong><span>Develop slowly</span></article>
+        <article><strong>Reading speed</strong><span>Improving</span></article>
+      `;
+    }
+
+    const insightList = document.querySelector("[data-insight-list]");
+    if (insightList) {
+      insightList.innerHTML = `
+        <li>Completed the first reading fluency check.</li>
+        <li>Strong comfort with letters, sounds and blends.</li>
+        <li>Needs more practice with words, sentences and short paragraphs.</li>
+        <li>Recommended home practice: 15 minutes read-aloud daily.</li>
+      `;
+    }
+    completeReadingTest.disabled = true;
+    completeReadingTest.textContent = "Reading Check Completed";
+    if (readingTestStatus) readingTestStatus.classList.add("is-complete");
+  });
+
+  let dailyOffset = 0;
+  newDailyChallenge?.addEventListener("click", () => {
+    dailyOffset += 1;
+    renderDailyChallenge(dailyOffset);
+  });
+
+  completeDailyChallenge?.addEventListener("click", () => {
+    if (dailyChallengeStatus) dailyChallengeStatus.textContent = "Daily challenge completed. Streak updated to 1 day.";
+    setText("[data-badge-status='streak']", "1 day streak");
+    setText("[data-overall-progress]", "48%");
+    setText("[data-overall-status]", "Daily challenge done");
+    setText("[data-blueprint-score='overall']", "48%");
+  });
+
+  speakingComplete?.addEventListener("click", () => {
+    setText("[data-speaking-mission]", "Speaking challenge completed");
+    setText("[data-weekly-score='confidence']", "90%");
+    setText("[data-weekly-label='confidence']", "Confident");
+    setText("[data-blueprint-score='communication']", "81%");
+    setText("[data-blueprint-score='confidence']", "90%");
+    setText("[data-blueprint-score='social']", "86%");
+    setText("[data-overall-progress]", "56%");
+    setText("[data-overall-status]", "Speaking added");
+    speakingComplete.disabled = true;
+    speakingComplete.textContent = "Speaking Practice Completed";
+  });
+
+  homeworkGenerator?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const formData = new FormData(homeworkGenerator);
+    const grade = String(formData.get("grade") || "Grade 1");
+    const topic = String(formData.get("topic") || "Reading");
+    const difficulty = String(formData.get("difficulty") || "Practice");
+    const questionMap = {
+      Reading: ["Read 8 words aloud.", "Circle two difficult words.", "Read one sentence slowly.", "Tell the meaning of one word.", "Read the same sentence again with confidence."],
+      "A, An & The": ["Fill: ___ apple", "Fill: ___ book", "Fill: ___ sun", "Write one sentence with an.", "Write one sentence with the."],
+      Nouns: ["Find 2 people nouns.", "Find 2 place nouns.", "Find 2 thing nouns.", "Write one animal noun.", "Write one sentence using any noun."],
+      Mathematics: ["Solve 4 + 3.", "Solve 9 - 2.", "Count by 2s till 20.", "Draw 3 circles.", "Write one number story."],
+      Speaking: ["Speak about your favourite food.", "Use one new word.", "Speak for 30 seconds.", "Say one polite sentence.", "Ask one question clearly."]
+    };
+    const questions = questionMap[topic] || questionMap.Reading;
+    if (homeworkOutput) {
+      homeworkOutput.innerHTML = `
+        <span>${grade} | ${topic} | ${difficulty}</span>
+        <strong>10-minute home worksheet</strong>
+        <ol>${questions.map((question) => `<li>${question}</li>`).join("")}</ol>
+        <p><b>Parent activity:</b> Appreciate effort first, then correct only one mistake.</p>
+      `;
+    }
+  });
+
+  renderDailyChallenge();
+  if (isKidsverseParentLoggedIn()) {
+    if (loginSection) loginSection.hidden = true;
+    dashboard.hidden = false;
+    document.body.classList.add("learning-dashboard-open");
+    renderSavedLearningJourney();
+  }
+}
+
+initLearningJourneyDashboard();
+
+const articleRules = {
+  a: {
+    title: "A",
+    badge: "Consonant sound",
+    structure: "a + singular countable noun",
+    example: "I have a pencil.",
+    note: "Use a before one general thing when the next sound is a consonant sound.",
+    tips: ["a book", "a table", "a mango", "a uniform"]
+  },
+  an: {
+    title: "An",
+    badge: "Vowel sound",
+    structure: "an + singular countable noun",
+    example: "She ate an apple.",
+    note: "Use an before one general thing when the next sound is a vowel sound.",
+    tips: ["an egg", "an orange", "an umbrella", "an hour"]
+  },
+  the: {
+    title: "The",
+    badge: "Specific noun",
+    structure: "the + known or specific noun",
+    example: "Please close the door.",
+    note: "Use the when the noun is already known, unique, nearby or clearly specific.",
+    tips: ["the sun", "the school bus", "the red pencil", "the story we read"]
+  },
+  noArticle: {
+    title: "No Article",
+    badge: "General idea",
+    structure: "plural / uncountable noun used generally",
+    example: "Children love stories.",
+    note: "Use no article for general plural nouns, general uncountable nouns and many school subjects.",
+    tips: ["Books are useful.", "Water is important.", "I like music.", "Maths is fun."]
+  }
+};
+
+const articleChoiceQuestion = {
+  prompt: "I saw ___ owl on the tree.",
+  answer: "an",
+  explanation: "Owl starts with a vowel sound, so the correct article is an."
+};
+
+const articleFillQuestions = [
+  { prompt: "Riya has ___ pencil.", answer: "a", explanation: "Pencil begins with a consonant sound." },
+  { prompt: "I ate ___ orange.", answer: "an", explanation: "Orange begins with a vowel sound." },
+  { prompt: "Please open ___ window near you.", answer: "the", explanation: "The window is specific because it is near you." },
+  { prompt: "___ children should drink water.", answer: "none", explanation: "Children is a general plural noun here." },
+  { prompt: "He is ___ honest boy.", answer: "an", explanation: "Honest begins with a vowel sound because h is silent." }
+];
+
+const articleQuizQuestions = [
+  { prompt: "Choose the correct article: ___ apple", options: ["A", "An", "The", "No article"], answer: "An", explanation: "Apple begins with a vowel sound." },
+  { prompt: "Choose the correct article: ___ book on my table", options: ["A", "An", "The", "No article"], answer: "The", explanation: "The book is specific because it is on my table." },
+  { prompt: "Choose the correct sentence.", options: ["I saw a elephant.", "I saw an elephant.", "I saw the elephant first time.", "I saw an books."], answer: "I saw an elephant.", explanation: "Elephant begins with a vowel sound and is one general animal." },
+  { prompt: "Choose the correct article: ___ university", options: ["A", "An", "The", "No article"], answer: "A", explanation: "University starts with a yoo sound, which is a consonant sound." },
+  { prompt: "Choose the correct article: ___ moon", options: ["A", "An", "The", "No article"], answer: "The", explanation: "The moon is unique, so we use the." },
+  { prompt: "Choose the correct sentence.", options: ["Milk is good for health.", "A milk is good for health.", "An milk is good for health.", "The milk is good for health always."], answer: "Milk is good for health.", explanation: "Milk is used generally as an uncountable noun." },
+  { prompt: "Choose the correct article: ___ hour", options: ["A", "An", "The", "No article"], answer: "An", explanation: "Hour begins with a vowel sound because h is silent." },
+  { prompt: "Choose the correct sentence.", options: ["She has a umbrella.", "She has an umbrella.", "She has the umbrella first time.", "She has umbrella one."], answer: "She has an umbrella.", explanation: "Umbrella begins with a vowel sound." },
+  { prompt: "Choose the correct article: I like ___ stories.", options: ["a", "an", "the", "no article"], answer: "no article", explanation: "Stories is plural and used generally here." },
+  { prompt: "Choose the correct article: ___ principal is coming to class.", options: ["A", "An", "The", "No article"], answer: "The", explanation: "The principal is a specific person known in school." }
+];
+
+function initArticleRuleCards() {
+  const panel = document.querySelector("[data-article-detail]");
+  const cards = document.querySelectorAll("[data-article-card]");
+  if (!panel || !cards.length) return;
+
+  const render = (key) => {
+    const data = articleRules[key] || articleRules.a;
+    panel.innerHTML = `
+      <span class="eyebrow">${data.badge}</span>
+      <h3>${data.title}</h3>
+      <code>${data.structure}</code>
+      <strong>${data.example}</strong>
+      <p>${data.note}</p>
+      <div class="article-example-pills">${data.tips.map((tip) => `<span>${tip}</span>`).join("")}</div>
+    `;
+  };
+
+  cards.forEach((card) => {
+    card.addEventListener("click", () => {
+      cards.forEach((item) => item.classList.remove("is-active"));
+      card.classList.add("is-active");
+      render(card.dataset.articleCard);
+    });
+  });
+  render("a");
+}
+
+function initArticleChoiceTool() {
+  const tool = document.querySelector("[data-article-choice-tool]");
+  if (!tool) return;
+  const feedback = tool.querySelector("[data-article-choice-feedback]");
+  tool.querySelectorAll("[data-article-choice]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const correct = button.dataset.articleChoice === articleChoiceQuestion.answer;
+      tool.querySelectorAll("[data-article-choice]").forEach((item) => item.classList.remove("is-correct", "is-wrong"));
+      button.classList.add(correct ? "is-correct" : "is-wrong");
+      if (feedback) {
+        feedback.textContent = correct
+          ? `Correct. ${articleChoiceQuestion.explanation}`
+          : `Try again. ${articleChoiceQuestion.explanation}`;
+      }
+    });
+  });
+}
+
+function initArticlePractice() {
+  const practice = document.querySelector("[data-article-practice]");
+  if (!practice) return;
+  const buttons = practice.querySelectorAll("[data-article-intent]");
+  const input = practice.querySelector("[data-article-input]");
+  const feedback = practice.querySelector("[data-article-feedback]");
+  const rules = {
+    sentence: practice.querySelector("[data-article-rule='sentence']"),
+    article: practice.querySelector("[data-article-rule='article']"),
+    noun: practice.querySelector("[data-article-rule='noun']")
+  };
+  let active = "a";
+
+  function update() {
+    const value = input.value.trim();
+    const lower = value.toLowerCase();
+    const hasSentence = value.split(/\s+/).length >= 3 && /[a-z]/i.test(value);
+    const articlePattern = active === "none" ? !/\b(a|an|the)\b/i.test(value) : new RegExp(`\\b${active}\\b`, "i").test(value);
+    const hasNounIdea = /\b(book|pencil|apple|orange|owl|school|bag|table|door|children|water|music|story|stories|teacher|principal|hour|umbrella|uniform|university)\b/i.test(value);
+    Object.entries({ sentence: hasSentence, article: articlePattern, noun: hasNounIdea }).forEach(([key, passed]) => {
+      rules[key]?.classList.toggle("is-done", passed);
+    });
+    if (!value) {
+      feedback.innerHTML = `<span>Ready to check</span><strong>Start with a simple noun sentence.</strong><p>Example: I have a pencil.</p>`;
+      return;
+    }
+    const passed = hasSentence && articlePattern && hasNounIdea;
+    const example = articleRules[active === "none" ? "noArticle" : active].example;
+    feedback.innerHTML = passed
+      ? `<span>Good sentence</span><strong>This sentence matches the ${active === "none" ? "no article" : active.toUpperCase()} rule.</strong><p>Now try writing one more sentence with a different noun.</p>`
+      : `<span>Needs one correction</span><strong>Check the article and noun pattern.</strong><p>Example: ${example}</p>`;
+  }
+
+  buttons.forEach((button) => {
+    button.addEventListener("click", () => {
+      buttons.forEach((item) => item.classList.remove("is-active"));
+      button.classList.add("is-active");
+      active = button.dataset.articleIntent || "a";
+      input.placeholder = `Example: ${articleRules[active === "none" ? "noArticle" : active].example}`;
+      update();
+    });
+  });
+  input.addEventListener("input", update);
+}
+
+function initArticleFillPractice() {
+  const fill = document.querySelector("[data-article-fill]");
+  if (!fill) return;
+  const card = fill.querySelector("[data-fill-card]");
+  const progress = fill.querySelector("[data-fill-progress]");
+  const retry = fill.querySelector("[data-fill-retry]");
+  const scoreText = fill.querySelector("[data-fill-score]");
+  let index = 0;
+  let score = 0;
+
+  function render() {
+    if (progress) progress.value = index;
+    if (scoreText) scoreText.textContent = `Score: ${score}/${articleFillQuestions.length}`;
+    if (index >= articleFillQuestions.length) {
+      card.innerHTML = `<h3>Practice Complete</h3><p class="quiz-explanation">Final score: ${score}/${articleFillQuestions.length}. Use the quiz below to validate the learning.</p>`;
+      return;
+    }
+    const question = articleFillQuestions[index];
+    card.innerHTML = `
+      <span class="eyebrow">Blank ${index + 1} of ${articleFillQuestions.length}</span>
+      <h3>${question.prompt}</h3>
+      <div class="quiz-options">
+        ${["a", "an", "the", "none"].map((option) => `<button class="quiz-option" type="button" data-fill-option="${option}">${option === "none" ? "No article" : option}</button>`).join("")}
+      </div>
+      <p class="quiz-explanation" hidden></p>
+    `;
+    const explanation = card.querySelector(".quiz-explanation");
+    card.querySelectorAll("[data-fill-option]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const correct = button.dataset.fillOption === question.answer;
+        button.classList.add(correct ? "is-correct" : "is-wrong");
+        card.querySelectorAll("[data-fill-option]").forEach((item) => {
+          item.disabled = true;
+          if (item.dataset.fillOption === question.answer) item.classList.add("is-correct");
+        });
+        if (correct) score += 1;
+        if (explanation) {
+          explanation.hidden = false;
+          explanation.textContent = question.explanation;
+        }
+        window.setTimeout(() => {
+          index += 1;
+          render();
+        }, 850);
+      });
+    });
+  }
+  retry?.addEventListener("click", () => {
+    index = 0;
+    score = 0;
+    render();
+  });
+  render();
+}
+
+function initArticleQuiz() {
+  const quiz = document.querySelector("[data-article-quiz]");
+  if (!quiz) return;
+  const card = quiz.querySelector("[data-article-quiz-card]");
+  const progress = quiz.querySelector("[data-article-quiz-progress]");
+  const retry = quiz.querySelector("[data-article-quiz-retry]");
+  const scoreText = quiz.querySelector("[data-article-quiz-score]");
+  let index = 0;
+  let score = 0;
+
+  function render() {
+    if (progress) progress.value = index;
+    if (scoreText) scoreText.textContent = `Score: ${score}/${articleQuizQuestions.length}`;
+    if (index >= articleQuizQuestions.length) {
+      const grade = score >= 8 ? "Excellent" : score >= 6 ? "Good" : "Needs Practice";
+      card.innerHTML = `<h3>${grade} Articles Practice</h3><p class="quiz-explanation">Final score: ${score}/${articleQuizQuestions.length}. Retry the quiz or revise the rules above.</p>`;
+      if (progress) progress.value = articleQuizQuestions.length;
+      return;
+    }
+    const question = articleQuizQuestions[index];
+    card.innerHTML = `
+      <span class="eyebrow">Question ${index + 1} of ${articleQuizQuestions.length}</span>
+      <h3>${question.prompt}</h3>
+      <div class="quiz-options">
+        ${question.options.map((option) => `<button class="quiz-option" type="button" data-article-option="${option}">${option}</button>`).join("")}
+      </div>
+      <p class="quiz-explanation" hidden></p>
+    `;
+    const explanation = card.querySelector(".quiz-explanation");
+    card.querySelectorAll("[data-article-option]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const correct = button.dataset.articleOption === question.answer;
+        if (correct) score += 1;
+        card.querySelectorAll("[data-article-option]").forEach((item) => {
+          item.disabled = true;
+          if (item.dataset.articleOption === question.answer) item.classList.add("is-correct");
+        });
+        button.classList.add(correct ? "is-correct" : "is-wrong");
+        if (explanation) {
+          explanation.hidden = false;
+          explanation.textContent = question.explanation;
+        }
+        const nextButton = document.createElement("button");
+        nextButton.className = "primary-button";
+        nextButton.type = "button";
+        nextButton.textContent = index === articleQuizQuestions.length - 1 ? "Show Result" : "Next Question";
+        nextButton.addEventListener("click", () => {
+          index += 1;
+          render();
+        });
+        card.appendChild(nextButton);
+      });
+    });
+  }
+  retry?.addEventListener("click", () => {
+    index = 0;
+    score = 0;
+    render();
+  });
+  render();
+}
+
+initArticleRuleCards();
+initArticleChoiceTool();
+initArticlePractice();
+initArticleFillPractice();
+initArticleQuiz();
