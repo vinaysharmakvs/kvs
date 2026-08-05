@@ -4318,6 +4318,16 @@ function initReadingFluencyLab() {
           return;
         }
       }
+      const url = URL.createObjectURL(certificateBlob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "kidsverse-reading-star-certificate.png";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 800);
+      if (shareNote) shareNote.textContent = "Certificate PNG downloaded. You can share it on WhatsApp.";
+      return;
     }
     if (navigator.share) {
       try {
