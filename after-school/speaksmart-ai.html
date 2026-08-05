@@ -19,7 +19,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="512x512" href="../assets/favicon.png" />
     <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png" />
-    <link rel="stylesheet" href="../styles.css" />
+    <link rel="stylesheet" href="../styles.css?v=20260805-kiya-repair" />
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-0ZT634EM99"></script>
     <script>
@@ -96,8 +96,19 @@
           <div class="speaksmart-safety-note">
             Your camera recording stays on your device and is not uploaded in this version. Only your speaking transcript may be sent securely for AI feedback.
           </div>
+          <div class="speaksmart-skill-constellation" data-smart-tilt aria-label="Speaking skills preview">
+            <span data-depth="1">Fluency</span>
+            <span data-depth="2">Grammar</span>
+            <span data-depth="3">Vocabulary</span>
+            <span data-depth="4">Confidence</span>
+          </div>
         </div>
         <div class="speaksmart-camera-mock" aria-label="SpeakSmart preview">
+          <div class="smart-planet-deck" data-smart-tilt aria-hidden="true">
+            <span class="smart-cube is-one">Speak</span>
+            <span class="smart-cube is-two">Listen</span>
+            <span class="smart-cube is-three">Improve</span>
+          </div>
           <div class="mock-video">
             <span>Student video</span>
             <div class="mock-face" aria-hidden="true"></div>
@@ -113,10 +124,10 @@
       </section>
 
       <section class="section speaksmart-features" aria-label="SpeakSmart features">
-        <article><span>01</span><strong>Daily Speaking Missions</strong><p>Small prompts that build regular speaking habit.</p></article>
-        <article><span>02</span><strong>Mirror Speaking Mode</strong><p>Children watch themselves and practise confidence cues.</p></article>
-        <article><span>03</span><strong>Instant Feedback</strong><p>Simple, friendly feedback after each answer.</p></article>
-        <article><span>04</span><strong>Private Progress</strong><p>Scores, minutes and streak stay in this browser.</p></article>
+        <article data-smart-tilt><span>01</span><strong>Daily Speaking Missions</strong><p>Small prompts that build regular speaking habit.</p></article>
+        <article data-smart-tilt><span>02</span><strong>Mirror Speaking Mode</strong><p>Children watch themselves and practise confidence cues.</p></article>
+        <article data-smart-tilt><span>03</span><strong>Instant Feedback</strong><p>Simple, friendly feedback after each answer.</p></article>
+        <article data-smart-tilt><span>04</span><strong>Private Progress</strong><p>Scores, minutes and streak stay in this browser.</p></article>
       </section>
 
       <section class="section speaksmart-setup" id="profile-setup" data-smart-setup>
@@ -191,6 +202,11 @@
         </div>
         <div class="smart-room-grid">
           <article class="smart-video-card">
+            <div class="smart-cockpit-strip" aria-hidden="true">
+              <span>Voice engine</span>
+              <span>Mirror mode</span>
+              <span>Confidence scan</span>
+            </div>
             <div class="smart-video-frame">
               <video data-smart-video autoplay muted playsinline></video>
               <div class="smart-video-empty" data-smart-video-empty>
@@ -206,11 +222,17 @@
               <button class="secondary-button" type="button" data-smart-camera-off disabled>Turn Camera Off</button>
             </div>
             <div class="smart-privacy-line">
-              No facial recognition. No appearance judgement. Camera preview is only for self-practice.
+              No facial recognition. No appearance judgement. If camera does not open, tap the browser lock icon and allow Camera for this site.
             </div>
           </article>
 
           <aside class="smart-question-panel">
+            <div class="smart-mission-portal" data-smart-tilt aria-hidden="true">
+              <span class="portal-card is-top">Idea</span>
+              <span class="portal-card is-right">Speak</span>
+              <span class="portal-card is-bottom">Score</span>
+              <span class="portal-core"></span>
+            </div>
             <div class="smart-timer-row">
               <span data-smart-timer>00:00</span>
               <div class="smart-audio-bars" data-smart-audio-bars aria-hidden="true"><i></i><i></i><i></i><i></i></div>
@@ -239,15 +261,24 @@
       </section>
 
       <section class="section speaksmart-transcript" data-smart-transcript-section>
-        <div class="section-heading">
-          <p class="eyebrow">Live Transcript</p>
-          <h2>Edit small transcription mistakes before feedback.</h2>
-          <p data-smart-speech-status>Speech recognition will start when you press Start Speaking, if supported by this browser.</p>
+        <div class="smart-transcript-head">
+          <div>
+            <p class="eyebrow">Speech Capture Console</p>
+            <h2>Your words appear here while you speak.</h2>
+            <p data-smart-speech-status>Press Start Speaking. If live typing is supported, SpeakSmart will capture your words automatically.</p>
+          </div>
+          <div class="smart-transcript-status" aria-hidden="true">
+            <span>Listen</span>
+            <span>Edit</span>
+            <span>Improve</span>
+          </div>
         </div>
-        <textarea data-smart-transcript placeholder="Your spoken words will appear here. If speech recognition is unavailable, type your answer here."></textarea>
+        <div class="smart-transcript-console">
+          <textarea data-smart-transcript placeholder="Start speaking and your answer will appear here. You can fix small spelling or listening mistakes before feedback."></textarea>
+        </div>
         <div class="smart-feedback-actions">
-          <button class="primary-button" type="button" data-smart-feedback>Get Friendly Feedback</button>
-          <button class="secondary-button" type="button" data-smart-retry>Retry</button>
+          <button class="primary-button" type="button" data-smart-feedback>Check My Speaking</button>
+          <button class="secondary-button" type="button" data-smart-retry>Clear and Try Again</button>
         </div>
       </section>
 
@@ -332,7 +363,7 @@
       <span>English speaking, reading fluency and after-school learning support.</span>
       <span class="powered-by-tivoro"><a href="https://tivoro.in" target="_blank" rel="noopener noreferrer">Powered by Tivoro - Your digital growth partner</a></span>
     </footer>
-    <script src="../script.js"></script>
+    <script src="../kidsverse-app.js?v=20260801-site-fix"></script>
     <script src="../speaksmart-ai.js"></script>
   </body>
 </html>
