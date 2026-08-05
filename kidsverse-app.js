@@ -2895,7 +2895,6 @@ function updateKidsverseReadingParentStatus() {
   const title = document.querySelector("[data-reading-parent-status-title]");
   const copy = document.querySelector("[data-reading-parent-status-copy]");
   const card = document.querySelector("[data-reading-parent-status-card]");
-  const studentName = document.querySelector("[data-reading-student-name]");
   const buttons = document.querySelectorAll("[data-reading-parent-login-open]");
 
   if (card) card.classList.toggle("is-logged-in", isLoggedIn);
@@ -2913,9 +2912,6 @@ function updateKidsverseReadingParentStatus() {
     button.textContent = isLoggedIn ? "Switch Parent" : "Parent Login";
     button.setAttribute("aria-label", isLoggedIn ? "Switch parent login" : "Open parent login");
   });
-  if (isLoggedIn && studentName && !studentName.value.trim()) {
-    studentName.value = login.childName;
-  }
 }
 
 function showKidsverseParentLoginGate(onComplete) {
@@ -3643,7 +3639,6 @@ function initReadingFluencyLab() {
   const gradeSelect = lab.querySelector("[data-reading-grade]");
   const levelSelect = lab.querySelector("[data-reading-level]");
   const levelLabel = lab.querySelector("[data-reading-level-label]");
-  const studentNameInput = lab.querySelector("[data-reading-student-name]");
   const title = lab.querySelector("[data-reading-title]");
   const passage = lab.querySelector("[data-reading-passage]");
   const listenButton = lab.querySelector("[data-reading-listen]");
@@ -3685,7 +3680,6 @@ function initReadingFluencyLab() {
   let latestCertificateData = null;
   const micSessionKey = "kidsverseReadingMicPermission";
   const streakStorageKey = "kidsverseReadingPracticeStreak";
-  const studentNameStorageKey = "kidsverseReadingStudentName";
   const savedJourney = loadKidsverseLearningProgress();
   const urlReadingParams = new URLSearchParams(window.location.search);
 
@@ -3781,8 +3775,9 @@ function initReadingFluencyLab() {
   }
 
   function getStudentName() {
-    const name = studentNameInput?.value.trim() || "Reading Star";
-    return name.replace(/\s+/g, " ").slice(0, 40);
+    const login = getKidsverseParentLogin();
+    const name = login.childName || "Reading Star";
+    return String(name).replace(/\s+/g, " ").trim().slice(0, 40) || "Reading Star";
   }
 
   function getTodayDateKey() {
@@ -3902,13 +3897,6 @@ function initReadingFluencyLab() {
       date: new Date().toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }),
     };
     latestCertificateText = `${name} earned a ${medal.name} in Kidsverse Reading Fluency today with ${accuracy}% reading accuracy. Current streak: ${streak.streak} day${streak.streak === 1 ? "" : "s"}.`;
-    if (studentNameInput) {
-      try {
-        localStorage.setItem(studentNameStorageKey, name);
-      } catch {
-        /* Name saving is optional. */
-      }
-    }
     if (certificateName) certificateName.textContent = name;
     if (certificateMessage) certificateMessage.textContent = `${gradeLabel} - ${levelText} completed with confident effort.`;
     if (certificateMedal) {
@@ -4233,12 +4221,6 @@ function initReadingFluencyLab() {
     }
   }
 
-  try {
-    const savedName = localStorage.getItem(studentNameStorageKey);
-    if (savedName && studentNameInput) studentNameInput.value = savedName;
-  } catch {
-    /* Optional student name restore. */
-  }
   updateKidsverseReadingParentStatus();
   renderReadingStreakStatus();
 
