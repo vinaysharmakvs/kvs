@@ -1271,7 +1271,7 @@ const teacherReadingState = teacherReadingPassages.map(() => ({ transcript: "", 
 
 function scoreTeacherReading(expectedText, spokenText) {
   const expectedWords = normalizeReadingWords(expectedText);
-  const spokenWords = normalizeReadingWords(spokenText);
+  const spokenWords = normalizeReadingWords(cleanReadingTranscript(spokenText));
   const spokenPool = [...spokenWords];
   let correct = 0;
   const missed = [];
@@ -1493,24 +1493,34 @@ function initTeacherReadingAssessment() {
     if (transcriptEl) transcriptEl.textContent = "Listening. Read slowly and clearly.";
 
     recognition.onresult = (speechEvent) => {
-      let interim = "";
+      let interimText = "";
       for (let resultIndex = speechEvent.resultIndex; resultIndex < speechEvent.results.length; resultIndex += 1) {
         const text = speechEvent.results[resultIndex][0].transcript;
-        if (speechEvent.results[resultIndex].isFinal) finalText += ` ${text}`;
-        else interim += ` ${text}`;
+        if (speechEvent.results[resultIndex].isFinal) {
+          finalText = mergeReadingTranscript(finalText, text);
+        } else {
+          interimText = mergeReadingTranscript(interimText, text);
+        }
       }
-      latestText = `${finalText} ${interim}`.trim();
-      if (transcriptEl) transcriptEl.textContent = latestText || "Listening...";
+      latestText = mergeReadingTranscript(finalText, interimText);
+      if (transcriptEl) {
+        transcriptEl.textContent = getReadingDisplayTranscript(latestText, teacherReadingPassages[index], 26) || "Listening...";
+      }
     };
 
     recognition.onend = () => {
       startButton.disabled = false;
       if (passageStop) passageStop.hidden = true;
       if (indicator) indicator.hidden = true;
-      const result = scoreTeacherReading(teacherReadingPassages[index], latestText || finalText);
-      teacherReadingState[index] = { ...result, transcript: latestText || finalText, attempted: Boolean(latestText || finalText) };
+      const cleanTranscript = cleanReadingTranscript(latestText || finalText);
+      const result = scoreTeacherReading(teacherReadingPassages[index], cleanTranscript);
+      teacherReadingState[index] = { ...result, transcript: cleanTranscript, attempted: Boolean(normalizeReadingWords(cleanTranscript).length) };
       if (scoreEl) scoreEl.textContent = teacherReadingState[index].attempted ? `${result.accuracy}% accuracy` : "Try again";
-      if (transcriptEl) transcriptEl.textContent = latestText || "No clear reading captured. Please try again close to the microphone.";
+      if (transcriptEl) {
+        transcriptEl.textContent = teacherReadingState[index].attempted
+          ? getReadingDisplayTranscript(cleanTranscript, teacherReadingPassages[index], 32)
+          : "No clear reading captured. Please try again close to the microphone.";
+      }
       updateTeacherReadingValidation();
     };
 
@@ -2495,6 +2505,8 @@ function initTenseQuiz() {
           <p class="quiz-explanation">Final score: ${score}/${quizQuestions.length}. You can retry the quiz or continue practising in the learning lab.</p>
         `;
       }
+      const grammarPercent = Math.round((score / quizQuestions.length) * 100);
+      saveKidsversePlatformSkill("grammar", grammarPercent, "Grammar quiz completed");
       if (progress) progress.value = quizQuestions.length;
       return;
     }
@@ -2652,6 +2664,7 @@ function saveKidsverseLearningProgress(patch) {
     ...patch,
     reading: { ...(current.reading || {}), ...(patch.reading || {}) },
     routine: { ...(current.routine || {}), ...(patch.routine || {}) },
+    platform: { ...(current.platform || {}), ...(patch.platform || {}) },
     updatedAt: new Date().toISOString()
   };
   try {
@@ -2690,6 +2703,190 @@ function saveKidsverseParentLogin(data) {
   }
   saveKidsverseLearningProgress({ parent: login });
   return login;
+}
+
+
+
+function getKidsversePlatformScores() {
+  const saved = loadKidsverseLearningProgress();
+  const platform = saved.platform || {};
+  const skills = platform.skills || {};
+  const reading = saved.reading || {};
+  const routine = saved.routine || {};
+  const readingScore = Number(reading.lastAccuracy) || Number(skills.reading?.score) || 0;
+  const routineBaseScore = routine.completedAt ? 80 : routine.lastSentence ? 45 : 0;
+  const routineScore = Math.max(routineBaseScore, Number(skills.speaking?.score) || 0);
+  const grammarScore = Number(skills.grammar?.score) || 0;
+  const writingBaseScore = routine.completedAt ? 55 : routine.lastSentence ? 35 : 0;
+  const writingScore = Math.max(writingBaseScore, Number(skills.writing?.score) || 0);
+  const mathsScore = Number(skills.maths?.score) || 0;
+  const codingScore = Number(skills.coding?.score) || 0;
+  const aiScore = Number(skills.ai?.score) || 0;
+  const confidenceScore = Math.max(Number(skills.confidence?.score) || 0, readingScore ? Math.min(100, readingScore + 6) : 0, routineScore ? Math.min(100, routineScore + 8) : 0);
+  return {
+    reading: Math.min(100, Math.max(0, Math.round(readingScore))),
+    grammar: Math.min(100, Math.max(0, Math.round(grammarScore))),
+    writing: Math.min(100, Math.max(0, Math.round(writingScore))),
+    speaking: Math.min(100, Math.max(0, Math.round(routineScore))),
+    maths: Math.min(100, Math.max(0, Math.round(mathsScore))),
+    coding: Math.min(100, Math.max(0, Math.round(codingScore))),
+    ai: Math.min(100, Math.max(0, Math.round(aiScore))),
+    confidence: Math.min(100, Math.max(0, Math.round(confidenceScore)))
+  };
+}
+
+function saveKidsversePlatformSkill(skill, score = 10, status = "Learning started") {
+  if (!skill || !isKidsverseParentLoggedIn()) return loadKidsverseLearningProgress();
+  const current = loadKidsverseLearningProgress();
+  const platform = current.platform || {};
+  const skills = platform.skills || {};
+  const previous = skills[skill] || {};
+  const nextScore = Math.max(Number(previous.score) || 0, Number(score) || 0);
+  return saveKidsverseLearningProgress({
+    platform: {
+      ...platform,
+      skills: {
+        ...skills,
+        [skill]: {
+          ...previous,
+          score: Math.min(100, Math.round(nextScore)),
+          status,
+          lastActivityAt: new Date().toISOString()
+        }
+      }
+    }
+  });
+}
+
+function initAfterSchoolPlatformDashboard() {
+  const dashboard = document.querySelector("[data-afterschool-dashboard]");
+  const loginButtons = document.querySelectorAll("[data-afterschool-login], [data-afterschool-login-link]");
+  const lessonLinks = document.querySelectorAll("[data-platform-lesson]");
+  if (!dashboard && !loginButtons.length && !lessonLinks.length) return;
+
+  function setSkill(name, value) {
+    const score = Math.min(100, Math.max(0, Math.round(Number(value) || 0)));
+    document.querySelectorAll(`[data-afterschool-skill-score="${name}"], [data-afterschool-mini-score="${name}"]`).forEach((element) => {
+      element.textContent = `${score}%`;
+    });
+    document.querySelectorAll(`[data-afterschool-skill-bar="${name}"], [data-afterschool-mini-bar="${name}"]`).forEach((bar) => {
+      bar.style.width = `${score}%`;
+    });
+  }
+
+  function renderReadingStages(readingScore) {
+    const values = {
+      letters: readingScore ? 100 : 0,
+      sounds: readingScore ? Math.max(0, Math.min(100, readingScore + 8)) : 0,
+      blends: readingScore ? Math.max(0, readingScore) : 0,
+      words: readingScore ? Math.max(0, readingScore - 12) : 0,
+      sentences: readingScore ? Math.max(0, readingScore - 28) : 0,
+      stories: readingScore >= 85 ? 20 : 0
+    };
+    Object.entries(values).forEach(([stage, value]) => {
+      const card = document.querySelector(`[data-afterschool-reading-stage="${stage}"]`);
+      const score = document.querySelector(`[data-afterschool-reading-score="${stage}"]`);
+      const label = document.querySelector(`[data-afterschool-reading-label="${stage}"]`);
+      if (score) score.textContent = `${Math.round(value)}%`;
+      if (label) label.textContent = value >= 90 ? "Mastered" : value > 0 ? "Practising" : isKidsverseParentLoggedIn() ? "Not started" : "Login to track";
+      if (card) {
+        card.classList.toggle("is-mastered", value >= 90);
+        card.classList.toggle("is-active", value > 0 && value < 90);
+        card.classList.toggle("is-locked", !value && stage === "stories");
+      }
+    });
+  }
+
+  function renderDashboard() {
+    const login = getKidsverseParentLogin();
+    const loggedIn = isKidsverseParentLoggedIn();
+    const scores = getKidsversePlatformScores();
+    const trackedScores = Object.values(scores);
+    const overall = Math.round(trackedScores.reduce((sum, value) => sum + value, 0) / trackedScores.length) || 0;
+    const parentName = document.querySelector("[data-afterschool-parent-name]");
+    const childName = document.querySelector("[data-afterschool-child-name]");
+    const miniOverall = document.querySelector("[data-afterschool-overall-mini]");
+    const overallEl = document.querySelector("[data-afterschool-overall]");
+    const title = document.querySelector("[data-afterschool-login-title]");
+    const copy = document.querySelector("[data-afterschool-login-copy]");
+    const kicker = document.querySelector("[data-afterschool-login-kicker]");
+    const hint = document.querySelector("[data-afterschool-login-hint]");
+
+    if (dashboard) dashboard.hidden = !loggedIn;
+    if (parentName) parentName.textContent = login.parentName || "Parent";
+    if (childName) childName.textContent = login.childName || "your child";
+    if (miniOverall) miniOverall.textContent = `${overall}%`;
+    if (overallEl) overallEl.textContent = `${overall}%`;
+    const childLabel = login.childName || "Child";
+    if (title) title.textContent = loggedIn ? `${childLabel}'s Snapshot` : "Parent login";
+    if (kicker) kicker.textContent = loggedIn ? "Quick snapshot" : "Start tracking";
+    if (copy) copy.textContent = loggedIn ? "Continue from saved learning activities." : "Login once to create your child's learning dashboard.";
+    if (hint) hint.textContent = loggedIn ? "Open the detailed dashboard below for skill-wise progress." : "New dashboards start at 0% and grow with real activity.";
+
+    Object.entries(scores).forEach(([skill, score]) => setSkill(skill, score));
+    renderReadingStages(scores.reading);
+
+    const mathsStages = [
+      ["addition", Math.min(100, scores.maths)],
+      ["subtraction", Math.max(0, Math.min(100, scores.maths - 25))],
+      ["fractions", Math.max(0, Math.min(100, scores.maths - 50))]
+    ];
+    mathsStages.forEach(([stage, value], order) => {
+      const label = document.querySelector(`[data-maths-stage-label="${stage}"]`);
+      const score = document.querySelector(`[data-maths-stage-score="${stage}"]`);
+      if (score) score.textContent = `${value}%`;
+      if (label) label.textContent = value >= 80 ? "Mastered" : value > 0 ? "Learning" : order === 0 ? "Start" : "Next";
+    });
+    loginButtons.forEach((button) => {
+      button.textContent = loggedIn ? (button.dataset.dashboardLabel || "View Dashboard") : (button.dataset.loginLabel || "Login");
+    });
+  }
+
+  function openParentLogin(event) {
+    event?.preventDefault();
+    event?.stopPropagation();
+    if (isKidsverseParentLoggedIn()) {
+      renderDashboard();
+      dashboard?.scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
+    showKidsverseParentLoginGate(() => {
+      renderDashboard();
+      dashboard?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
+
+  loginButtons.forEach((button) => {
+    button.addEventListener("click", openParentLogin);
+  });
+
+  document.addEventListener("click", (event) => {
+    const trigger = event.target.closest?.("[data-afterschool-login], [data-afterschool-login-link]");
+    if (!trigger) return;
+    openParentLogin(event);
+  });
+
+  lessonLinks.forEach((link) => {
+    link.addEventListener("click", (event) => {
+      const skill = link.dataset.platformSkill;
+      const href = link.getAttribute("href") || "";
+      const openLesson = () => {
+        if (skill) saveKidsversePlatformSkill(skill, 10, "Lesson opened");
+        renderDashboard();
+        if (href.startsWith("#")) return;
+        window.location.href = href;
+      };
+      if (!isKidsverseParentLoggedIn()) {
+        event.preventDefault();
+        showKidsverseParentLoginGate(openLesson);
+        return;
+      }
+      if (skill) saveKidsversePlatformSkill(skill, 10, "Lesson opened");
+      renderDashboard();
+    });
+  });
+
+  renderDashboard();
 }
 
 function updateKidsverseReadingParentStatus() {
@@ -2941,11 +3138,12 @@ initRoutineBuilder();
 initRoutinePrompts();
 initRoutinePractice();
 
-function makeReadingItem(label, title, text, question, answer, wrongOne, wrongTwo) {
+function makeReadingItem(label, title, text, question, answer, wrongOne, wrongTwo, theme = "general") {
   return {
     label,
     title,
     text,
+    theme,
     questions: [
       { question, options: [answer, wrongOne, wrongTwo], answer },
       { question: "What should the reader practise?", options: ["Read clearly with small pauses", "Skip difficult words", "Read without looking"], answer: "Read clearly with small pauses" },
@@ -3067,6 +3265,127 @@ const readingLevelLabels = {
   explorer: "Explorer",
   confident: "Confident Reader",
   challenge: "Challenge Mode",
+};
+
+const readingInterestOptions = {
+  sports: "Sports stories",
+  adventure: "Adventure stories",
+  history: "History stories",
+  science: "Science stories",
+  army: "Army stories",
+};
+
+const readingThemePassages = {
+  sports: {
+    beginner: [
+      makeReadingItem("Beginner", "The Practice Ground", "The children run on the ground. They pass the ball, cheer for friends and try again with a happy smile.", "Where do the children run?", "On the ground", "In the kitchen", "Inside a bus", "sports"),
+      makeReadingItem("Beginner", "My Cricket Bat", "I hold my cricket bat carefully. I watch the ball and take one strong shot.", "What does the child hold?", "A cricket bat", "A paint brush", "A school bell", "sports"),
+      makeReadingItem("Beginner", "Team Cheer", "Our team claps for every player. We feel happy when everyone tries their best.", "Who does the team clap for?", "Every player", "Only the teacher", "A driver", "sports"),
+    ],
+    explorer: [
+      makeReadingItem("Explorer", "The Final Goal", "Aarav waited near the goal post. He listened to his coach, passed the ball to a friend and helped the team score.", "How did Aarav help the team?", "He passed the ball", "He hid the ball", "He left the ground", "sports"),
+      makeReadingItem("Explorer", "Basketball Practice", "The players practised passing, dribbling and shooting. Their coach reminded them that teamwork is stronger than rushing alone.", "What did the coach value?", "Teamwork", "Loud shouting", "Skipping practice", "sports"),
+      makeReadingItem("Explorer", "Morning Fitness", "Before class, the children stretched their arms, ran slowly and drank water. They learned that fitness needs regular practice.", "What did the children learn?", "Fitness needs regular practice", "Water is heavy", "Games are cancelled", "sports"),
+    ],
+    confident: [
+      makeReadingItem("Confident Reader", "Captain of the Day", "The captain encouraged every player during practice. When someone missed a catch, she spoke kindly and asked the team to try again.", "How did the captain speak?", "Kindly", "Rudely", "Without listening", "sports"),
+      makeReadingItem("Confident Reader", "Learning from Defeat", "The team lost the match by one point, but the coach praised their discipline. The players discussed mistakes and planned better practice for the next game.", "What did the players discuss?", "Mistakes and better practice", "A picnic menu", "New uniforms only", "sports"),
+      makeReadingItem("Confident Reader", "The Relay Race", "Four students ran a relay race with focus. Each runner passed the baton carefully because one small mistake could slow the whole team.", "Why did they pass carefully?", "A mistake could slow the team", "The baton was a toy", "The race was indoors", "sports"),
+    ],
+    challenge: [
+      makeReadingItem("Challenge Mode", "A Match with a Lesson", "During the final match, the strongest player chose to pass instead of taking a risky shot. The team learned that smart decisions and trust can matter more than individual speed.", "What mattered more than individual speed?", "Smart decisions and trust", "Buying new shoes", "Skipping warm-up", "sports"),
+      makeReadingItem("Challenge Mode", "Discipline Before Victory", "The coach explained that training is not only about winning. It also builds patience, focus, respect for rules and the courage to improve after every mistake.", "What does training build?", "Patience, focus and respect", "Only trophies", "Laziness", "sports"),
+      makeReadingItem("Challenge Mode", "The Tournament Plan", "Before the tournament, students made a practice calendar, balanced rest with fitness and reviewed their strategy. Their preparation helped them play with calm confidence.", "What helped them play calmly?", "Preparation", "Guessing", "Late practice only", "sports"),
+    ],
+  },
+  adventure: {
+    beginner: [
+      makeReadingItem("Beginner", "The Hidden Path", "Riya sees a small path near the garden. She walks slowly and finds a bright red flag.", "What does Riya find?", "A red flag", "A blue cup", "A school bus", "adventure"),
+      makeReadingItem("Beginner", "Map in the Bag", "I open my bag and see a small map. The map shows a tree, a gate and a star.", "What does the map show?", "A tree, a gate and a star", "Only food", "A phone number", "adventure"),
+      makeReadingItem("Beginner", "The Rainy Trail", "It rains on the trail. We hold hands, walk carefully and smile when we reach the hut.", "Where do they reach?", "The hut", "The market", "The classroom", "adventure"),
+    ],
+    explorer: [
+      makeReadingItem("Explorer", "The Forest Clue", "The children found a ribbon tied to a branch. They followed the clue carefully and discovered the next mark near a smooth stone.", "Where was the next mark?", "Near a smooth stone", "Inside a lunch box", "On a bus seat", "adventure"),
+      makeReadingItem("Explorer", "Crossing the Bridge", "The bridge looked narrow, so the group crossed one by one. Their leader asked everyone to move slowly and stay calm.", "How did the group cross?", "One by one", "All at once", "Without looking", "adventure"),
+      makeReadingItem("Explorer", "The Camp Lantern", "At evening camp, Meera lit a lantern with help from an adult. The soft light helped the group read the map.", "What helped them read the map?", "The lantern", "A spoon", "A football", "adventure"),
+    ],
+    confident: [
+      makeReadingItem("Confident Reader", "The Secret Door", "Behind the old shelf, Kabir noticed a tiny wooden door. He called his friends, checked the handle gently and found a box of handwritten clues.", "What did Kabir find?", "A box of clues", "A cricket trophy", "A water bottle", "adventure"),
+      makeReadingItem("Confident Reader", "The Mountain Walk", "The students climbed the hill with steady steps. Their guide taught them to observe signs, protect nature and help anyone who felt tired.", "What did the guide teach?", "Observe, protect and help", "Run without stopping", "Throw paper", "adventure"),
+      makeReadingItem("Confident Reader", "The Lost Compass", "When the compass fell under dry leaves, Anaya stayed calm. She retraced the path, searched carefully and found it before sunset.", "How did Anaya behave?", "Calmly", "Carelessly", "Angrily", "adventure"),
+    ],
+    challenge: [
+      makeReadingItem("Challenge Mode", "The Valley Expedition", "During the valley expedition, the team had to choose between a short risky route and a longer safer path. They discussed the weather, listened to the guide and chose safety over speed.", "What did the team choose?", "Safety over speed", "A risky shortcut", "No plan", "adventure"),
+      makeReadingItem("Challenge Mode", "A Courageous Decision", "The group reached a stream after heavy rain. Instead of crossing quickly, they waited, studied the water flow and built a safer plan together.", "What did they study?", "The water flow", "A cricket score", "A menu card", "adventure"),
+      makeReadingItem("Challenge Mode", "The Journal of Clues", "Every evening, Tara wrote the clues in her travel journal. Her notes helped the group connect small details and solve the mystery of the old trail.", "What helped solve the mystery?", "Tara's notes", "A loud bell", "Skipping clues", "adventure"),
+    ],
+  },
+  history: {
+    beginner: [
+      makeReadingItem("Beginner", "The Old Fort", "We visit an old fort. The walls are strong and the gate is very big.", "What is very big?", "The gate", "The pencil", "The lunch box", "history"),
+      makeReadingItem("Beginner", "A Brave Queen", "The queen rides a horse. She is brave, kind and loved by her people.", "Who rides a horse?", "The queen", "The cook", "The gardener", "history"),
+      makeReadingItem("Beginner", "The Museum Bell", "I see an old bell in the museum. It was used to call people together.", "Where is the bell?", "In the museum", "In a shoe", "On a plate", "history"),
+    ],
+    explorer: [
+      makeReadingItem("Explorer", "The Brave Messenger", "A young messenger carried an important letter across the village. He walked quickly but kept the letter safe from rain.", "What did he carry?", "An important letter", "A basket of toys", "A cricket ball", "history"),
+      makeReadingItem("Explorer", "The Stone Wall", "The guide showed students a stone wall built many years ago. It protected the town and reminded people of careful planning.", "What did the wall protect?", "The town", "A pencil box", "A lunch table", "history"),
+      makeReadingItem("Explorer", "Village Story Night", "Grandfather told a story about old village helpers. The children learned how people worked together during difficult times.", "What did the children learn?", "People worked together", "Everyone slept late", "Books were hidden", "history"),
+    ],
+    confident: [
+      makeReadingItem("Confident Reader", "The Freedom Song", "During the school program, students sang a song about freedom. Their teacher explained how courage, unity and sacrifice shaped the country.", "What shaped the country?", "Courage, unity and sacrifice", "Games and snacks", "Rain and wind", "history"),
+      makeReadingItem("Confident Reader", "The Ancient Well", "Near the temple, the students saw an ancient well. The guide explained how people stored water carefully and shared it with the community.", "What was the well used for?", "Storing and sharing water", "Playing music", "Keeping shoes", "history"),
+      makeReadingItem("Confident Reader", "A Letter from the Past", "The class read a simple historical letter. It showed how families communicated patiently when phones and instant messages did not exist.", "What did the letter show?", "How families communicated", "How to make a cake", "How to repair a bus", "history"),
+    ],
+    challenge: [
+      makeReadingItem("Challenge Mode", "Lessons from a Fort", "The fort was not only a building of stone. It showed planning, teamwork and protection, reminding students that history is full of decisions that shaped daily life.", "What did the fort show?", "Planning, teamwork and protection", "Only decoration", "A shopping list", "history"),
+      makeReadingItem("Challenge Mode", "Remembering Local Heroes", "The class researched local heroes who served their community quietly. They discovered that history is not only about famous names, but also about everyday courage.", "What did they discover?", "History includes everyday courage", "History is only dates", "Research is useless", "history"),
+      makeReadingItem("Challenge Mode", "The Museum Debate", "After visiting the museum, students debated why old objects should be preserved. They concluded that artefacts help people understand culture, struggle and progress.", "Why preserve old objects?", "To understand culture and progress", "To fill cupboards", "To avoid reading", "history"),
+    ],
+  },
+  science: {
+    beginner: [
+      makeReadingItem("Beginner", "The Little Seed", "I plant a little seed. I add water and keep it near sunlight.", "What does the child add?", "Water", "Paint", "Sandwich", "science"),
+      makeReadingItem("Beginner", "Magnet Fun", "The magnet pulls a pin. It does not pull a leaf.", "What does the magnet pull?", "A pin", "A leaf", "A cloud", "science"),
+      makeReadingItem("Beginner", "Water Drops", "Water drops fall from the cloud. The ground becomes wet and fresh.", "Where do drops fall from?", "The cloud", "The pencil", "The chair", "science"),
+    ],
+    explorer: [
+      makeReadingItem("Explorer", "The Tiny Seed Experiment", "Meera placed one seed in sunlight and one seed in a dark box. After a few days, she compared how they grew.", "What did Meera compare?", "How the seeds grew", "Two story books", "Two cricket bats", "science"),
+      makeReadingItem("Explorer", "The Shadow Test", "The children stood outside at noon and again in the evening. They noticed that shadows changed when the sun moved in the sky.", "What changed?", "The shadows", "Their lunch", "The classroom color", "science"),
+      makeReadingItem("Explorer", "Floating and Sinking", "The teacher dropped a leaf, a coin and a sponge in water. Students observed which objects floated and which ones sank.", "What did students observe?", "Floating and sinking", "Only spelling", "A race result", "science"),
+    ],
+    confident: [
+      makeReadingItem("Confident Reader", "The Water Cycle", "The teacher drew the water cycle on the board. Students learned how water evaporates, forms clouds and returns as rain.", "What returns as rain?", "Water", "Dust", "Paper", "science"),
+      makeReadingItem("Confident Reader", "A Clean Energy Idea", "Students built a small windmill model using paper blades. They discussed how moving air can help produce clean energy.", "What can moving air produce?", "Clean energy", "Old shoes", "Loud music", "science"),
+      makeReadingItem("Confident Reader", "The Curious Lab Table", "On the lab table, children observed leaves through a magnifying glass. They noticed lines, patterns and tiny details they had never seen before.", "What did children use?", "A magnifying glass", "A basketball", "A lunch plate", "science"),
+    ],
+    challenge: [
+      makeReadingItem("Challenge Mode", "Designing a Water Filter", "The science group tested sand, cotton and small stones to clean muddy water. They learned that observation and repeated trials help improve a working model.", "What helps improve a model?", "Observation and repeated trials", "Guessing once", "Ignoring mistakes", "science"),
+      makeReadingItem("Challenge Mode", "Why Plants Lean", "During the plant experiment, students noticed the stem leaning toward sunlight. Their teacher explained that plants respond to light because it helps them make food.", "Why do plants respond to light?", "It helps them make food", "It makes noise", "It opens books", "science"),
+      makeReadingItem("Challenge Mode", "The Weather Station", "The class created a simple weather station with a rain gauge and wind direction chart. Daily records helped them compare weather patterns over a week.", "What helped compare patterns?", "Daily records", "A story song", "Skipping observations", "science"),
+    ],
+  },
+  army: {
+    beginner: [
+      makeReadingItem("Beginner", "Morning Parade", "The team walks in a straight line. They listen, follow steps and stand tall.", "How does the team walk?", "In a straight line", "Under a table", "Inside a shop", "army"),
+      makeReadingItem("Beginner", "The Brave Helper", "A brave helper carries water for the team. Everyone says thank you.", "What does the helper carry?", "Water", "A cake", "A kite", "army"),
+      makeReadingItem("Beginner", "Flag Time", "We stand quietly near the flag. We sing with respect and feel proud.", "Where do they stand?", "Near the flag", "Near a toy box", "Inside a bus", "army"),
+    ],
+    explorer: [
+      makeReadingItem("Explorer", "The Rescue Team", "During a safety drill, the rescue team moved calmly. They helped younger children reach the open ground safely.", "Who did the team help?", "Younger children", "Only drivers", "No one", "army"),
+      makeReadingItem("Explorer", "Discipline Practice", "The students practised standing in line and listening to commands. They learned that discipline helps everyone stay safe.", "What does discipline help with?", "Staying safe", "Eating faster", "Losing books", "army"),
+      makeReadingItem("Explorer", "The Supply Box", "The team packed food, water and blankets for people who needed support. Each item was checked carefully before leaving.", "What did the team pack?", "Food, water and blankets", "Only toys", "Paint and glue", "army"),
+    ],
+    confident: [
+      makeReadingItem("Confident Reader", "Service Before Self", "The officer explained that courage is not only about strength. It also means helping others, staying calm and doing the right thing under pressure.", "What else does courage mean?", "Helping others and staying calm", "Speaking rudely", "Running away", "army"),
+      makeReadingItem("Confident Reader", "A Team on Duty", "The duty team checked the area, shared clear instructions and made sure every child followed the safety route without confusion.", "What did the team share?", "Clear instructions", "Lunch boxes", "Secret jokes", "army"),
+      makeReadingItem("Confident Reader", "Respect for the Flag", "Students learned why the flag ceremony needs silence and attention. The teacher said respect is shown through small disciplined actions.", "How is respect shown?", "Through disciplined actions", "Through loud talking", "Through skipping practice", "army"),
+    ],
+    challenge: [
+      makeReadingItem("Challenge Mode", "Courage During a Flood", "When heavy rain blocked the road, a trained team planned a careful rescue. They checked risks, supported families and proved that courage works best with discipline.", "What works best with discipline?", "Courage", "Carelessness", "Noise", "army"),
+      makeReadingItem("Challenge Mode", "The Value of Preparedness", "The training officer reminded students that preparation saves time during emergencies. Clear roles, calm communication and repeated drills help teams respond responsibly.", "What helps teams respond responsibly?", "Clear roles, calm communication and drills", "Guessing", "Ignoring instructions", "army"),
+      makeReadingItem("Challenge Mode", "Leadership in Uniform", "A leader in uniform does not only give instructions. A true leader listens, protects the team and takes responsibility when decisions are difficult.", "What does a true leader do?", "Listens, protects and takes responsibility", "Avoids decisions", "Blames others", "army"),
+    ],
+  },
 };
 
 const ukgWordSets = [
@@ -3350,9 +3669,12 @@ function initReadingFluencyLab() {
   const certificateStreak = lab.querySelector("[data-reading-certificate-streak]");
   const shareButton = lab.querySelector("[data-reading-share]");
   const shareNote = lab.querySelector("[data-reading-share-note]");
+  const themeButtons = lab.querySelectorAll("[data-reading-theme]");
+  const themeLabel = lab.querySelector("[data-reading-theme-label]");
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   let grade = gradeSelect?.value || "ukg";
   let level = levelSelect?.value || "beginner";
+  let readingTheme = "sports";
   let passageIndex = 0;
   let recognition = null;
   let currentReadingLevels = getReadingLevelsForGrade(grade);
@@ -3370,6 +3692,7 @@ function initReadingFluencyLab() {
   if (isKidsverseParentLoggedIn() && savedJourney.reading) {
     grade = savedJourney.reading.grade || grade;
     level = savedJourney.reading.level || level;
+    readingTheme = savedJourney.reading.theme || readingTheme;
     passageIndex = Number(savedJourney.reading.passageIndex) || 0;
     if (urlReadingParams.get("resume") === "1") {
       passageIndex = Number(savedJourney.reading.nextPassageIndex ?? savedJourney.reading.passageIndex) || passageIndex;
@@ -3377,11 +3700,25 @@ function initReadingFluencyLab() {
     if (gradeSelect) gradeSelect.value = grade;
     if (levelSelect) levelSelect.value = level;
     currentReadingLevels = getReadingLevelsForGrade(grade);
-    passageIndex = Math.min(Math.max(0, passageIndex), currentReadingLevels[level].length - 1);
+    passageIndex = Math.min(Math.max(0, passageIndex), getActivePassageList().length - 1);
+  }
+
+  function getActivePassageList() {
+    const themedList = readingThemePassages[readingTheme]?.[level];
+    return themedList?.length ? themedList : currentReadingLevels[level];
   }
 
   function activePassage() {
-    return currentReadingLevels[level][passageIndex];
+    const list = getActivePassageList();
+    return list[passageIndex % list.length] || currentReadingLevels[level][0];
+  }
+
+  function renderReadingThemeState() {
+    const selectedThemeLabel = readingInterestOptions[readingTheme] || "Reading stories";
+    if (themeLabel) themeLabel.textContent = `${selectedThemeLabel} selected`;
+    themeButtons.forEach((button) => {
+      button.classList.toggle("is-active", button.dataset.readingTheme === readingTheme);
+    });
   }
 
   function renderPassage() {
@@ -3391,7 +3728,8 @@ function initReadingFluencyLab() {
     recognition?.abort();
     window.clearTimeout(readingTimer);
     window.clearTimeout(countdownTimer);
-    levelLabel.textContent = `${readingGradeLabels[grade]} - ${data.label}`;
+    renderReadingThemeState();
+    levelLabel.textContent = `${readingGradeLabels[grade]} - ${data.label} | ${readingInterestOptions[readingTheme] || "Reading"}`;
     title.textContent = data.title;
     passage.textContent = data.text;
     score.textContent = "--";
@@ -3503,6 +3841,8 @@ function initReadingFluencyLab() {
       title: activePassage().title,
       levelLabel: activePassage().label,
       gradeLabel: readingGradeLabels[grade],
+      theme: readingTheme,
+      themeLabel: readingInterestOptions[readingTheme] || "Reading stories",
       streak: Number(extra.streak ?? localStreak.streak) || 0,
       todayCount: Number(extra.todayCount ?? localStreak.todayCount) || 0,
       lastDate: extra.lastDate || localStreak.lastDate || "",
@@ -3583,7 +3923,7 @@ function initReadingFluencyLab() {
     if (shareNote) shareNote.textContent = "Certificate ready. Share it with family or friends.";
     if (certificateCard) certificateCard.hidden = false;
     syncReadingJourneyWithStreak({
-      nextPassageIndex: (passageIndex + 1) % currentReadingLevels[level].length,
+      nextPassageIndex: (passageIndex + 1) % getActivePassageList().length,
       levelLabel: levelText,
       gradeLabel,
       lastAccuracy: accuracy,
@@ -3960,6 +4300,17 @@ function initReadingFluencyLab() {
     renderPassage();
   });
 
+  themeButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      readingTheme = button.dataset.readingTheme || "sports";
+      passageIndex = 0;
+      renderPassage();
+      if (isKidsverseParentLoggedIn()) {
+        syncReadingJourneyWithStreak({ status: "Reading world selected" });
+      }
+    });
+  });
+
   gradeSelect?.addEventListener("change", () => {
     grade = gradeSelect.value || "ukg";
     passageIndex = 0;
@@ -4006,7 +4357,7 @@ function initReadingFluencyLab() {
 
   nextButton?.addEventListener("click", () => {
     const continueToNext = () => {
-      passageIndex = (passageIndex + 1) % currentReadingLevels[level].length;
+      passageIndex = (passageIndex + 1) % getActivePassageList().length;
       syncReadingJourneyWithStreak({
         nextPassageIndex: passageIndex,
         status: "Next paragraph opened"
@@ -4019,7 +4370,7 @@ function initReadingFluencyLab() {
       return;
     }
 
-    passageIndex = (passageIndex + 1) % currentReadingLevels[level].length;
+    passageIndex = (passageIndex + 1) % getActivePassageList().length;
     syncReadingJourneyWithStreak({
       nextPassageIndex: passageIndex,
       status: "Next paragraph opened"
@@ -4253,8 +4604,9 @@ function initLearningJourneyDashboard() {
   ];
 
   function setText(selector, value) {
-    const element = document.querySelector(selector);
-    if (element) element.textContent = value;
+    document.querySelectorAll(selector).forEach((element) => {
+      element.textContent = value;
+    });
   }
 
   function renderDailyChallenge(offset = 0) {
@@ -4266,25 +4618,40 @@ function initLearningJourneyDashboard() {
     if (dailyChallengeStatus) dailyChallengeStatus.textContent = "Challenge not completed today.";
   }
 
+  function setAllText(selector, value) {
+    document.querySelectorAll(selector).forEach((element) => {
+      element.textContent = value;
+    });
+  }
+
   function renderSavedLearningJourney() {
     const login = getKidsverseParentLogin();
     const saved = loadKidsverseLearningProgress();
     const reading = saved.reading || {};
     const routine = saved.routine || {};
-    const hasReading = Boolean(reading.lastAccuracy || reading.title || reading.status);
-    const hasRoutine = Boolean(routine.completedAt || routine.lastSentence || routine.promptStatus);
-    const readingScore = Number(reading.lastAccuracy) || 0;
-    const routineScore = routine.completedAt ? 80 : routine.lastSentence ? 45 : 0;
-    const overall = Math.round(((hasReading ? readingScore : 0) + routineScore) / (hasReading && hasRoutine ? 2 : hasReading || hasRoutine ? 1 : 1));
+    const scores = getKidsversePlatformScores();
+    const hasReading = Boolean(scores.reading || reading.lastAccuracy || reading.title || reading.status);
+    const hasRoutine = Boolean(scores.speaking || scores.writing || routine.completedAt || routine.lastSentence || routine.promptStatus);
+    const hasGrammar = Boolean(scores.grammar);
+    const readingScore = scores.reading;
+    const routineScore = Math.max(scores.speaking, scores.writing);
+    const activeScores = Object.values(scores).filter((value) => value > 0);
+    const overall = activeScores.length ? Math.round(activeScores.reduce((sum, value) => sum + value, 0) / activeScores.length) : 0;
 
     if (parentNameTarget) parentNameTarget.textContent = login.parentName || "Parent";
     if (childNameTarget) childNameTarget.textContent = login.childName || "Your child";
+    setAllText("[data-lj-overall]", `${overall || 0}%`);
+    setAllText("[data-lj-reading]", `${scores.reading || 0}%`);
+    setAllText("[data-lj-grammar]", `${scores.grammar || 0}%`);
+    setAllText("[data-lj-speaking]", `${scores.speaking || 0}%`);
+    setAllText("[data-lj-confidence]", `${scores.confidence || 0}%`);
     setText("[data-overall-progress]", `${overall || 0}%`);
-    setText("[data-overall-status]", hasReading || hasRoutine ? "Saved learning journey" : "Start Reading Fluency");
+    setText("[data-overall-status]", activeScores.length ? "Saved learning journey" : "Start first activity");
     setText("[data-reading-mission]", hasReading ? `${reading.title || "Paragraph"} saved` : "Start first paragraph");
+    setText("[data-grammar-mission]", hasGrammar ? `${scores.grammar}% grammar progress saved` : "Start grammar practice");
     setText("[data-routine-mission]", hasRoutine ? routine.status || "Routine practice started" : "Practice words and sentences");
     setText("[data-reading-resume-title]", hasReading ? `Continue: ${reading.title || "Next paragraph"}` : "Start from the first paragraph.");
-    setText("[data-reading-resume-copy]", hasReading ? `${reading.gradeLabel || "Reading"} | ${reading.levelLabel || "Level"} | Last accuracy ${reading.lastAccuracy || "--"}%.` : "Read the first paragraph freely. When the child clicks Next paragraph, parent login will save progress from that point onwards.");
+    setText("[data-reading-resume-copy]", hasReading ? `${reading.gradeLabel || "Reading"} | ${reading.levelLabel || "Level"} | ${reading.themeLabel || "Reading stories"} | Last accuracy ${reading.lastAccuracy || "--"}%.` : "Read the first paragraph freely. When the child clicks Next paragraph, parent login will save progress from that point onwards.");
     setText("[data-reading-streak-label]", reading.streak ? `Reading streak: ${reading.streak} day${Number(reading.streak) === 1 ? "" : "s"}` : "Streak not started");
     setText("[data-reading-last-score]", reading.lastAccuracy ? `Last accuracy ${reading.lastAccuracy}%` : "Accuracy pending");
     setText("[data-reading-coach-title]", hasReading ? `Last Reading: ${reading.title || "Saved paragraph"}` : "Reading result will appear after practice.");
@@ -4295,7 +4662,14 @@ function initLearningJourneyDashboard() {
     });
 
     const readingProgressValues = hasReading
-      ? { letters: 100, sounds: 96, blends: Math.max(70, readingScore), words: Math.max(45, readingScore - 12), sentences: Math.max(25, readingScore - 28), paragraphs: Math.max(10, readingScore - 42) }
+      ? {
+          letters: Math.min(100, readingScore + 12),
+          sounds: Math.min(100, readingScore + 8),
+          blends: readingScore,
+          words: Math.max(0, readingScore - 12),
+          sentences: Math.max(0, readingScore - 28),
+          paragraphs: Math.max(0, readingScore - 42)
+        }
       : { letters: 0, sounds: 0, blends: 0, words: 0, sentences: 0, paragraphs: 0 };
     Object.entries(readingProgressValues).forEach(([key, value]) => {
       const bar = document.querySelector(`[data-progress-bar="${key}"]`);
@@ -4311,6 +4685,8 @@ function initLearningJourneyDashboard() {
 
     setText("[data-weekly-score='reading']", hasReading ? `${readingScore}%` : "--");
     setText("[data-weekly-label='reading']", hasReading ? "Saved" : "Awaiting test");
+    setText("[data-weekly-score='grammar']", hasGrammar ? `${scores.grammar}%` : "--");
+    setText("[data-weekly-label='grammar']", hasGrammar ? "Saved" : "Awaiting quiz");
     setText("[data-weekly-score='routine']", hasRoutine ? `${routineScore}%` : "--");
     setText("[data-weekly-label='routine']", hasRoutine ? "In progress" : "Awaiting practice");
     setText("[data-weekly-score='streak']", reading.streak ? `${reading.streak}` : "--");
@@ -4320,16 +4696,26 @@ function initLearningJourneyDashboard() {
     setText("[data-badge-status='reading']", readingScore >= 70 ? "Unlocked" : "Locked");
     setText("[data-badge-status='streak']", reading.streak ? `${reading.streak} day streak` : "Start streak");
     setText("[data-badge-status='routine']", routine.completedAt ? "Unlocked" : "Locked");
-    setText("[data-recommendation-text]", hasReading ? "Resume Reading Fluency from the next saved paragraph, then practise Daily Routine Verbs for sentence confidence." : "Start Reading Fluency. After the first paragraph, login to save the next paragraph and streak.");
+    const nextAction = !hasReading
+      ? "Start Reading Fluency. After the first paragraph, login to save the next paragraph and streak."
+      : !hasGrammar
+        ? "Continue Grammar Lab next so reading and sentence accuracy grow together."
+        : !hasRoutine
+          ? "Practise Daily Routine Verbs next to build speaking and sentence confidence."
+          : "Keep the streak alive with one reading paragraph and one grammar practice today.";
+    setText("[data-recommendation-text]", nextAction);
     setText("[data-blueprint-score='reading']", hasReading ? `${readingScore}%` : "--");
+    setText("[data-blueprint-score='grammar']", hasGrammar ? `${scores.grammar}%` : "--");
     setText("[data-blueprint-score='routine']", hasRoutine ? `${routineScore}%` : "--");
-    setText("[data-blueprint-score='sentence']", routine.completedAt ? "78%" : routine.lastSentence ? "42%" : "--");
-    setText("[data-blueprint-score='confidence']", hasReading ? `${Math.min(100, readingScore + 6)}%` : "--");
+    setText("[data-blueprint-score='sentence']", scores.writing ? `${scores.writing}%` : "--");
+    setText("[data-blueprint-score='speaking']", scores.speaking ? `${scores.speaking}%` : "--");
+    setText("[data-blueprint-score='confidence']", scores.confidence ? `${scores.confidence}%` : "--");
     setText("[data-blueprint-score='overall']", overall ? `${overall}%` : "--");
 
     const insights = [];
     if (hasReading) insights.push(`Reading saved: ${reading.title || "paragraph"} with ${reading.lastAccuracy || "--"}% accuracy.`);
     if (reading.streak) insights.push(`Current reading streak: ${reading.streak} day${Number(reading.streak) === 1 ? "" : "s"}.`);
+    if (hasGrammar) insights.push(`Grammar Lab: ${scores.grammar}% progress saved from connected quizzes or lesson activity.`);
     if (hasRoutine) insights.push(`Daily Routine Verbs: ${routine.status || "practice started"}.`);
     if (!insights.length) insights.push("Read the first paragraph, then click Next paragraph to start saving progress.");
     const insightList = document.querySelector("[data-insight-list]");
@@ -4406,85 +4792,24 @@ function initLearningJourneyDashboard() {
   });
 
   completeReadingTest?.addEventListener("click", () => {
-    const progressValues = {
-      letters: 100,
-      sounds: 96,
-      blends: 82,
-      words: 68,
-      sentences: 52,
-      paragraphs: 28
-    };
-    Object.entries(progressValues).forEach(([key, value]) => {
-      const bar = document.querySelector(`[data-progress-bar="${key}"]`);
-      const label = document.querySelector(`[data-progress-value="${key}"]`);
-      if (bar) bar.style.width = `${value}%`;
-      if (label) label.textContent = `${value}%`;
-    });
-
-    setText("[data-overall-progress]", "42%");
-    setText("[data-overall-status]", "First test completed");
-    setText("[data-reading-mission]", "Reading check completed");
-    setText("[data-reading-test-status]", "Completed just now");
-    setText("[data-insight-heading]", "First activity completed.");
-    setText("[data-recommendation-text]", "Reading is strongest at letters, sounds and blends. Practice words and short sentences for 15 minutes daily this week.");
-    setText("[data-badge-status='reading']", "Unlocked");
-    setText("[data-badge-status='streak']", "1 day streak");
-
-    const coachScores = {
-      pronunciation: "84%",
-      fluency: "78%",
-      confidence: "88%",
-      speed: "72%",
-      accuracy: "82%"
-    };
-    Object.entries(coachScores).forEach(([key, value]) => setText(`[data-coach-score="${key}"]`, value));
-
-    const weeklyScores = {
-      reading: ["82%", "Good start"],
-      writing: ["--", "Not tested"],
-      grammar: ["--", "Not tested"],
-      math: ["--", "Not tested"],
-      confidence: ["88%", "Confident"]
-    };
-    Object.entries(weeklyScores).forEach(([key, [score, label]]) => {
-      setText(`[data-weekly-score="${key}"]`, score);
-      setText(`[data-weekly-label="${key}"]`, label);
-    });
-
-    const blueprintScores = {
-      reading: "82%",
-      communication: "--",
-      writing: "--",
-      maths: "--",
-      logical: "64%",
-      confidence: "88%",
-      creativity: "--",
-      social: "--",
-      problem: "68%",
-      overall: "42%"
-    };
-    Object.entries(blueprintScores).forEach(([key, value]) => setText(`[data-blueprint-score="${key}"]`, value));
-
-    if (weaknessSummary) weaknessSummary.textContent = "First reading check completed. Kidsverse has detected the first practice areas.";
-    if (weaknessGrid) {
-      weaknessGrid.innerHTML = `
-        <article><strong>Words to sentences</strong><span>Needs practice</span></article>
-        <article><strong>Short paragraphs</strong><span>Develop slowly</span></article>
-        <article><strong>Reading speed</strong><span>Improving</span></article>
-      `;
+    const saved = loadKidsverseLearningProgress();
+    const reading = saved.reading || {};
+    const accuracy = Number(reading.lastAccuracy) || 0;
+    if (!accuracy) {
+      if (readingTestStatus) readingTestStatus.textContent = "No saved reading test yet";
+      window.location.href = "after-school/reading-fluency.html";
+      return;
     }
 
-    const insightList = document.querySelector("[data-insight-list]");
-    if (insightList) {
-      insightList.innerHTML = `
-        <li>Completed the first reading fluency check.</li>
-        <li>Strong comfort with letters, sounds and blends.</li>
-        <li>Needs more practice with words, sentences and short paragraphs.</li>
-        <li>Recommended home practice: 15 minutes read-aloud daily.</li>
-      `;
-    }
-    completeReadingTest.disabled = true;
-    completeReadingTest.textContent = "Reading Check Completed";
+    renderSavedLearningJourney();
+    saveKidsversePlatformSkill("reading", accuracy, "Reading fluency completed");
+    setText("[data-reading-test-status]", `Synced at ${accuracy}% accuracy`);
+    setText("[data-insight-heading]", "Saved reading activity synced.");
+    setText("[data-recommendation-text]", accuracy >= 85
+      ? "Reading fluency is strong. Continue with expressive reading and short story narration."
+      : "Reading fluency needs steady practice. Read aloud for 10-15 minutes daily and repeat difficult words slowly.");
+    if (weaknessSummary) weaknessSummary.textContent = "Reading progress is based on the latest saved Reading Fluency activity.";
+    completeReadingTest.textContent = "Reading Progress Synced";
     if (readingTestStatus) readingTestStatus.classList.add("is-complete");
   });
 
@@ -4495,22 +4820,17 @@ function initLearningJourneyDashboard() {
   });
 
   completeDailyChallenge?.addEventListener("click", () => {
-    if (dailyChallengeStatus) dailyChallengeStatus.textContent = "Daily challenge completed. Streak updated to 1 day.";
-    setText("[data-badge-status='streak']", "1 day streak");
-    setText("[data-overall-progress]", "48%");
-    setText("[data-overall-status]", "Daily challenge done");
-    setText("[data-blueprint-score='overall']", "48%");
+    saveKidsversePlatformSkill("grammar", 15, "Daily challenge completed");
+    if (dailyChallengeStatus) dailyChallengeStatus.textContent = "Daily challenge completed. Progress saved.";
+    setText("[data-badge-status='streak']", "Activity saved");
+    renderSavedLearningJourney();
   });
 
   speakingComplete?.addEventListener("click", () => {
+    saveKidsversePlatformSkill("speaking", 20, "Speaking challenge completed");
+    saveKidsversePlatformSkill("confidence", 20, "Speaking confidence activity completed");
     setText("[data-speaking-mission]", "Speaking challenge completed");
-    setText("[data-weekly-score='confidence']", "90%");
-    setText("[data-weekly-label='confidence']", "Confident");
-    setText("[data-blueprint-score='communication']", "81%");
-    setText("[data-blueprint-score='confidence']", "90%");
-    setText("[data-blueprint-score='social']", "86%");
-    setText("[data-overall-progress]", "56%");
-    setText("[data-overall-status]", "Speaking added");
+    renderSavedLearningJourney();
     speakingComplete.disabled = true;
     speakingComplete.textContent = "Speaking Practice Completed";
   });
@@ -4549,6 +4869,7 @@ function initLearningJourneyDashboard() {
 }
 
 initLearningJourneyDashboard();
+initAfterSchoolPlatformDashboard();
 
 const articleRules = {
   a: {
@@ -4716,6 +5037,8 @@ function initArticleFillPractice() {
     if (progress) progress.value = index;
     if (scoreText) scoreText.textContent = `Score: ${score}/${articleFillQuestions.length}`;
     if (index >= articleFillQuestions.length) {
+      const grammarPercent = Math.round((score / articleFillQuestions.length) * 100);
+      saveKidsversePlatformSkill("grammar", Math.max(20, grammarPercent), "Articles fill practice completed");
       card.innerHTML = `<h3>Practice Complete</h3><p class="quiz-explanation">Final score: ${score}/${articleFillQuestions.length}. Use the quiz below to validate the learning.</p>`;
       return;
     }
@@ -4773,6 +5096,8 @@ function initArticleQuiz() {
     if (index >= articleQuizQuestions.length) {
       const grade = score >= 8 ? "Excellent" : score >= 6 ? "Good" : "Needs Practice";
       card.innerHTML = `<h3>${grade} Articles Practice</h3><p class="quiz-explanation">Final score: ${score}/${articleQuizQuestions.length}. Retry the quiz or revise the rules above.</p>`;
+      const grammarPercent = Math.round((score / articleQuizQuestions.length) * 100);
+      saveKidsversePlatformSkill("grammar", grammarPercent, "Articles quiz completed");
       if (progress) progress.value = articleQuizQuestions.length;
       return;
     }
