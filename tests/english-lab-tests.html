@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kidsverse English Lab Test Series</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@500;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="english-lab-tests.css" />
+  </head>
+  <body>
+    <header class="test-header">
+      <a class="brand" href="../after-school.html" aria-label="Back to Kidsverse After School">
+        <img src="../logo.png" alt="Kidsverse logo" />
+        <span><strong>Kidsverse</strong><small>English Lab Tests</small></span>
+      </a>
+      <nav aria-label="Test navigation">
+        <a href="#test-board">Tests</a>
+        <a href="#progress-panel">Progress</a>
+        <a href="../learning-journey.html">Learning Journey</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="test-hero">
+        <div>
+          <p class="eyebrow">End-check test series</p>
+          <h1>Take English tests one level at a time.</h1>
+          <p>Choose a topic, start with Easy, and move towards Expert. Students complete the full level first, then check the result at the end like a real test.</p>
+          <div class="hero-actions">
+            <a href="#test-board" class="primary-action">Start test series</a>
+            <a href="../after-school.html" class="secondary-action">Back to English Lab</a>
+          </div>
+        </div>
+        <aside class="hero-card" id="progress-panel">
+          <span>Live score</span>
+          <strong data-overall-score>0%</strong>
+          <p data-overall-copy>Attempt questions to unlock your level progress.</p>
+          <div class="mini-bars" data-mini-bars></div>
+        </aside>
+      </section>
+
+      <section class="topic-strip" aria-label="English lab topic filters">
+        <button class="topic-pill is-active" type="button" data-topic="present">Present Tense</button>
+        <button class="topic-pill" type="button" data-topic="past">Past Tense</button>
+        <button class="topic-pill" type="button" data-topic="future">Future Tense</button>
+        <button class="topic-pill" type="button" data-topic="articles">A, An & The</button>
+        <button class="topic-pill" type="button" data-topic="routine">Daily Routine</button>
+      </section>
+
+      <section class="test-shell" id="test-board">
+        <div class="test-sidebar">
+          <p class="eyebrow">Choose level</p>
+          <h2 data-topic-title>Present Tense</h2>
+          <p data-topic-note>20 questions across Easy, Medium, Hard and Expert.</p>
+          <div class="level-list" data-level-list></div>
+          <a class="reading-link" href="../after-school/reading-fluency.html">Continue Reading Fluency</a>
+        </div>
+
+        <div class="question-panel">
+          <div class="question-head">
+            <div>
+              <p class="eyebrow" data-level-eyebrow>Easy Level</p>
+              <h2 data-level-title>Warm-up questions</h2>
+            </div>
+            <div class="level-score">
+              <strong data-level-score>0%</strong>
+              <span data-level-status>Not started</span>
+            </div>
+          </div>
+          <div class="question-list" data-question-list></div>
+          <div class="test-submit-row">
+            <button class="primary-action" type="button" data-check-level>Check Test</button>
+            <button class="secondary-action" type="button" data-reset-level>Clear Level</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="english-lab-tests.js"></script>
+  </body>
+</html>
