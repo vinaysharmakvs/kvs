@@ -1,0 +1,64 @@
+# Kidsverse Quick Test Question Bank
+# Add one question block like this:
+# QUESTION: (Tense name) Your question text
+# ---
+
+QUESTION: 1. (Simple Present Tense) Translate into English: मैं रोज़ सुबह जल्दी उठता हूँ।
+---
+
+QUESTION: 2. (Present Continuous Tense) Translate into English: वह अभी अपना होमवर्क कर रही है।
+---
+
+QUESTION: 3. (Present Perfect Tense) Translate into English: मैं अपना काम पूरा कर चुका हूँ।
+---
+
+QUESTION: 4. (Present Perfect Continuous Tense) Translate into English: वे दो घंटे से क्रिकेट खेल रहे हैं।
+---
+
+QUESTION: 5. (Simple Past Tense) Translate into English: मैंने कल अपने दोस्त से मुलाकात की।
+---
+
+QUESTION: 6. (Past Continuous Tense) Translate into English: जब मैं पहुँचा, वह किताब पढ़ रही थी।
+---
+
+QUESTION: 7. (Past Perfect Tense) Translate into English: शिक्षक के आने से पहले छात्र बैठ चुके थे।
+---
+
+QUESTION: 8. (Simple Future Tense) Translate into English: मैं कल बाज़ार जाऊँगा।
+---
+
+QUESTION: 9. (Future Continuous Tense) Translate into English: अगले रविवार इस समय हम पार्क में घूम रहे होंगे।
+---
+
+QUESTION: 10. (Future Perfect Tense) Translate into English: अगले महीने तक मैं अपना प्रोजेक्ट पूरा कर चुका होऊँगा।
+---
+
+QUESTION: 11. (Simple Present Tense - Question) Translate into English: क्या तुम रोज़ दूध पीते हो?
+---
+
+QUESTION: 12. (Present Continuous Tense - Question) Translate into English: क्या वह अभी सो रही है?
+---
+
+QUESTION: 13. (Present Perfect Tense - Question) Translate into English: क्या तुमने अपना बैग खो दिया है?
+---
+
+QUESTION: 14. (Present Perfect Continuous Tense - Question) Translate into English: क्या वे सुबह से पढ़ाई कर रहे हैं?
+---
+
+QUESTION: 15. (Simple Past Tense - Question) Translate into English: क्या तुमने कल फिल्म देखी?
+---
+
+QUESTION: 16. (Past Continuous Tense - Question) Translate into English: जब मैं घर पहुँचा, क्या तुम टीवी देख रहे थे?
+---
+
+QUESTION: 17. (Past Perfect Tense - Question) Translate into English: क्या पुलिस के आने से पहले चोर भाग चुका था?
+---
+
+QUESTION: 18. (Simple Future Tense - Question) Translate into English: क्या तुम कल मेरे साथ चलोगे?
+---
+
+QUESTION: 19. (Future Continuous Tense - Question) Translate into English: क्या अगले सोमवार इस समय तुम परीक्षा दे रहे होगे?
+---
+
+QUESTION: 20. (Future Perfect Tense - Question) Translate into English: क्या अगले वर्ष तक तुम अपनी पढ़ाई पूरी कर चुके होगे?
+---

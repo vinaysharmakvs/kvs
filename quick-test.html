@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="description" content="Kidsverse quick test page for instant student questions from a text file." />
+    <title>Quick Test | Kidsverse School</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="shortcut icon" href="favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="assets/favicon.png" />
+    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+    <link rel="stylesheet" href="styles.css?v=20260805-internal-fix" />
+    <link rel="stylesheet" href="quick-test.css?v=20260806-quick-test" />
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-0ZT634EM99"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-0ZT634EM99');
+    </script>
+  </head>
+  <body class="quick-test-page">
+    <div class="top-strip">
+      <span>Kidsverse Quick Test</span>
+      <strong>Questions load from quick-test-questions.txt</strong>
+      <a href="#test-zone">Show Questions</a>
+    </div>
+
+    <header class="site-header">
+      <a class="brand" href="index.html#top" aria-label="Kidsverse School home">
+        <img src="assets/logo.png" alt="Kidsverse School logo" />
+        <span><strong>Kidsverse</strong><small>School Rehan</small></span>
+      </a>
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="about.html">About</a>
+        <a href="activities.html">Activities</a>
+        <a href="after-school.html">After School</a>
+        <a href="learning-journey.html">Learning Journey</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+      <a class="header-cta" href="#test-zone">Show Questions</a>
+      <button class="menu-button" type="button" aria-label="Open menu" data-menu-button>Menu</button>
+    </header>
+
+    <main id="top">
+      <section class="quick-test-hero">
+        <div>
+          <p class="eyebrow">Instant question push</p>
+          <h1>Quick test for students, powered by one simple text file.</h1>
+          <p>
+            Add or edit questions in <strong>quick-test-questions.txt</strong>. This page checks for updates automatically and refreshes the question set for students.
+          </p>
+          <div class="hero-actions">
+            <a class="primary-button" href="#test-zone">Open Student Test</a>
+            <button class="secondary-button" type="button" data-refresh-questions>Refresh Questions</button>
+          </div>
+        </div>
+        <aside class="quick-test-live-card" aria-label="Question bank status">
+          <span>Question bank</span>
+          <strong data-question-count>Loading...</strong>
+          <p data-question-status>Reading quick-test-questions.txt</p>
+        </aside>
+      </section>
+
+      <section class="section quick-test-shell" id="test-zone" data-quick-test>
+        <div class="quick-test-head">
+          <div>
+            <p class="eyebrow">Student Test</p>
+            <h2>Answer the questions and submit when ready.</h2>
+          </div>
+          <div class="quick-test-meta">
+            <span data-live-sync>Auto-sync on</span>
+            <strong data-progress-label>0 / 0</strong>
+          </div>
+        </div>
+
+        <div class="quick-question-card" data-question-card>
+          <div class="empty-state">
+            <span>Loading</span>
+            <strong>Questions will appear here.</strong>
+            <p>If this stays blank, open the page through the local server and check quick-test-questions.txt.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <a class="whatsapp-float" href="https://wa.me/918826758881?text=Hello%20Kidsverse%20School%2C%20I%20want%20help%20with%20the%20quick%20test" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+    <footer class="site-footer">
+      <strong>Kidsverse School Rehan</strong>
+      <span>Quick test tool for classroom and after-school practice.</span>
+      <span class="powered-by-tivoro"><a href="https://tivoro.in" target="_blank" rel="noopener noreferrer">Powered by Tivoro - Your digital growth partner</a></span>
+    </footer>
+    <script src="kidsverse-app.js?v=20260806-student-report-export"></script>
+    <script src="quick-test.js?v=20260806-quick-test"></script>
+  </body>
+</html>
