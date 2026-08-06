@@ -1,0 +1,652 @@
+
+/* Kidsverse Learning Journey stabilization layer
+   Loaded after styles.css. Scoped only to learning-journey.html. */
+
+.learning-journey-page {
+  overflow-x: hidden;
+}
+
+.learning-journey-page *,
+.learning-journey-page *::before,
+.learning-journey-page *::after {
+  box-sizing: border-box;
+}
+
+.learning-journey-page main {
+  overflow: hidden;
+}
+
+.learning-journey-page .learning-hero,
+.learning-journey-page .section,
+.learning-journey-page .learning-command-preview,
+.learning-journey-page .learning-login-section,
+.learning-journey-page .learning-dashboard {
+  width: min(1180px, calc(100% - 32px));
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.learning-journey-page .learning-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.72fr);
+  gap: clamp(18px, 3vw, 30px);
+  align-items: stretch;
+  padding: clamp(28px, 5vw, 54px) 0 18px;
+}
+
+.learning-journey-page .learning-hero-copy,
+.learning-journey-page .learning-phone-preview,
+.learning-journey-page .learning-login-card,
+.learning-journey-page .learning-dashboard-head,
+.learning-journey-page .learning-panel {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.learning-journey-page .learning-hero-copy {
+  min-height: 0;
+  padding: clamp(22px, 4vw, 42px);
+}
+
+.learning-journey-page .learning-phone-preview {
+  position: relative;
+  display: grid;
+  align-content: stretch;
+  gap: 14px;
+  min-height: 0;
+  padding: clamp(18px, 3vw, 28px);
+}
+
+.learning-journey-page .learning-phone-preview::before {
+  inset: 72px 18px 18px;
+  border-radius: 28px;
+  pointer-events: none;
+}
+
+.learning-journey-page .learning-phone-top {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  min-width: 0;
+  padding: 12px 14px;
+  border-radius: 22px;
+}
+
+.learning-journey-page .learning-phone-top strong,
+.learning-journey-page .learning-phone-top small {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.learning-journey-page .learning-ring {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: min(168px, 48vw);
+  height: min(168px, 48vw);
+  margin: 6px auto;
+  border-radius: 999px;
+  text-align: center;
+}
+
+.learning-journey-page .learning-ring strong {
+  font-size: clamp(2.4rem, 8vw, 4.4rem);
+  line-height: 0.92;
+}
+
+.learning-journey-page .learning-ring span {
+  max-width: 120px;
+  font-size: 0.95rem;
+  line-height: 1.12;
+}
+
+.learning-journey-page .learning-mini-missions {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 10px;
+}
+
+.learning-journey-page .learning-mini-missions article {
+  display: grid;
+  grid-template-columns: minmax(78px, 0.45fr) minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  min-width: 0;
+  min-height: 0;
+  padding: 12px 14px;
+  border-radius: 18px;
+}
+
+.learning-journey-page .learning-mini-missions strong,
+.learning-journey-page .learning-mini-missions span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  line-height: 1.12;
+}
+
+.learning-journey-page .learning-phone-dock {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.learning-journey-page .learning-phone-dock a {
+  min-width: 0;
+  text-align: center;
+  white-space: normal;
+}
+
+.learning-journey-page .learning-hero-pills,
+.learning-journey-page .learning-hero-metrics,
+.learning-journey-page .learning-command-preview,
+.learning-journey-page .learning-live-grid,
+.learning-journey-page .mission-grid,
+.learning-journey-page .learning-two-column,
+.learning-journey-page .coach-score-grid,
+.learning-journey-page .weekly-report-grid,
+.learning-journey-page .badge-row,
+.learning-journey-page .blueprint-grid,
+.learning-journey-page .journey-health-list,
+.learning-journey-page .learning-dashboard-toolbar,
+.learning-journey-page .learning-login-grid {
+  min-width: 0;
+}
+
+.learning-journey-page .learning-login-card,
+.learning-journey-page .parent-login-flow,
+.learning-journey-page .parent-login-step,
+.learning-journey-page .learning-details-form,
+.learning-journey-page .learning-panel,
+.learning-journey-page .learning-dashboard-head {
+  display: grid;
+  gap: 14px;
+}
+
+.learning-journey-page .learning-login-grid,
+.learning-journey-page .learning-two-column {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.learning-journey-page .learning-login-grid label,
+.learning-journey-page .learning-details-form label {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+  color: #16453e;
+  font-weight: 900;
+}
+
+.learning-journey-page input,
+.learning-journey-page select,
+.learning-journey-page textarea {
+  width: 100%;
+  min-width: 0;
+  min-height: 50px;
+  padding: 12px 14px;
+  border: 1px solid rgba(31, 49, 66, 0.14);
+  border-radius: 16px;
+  background: #fff;
+  color: #1f3142;
+  font: inherit;
+  font-weight: 800;
+}
+
+.learning-journey-page .kiya-panel {
+  width: min(360px, calc(100vw - 28px));
+  max-height: min(620px, calc(100vh - 110px));
+  overflow: hidden;
+  border-radius: 24px;
+  background: #fffaf1;
+  box-shadow: 0 24px 70px rgba(31, 49, 66, 0.2);
+}
+
+.learning-journey-page .kiya-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 14px;
+  border-bottom: 1px solid rgba(31, 49, 66, 0.08);
+}
+
+.learning-journey-page .kiya-body {
+  display: grid;
+  gap: 12px;
+  max-height: calc(100vh - 190px);
+  overflow-y: auto;
+  padding: 14px;
+}
+
+.learning-journey-page .kiya-links {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.learning-journey-page .kiya-links a,
+.learning-journey-page .kiya-whatsapp {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 9px 10px;
+  border-radius: 13px;
+  background: #eefbf5;
+  color: #16453e;
+  text-align: center;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 900;
+  line-height: 1.15;
+}
+
+.learning-journey-page .kiya-whatsapp {
+  grid-column: 1 / -1;
+  background: linear-gradient(135deg, #ff725f, #ff9d57);
+  color: #fff;
+}
+
+@media (max-width: 760px) {
+  .learning-journey-page {
+    padding-bottom: 92px;
+  }
+
+  .learning-journey-page .top-strip {
+    display: none !important;
+  }
+
+  .learning-journey-page .site-header {
+    width: 100% !important;
+    min-height: 74px !important;
+    padding: 10px 12px !important;
+    gap: 10px !important;
+  }
+
+  .learning-journey-page .brand {
+    min-width: 0 !important;
+    max-width: calc(100vw - 118px) !important;
+    padding: 6px 9px !important;
+    border-radius: 20px !important;
+  }
+
+  .learning-journey-page .brand img {
+    width: 46px !important;
+    height: 46px !important;
+    object-fit: contain !important;
+    border-radius: 14px !important;
+  }
+
+  .learning-journey-page .brand strong {
+    font-size: 1.05rem !important;
+    line-height: 1 !important;
+  }
+
+  .learning-journey-page .brand small {
+    font-size: 0.72rem !important;
+  }
+
+  .learning-journey-page .header-cta {
+    display: none !important;
+  }
+
+  .learning-journey-page .menu-button {
+    display: inline-flex !important;
+    width: auto !important;
+    min-width: 64px !important;
+    min-height: 42px !important;
+    padding: 8px 12px !important;
+    border-radius: 999px !important;
+    font-size: 0.86rem !important;
+  }
+
+  .learning-journey-page .nav-links {
+    grid-column: 1 / -1 !important;
+    width: 100% !important;
+    max-height: calc(100vh - 96px) !important;
+    overflow-y: auto !important;
+  }
+
+  .learning-journey-page .learning-hero,
+  .learning-journey-page .section,
+  .learning-journey-page .learning-command-preview,
+  .learning-journey-page .learning-login-section,
+  .learning-journey-page .learning-dashboard {
+    width: min(100% - 22px, 1180px) !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .learning-journey-page .learning-hero {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+    padding: 18px 0 8px !important;
+  }
+
+  .learning-journey-page .learning-hero-copy {
+    display: grid !important;
+    gap: 12px !important;
+    min-height: 0 !important;
+    padding: 16px !important;
+    border-radius: 22px !important;
+  }
+
+  .learning-journey-page .learning-hero h1,
+  .learning-journey-page h1 {
+    max-width: 100% !important;
+    margin: 0 !important;
+    font-size: clamp(2rem, 9vw, 2.85rem) !important;
+    line-height: 1.03 !important;
+    letter-spacing: 0 !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  .learning-journey-page h2,
+  .learning-journey-page .section-heading h2 {
+    max-width: 100% !important;
+    font-size: clamp(1.72rem, 8vw, 2.35rem) !important;
+    line-height: 1.06 !important;
+    letter-spacing: 0 !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  .learning-journey-page p {
+    max-width: 100% !important;
+    font-size: 0.96rem !important;
+    line-height: 1.5 !important;
+  }
+
+  .learning-journey-page .hero-actions,
+  .learning-journey-page .quest-action-stack {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 9px !important;
+    width: 100% !important;
+  }
+
+  .learning-journey-page .primary-button,
+  .learning-journey-page .secondary-button {
+    width: 100% !important;
+    min-height: 48px !important;
+    justify-content: center !important;
+    border-radius: 16px !important;
+    font-size: 1rem !important;
+    line-height: 1.1 !important;
+    white-space: normal !important;
+  }
+
+  .learning-journey-page .learning-hero-pills {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 7px !important;
+  }
+
+  .learning-journey-page .learning-hero-pills span {
+    width: auto !important;
+    min-height: 0 !important;
+    padding: 7px 10px !important;
+    border-radius: 999px !important;
+    font-size: 0.78rem !important;
+    line-height: 1.1 !important;
+  }
+
+  .learning-journey-page .learning-hero-metrics,
+  .learning-journey-page .learning-command-preview,
+  .learning-journey-page .learning-live-grid,
+  .learning-journey-page .mission-grid,
+  .learning-journey-page .learning-two-column,
+  .learning-journey-page .coach-score-grid,
+  .learning-journey-page .weekly-report-grid,
+  .learning-journey-page .badge-row,
+  .learning-journey-page .blueprint-grid,
+  .learning-journey-page .journey-health-list,
+  .learning-journey-page .learning-dashboard-toolbar,
+  .learning-journey-page .learning-login-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  .learning-journey-page .learning-hero-metrics {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+  }
+
+  .learning-journey-page .learning-hero-metrics article {
+    min-height: 76px !important;
+    padding: 9px 6px !important;
+    text-align: center !important;
+  }
+
+  .learning-journey-page .learning-hero-metrics strong {
+    font-size: 1.35rem !important;
+    line-height: 1 !important;
+  }
+
+  .learning-journey-page .learning-hero-metrics span {
+    font-size: 0.66rem !important;
+    line-height: 1.1 !important;
+  }
+
+  .learning-journey-page .learning-phone-preview {
+    display: grid !important;
+    gap: 11px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    padding: 14px !important;
+    border-radius: 26px !important;
+  }
+
+  .learning-journey-page .learning-phone-preview::before {
+    inset: 64px 12px 12px !important;
+    border-radius: 22px !important;
+  }
+
+  .learning-journey-page .learning-phone-top {
+    padding: 10px 12px !important;
+    border-radius: 18px !important;
+  }
+
+  .learning-journey-page .learning-phone-top strong {
+    font-size: 1rem !important;
+  }
+
+  .learning-journey-page .learning-phone-top small {
+    font-size: 0.82rem !important;
+  }
+
+  .learning-journey-page .learning-ring {
+    width: 100% !important;
+    height: auto !important;
+    min-height: 94px !important;
+    margin: 2px 0 !important;
+    padding: 16px !important;
+    border-radius: 20px !important;
+    display: grid !important;
+    grid-template-columns: auto minmax(0, 1fr) !important;
+    gap: 12px !important;
+    place-items: center start !important;
+    background: linear-gradient(135deg, rgba(255,216,111,0.94), rgba(217,247,232,0.22)) !important;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.16), 0 18px 40px rgba(0,0,0,0.18) !important;
+  }
+
+  .learning-journey-page .learning-ring strong {
+    font-size: clamp(2.2rem, 12vw, 3.6rem) !important;
+    line-height: 0.9 !important;
+    color: #ffffff !important;
+  }
+
+  .learning-journey-page .learning-ring span {
+    max-width: none !important;
+    color: #ffffff !important;
+    font-size: 1rem !important;
+    line-height: 1.18 !important;
+    text-align: left !important;
+  }
+
+  .learning-journey-page .learning-mini-missions {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+
+  .learning-journey-page .learning-mini-missions article {
+    display: grid !important;
+    grid-template-columns: minmax(72px, 0.42fr) minmax(0, 1fr) !important;
+    min-height: 0 !important;
+    padding: 10px 11px !important;
+    border-radius: 16px !important;
+  }
+
+  .learning-journey-page .learning-mini-missions strong,
+  .learning-journey-page .learning-mini-missions span {
+    font-size: 0.86rem !important;
+    line-height: 1.15 !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  .learning-journey-page .learning-phone-dock {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 7px !important;
+  }
+
+  .learning-journey-page .learning-phone-dock a {
+    min-height: 38px !important;
+    padding: 8px 6px !important;
+    border-radius: 13px !important;
+    font-size: 0.78rem !important;
+  }
+
+  .learning-journey-page .learning-login-card,
+  .learning-journey-page .parent-login-step,
+  .learning-journey-page .learning-dashboard-head,
+  .learning-journey-page .learning-panel,
+  .learning-journey-page .learning-score-card {
+    width: 100% !important;
+    min-width: 0 !important;
+    padding: 14px !important;
+    border-radius: 20px !important;
+  }
+
+  .learning-journey-page .learning-dashboard-toolbar {
+    position: static !important;
+    padding: 10px !important;
+    border-radius: 18px !important;
+  }
+
+  .learning-journey-page .learning-dashboard-toolbar a,
+  .learning-journey-page .mission-grid article,
+  .learning-journey-page .learning-command-preview article,
+  .learning-journey-page .learning-live-grid article,
+  .learning-journey-page .weekly-report-grid article,
+  .learning-journey-page .coach-score-grid article,
+  .learning-journey-page .badge-row article,
+  .learning-journey-page .blueprint-grid span,
+  .learning-journey-page .journey-health-list span,
+  .learning-journey-page .roadmap-list a {
+    min-width: 0 !important;
+    min-height: 0 !important;
+    padding: 12px !important;
+    border-radius: 16px !important;
+    overflow: hidden !important;
+  }
+
+  .learning-journey-page .fluency-roadmap article {
+    display: grid !important;
+    grid-template-columns: minmax(76px, 0.32fr) minmax(0, 1fr) auto !important;
+    gap: 8px !important;
+    align-items: center !important;
+    min-width: 0 !important;
+  }
+
+  .learning-journey-page .kiya-widget {
+    right: 12px !important;
+    bottom: 16px !important;
+    z-index: 90 !important;
+  }
+
+  .learning-journey-page .kiya-toggle,
+  .learning-journey-page .kiya-avatar {
+    width: 50px !important;
+    height: 50px !important;
+  }
+
+  .learning-journey-page .kiya-panel {
+    right: 0 !important;
+    bottom: 62px !important;
+    width: min(340px, calc(100vw - 24px)) !important;
+  }
+
+  .learning-journey-page .kiya-links {
+    grid-template-columns: 1fr !important;
+  }
+
+  .learning-journey-page .whatsapp-float {
+    left: 12px !important;
+    bottom: 16px !important;
+    z-index: 88 !important;
+    max-width: calc(100vw - 92px) !important;
+    min-height: 44px !important;
+    padding: 0 13px !important;
+    border-radius: 999px !important;
+    font-size: 0.86rem !important;
+  }
+
+  .learning-journey-page .site-footer {
+    width: min(100% - 22px, 1180px) !important;
+    margin: 0 auto !important;
+    padding: 18px 0 92px !important;
+    display: grid !important;
+    gap: 6px !important;
+    text-align: left !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .learning-journey-page .learning-hero,
+  .learning-journey-page .section,
+  .learning-journey-page .learning-command-preview,
+  .learning-journey-page .learning-login-section,
+  .learning-journey-page .learning-dashboard {
+    width: min(100% - 18px, 1180px) !important;
+  }
+
+  .learning-journey-page .learning-hero-metrics {
+    grid-template-columns: 1fr !important;
+  }
+
+  .learning-journey-page .learning-ring {
+    grid-template-columns: 1fr !important;
+    place-items: center !important;
+    text-align: center !important;
+  }
+
+  .learning-journey-page .learning-ring span {
+    text-align: center !important;
+  }
+
+  .learning-journey-page .learning-mini-missions article {
+    grid-template-columns: 1fr !important;
+    text-align: center !important;
+  }
+
+  .learning-journey-page .fluency-roadmap article {
+    grid-template-columns: 1fr !important;
+  }
+}

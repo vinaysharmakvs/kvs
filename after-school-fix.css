@@ -1,0 +1,679 @@
+
+/* Kidsverse After School stabilization layer
+   Loaded after styles.css. Scoped to After School public pages only. */
+
+.after-school-page,
+.learning-lab-page,
+.speaksmart-page {
+  overflow-x: hidden;
+}
+
+.after-school-page *,
+.learning-lab-page *,
+.speaksmart-page * {
+  box-sizing: border-box;
+}
+
+.after-school-page main,
+.learning-lab-page main,
+.speaksmart-page main {
+  overflow: hidden;
+}
+
+.after-school-page .section,
+.learning-lab-page .section,
+.speaksmart-page .section,
+.learning-lab-page .tense-hero,
+.speaksmart-page .speaksmart-hero {
+  width: min(1180px, calc(100% - 32px));
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.after-school-page .section,
+.learning-lab-page .section,
+.speaksmart-page .section {
+  padding-top: clamp(36px, 5vw, 72px);
+  padding-bottom: clamp(36px, 5vw, 72px);
+}
+
+.learning-lab-page .tense-hero,
+.speaksmart-page .speaksmart-hero,
+.after-school-page .platform-hero {
+  min-height: 0;
+}
+
+.learning-lab-page .tense-hero-copy,
+.learning-lab-page .tense-hero-board,
+.speaksmart-page .speaksmart-hero-copy,
+.speaksmart-page .speaksmart-camera-mock,
+.after-school-page .platform-hero-copy,
+.after-school-page .platform-phone-demo {
+  min-width: 0;
+}
+
+.learning-lab-page .section-heading,
+.after-school-page .section-heading,
+.speaksmart-page .section-heading {
+  max-width: 820px;
+}
+
+.learning-lab-page img,
+.after-school-page img,
+.speaksmart-page img,
+.learning-lab-page iframe,
+.after-school-page iframe,
+.speaksmart-page iframe {
+  max-width: 100%;
+}
+
+.learning-lab-page button,
+.after-school-page button,
+.speaksmart-page button,
+.learning-lab-page a,
+.after-school-page a,
+.speaksmart-page a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Shared card polish */
+.learning-lab-page .tense-card-grid button,
+.learning-lab-page .tense-detail-panel,
+.learning-lab-page .tense-tool-section,
+.learning-lab-page .sentence-transformer,
+.learning-lab-page .tense-practice-lab,
+.learning-lab-page .quiz-shell,
+.learning-lab-page .tense-rule-list details,
+.learning-lab-page .tense-next-grid a,
+.learning-lab-page .lab-cta-card,
+.learning-lab-page .article-method-grid article,
+.learning-lab-page .article-structure-grid article,
+.learning-lab-page .article-fill-card,
+.learning-lab-page .routine-verb-grid button,
+.learning-lab-page .routine-builder,
+.learning-lab-page .routine-prompt-card,
+.learning-lab-page .routine-practice-lab,
+.learning-lab-page .word-helper-grid button,
+.after-school-page .platform-lab-card,
+.after-school-page .english-lab-card,
+.after-school-page .mission-card,
+.after-school-page .platform-phone-demo,
+.after-school-page .learning-dashboard-card,
+.after-school-page .future-skill-card,
+.after-school-page .inquiry-form,
+.speaksmart-page .smart-profile-card,
+.speaksmart-page .smart-stat-grid article,
+.speaksmart-page .smart-actions-grid article,
+.speaksmart-page .smart-room-card,
+.speaksmart-page .smart-score-grid article,
+.speaksmart-page .smart-feedback-grid article {
+  min-width: 0;
+  border: 1px solid rgba(31, 49, 66, 0.09);
+  box-shadow: 0 18px 44px rgba(31, 49, 66, 0.08);
+}
+
+/* Forms must never fall back to raw browser inline layout */
+.after-school-page .inquiry-form,
+.speaksmart-page .smart-profile-card,
+.learning-lab-page .tense-practice-lab,
+.learning-lab-page .routine-builder,
+.learning-lab-page .routine-practice-lab {
+  display: grid;
+  gap: 14px;
+}
+
+.after-school-page .inquiry-form label,
+.speaksmart-page .smart-profile-card label,
+.learning-lab-page .practice-writing-box,
+.learning-lab-page .routine-builder label {
+  display: grid;
+  gap: 7px;
+  width: 100%;
+  min-width: 0;
+  color: #16453e;
+  font-weight: 900;
+}
+
+.after-school-page .inquiry-form input,
+.after-school-page .inquiry-form select,
+.after-school-page .inquiry-form textarea,
+.speaksmart-page .smart-profile-card input,
+.speaksmart-page .smart-profile-card select,
+.speaksmart-page .smart-profile-card textarea,
+.learning-lab-page input,
+.learning-lab-page select,
+.learning-lab-page textarea {
+  width: 100%;
+  min-width: 0;
+  min-height: 50px;
+  padding: 12px 14px;
+  border: 1px solid rgba(31, 49, 66, 0.14);
+  border-radius: 16px;
+  background: #fff;
+  color: #1f3142;
+  font: inherit;
+  font-weight: 800;
+  box-shadow: 0 10px 24px rgba(31, 49, 66, 0.06);
+}
+
+.learning-lab-page textarea,
+.after-school-page textarea,
+.speaksmart-page textarea {
+  min-height: 118px;
+  resize: vertical;
+}
+
+/* Kiya panel repair for After School pages */
+.after-school-page .kiya-panel,
+.learning-lab-page .kiya-panel,
+.speaksmart-page .kiya-panel {
+  width: min(360px, calc(100vw - 28px));
+  max-height: min(620px, calc(100vh - 110px));
+  overflow: hidden;
+  border-radius: 24px;
+  background: #fffaf1;
+  box-shadow: 0 24px 70px rgba(31, 49, 66, 0.2);
+}
+
+.after-school-page .kiya-head,
+.learning-lab-page .kiya-head,
+.speaksmart-page .kiya-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 14px;
+  border-bottom: 1px solid rgba(31, 49, 66, 0.08);
+}
+
+.after-school-page .kiya-body,
+.learning-lab-page .kiya-body,
+.speaksmart-page .kiya-body {
+  display: grid;
+  gap: 12px;
+  max-height: calc(100vh - 190px);
+  overflow-y: auto;
+  padding: 14px;
+}
+
+.after-school-page .kiya-links,
+.learning-lab-page .kiya-links,
+.speaksmart-page .kiya-links {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.after-school-page .kiya-links a,
+.learning-lab-page .kiya-links a,
+.speaksmart-page .kiya-links a,
+.after-school-page .kiya-whatsapp,
+.learning-lab-page .kiya-whatsapp,
+.speaksmart-page .kiya-whatsapp {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 9px 10px;
+  border-radius: 13px;
+  background: #eefbf5;
+  color: #16453e;
+  text-align: center;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 900;
+  line-height: 1.15;
+}
+
+.after-school-page .kiya-whatsapp,
+.learning-lab-page .kiya-whatsapp,
+.speaksmart-page .kiya-whatsapp {
+  grid-column: 1 / -1;
+  background: linear-gradient(135deg, #ff725f, #ff9d57);
+  color: #fff;
+}
+
+@media (max-width: 760px) {
+  .after-school-page,
+  .learning-lab-page,
+  .speaksmart-page {
+    padding-bottom: 92px;
+  }
+
+  .after-school-page .top-strip,
+  .learning-lab-page .top-strip,
+  .speaksmart-page .top-strip {
+    display: none !important;
+  }
+
+  .after-school-page .site-header,
+  .learning-lab-page .site-header,
+  .speaksmart-page .site-header {
+    width: 100% !important;
+    min-height: 74px !important;
+    padding: 10px 12px !important;
+    gap: 10px !important;
+  }
+
+  .after-school-page .brand,
+  .learning-lab-page .brand,
+  .speaksmart-page .brand {
+    min-width: 0 !important;
+    max-width: calc(100vw - 118px) !important;
+    padding: 6px 9px !important;
+    border-radius: 20px !important;
+  }
+
+  .after-school-page .brand img,
+  .learning-lab-page .brand img,
+  .speaksmart-page .brand img {
+    width: 46px !important;
+    height: 46px !important;
+    object-fit: contain !important;
+    border-radius: 14px !important;
+  }
+
+  .after-school-page .brand strong,
+  .learning-lab-page .brand strong,
+  .speaksmart-page .brand strong {
+    font-size: 1.05rem !important;
+    line-height: 1 !important;
+  }
+
+  .after-school-page .brand small,
+  .learning-lab-page .brand small,
+  .speaksmart-page .brand small {
+    font-size: 0.72rem !important;
+  }
+
+  .after-school-page .header-cta,
+  .learning-lab-page .header-cta,
+  .speaksmart-page .header-cta {
+    display: none !important;
+  }
+
+  .after-school-page .menu-button,
+  .learning-lab-page .menu-button,
+  .speaksmart-page .menu-button {
+    display: inline-flex !important;
+    width: auto !important;
+    min-width: 64px !important;
+    min-height: 42px !important;
+    padding: 8px 12px !important;
+    border-radius: 999px !important;
+    font-size: 0.86rem !important;
+  }
+
+  .after-school-page .nav-links,
+  .learning-lab-page .nav-links,
+  .speaksmart-page .nav-links {
+    grid-column: 1 / -1 !important;
+    width: 100% !important;
+    max-height: calc(100vh - 96px) !important;
+    overflow-y: auto !important;
+  }
+
+  .after-school-page .section,
+  .learning-lab-page .section,
+  .speaksmart-page .section,
+  .learning-lab-page .tense-hero,
+  .speaksmart-page .speaksmart-hero,
+  .after-school-page .platform-hero {
+    width: min(100% - 22px, 1180px) !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding-top: 22px !important;
+    padding-bottom: 22px !important;
+  }
+
+  .learning-lab-page .tense-hero,
+  .speaksmart-page .speaksmart-hero,
+  .after-school-page .platform-hero,
+  .after-school-page .platform-journey-section,
+  .after-school-page .reading-platform-section,
+  .after-school-page .english-lab-preview,
+  .after-school-page .studio-lab-section,
+  .after-school-page .parent-dashboard-preview,
+  .after-school-page .future-platform-section,
+  .after-school-page .admissions-section,
+  .learning-lab-page .tense-tool-section,
+  .speaksmart-page .smart-room-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+
+  .after-school-page h1,
+  .learning-lab-page h1,
+  .speaksmart-page h1 {
+    max-width: 100% !important;
+    font-size: clamp(2rem, 9vw, 2.9rem) !important;
+    line-height: 1.03 !important;
+    letter-spacing: 0 !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  .after-school-page h2,
+  .learning-lab-page h2,
+  .speaksmart-page h2,
+  .learning-lab-page .section-heading h2,
+  .after-school-page .section-heading h2,
+  .speaksmart-page .section-heading h2 {
+    max-width: 100% !important;
+    font-size: clamp(1.72rem, 8vw, 2.42rem) !important;
+    line-height: 1.06 !important;
+    letter-spacing: 0 !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  .after-school-page p,
+  .learning-lab-page p,
+  .speaksmart-page p {
+    max-width: 100% !important;
+    font-size: 0.96rem !important;
+    line-height: 1.5 !important;
+  }
+
+  .after-school-page .hero-actions,
+  .learning-lab-page .hero-actions,
+  .speaksmart-page .hero-actions,
+  .speaksmart-page .smart-actions,
+  .learning-lab-page .quiz-actions {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 9px !important;
+    width: 100% !important;
+  }
+
+  .after-school-page .primary-button,
+  .after-school-page .secondary-button,
+  .learning-lab-page .primary-button,
+  .learning-lab-page .secondary-button,
+  .learning-lab-page .tense-audio-button,
+  .speaksmart-page .primary-button,
+  .speaksmart-page .secondary-button {
+    width: 100% !important;
+    min-height: 48px !important;
+    justify-content: center !important;
+    border-radius: 16px !important;
+    font-size: 1rem !important;
+    line-height: 1.1 !important;
+    white-space: normal !important;
+  }
+
+  .after-school-page .platform-lab-grid,
+  .after-school-page .english-lab-grid,
+  .after-school-page .word-mission-grid,
+  .after-school-page .learning-live-grid,
+  .after-school-page .learning-feature-grid,
+  .after-school-page .smart-stat-grid,
+  .after-school-page .mission-grid,
+  .learning-lab-page .tense-road,
+  .learning-lab-page .tense-card-grid,
+  .learning-lab-page .tense-tool-grid,
+  .learning-lab-page .sentence-transformer,
+  .learning-lab-page .tense-practice-lab,
+  .learning-lab-page .tense-rule-grid,
+  .learning-lab-page .tense-next-grid,
+  .learning-lab-page .article-method-grid,
+  .learning-lab-page .article-structure-grid,
+  .learning-lab-page .routine-verb-grid,
+  .learning-lab-page .routine-builder,
+  .learning-lab-page .routine-practice-lab,
+  .learning-lab-page .word-helper-grid,
+  .learning-lab-page .reading-feedback-grid,
+  .learning-lab-page .reading-parent-streak-grid,
+  .speaksmart-page .speaksmart-feature-grid,
+  .speaksmart-page .smart-stat-grid,
+  .speaksmart-page .smart-actions-grid,
+  .speaksmart-page .smart-score-grid,
+  .speaksmart-page .smart-feedback-grid,
+  .speaksmart-page .smart-progress-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  .learning-lab-page .tense-card-grid button,
+  .learning-lab-page .routine-verb-grid button,
+  .learning-lab-page .word-helper-grid button,
+  .learning-lab-page .tense-next-grid a,
+  .after-school-page .platform-lab-card,
+  .after-school-page .english-lab-card,
+  .after-school-page .mission-card,
+  .speaksmart-page .smart-actions-grid article {
+    display: grid !important;
+    grid-template-columns: 44px minmax(0, 1fr) !important;
+    gap: 5px 12px !important;
+    align-items: center !important;
+    width: 100% !important;
+    min-height: 0 !important;
+    padding: 13px !important;
+    border-radius: 18px !important;
+    text-align: left !important;
+    overflow: hidden !important;
+  }
+
+  .learning-lab-page .tense-card-grid button span,
+  .learning-lab-page .routine-verb-grid button span,
+  .learning-lab-page .tense-next-grid a span {
+    grid-row: 1 / span 3 !important;
+    width: 42px !important;
+    height: 42px !important;
+    min-width: 0 !important;
+    border-radius: 14px !important;
+    font-size: 0.92rem !important;
+  }
+
+  .learning-lab-page .tense-card-grid button strong,
+  .learning-lab-page .routine-verb-grid button strong,
+  .learning-lab-page .word-helper-grid button strong,
+  .learning-lab-page .tense-next-grid a strong {
+    grid-column: 2 !important;
+    font-size: 1.08rem !important;
+    line-height: 1.08 !important;
+    color: #16453e !important;
+  }
+
+  .learning-lab-page .tense-card-grid button code,
+  .learning-lab-page .tense-card-grid button em,
+  .learning-lab-page .routine-verb-grid button p,
+  .learning-lab-page .word-helper-grid button span,
+  .learning-lab-page .tense-next-grid a p {
+    grid-column: 2 !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    font-size: 0.86rem !important;
+    line-height: 1.3 !important;
+  }
+
+  .learning-lab-page .tense-hero-board,
+  .learning-lab-page .reading-hero-board,
+  .learning-lab-page .article-hero-board,
+  .learning-lab-page .routine-hero-board,
+  .after-school-page .platform-phone-demo,
+  .speaksmart-page .speaksmart-camera-mock {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    min-height: 0 !important;
+    padding: 14px !important;
+    border-radius: 22px !important;
+    overflow: hidden !important;
+  }
+
+  .learning-lab-page .hero-sentence-card,
+  .learning-lab-page .tense-detail-panel,
+  .learning-lab-page .tense-tool-section,
+  .learning-lab-page .sentence-transformer,
+  .learning-lab-page .tense-practice-lab,
+  .learning-lab-page .quiz-shell,
+  .learning-lab-page .article-fill-card,
+  .learning-lab-page .routine-builder,
+  .learning-lab-page .routine-prompt-card,
+  .learning-lab-page .routine-practice-lab,
+  .learning-lab-page .reading-lab-shell,
+  .learning-lab-page .reading-theme-panel,
+  .speaksmart-page .smart-profile-card,
+  .speaksmart-page .smart-room-card,
+  .after-school-page .inquiry-form {
+    width: 100% !important;
+    min-width: 0 !important;
+    padding: 14px !important;
+    border-radius: 20px !important;
+  }
+
+  .learning-lab-page .tense-choice-tool,
+  .learning-lab-page .practice-intent-buttons,
+  .learning-lab-page .quiz-options,
+  .learning-lab-page .practice-rule-meter,
+  .learning-lab-page .reading-controls,
+  .speaksmart-page .smart-control-row {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+
+  .learning-lab-page .tense-choice-tool button,
+  .learning-lab-page .practice-intent-buttons button,
+  .learning-lab-page .quiz-option,
+  .speaksmart-page .smart-control-row button {
+    width: 100% !important;
+    min-height: 46px !important;
+    padding: 11px 12px !important;
+    border-radius: 15px !important;
+    white-space: normal !important;
+  }
+
+  .learning-lab-page .article-picker-preview {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+    margin: 8px 0 2px !important;
+  }
+
+  .learning-lab-page .article-picker-preview strong {
+    min-height: 62px !important;
+    border-radius: 17px !important;
+    font-size: clamp(1.8rem, 11vw, 3rem) !important;
+  }
+
+  .learning-lab-page .routine-day-road {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+  }
+
+  .learning-lab-page .routine-day-road i {
+    display: none !important;
+  }
+
+  .learning-lab-page .routine-day-road b,
+  .learning-lab-page .routine-day-road strong {
+    width: 100% !important;
+    min-height: 40px !important;
+    padding: 8px 5px !important;
+    border-radius: 15px !important;
+    font-size: 0.82rem !important;
+  }
+
+  .learning-lab-page .tense-rule-list details {
+    padding: 13px !important;
+    border-radius: 17px !important;
+  }
+
+  .learning-lab-page code,
+  .learning-lab-page summary,
+  .learning-lab-page .quiz-explanation,
+  .learning-lab-page .tense-situation,
+  .speaksmart-page .smart-transcript-box,
+  .after-school-page .platform-phone-demo {
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  .after-school-page .kiya-widget,
+  .learning-lab-page .kiya-widget,
+  .speaksmart-page .kiya-widget {
+    right: 12px !important;
+    bottom: 16px !important;
+    z-index: 90 !important;
+  }
+
+  .after-school-page .kiya-toggle,
+  .after-school-page .kiya-avatar,
+  .learning-lab-page .kiya-toggle,
+  .learning-lab-page .kiya-avatar,
+  .speaksmart-page .kiya-toggle,
+  .speaksmart-page .kiya-avatar {
+    width: 50px !important;
+    height: 50px !important;
+  }
+
+  .after-school-page .kiya-panel,
+  .learning-lab-page .kiya-panel,
+  .speaksmart-page .kiya-panel {
+    right: 0 !important;
+    bottom: 62px !important;
+    width: min(340px, calc(100vw - 24px)) !important;
+  }
+
+  .after-school-page .kiya-links,
+  .learning-lab-page .kiya-links,
+  .speaksmart-page .kiya-links {
+    grid-template-columns: 1fr !important;
+  }
+
+  .after-school-page .whatsapp-float,
+  .learning-lab-page .whatsapp-float,
+  .speaksmart-page .whatsapp-float {
+    left: 12px !important;
+    bottom: 16px !important;
+    z-index: 88 !important;
+    max-width: calc(100vw - 92px) !important;
+    min-height: 44px !important;
+    padding: 0 13px !important;
+    border-radius: 999px !important;
+    font-size: 0.86rem !important;
+  }
+
+  .after-school-page .site-footer,
+  .learning-lab-page .site-footer,
+  .speaksmart-page .site-footer {
+    width: min(100% - 22px, 1180px) !important;
+    margin: 0 auto !important;
+    padding: 18px 0 92px !important;
+    display: grid !important;
+    gap: 6px !important;
+    text-align: left !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .after-school-page .section,
+  .learning-lab-page .section,
+  .speaksmart-page .section,
+  .learning-lab-page .tense-hero,
+  .speaksmart-page .speaksmart-hero,
+  .after-school-page .platform-hero {
+    width: min(100% - 18px, 1180px) !important;
+  }
+
+  .learning-lab-page .tense-card-grid button,
+  .learning-lab-page .routine-verb-grid button,
+  .learning-lab-page .word-helper-grid button,
+  .learning-lab-page .tense-next-grid a {
+    grid-template-columns: 38px minmax(0, 1fr) !important;
+    padding: 11px !important;
+  }
+
+  .learning-lab-page .tense-card-grid button span,
+  .learning-lab-page .routine-verb-grid button span,
+  .learning-lab-page .tense-next-grid a span {
+    width: 36px !important;
+    height: 36px !important;
+    font-size: 0.82rem !important;
+  }
+}
