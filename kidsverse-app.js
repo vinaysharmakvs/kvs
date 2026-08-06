@@ -363,6 +363,8 @@ const studentRosters = {
       "Rivaan Sharma",
       "Smarth Thakur",
       "Navikaa Dhiman",
+       "Manya Sharma",
+       "Avyukt Bhadwal",
     ],
   },
   "Nursery - Alpha": {
