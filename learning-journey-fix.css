@@ -258,6 +258,133 @@
   color: #fff;
 }
 
+
+/* Desktop polish: keep the learning hero premium, compact and non-overlapping. */
+@media (min-width: 761px) {
+  .learning-journey-page .learning-hero {
+    grid-template-columns: minmax(0, 1.08fr) minmax(340px, 0.62fr) !important;
+    align-items: center !important;
+    gap: clamp(20px, 3vw, 34px) !important;
+    padding-top: clamp(24px, 4vw, 46px) !important;
+    padding-bottom: 22px !important;
+  }
+
+  .learning-journey-page .learning-hero-copy {
+    align-content: center !important;
+    min-height: 0 !important;
+    padding: clamp(24px, 3vw, 38px) !important;
+    border-radius: 30px !important;
+  }
+
+  .learning-journey-page .learning-hero h1 {
+    max-width: 780px !important;
+    font-size: clamp(2.75rem, 4.45vw, 4.15rem) !important;
+    line-height: 1.01 !important;
+    letter-spacing: 0 !important;
+    overflow-wrap: normal !important;
+  }
+
+  .learning-journey-page .learning-hero-copy > p:not(.eyebrow) {
+    max-width: 760px !important;
+    margin-top: 10px !important;
+    font-size: clamp(1rem, 1.2vw, 1.15rem) !important;
+    line-height: 1.55 !important;
+  }
+
+  .learning-journey-page .learning-hero-pills {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+    margin-top: 16px !important;
+  }
+
+  .learning-journey-page .learning-hero-metrics {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 12px !important;
+    margin-top: 16px !important;
+  }
+
+  .learning-journey-page .learning-hero-metrics article {
+    min-height: 88px !important;
+    padding: 12px 14px !important;
+    border-radius: 18px !important;
+  }
+
+  .learning-journey-page .learning-phone-preview {
+    width: 100% !important;
+    max-width: 460px !important;
+    min-height: 560px !important;
+    max-height: 640px !important;
+    justify-self: end !important;
+    align-content: start !important;
+    padding: 24px !important;
+    border-radius: 30px !important;
+  }
+
+  .learning-journey-page .learning-phone-preview::before {
+    inset: 78px 24px 24px !important;
+    border-radius: 30px !important;
+  }
+
+  .learning-journey-page .learning-phone-top {
+    min-height: 68px !important;
+    padding: 16px 18px !important;
+    border-radius: 24px !important;
+  }
+
+  .learning-journey-page .learning-ring {
+    width: 150px !important;
+    height: 150px !important;
+    margin: 14px auto 16px !important;
+  }
+
+  .learning-journey-page .learning-ring strong {
+    font-size: clamp(2.8rem, 4vw, 3.85rem) !important;
+  }
+
+  .learning-journey-page .learning-ring span {
+    max-width: 118px !important;
+    font-size: 0.98rem !important;
+  }
+
+  .learning-journey-page .learning-mini-missions {
+    gap: 12px !important;
+  }
+
+  .learning-journey-page .learning-mini-missions article {
+    min-height: 58px !important;
+    padding: 11px 13px !important;
+    border-radius: 20px !important;
+  }
+
+  .learning-journey-page .learning-phone-dock {
+    margin-top: 12px !important;
+  }
+
+  .learning-journey-page .learning-phone-dock a {
+    min-height: 42px !important;
+    border-radius: 18px !important;
+  }
+
+  .learning-journey-page .kiya-widget {
+    right: 24px !important;
+    bottom: 24px !important;
+    z-index: 80 !important;
+  }
+
+  .learning-journey-page .kiya-toggle,
+  .learning-journey-page .kiya-avatar {
+    width: 62px !important;
+    height: 62px !important;
+  }
+
+  .learning-journey-page .kiya-panel {
+    right: 0 !important;
+    bottom: 76px !important;
+  }
+}
+
 @media (max-width: 760px) {
   .learning-journey-page {
     padding-bottom: 92px;
