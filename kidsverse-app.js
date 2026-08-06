@@ -1215,10 +1215,13 @@ studentReportPng?.addEventListener("click", async () => {
   studentReportPng.disabled = true;
   studentReportPng.textContent = "Preparing PNG...";
 
+  const exportShell = document.createElement("div");
+  exportShell.className = "student-report-export-shell";
+  exportShell.setAttribute("aria-hidden", "true");
   const exportReport = report.cloneNode(true);
   exportReport.classList.add("student-report-png-export");
-  exportReport.setAttribute("aria-hidden", "true");
-  document.body.append(exportReport);
+  exportShell.append(exportReport);
+  document.body.append(exportShell);
 
   try {
     await Promise.all(
@@ -1231,10 +1234,12 @@ studentReportPng?.addEventListener("click", async () => {
     );
     const canvas = await window.html2canvas(exportReport, {
       backgroundColor: "#ffffff",
-      scale: 1.5,
+      scale: 2,
       useCORS: true,
       logging: false,
-      windowWidth: 1240,
+      windowWidth: 980,
+      scrollX: 0,
+      scrollY: 0,
     });
     const link = document.createElement("a");
     const safeStudentName = data.studentName.replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "");
@@ -1245,7 +1250,7 @@ studentReportPng?.addEventListener("click", async () => {
     studentReportValidation.hidden = false;
     studentReportValidation.textContent = "The PNG could not be generated. Please try again.";
   } finally {
-    exportReport.remove();
+    exportShell.remove();
     studentReportPng.textContent = originalLabel;
     studentReportPng.disabled = false;
   }
