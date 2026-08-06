@@ -12400,3 +12400,648 @@ body.reading-mission-page .reading-hero .about-hero-visual img {
     text-overflow: ellipsis !important;
   }
 }
+
+/* Kidsverse Daily Routine mobile final repair */
+@media (max-width: 760px) {
+  body.routine-verbs-page {
+    overflow-x: hidden !important;
+    padding-bottom: 92px !important;
+  }
+
+  body.routine-verbs-page .top-strip {
+    display: none !important;
+  }
+
+  body.routine-verbs-page .tense-hero.routine-hero {
+    width: min(100% - 24px, 1180px) !important;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+    margin: 14px auto 0 !important;
+    padding: 18px 0 6px !important;
+  }
+
+  body.routine-verbs-page .tense-hero-copy {
+    display: grid !important;
+    gap: 11px !important;
+    padding: 0 !important;
+  }
+
+  body.routine-verbs-page .tense-hero-copy h1 {
+    max-width: 100% !important;
+    margin: 0 !important;
+    font-size: clamp(2rem, 9vw, 2.85rem) !important;
+    line-height: 1.03 !important;
+    letter-spacing: 0 !important;
+  }
+
+  body.routine-verbs-page .tense-hero-copy p:not(.eyebrow) {
+    max-width: 100% !important;
+    margin: 0 !important;
+    color: #5f7183 !important;
+    font-size: 0.98rem !important;
+    line-height: 1.5 !important;
+  }
+
+  body.routine-verbs-page .hero-actions {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 9px !important;
+    margin: 0 !important;
+  }
+
+  body.routine-verbs-page .hero-actions a,
+  body.routine-verbs-page .primary-button,
+  body.routine-verbs-page .secondary-button,
+  body.routine-verbs-page .tense-audio-button {
+    width: 100% !important;
+    min-height: 48px !important;
+    justify-content: center !important;
+    border-radius: 16px !important;
+    font-size: 1rem !important;
+    line-height: 1.1 !important;
+    white-space: normal !important;
+  }
+
+  body.routine-verbs-page .routine-hero-board {
+    display: grid !important;
+    gap: 12px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    padding: 14px !important;
+    overflow: hidden !important;
+    border-radius: 22px !important;
+    box-shadow: 0 18px 44px rgba(31, 49, 66, 0.1) !important;
+  }
+
+  body.routine-verbs-page .routine-day-road {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+    align-items: stretch !important;
+  }
+
+  body.routine-verbs-page .routine-day-road i {
+    display: none !important;
+  }
+
+  body.routine-verbs-page .routine-day-road b,
+  body.routine-verbs-page .routine-day-road strong {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 40px !important;
+    padding: 8px 5px !important;
+    border-radius: 15px !important;
+    background: linear-gradient(135deg, rgba(255,255,255,0.98), rgba(217,247,232,0.88)) !important;
+    color: #16453e !important;
+    font-size: 0.82rem !important;
+    line-height: 1 !important;
+    text-align: center !important;
+    box-shadow: 0 8px 18px rgba(31, 49, 66, 0.07) !important;
+  }
+
+  body.routine-verbs-page .hero-sentence-card {
+    display: grid !important;
+    gap: 7px !important;
+    padding: 14px !important;
+    border-radius: 18px !important;
+    animation: none !important;
+  }
+
+  body.routine-verbs-page .hero-sentence-card strong {
+    font-size: clamp(1.18rem, 6vw, 1.55rem) !important;
+    line-height: 1.12 !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  body.routine-verbs-page .section {
+    width: min(100% - 24px, 1180px) !important;
+    padding-top: 22px !important;
+    padding-bottom: 22px !important;
+  }
+
+  body.routine-verbs-page .section-heading {
+    max-width: 100% !important;
+    margin-bottom: 12px !important;
+  }
+
+  body.routine-verbs-page .section-heading h2 {
+    font-size: clamp(1.72rem, 8vw, 2.35rem) !important;
+    line-height: 1.06 !important;
+  }
+
+  body.routine-verbs-page .routine-verb-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  body.routine-verbs-page .routine-verb-grid button {
+    display: grid !important;
+    grid-template-columns: 44px minmax(0, 1fr) !important;
+    gap: 4px 12px !important;
+    align-items: center !important;
+    width: 100% !important;
+    min-height: 0 !important;
+    padding: 13px !important;
+    border: 1px solid rgba(31, 49, 66, 0.08) !important;
+    border-radius: 18px !important;
+    background: linear-gradient(145deg, rgba(255,255,255,0.99), rgba(238,248,255,0.92)) !important;
+    box-shadow: 0 14px 34px rgba(31, 49, 66, 0.08) !important;
+    color: var(--ink) !important;
+    text-align: left !important;
+  }
+
+  body.routine-verbs-page .routine-verb-grid button span {
+    grid-row: 1 / span 2 !important;
+    width: 42px !important;
+    height: 42px !important;
+    font-size: 0.92rem !important;
+  }
+
+  body.routine-verbs-page .routine-verb-grid button strong {
+    grid-column: 2 !important;
+    color: #16453e !important;
+    font-size: 1.15rem !important;
+    line-height: 1.05 !important;
+  }
+
+  body.routine-verbs-page .routine-verb-grid button p {
+    grid-column: 2 !important;
+    margin: 0 !important;
+    color: #5f7183 !important;
+    font-size: 0.9rem !important;
+    line-height: 1.32 !important;
+  }
+
+  body.routine-verbs-page .routine-builder,
+  body.routine-verbs-page .routine-practice-lab,
+  body.routine-verbs-page .routine-prompt-card {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 11px !important;
+    padding: 14px !important;
+    border-radius: 20px !important;
+  }
+
+  body.routine-verbs-page .routine-built-sentence,
+  body.routine-verbs-page .practice-feedback-card {
+    padding: 14px !important;
+    border-radius: 18px !important;
+  }
+
+  body.routine-verbs-page .routine-built-sentence strong,
+  body.routine-verbs-page .routine-prompt-card strong,
+  body.routine-verbs-page .practice-feedback-card strong {
+    font-size: clamp(1.18rem, 6vw, 1.55rem) !important;
+    line-height: 1.12 !important;
+  }
+
+  body.routine-verbs-page .practice-rule-meter {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+
+  body.routine-verbs-page .practice-rule-meter span,
+  body.routine-verbs-page .routine-prompt-card > span,
+  body.routine-verbs-page .routine-built-sentence span,
+  body.routine-verbs-page .practice-feedback-card span {
+    width: 100% !important;
+    text-align: center !important;
+  }
+
+  body.routine-verbs-page .tense-next-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  body.routine-verbs-page .lab-cta-card {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+
+  body.routine-verbs-page .kiya-widget {
+    right: 12px !important;
+    bottom: 16px !important;
+  }
+
+  body.routine-verbs-page .kiya-toggle,
+  body.routine-verbs-page .kiya-avatar {
+    width: 50px !important;
+    height: 50px !important;
+  }
+
+  body.routine-verbs-page .whatsapp-float {
+    left: 12px !important;
+    bottom: 16px !important;
+    max-width: calc(100vw - 92px) !important;
+    min-height: 44px !important;
+    padding: 0 13px !important;
+    border-radius: 999px !important;
+    font-size: 0.86rem !important;
+  }
+}
+
+@media (max-width: 420px) {
+  body.routine-verbs-page .tense-hero.routine-hero,
+  body.routine-verbs-page .section {
+    width: min(100% - 18px, 1180px) !important;
+  }
+
+  body.routine-verbs-page .routine-verb-grid button {
+    grid-template-columns: 38px minmax(0, 1fr) !important;
+    padding: 11px !important;
+  }
+
+  body.routine-verbs-page .routine-verb-grid button span {
+    width: 36px !important;
+    height: 36px !important;
+    font-size: 0.82rem !important;
+  }
+
+  body.routine-verbs-page .routine-verb-grid button strong {
+    font-size: 1.04rem !important;
+  }
+
+  body.routine-verbs-page .routine-verb-grid button p {
+    font-size: 0.84rem !important;
+  }
+}
+
+/* Kidsverse Articles Lab mobile final repair */
+@media (max-width: 760px) {
+  body.articles-lab-page {
+    overflow-x: hidden !important;
+    padding-bottom: 92px !important;
+  }
+
+  body.articles-lab-page .top-strip {
+    display: none !important;
+  }
+
+  body.articles-lab-page .tense-hero.articles-hero {
+    width: min(100% - 24px, 1180px) !important;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+    margin: 14px auto 0 !important;
+    padding: 18px 0 6px !important;
+  }
+
+  body.articles-lab-page .tense-hero-copy {
+    display: grid !important;
+    gap: 11px !important;
+    min-width: 0 !important;
+    padding: 0 !important;
+  }
+
+  body.articles-lab-page .tense-hero-copy h1 {
+    max-width: 100% !important;
+    margin: 0 !important;
+    font-size: clamp(2rem, 9vw, 2.85rem) !important;
+    line-height: 1.03 !important;
+    letter-spacing: 0 !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  body.articles-lab-page .tense-hero-copy p:not(.eyebrow) {
+    max-width: 100% !important;
+    margin: 0 !important;
+    color: #5f7183 !important;
+    font-size: 0.98rem !important;
+    line-height: 1.5 !important;
+  }
+
+  body.articles-lab-page .hero-actions {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 9px !important;
+    width: 100% !important;
+    margin: 0 !important;
+  }
+
+  body.articles-lab-page .hero-actions a,
+  body.articles-lab-page .primary-button,
+  body.articles-lab-page .secondary-button,
+  body.articles-lab-page .tense-audio-button {
+    width: 100% !important;
+    min-height: 48px !important;
+    justify-content: center !important;
+    border-radius: 16px !important;
+    font-size: 1rem !important;
+    line-height: 1.1 !important;
+    white-space: normal !important;
+  }
+
+  body.articles-lab-page .article-hero-board {
+    display: grid !important;
+    gap: 12px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    padding: 14px !important;
+    overflow: hidden !important;
+    border-radius: 22px !important;
+    background:
+      radial-gradient(circle at 16% 14%, rgba(255, 216, 111, 0.38), transparent 32%),
+      linear-gradient(145deg, #1d2e47, #245f63 58%, #27b9a7) !important;
+    box-shadow: 0 18px 44px rgba(31, 49, 66, 0.12) !important;
+  }
+
+  body.articles-lab-page .article-picker-preview {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+    margin: 8px 0 2px !important;
+  }
+
+  body.articles-lab-page .article-picker-preview strong {
+    min-width: 0 !important;
+    min-height: 66px !important;
+    border-radius: 17px !important;
+    font-size: clamp(2rem, 12vw, 3.15rem) !important;
+    line-height: 1 !important;
+  }
+
+  body.articles-lab-page .hero-sentence-card {
+    display: grid !important;
+    gap: 7px !important;
+    padding: 14px !important;
+    border-radius: 18px !important;
+    animation: none !important;
+  }
+
+  body.articles-lab-page .hero-sentence-card strong {
+    font-size: clamp(1.18rem, 6vw, 1.55rem) !important;
+    line-height: 1.12 !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  body.articles-lab-page .section {
+    width: min(100% - 24px, 1180px) !important;
+    padding-top: 22px !important;
+    padding-bottom: 22px !important;
+  }
+
+  body.articles-lab-page .section-heading {
+    max-width: 100% !important;
+    margin-bottom: 12px !important;
+  }
+
+  body.articles-lab-page .section-heading h2 {
+    font-size: clamp(1.72rem, 8vw, 2.35rem) !important;
+    line-height: 1.06 !important;
+  }
+
+  body.articles-lab-page .article-method-grid,
+  body.articles-lab-page .article-structure-grid,
+  body.articles-lab-page .article-card-grid,
+  body.articles-lab-page .tense-card-grid,
+  body.articles-lab-page .tense-next-grid,
+  body.articles-lab-page .tense-practice-lab,
+  body.articles-lab-page .tense-rule-list,
+  body.articles-lab-page .lab-cta-section,
+  body.articles-lab-page .lab-cta-card {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  body.articles-lab-page .article-method-grid article,
+  body.articles-lab-page .article-structure-grid article,
+  body.articles-lab-page .article-fill-card,
+  body.articles-lab-page .quiz-shell,
+  body.articles-lab-page .tense-detail-panel,
+  body.articles-lab-page .tense-practice-lab,
+  body.articles-lab-page .practice-feedback-card {
+    width: 100% !important;
+    min-width: 0 !important;
+    padding: 14px !important;
+    border-radius: 19px !important;
+    box-shadow: 0 14px 34px rgba(31, 49, 66, 0.08) !important;
+  }
+
+  body.articles-lab-page .article-method-grid article,
+  body.articles-lab-page .article-structure-grid article {
+    display: grid !important;
+    gap: 6px !important;
+    background: linear-gradient(145deg, rgba(255,255,255,0.99), rgba(238,248,255,0.92)) !important;
+  }
+
+  body.articles-lab-page .article-method-grid span,
+  body.articles-lab-page .article-structure-grid span {
+    width: fit-content !important;
+    margin: 0 !important;
+    font-size: 0.78rem !important;
+  }
+
+  body.articles-lab-page .article-method-grid strong,
+  body.articles-lab-page .article-structure-grid strong {
+    font-size: 1.08rem !important;
+    line-height: 1.12 !important;
+  }
+
+  body.articles-lab-page .article-method-grid p,
+  body.articles-lab-page .article-structure-grid p {
+    margin: 0 !important;
+    font-size: 0.92rem !important;
+    line-height: 1.42 !important;
+  }
+
+  body.articles-lab-page .article-card-grid button,
+  body.articles-lab-page .tense-card-grid button {
+    display: grid !important;
+    grid-template-columns: 56px minmax(0, 1fr) !important;
+    gap: 5px 12px !important;
+    align-items: center !important;
+    width: 100% !important;
+    min-height: 0 !important;
+    padding: 13px !important;
+    border: 1px solid rgba(31, 49, 66, 0.08) !important;
+    border-radius: 18px !important;
+    background: linear-gradient(145deg, rgba(255,255,255,0.99), rgba(238,248,255,0.92)) !important;
+    box-shadow: 0 14px 34px rgba(31, 49, 66, 0.08) !important;
+    color: var(--ink) !important;
+    text-align: left !important;
+  }
+
+  body.articles-lab-page .article-card-grid button.is-active,
+  body.articles-lab-page .tense-card-grid button.is-active {
+    border-color: rgba(39, 185, 167, 0.38) !important;
+    background: linear-gradient(145deg, #e8fbf6, #fff7e7) !important;
+  }
+
+  body.articles-lab-page .article-card-grid button span,
+  body.articles-lab-page .tense-card-grid button span {
+    grid-row: 1 / span 3 !important;
+    display: grid !important;
+    place-items: center !important;
+    width: 52px !important;
+    height: 52px !important;
+    min-width: 0 !important;
+    border-radius: 16px !important;
+    font-size: 1.15rem !important;
+    line-height: 1 !important;
+  }
+
+  body.articles-lab-page .article-card-grid button strong,
+  body.articles-lab-page .tense-card-grid button strong,
+  body.articles-lab-page .tense-next-grid a strong {
+    grid-column: 2 !important;
+    color: #16453e !important;
+    font-size: 1.08rem !important;
+    line-height: 1.08 !important;
+  }
+
+  body.articles-lab-page .article-card-grid button code,
+  body.articles-lab-page .article-card-grid button em,
+  body.articles-lab-page .tense-card-grid button code,
+  body.articles-lab-page .tense-card-grid button em {
+    grid-column: 2 !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    font-size: 0.84rem !important;
+    line-height: 1.25 !important;
+  }
+
+  body.articles-lab-page .article-tool-section,
+  body.articles-lab-page .tense-tool-section {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+    padding: 16px !important;
+    border-radius: 22px !important;
+  }
+
+  body.articles-lab-page .tense-situation {
+    padding: 13px !important;
+    border-radius: 17px !important;
+    font-size: clamp(1.18rem, 6vw, 1.55rem) !important;
+    line-height: 1.15 !important;
+  }
+
+  body.articles-lab-page .tense-choice-tool,
+  body.articles-lab-page .practice-intent-buttons,
+  body.articles-lab-page .quiz-options,
+  body.articles-lab-page .quiz-actions {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+
+  body.articles-lab-page .tense-choice-tool button,
+  body.articles-lab-page .practice-intent-buttons button,
+  body.articles-lab-page .quiz-option {
+    width: 100% !important;
+    min-height: 46px !important;
+    padding: 11px 12px !important;
+    border-radius: 15px !important;
+    font-size: 0.96rem !important;
+    line-height: 1.18 !important;
+    white-space: normal !important;
+  }
+
+  body.articles-lab-page textarea,
+  body.articles-lab-page input,
+  body.articles-lab-page select {
+    width: 100% !important;
+    min-width: 0 !important;
+    font-size: 1rem !important;
+  }
+
+  body.articles-lab-page .practice-rule-meter {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+
+  body.articles-lab-page .practice-rule-meter span,
+  body.articles-lab-page .quiz-actions span {
+    width: 100% !important;
+    text-align: center !important;
+  }
+
+  body.articles-lab-page .tense-rule-list details {
+    padding: 13px !important;
+    border-radius: 17px !important;
+  }
+
+  body.articles-lab-page .tense-rule-list summary,
+  body.articles-lab-page .tense-rule-list code,
+  body.articles-lab-page .tense-rule-list p,
+  body.articles-lab-page .quiz-explanation {
+    overflow-wrap: anywhere !important;
+    white-space: normal !important;
+  }
+
+  body.articles-lab-page .tense-next-grid a {
+    display: grid !important;
+    grid-template-columns: 42px minmax(0, 1fr) !important;
+    gap: 4px 12px !important;
+    align-items: center !important;
+    padding: 13px !important;
+    border-radius: 18px !important;
+  }
+
+  body.articles-lab-page .tense-next-grid a span {
+    grid-row: 1 / span 2 !important;
+  }
+
+  body.articles-lab-page .tense-next-grid a p {
+    grid-column: 2 !important;
+    margin: 0 !important;
+    font-size: 0.9rem !important;
+    line-height: 1.32 !important;
+  }
+
+  body.articles-lab-page .kiya-widget {
+    right: 12px !important;
+    bottom: 16px !important;
+  }
+
+  body.articles-lab-page .kiya-toggle,
+  body.articles-lab-page .kiya-avatar {
+    width: 50px !important;
+    height: 50px !important;
+  }
+
+  body.articles-lab-page .whatsapp-float {
+    left: 12px !important;
+    bottom: 16px !important;
+    max-width: calc(100vw - 92px) !important;
+    min-height: 44px !important;
+    padding: 0 13px !important;
+    border-radius: 999px !important;
+    font-size: 0.86rem !important;
+  }
+}
+
+@media (max-width: 420px) {
+  body.articles-lab-page .tense-hero.articles-hero,
+  body.articles-lab-page .section {
+    width: min(100% - 18px, 1180px) !important;
+  }
+
+  body.articles-lab-page .article-card-grid button,
+  body.articles-lab-page .tense-card-grid button {
+    grid-template-columns: 48px minmax(0, 1fr) !important;
+    padding: 11px !important;
+  }
+
+  body.articles-lab-page .article-card-grid button span,
+  body.articles-lab-page .tense-card-grid button span {
+    width: 44px !important;
+    height: 44px !important;
+    border-radius: 14px !important;
+    font-size: 1rem !important;
+  }
+
+  body.articles-lab-page .article-picker-preview strong {
+    min-height: 58px !important;
+    font-size: 2rem !important;
+  }
+}
