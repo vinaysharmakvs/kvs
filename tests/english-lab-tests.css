@@ -74,6 +74,72 @@ button, input { font: inherit; }
 }
 .test-header nav a:hover { background: #eefbf5; color: var(--green); }
 
+.test-header .nav-dropdown {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.test-header .nav-parent::after {
+  content: "";
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-left: 7px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg) translateY(-2px);
+}
+
+.test-header .nav-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 50%;
+  z-index: 30;
+  display: grid;
+  min-width: 240px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 24px 55px rgba(31, 49, 66, 0.16);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 8px);
+  transition: opacity 160ms ease, transform 160ms ease;
+}
+
+.test-header .nav-dropdown:hover .nav-menu,
+.test-header .nav-dropdown:focus-within .nav-menu {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, 0);
+}
+
+.test-header .nav-menu a {
+  justify-content: flex-start;
+  padding: 10px 12px;
+  border-radius: 13px;
+  white-space: nowrap;
+}
+
+.test-header .nav-menu-label {
+  color: var(--green) !important;
+  background: #eefbf5;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+}
+
+.test-header .nav-sub-link {
+  padding-left: 18px !important;
+}
+
+.test-header .nav-test-link {
+  color: #fff !important;
+  background: linear-gradient(135deg, var(--coral), var(--orange)) !important;
+}
+
+
 .test-hero,
 .test-shell,
 .topic-strip {
@@ -282,6 +348,22 @@ h1 {
   .test-hero, .test-shell, .topic-strip { width: min(100% - 22px, 1180px); }
   .brand { width: 100%; }
   .test-header nav a { white-space: nowrap; }
+
+  .test-header .nav-dropdown {
+    width: auto;
+  }
+
+  .test-header .nav-menu {
+    left: 0;
+    min-width: min(270px, calc(100vw - 34px));
+    transform: translate(0, 8px);
+  }
+
+  .test-header .nav-dropdown:hover .nav-menu,
+  .test-header .nav-dropdown:focus-within .nav-menu {
+    transform: translate(0, 0);
+  }
+
   h1 { font-size: clamp(2.2rem, 12vw, 3.25rem); }
   .test-hero > div, .hero-card, .test-sidebar, .question-panel { border-radius: 22px; padding: 16px; }
   .hero-card { min-height: 220px; }
