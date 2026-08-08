@@ -3,9 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="robots" content="noindex, nofollow, noarchive" />
-    <meta name="googlebot" content="noindex, nofollow, noarchive" />
-    <title>Kidsverse Staff Access</title>
+    <meta
+      name="description"
+      content="Kidsverse Learning Journey parent dashboard for English Lab, reading fluency, grammar, writing, speaking, maths, badges and weekly learning insights."
+    />
+    <title>Kidsverse Learning Journey | Parent Dashboard</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -17,290 +19,388 @@
     <link rel="icon" type="image/png" sizes="512x512" href="assets/favicon.png" />
     <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
     <link rel="stylesheet" href="styles.css?v=20260805-internal-fix" />
-    <link rel="stylesheet" href="internal-tools.css?v=20260805-rebuild" />
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-0ZT634EM99"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-0ZT634EM99');
-    </script>
+    <link rel="stylesheet" href="learning-journey-fix.css?v=20260808-simple-phone-top" />
     <script src="https://accounts.google.com/gsi/client" async defer></script>
-  </head>
-  <body class="staff-login-page">
-    <header class="staff-access-header" data-staff-header hidden>
-      <a class="staff-access-brand" href="kvs-staff-access.html" aria-label="Kidsverse internal home">
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-0ZT634EM99"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-0ZT634EM99');
+  </script>
+</head>
+  <body class="learning-journey-page">
+    <div class="top-strip">
+      <span>Kidsverse Learning Journey</span>
+      <strong>Parents can track Reading Fluency and Daily Routine Verbs</strong>
+      <a href="#parent-login">Login</a>
+    </div>
+
+    <header class="site-header">
+      <a class="brand" href="index.html#top" aria-label="Kidsverse School home">
         <img src="assets/logo.png" alt="Kidsverse School logo" />
-        <span><strong>Kidsverse</strong><small>Internal</small></span>
+        <span><strong>Kidsverse</strong><small>School Rehan</small></span>
       </a>
-      <nav class="staff-access-nav" aria-label="Internal navigation">
-        <a href="teacher-resource-center.html">Resources</a>
-        <a href="student-assessment.html">Student Reports</a>
-        <a href="teacher-assessment.html">Class Culture</a>
-        <a href="teacher-reading-assessment.html">Teacher Reading</a>
+      <nav class="nav-links" aria-label="Primary navigation"><a href="about.html">About</a><a href="activities.html">Activities</a>
+        <div class="nav-dropdown">
+          <a class="nav-parent" href="index.html#programs">Programs</a>
+          <div class="nav-menu">
+            <a href="playway.html">Playway</a>
+            <a href="nursery.html">Nursery</a>
+            <a href="lkg.html">LKG</a>
+            <a href="ukg.html">UKG</a>
+            <a href="grade-1.html">Grade 1</a>
+          </div>
+        </div>
+        <a href="after-school.html">After School</a>
+        <div class="nav-dropdown">
+          <a class="nav-parent" href="parent-hub.html">Parent Hub</a>
+          <div class="nav-menu">
+            <a href="parent-hub.html">Parent Hub</a>
+            <a href="learning-journey.html">Learning Journey</a>
+            <a href="parent-feedback.html">Parent Feedback</a>
+            <a href="faq.html">Parent FAQ</a>
+          </div>
+        </div>
+        <a href="contact.html">Contact</a>
       </nav>
-      <button class="staff-signout-button" type="button" data-staff-signout>Sign Out</button>
+      <a class="header-cta" href="#parent-login">Parent Login</a>
+      <button class="menu-button" type="button" aria-label="Open menu" data-menu-button>Menu</button>
     </header>
 
-    <main class="staff-login-shell" aria-label="Kidsverse private login">
-      <section class="staff-login-card" data-login-card>
-        <div class="staff-login-brand">
-          <img src="assets/logo.png" alt="Kidsverse School logo" />
-          <div>
-            <p class="eyebrow">Private access</p>
-            <h1>Kidsverse Staff Login</h1>
+    <main id="top">
+      <section class="learning-hero">
+        <div class="learning-hero-copy">
+          <p class="eyebrow">My English Learning Dashboard</p>
+          <h1>Continue reading and speaking practice from where your child stopped.</h1>
+          <p>
+            Kidsverse Learning Journey connects the live Reading Fluency Lab and Daily Routine Verbs Lab so parents can see saved progress, streaks and next steps.
+          </p>
+          <div class="hero-actions">
+            <a class="primary-button" href="#parent-login">Access Child Dashboard</a>
+            <a class="secondary-button" href="after-school.html#english-learning-lab">Explore English Lab</a>
+          </div>
+          <div class="learning-hero-pills" aria-label="Learning dashboard highlights">
+            <span>Reading fluency</span>
+            <span>Grammar Lab</span>
+            <span>Daily verbs</span>
+            <span>SpeakSmart AI</span>
+            <span>Saved streaks</span>
+          </div>
+          <div class="learning-hero-metrics" aria-label="Live learning snapshot">
+            <article><strong data-lj-overall>0%</strong><span>Overall growth</span></article>
+            <article><strong data-lj-reading>0%</strong><span>Reading</span></article>
+            <article><strong data-lj-grammar>0%</strong><span>Grammar</span></article>
           </div>
         </div>
-
-        <p class="staff-login-copy">
-          This page is for authorised Kidsverse team members only. Enter the school access code, then continue with the approved Google account.
-        </p>
-
-        <form class="staff-access-code-form" data-access-code-form>
-          <label>
-            School access code
-            <input type="password" name="accessCode" placeholder="Enter access code" autocomplete="off" required data-access-code-input />
-          </label>
-          <label class="staff-show-code">
-            <input type="checkbox" data-show-access-code />
-            <span>Show access code</span>
-          </label>
-          <button class="primary-button" type="submit">Unlock Google Login</button>
-          <span class="staff-access-error" data-access-code-error hidden>Incorrect access code. Please try again.</span>
-        </form>
-
-        <div class="staff-google-login" data-google-login hidden>
-          <div
-            id="g_id_onload"
-            data-client_id="344047535994-9a2s1tl3kf9etkkht33ciba13f32k5b8.apps.googleusercontent.com"
-            data-callback="handleKidsverseGoogleLogin"
-            data-auto_prompt="false"
-            data-ux_mode="popup"
-            data-context="signin"
-            data-itp_support="true"
-            data-use_fedcm_for_prompt="true"
-          ></div>
-          <div
-            class="g_id_signin"
-            data-type="standard"
-            data-size="large"
-            data-theme="outline"
-            data-text="signin_with"
-            data-shape="pill"
-            data-logo_alignment="left"
-          ></div>
+        <div class="learning-phone-preview" aria-label="Learning dashboard preview">
+          <div class="learning-phone-top"><span></span><strong>Kidsverse OS</strong><small>Live Journey</small></div>
+          <a class="learning-ring" href="#parent-login" aria-label="Login to view child progress"><strong data-lj-overall>0%</strong><span>View child progress</span></a>
+          <div class="learning-mini-missions">
+            <article><strong>Reading</strong><span data-reading-mission>Start first paragraph</span></article>
+            <article><strong>Grammar</strong><span data-grammar-mission>Start grammar practice</span></article>
+            <article><strong>Speaking</strong><span>Open SpeakSmart confidence practice</span></article>
+          </div>
+          <div class="learning-phone-dock" aria-label="Learning quick actions">
+            <a href="after-school/reading-fluency.html">Read</a>
+            <a href="after-school/articles-a-an-the.html">Grammar</a>
+            <a href="after-school/speaksmart-ai.html">Speak</a>
+          </div>
         </div>
-
-        <div class="staff-login-result" data-login-result hidden></div>
-        <div class="staff-login-alert" data-login-alert hidden></div>
-        <p class="staff-login-note">
-          For privacy, this page is intentionally not shown in the Kidsverse website menu.
-        </p>
       </section>
 
-      <section class="staff-dashboard" data-staff-dashboard hidden>
-        <div class="staff-dashboard-head">
+      <section class="section learning-command-preview" aria-label="Kidsverse learning dashboard preview">
+        <article>
+          <span>01</span>
+          <strong>Learn</strong>
+          <p>Open Reading Fluency, Grammar Lab or Daily Routine Verbs.</p>
+        </article>
+        <article>
+          <span>02</span>
+          <strong>Practise</strong>
+          <p>Child reads, answers, writes or speaks inside connected labs.</p>
+        </article>
+        <article>
+          <span>03</span>
+          <strong>Track</strong>
+          <p>Parent dashboard updates only after real activity is saved.</p>
+        </article>
+      </section>
+
+      <section class="section learning-login-section" id="parent-login">
+        <div class="learning-login-card">
+          <div class="learning-login-intro">
+            <p class="eyebrow">Parent Login</p>
+            <h2>Login to track Reading Fluency and Daily Routine Verbs.</h2>
+            <p>
+              Use the same parent details when the reading page asks for login after the first paragraph. The dashboard will then remember where your child stopped.
+            </p>
+          </div>
+
+          <div class="parent-login-flow">
+            <section class="parent-login-step is-active" data-parent-google-step>
+              <span>Step 1</span>
+              <h3>Google Sign-In</h3>
+              <p>Use the parent Google account registered with Kidsverse.</p>
+              <div
+                id="g_id_onload"
+                data-client_id="344047535994-9a2s1tl3kf9etkkht33ciba13f32k5b8.apps.googleusercontent.com"
+                data-callback="handleKidsverseParentGoogleLogin"
+                data-auto_prompt="false"
+                data-ux_mode="popup"
+                data-context="signin"
+                data-itp_support="true"
+                data-use_fedcm_for_prompt="true"
+              ></div>
+              <div
+                class="g_id_signin"
+                data-type="standard"
+                data-size="large"
+                data-theme="outline"
+                data-text="signin_with"
+                data-shape="pill"
+                data-logo_alignment="left"
+              ></div>
+              <button class="secondary-button parent-preview-login" type="button" data-parent-preview-login>Preview dashboard flow</button>
+              <small data-parent-google-note>Google Sign-In works on the secure live website after the domain is added in Google OAuth settings.</small>
+            </section>
+
+            <form class="parent-login-step learning-details-form" data-learning-login-form hidden>
+              <span>Step 2</span>
+              <h3>Child Details</h3>
+              <p>These details help Kidsverse map the parent login to the correct child record.</p>
+              <div class="learning-login-grid">
+                <label>Parent name<input type="text" name="parentName" placeholder="Parent name" required data-parent-name-input /></label>
+                <label>Child name<input type="text" name="childName" placeholder="Child name" required /></label>
+                <label>Grade
+                  <select name="childGrade" required>
+                    <option value="">Select grade</option>
+                    <option>Playway</option>
+                    <option>Nursery</option>
+                    <option>LKG</option>
+                    <option>UKG</option>
+                    <option>Grade 1</option>
+                    <option>Grade 2</option>
+                    <option>Grade 3</option>
+                    <option>Grade 4</option>
+                    <option>Grade 5</option>
+                    <option>Grade 6</option>
+                    <option>Grade 7</option>
+                    <option>Grade 8</option>
+                    <option>Grade 9</option>
+                    <option>Grade 10</option>
+                    <option>Grade 11</option>
+                    <option>Grade 12</option>
+                    <option>College Student</option>
+                    <option>Working Professional</option>
+                    <option>After School</option>
+                  </select>
+                </label>
+              </div>
+              <button class="primary-button" type="submit">Open Learning Dashboard</button>
+              <small data-learning-login-note>Dashboard will show pending progress until the child completes a test or learning activity.</small>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <section class="section learning-dashboard" data-learning-dashboard hidden>
+        <div class="learning-dashboard-toolbar" aria-label="Learning dashboard navigation">
+          <a href="after-school/reading-fluency.html">Reading Lab</a>
+          <a href="after-school/articles-a-an-the.html">Grammar Lab</a>
+          <a href="after-school/daily-routine-verbs.html">Routine Verbs</a>
+          <a href="after-school.html#english-learning-lab">English Lab</a>
+        </div>
+
+        <div class="learning-dashboard-head">
           <div>
-            <p class="eyebrow">Internal dashboard</p>
-            <h1>Welcome to Kidsverse</h1>
-            <p data-staff-welcome>Choose the internal page you want to open.</p>
+            <p class="eyebrow">Welcome back</p>
+            <h2>Hello, <span data-learning-parent-name>Parent</span>.</h2>
+            <p><strong data-learning-child-name>Your child</strong>'s dashboard is ready. Progress will update after a test or learning activity is completed.</p>
+          </div>
+          <div class="learning-score-card">
+            <span>Overall Progress</span>
+            <strong data-overall-progress>0%</strong>
+            <small data-overall-status>Start first activity</small>
           </div>
         </div>
 
-        <div class="staff-dashboard-grid" aria-label="Kidsverse internal pages">
-          <a class="staff-tool-card is-featured" href="teacher-resource-center.html">
-            <span>Teacher Resources</span>
-            <strong>Classroom Resource Center</strong>
-            <small>Class-wise English lines, listening support and confidential teaching material.</small>
-          </a>
-          <a class="staff-tool-card" href="student-assessment.html">
-            <span>Student Reports</span>
-            <strong>Monthly Student Assessment</strong>
-            <small>Create structured progress reports with strengths, improvement areas and parent guidance.</small>
-          </a>
-          <a class="staff-tool-card" href="teacher-assessment.html">
-            <span>Observation</span>
-            <strong>Class Culture Assessment</strong>
-            <small>Review classroom habits, discipline, greetings, routines and learning culture.</small>
-          </a>
-          <a class="staff-tool-card" href="teacher-reading-assessment.html">
-            <span>Teacher Growth</span>
-            <strong>Teacher Reading Assessment</strong>
-            <small>Record teacher reading skill, auto-rate performance and generate a self-assessment report.</small>
-          </a>
-          <a class="staff-tool-card" href="teacher-reading-assessment.html#self-learning">
-            <span>Self Learning</span>
-            <strong>English Lab for Teachers</strong>
-            <small>Open tenses, A An The, daily routine verbs and reading fluency practice from one place.</small>
-          </a>
+        <div class="learning-live-grid" aria-label="Live skill dashboard">
+          <article class="is-reading"><span>Reading</span><strong data-lj-reading>0%</strong><small>Accuracy and fluency</small></article>
+          <article class="is-grammar"><span>Grammar</span><strong data-lj-grammar>0%</strong><small>Rules and quizzes</small></article>
+          <article class="is-speaking"><span>Speaking</span><strong data-lj-speaking>0%</strong><small>Routine confidence</small></article>
+          <article class="is-confidence"><span>Confidence</span><strong data-lj-confidence>0%</strong><small>Expression growth</small></article>
         </div>
 
-        <p class="staff-dashboard-note">
-          Internal pages open from this dashboard after staff login. Do not share these links outside Kidsverse.
-        </p>
+        <div class="mission-grid learning-feature-grid">
+          <article><span>Reading Fluency</span><strong data-reading-mission>Start first paragraph</strong><a data-reading-continue-link href="after-school/reading-fluency.html">Continue Reading</a></article>
+          <article><span>Grammar Lab</span><strong data-grammar-mission>Start grammar practice</strong><a href="after-school/articles-a-an-the.html">Continue Grammar</a></article>
+          <article><span>Daily Routine Verbs</span><strong data-routine-mission>Practice words and sentences</strong><a href="after-school/daily-routine-verbs.html">Continue Verbs</a></article>
+        </div>
+
+        <section class="learning-panel learning-test-panel" id="reading-test">
+          <div>
+            <p class="eyebrow">Resume Reading</p>
+            <h2 data-reading-resume-title>Start from the first paragraph.</h2>
+            <p data-reading-resume-copy>
+              Read the first paragraph freely. When the child clicks Next paragraph, parent login will save progress from that point onwards.
+            </p>
+          </div>
+          <div class="test-action-card">
+            <span data-reading-streak-label>Streak not started</span>
+            <strong data-reading-last-score>Accuracy pending</strong>
+            <a class="primary-button" data-reading-continue-link href="after-school/reading-fluency.html">Open Reading Fluency</a>
+          </div>
+        </section>
+
+        <section class="learning-panel learning-quest-panel">
+          <div>
+            <p class="eyebrow">Today’s Quest Board</p>
+            <h2>One short mission keeps the journey alive.</h2>
+            <p data-recommendation-text>Start Reading Fluency. After the first paragraph, login to save the next paragraph and streak.</p>
+          </div>
+          <div class="quest-action-stack">
+            <a class="primary-button" data-reading-continue-link href="after-school/reading-fluency.html">Continue Reading</a>
+            <a class="secondary-button" href="after-school/articles-a-an-the.html">Open Grammar Lab</a>
+            <a class="secondary-button" href="after-school/daily-routine-verbs.html">Practise Speaking</a>
+          </div>
+        </section>
+
+        <section class="learning-panel reading-panel">
+          <div class="learning-panel-copy">
+            <p class="eyebrow">Reading Fluency</p>
+            <h2>Reading Fluency Roadmap</h2>
+            <p>Parents can instantly see where the child is confident and where practice is needed.</p>
+          </div>
+          <div class="fluency-roadmap">
+            <article><span>Letters</span><div><i data-progress-bar="letters" style="width: 0%"></i></div><strong data-progress-value="letters">Pending</strong></article>
+            <article><span>Sounds</span><div><i data-progress-bar="sounds" style="width: 0%"></i></div><strong data-progress-value="sounds">Pending</strong></article>
+            <article><span>Blends</span><div><i data-progress-bar="blends" style="width: 0%"></i></div><strong data-progress-value="blends">Pending</strong></article>
+            <article><span>Words</span><div><i data-progress-bar="words" style="width: 0%"></i></div><strong data-progress-value="words">Pending</strong></article>
+            <article><span>Sentences</span><div><i data-progress-bar="sentences" style="width: 0%"></i></div><strong data-progress-value="sentences">Pending</strong></article>
+            <article><span>Paragraphs</span><div><i data-progress-bar="paragraphs" style="width: 0%"></i></div><strong data-progress-value="paragraphs">Pending</strong></article>
+            <article class="is-locked"><span>Stories</span><div><i style="width: 0%"></i></div><strong>Locked</strong></article>
+          </div>
+        </section>
+
+        <div class="learning-two-column">
+          <section class="learning-panel routine-dashboard-panel">
+            <p class="eyebrow">Daily Routine Verbs</p>
+            <h2>Track vocabulary, sentence building and speaking prompts.</h2>
+            <div class="roadmap-list">
+              <a href="after-school/daily-routine-verbs.html#routine-verbs"><span data-routine-verbs-status>Ready</span><strong>Verb Cards</strong></a>
+              <a href="after-school/daily-routine-verbs.html#routine-practice"><span data-routine-writing-status>Pending</span><strong>Five Routine Sentences</strong></a>
+              <a href="after-school/daily-routine-verbs.html#routine-practice"><span data-routine-speaking-status>Pending</span><strong>Speaking Practice</strong></a>
+            </div>
+          </section>
+
+          <section class="learning-panel" id="reading-coach">
+            <p class="eyebrow">AI Reading Coach</p>
+            <h2 data-reading-coach-title>Reading result will appear after practice.</h2>
+            <div class="coach-score-grid">
+              <article><span>Pronunciation</span><strong data-coach-score="pronunciation">--</strong></article>
+              <article><span>Fluency</span><strong data-coach-score="fluency">--</strong></article>
+              <article><span>Confidence</span><strong data-coach-score="confidence">--</strong></article>
+              <article><span>Speed</span><strong data-coach-score="speed">--</strong></article>
+              <article><span>Accuracy</span><strong data-coach-score="accuracy">--</strong></article>
+            </div>
+          </section>
+        </div>
+
+        <div class="learning-two-column">
+          <section class="learning-panel">
+            <p class="eyebrow">Weekly Report</p>
+            <h2>Only live Kidsverse English features are tracked here.</h2>
+            <div class="weekly-report-grid">
+              <article><strong data-weekly-score="reading">--</strong><span>Reading</span><small data-weekly-label="reading">Awaiting test</small></article>
+              <article><strong data-weekly-score="grammar">--</strong><span>Grammar</span><small data-weekly-label="grammar">Awaiting quiz</small></article>
+              <article><strong data-weekly-score="routine">--</strong><span>Routine Verbs</span><small data-weekly-label="routine">Awaiting practice</small></article>
+              <article><strong data-weekly-score="streak">--</strong><span>Streak</span><small data-weekly-label="streak">Login to save</small></article>
+            </div>
+          </section>
+          <section class="learning-panel">
+            <p class="eyebrow">Parent Insights</p>
+            <h2 data-insight-heading>No activity completed yet.</h2>
+            <ul class="insight-list" data-insight-list>
+              <li>Read the first paragraph in Reading Fluency.</li>
+              <li>Click Next paragraph to login and start saving the journey.</li>
+              <li>Daily Routine Verbs progress appears after sentence practice.</li>
+            </ul>
+          </section>
+        </div>
+
+        <section class="learning-panel achievement-panel">
+          <div>
+            <p class="eyebrow">Saved Streaks</p>
+            <h2>Continue from where the child left off.</h2>
+          </div>
+          <div class="badge-row">
+            <article><strong>Reading Champion</strong><span data-badge-status="reading">Locked</span></article>
+            <article><strong>Consistent Learner</strong><span data-badge-status="streak">Start streak</span></article>
+            <article><strong>Routine Speaker</strong><span data-badge-status="routine">Locked</span></article>
+          </div>
+        </section>
+
+        <div class="learning-two-column">
+          <section class="learning-panel recommendation-panel">
+            <p class="eyebrow">Journey Health</p>
+            <h2>What should improve next?</h2>
+            <div class="journey-health-list">
+              <span>Reading <strong data-lj-reading>0%</strong></span>
+              <span>Grammar <strong data-lj-grammar>0%</strong></span>
+              <span>Speaking <strong data-lj-speaking>0%</strong></span>
+            </div>
+          </section>
+          <section class="learning-panel blueprint-panel">
+            <p class="eyebrow">English Growth Snapshot</p>
+            <h2>Focused on live Kidsverse English tools.</h2>
+            <div class="blueprint-grid">
+              <span>Reading <strong data-blueprint-score="reading">--</strong></span>
+              <span>Grammar <strong data-blueprint-score="grammar">--</strong></span>
+              <span>Routine Verbs <strong data-blueprint-score="routine">--</strong></span>
+              <span>Sentence Formation <strong data-blueprint-score="sentence">--</strong></span>
+              <span>Speaking <strong data-blueprint-score="speaking">--</strong></span>
+              <span>Confidence <strong data-blueprint-score="confidence">--</strong></span>
+              <span>Overall Growth <strong data-blueprint-score="overall">--</strong></span>
+            </div>
+          </section>
+        </div>
       </section>
     </main>
 
-    <script>
-      const internalPages = [
-        "teacher-resource-center.html",
-        "student-assessment.html",
-        "teacher-assessment.html",
-        "teacher-reading-assessment.html"
-      ];
-      const schoolAccessCode = "Kidsverse@2021";
+    <section class="kiya-widget" data-kiya-widget aria-label="Kiya AI parent assistant">
+      <button class="kiya-toggle" type="button" data-kiya-toggle aria-expanded="false" aria-controls="kiya-panel">
+        <span class="kiya-avatar" aria-hidden="true"></span>
+      </button>
+      <div class="kiya-panel" id="kiya-panel" data-kiya-panel hidden>
+        <div class="kiya-head">
+          <div><strong>Kiya AI</strong><span>Your Kidsverse parent guide</span></div>
+          <button type="button" data-kiya-close aria-label="Close Kiya AI chat">Close</button>
+        </div>
+        <div class="kiya-body">
+          <p>Namaste. I can help you open English Lab, reading fluency, programmes and parent-support pages.</p>
+          <div class="kiya-links" aria-label="Kidsverse quick links">
+            <a href="after-school/reading-fluency.html">Reading Fluency</a>
+            <a href="after-school/present-tense.html">Present Tense</a>
+            <a href="after-school/past-tense.html">Past Tense</a>
+            <a href="after-school/future-tense.html">Future Tense</a>
+            <a href="parent-hub.html">Parent Hub</a>
+            <a href="parent-feedback.html">Parent Feedback</a>
+            <a href="faq.html">Parent FAQ</a>
+          </div>
+          <a class="kiya-whatsapp" href="https://wa.me/918826758881?text=Hello%20Kidsverse%20School%2C%20I%20need%20help%20with%20the%20learning%20dashboard" target="_blank" rel="noopener noreferrer">Ask on WhatsApp</a>
+        </div>
+      </div>
+    </section>
 
-      function unlockGoogleLogin() {
-        const form = document.querySelector("[data-access-code-form]");
-        const googleLogin = document.querySelector("[data-google-login]");
-        if (form) form.hidden = true;
-        if (googleLogin) googleLogin.hidden = false;
-      }
-
-      function showKidsverseDashboard(loginRecord = {}) {
-        const loginCard = document.querySelector("[data-login-card]");
-        const dashboard = document.querySelector("[data-staff-dashboard]");
-        const header = document.querySelector("[data-staff-header]");
-        const welcome = document.querySelector("[data-staff-welcome]");
-        document.body.classList.add("is-dashboard");
-        if (loginCard) loginCard.hidden = true;
-        if (dashboard) dashboard.hidden = false;
-        if (header) header.hidden = false;
-        if (welcome) {
-          welcome.textContent = loginRecord.name
-            ? `Hello ${loginRecord.name}. Choose the internal page you want to open.`
-            : "Choose the internal page you want to open.";
-        }
-      }
-
-      function getStoredKidsverseLogin() {
-        try {
-          return JSON.parse(sessionStorage.getItem("kidsverseStaffLogin") || "{}");
-        } catch (error) {
-          return {};
-        }
-      }
-
-      function decodeKidsverseCredential(token) {
-        const payload = token.split(".")[1] || "";
-        const base64 = payload.replace(/-/g, "+").replace(/_/g, "/");
-        const decoded = atob(base64);
-        return JSON.parse(decodeURIComponent(Array.from(decoded).map((character) => {
-          return "%" + ("00" + character.charCodeAt(0).toString(16)).slice(-2);
-        }).join("")));
-      }
-
-      async function saveKidsverseLoginAudit(credential) {
-        const auditPayload = {
-          credential,
-          sourceApp: "kidsverse-staff-access",
-          device: {
-            pageUrl: window.location.href,
-            origin: window.location.origin,
-            userAgent: navigator.userAgent,
-            language: navigator.language,
-            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-            screenSize: `${window.screen.width}x${window.screen.height}`,
-            platform: navigator.platform
-          }
-        };
-
-        const auditResponse = await fetch("/api/staff-login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(auditPayload)
-        });
-        const auditData = await auditResponse.json().catch(() => ({}));
-        if (!auditResponse.ok || !auditData.ok) {
-          throw new Error(auditData.error || "Login saved locally, but database audit failed.");
-        }
-        return auditData.record;
-      }
-
-      async function handleKidsverseGoogleLogin(response) {
-        const result = document.querySelector("[data-login-result]");
-        try {
-          const profile = decodeKidsverseCredential(response.credential);
-          const loginRecord = {
-            name: profile.name || "Kidsverse team member",
-            email: profile.email || "",
-            picture: profile.picture || "",
-            signedInAt: new Date().toISOString()
-          };
-          sessionStorage.setItem("kidsverseStaffLogin", JSON.stringify(loginRecord));
-          result.hidden = false;
-          result.innerHTML = `
-            <span>Saving secure login record...</span>
-            <strong>${loginRecord.name}</strong>
-            <small>${loginRecord.email}</small>
-          `;
-          const savedRecord = await saveKidsverseLoginAudit(response.credential);
-          const savedLoginRecord = {
-            ...loginRecord,
-            name: savedRecord.name || loginRecord.name,
-            email: savedRecord.email || loginRecord.email,
-            loginCount: savedRecord.loginCount,
-            signedInAt: savedRecord.signed_in_at || loginRecord.signedInAt
-          };
-          sessionStorage.setItem("kidsverseStaffLogin", JSON.stringify(savedLoginRecord));
-          result.innerHTML = `
-            <span>Signed in and recorded successfully</span>
-            <strong>${savedLoginRecord.name}</strong>
-            <small>${savedLoginRecord.email}</small>
-          `;
-          window.setTimeout(() => showKidsverseDashboard(savedLoginRecord), 650);
-        } catch (error) {
-          result.hidden = false;
-          result.innerHTML = `<span>${error.message || "Login received, but profile could not be saved. Please try again."}</span>`;
-        }
-      }
-
-      const loginAlert = document.querySelector("[data-login-alert]");
-      const allowedOrigins = ["https://www.kidsverseschool.com", "https://kidsverseschool.com"];
-      if (window.location.protocol !== "https:" && window.location.hostname !== "localhost") {
-        loginAlert.hidden = false;
-        loginAlert.textContent = "Google login works only on the secure live website, not from a local file preview.";
-      } else if (!allowedOrigins.includes(window.location.origin) && window.location.hostname !== "localhost") {
-        loginAlert.hidden = false;
-        loginAlert.textContent = `This domain must be added in Google Cloud OAuth settings: ${window.location.origin}`;
-      }
-
-      const existingLogin = getStoredKidsverseLogin();
-      if (existingLogin.email) {
-        showKidsverseDashboard(existingLogin);
-      }
-
-      if (sessionStorage.getItem("kidsverseAccessCodeOk") === "true") {
-        unlockGoogleLogin();
-      }
-
-      document.querySelector("[data-access-code-form]")?.addEventListener("submit", (event) => {
-        event.preventDefault();
-        const form = event.currentTarget;
-        const error = document.querySelector("[data-access-code-error]");
-        const code = String(new FormData(form).get("accessCode") || "").trim();
-        if (code === schoolAccessCode) {
-          sessionStorage.setItem("kidsverseAccessCodeOk", "true");
-          if (error) error.hidden = true;
-          unlockGoogleLogin();
-          return;
-        }
-        if (error) error.hidden = false;
-        form.querySelector("input")?.focus();
-      });
-
-      document.querySelector("[data-show-access-code]")?.addEventListener("change", (event) => {
-        const input = document.querySelector("[data-access-code-input]");
-        if (input) input.type = event.currentTarget.checked ? "text" : "password";
-      });
-
-      document.querySelector("[data-staff-signout]")?.addEventListener("click", () => {
-        sessionStorage.removeItem("kidsverseStaffLogin");
-        sessionStorage.removeItem("kidsverseAccessCodeOk");
-        document.body.classList.remove("is-dashboard");
-        window.location.reload();
-      });
-    </script>
+    <a class="whatsapp-float" href="https://wa.me/918826758881?text=Hello%20Kidsverse%20School%2C%20I%20want%20to%20know%20about%20the%20Learning%20Journey%20dashboard" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+    <footer class="site-footer">
+      <strong>Kidsverse School Rehan</strong>
+      <span>Premium preschool, Grade 1 and after-school learning in Rehan.</span>
+      <span class="powered-by-tivoro"><a href="https://tivoro.in" target="_blank" rel="noopener noreferrer">Powered by Tivoro - Your digital growth partner</a></span>
+    </footer>
+    <script src="kidsverse-app.js?v=20260805-ultra-dashboard"></script>
   </body>
 </html>
