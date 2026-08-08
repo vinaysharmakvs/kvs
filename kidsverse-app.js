@@ -105,6 +105,8 @@ function enhanceAfterSchoolMenu() {
         <a class="nav-sub-link" href="${root}after-school/articles-a-an-the.html">A, An & The</a>
         <a class="nav-sub-link" href="${root}after-school/daily-routine-verbs.html">Daily Routine Verbs</a>
         <a class="nav-sub-link" href="${root}after-school/reading-fluency.html">Reading Fluency</a>
+        <a class="nav-sub-link" href="${root}after-school/speaksmart-ai.html">SpeakSmart AI</a>
+        <a class="nav-sub-link nav-test-link" href="${root}tests/english-lab-tests.html">Test Your Skills</a>
       </div>
     `;
     afterSchoolLink.replaceWith(dropdown);
@@ -363,8 +365,6 @@ const studentRosters = {
       "Rivaan Sharma",
       "Smarth Thakur",
       "Navikaa Dhiman",
-       "Manya Sharma",
-       "Avyukt Bhadwal",
     ],
   },
   "Nursery - Alpha": {
