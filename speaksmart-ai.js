@@ -13,6 +13,12 @@
   const cameraOffButton = document.querySelector("[data-smart-camera-off]");
   const startButton = document.querySelector("[data-smart-start]");
   const stopButton = document.querySelector("[data-smart-stop]");
+  const quickResult = document.querySelector("[data-smart-quick-result]");
+  const quickOverall = document.querySelector("[data-smart-quick-overall]");
+  const quickFluency = document.querySelector("[data-smart-quick-fluency]");
+  const quickConfidence = document.querySelector("[data-smart-quick-confidence]");
+  const quickDuration = document.querySelector("[data-smart-quick-duration]");
+  const quickReportButton = document.querySelector("[data-smart-open-report]");
   const recordingPill = document.querySelector("[data-smart-recording-pill]");
   const timerNode = document.querySelector("[data-smart-timer]");
   const progressBar = document.querySelector("[data-smart-progress-bar]");
@@ -24,6 +30,8 @@
   const topicPoints = document.querySelector("[data-smart-topic-points]");
   const hintButton = document.querySelector("[data-smart-hint]");
   const hintOutput = document.querySelector("[data-smart-hint-output]");
+  const prompterLine = document.querySelector("[data-smart-prompter-line]");
+  const prompterToggle = document.querySelector("[data-smart-prompter-toggle]");
   const feedbackButton = document.querySelector("[data-smart-feedback]");
   const retryButton = document.querySelector("[data-smart-retry]");
   const feedbackPanel = document.querySelector("[data-smart-feedback-panel]");
@@ -47,6 +55,15 @@
     videoEmpty.hidden = true;
     video.classList.add("is-camera-on");
   });
+
+  function setSwitchState(button, isOn, onText = "On", offText = "Off") {
+    if (!button) return;
+    button.classList.toggle("is-on", isOn);
+    button.classList.toggle("is-off", !isOn);
+    button.setAttribute("aria-pressed", String(isOn));
+    const state = button.querySelector("em");
+    if (state) state.textContent = isOn ? onText : offText;
+  }
 
   const missions = [
     ["Introduce yourself", "Tell us your name, class, school and one thing you enjoy.", ["Say your name", "Share your class", "Tell one favourite thing"], "Begin with: My name is..."],
@@ -116,7 +133,11 @@
     if (group === "ukg-2") return "Beginner";
     if (group === "3-5") return "Beginner Plus";
     if (group === "6-8") return "Intermediate";
-    return "Advanced";
+    if (group === "9-12") return "Advanced Student";
+    if (group === "college") return "College Speaker";
+    if (group === "parent") return "Parent Communicator";
+    if (group === "professional") return "Professional Speaker";
+    return "Confidence Starter";
   }
 
   function todayKey() {
@@ -153,7 +174,14 @@
   }
 
   function populateActivities() {
-    const items = [currentMissionForToday(), activityPrompts.mirror, activityPrompts.picture, activityPrompts.story, activityPrompts.public];
+    const profile = getProfile();
+    const rolePrompts = {
+      college: { id: "college", label: "College Speaking", title: "Introduce your skills and learning goal.", prompt: "Speak like you are introducing yourself in a college club or internship discussion.", points: ["Your name and course", "One skill", "One goal"], hint: "Use: I am currently learning... My goal is..." },
+      parent: { id: "parent", label: "Parent Confidence", title: "Speak clearly with a teacher or school team.", prompt: "Practise explaining one concern or question about your child's learning.", points: ["Child's need", "Your question", "What support you want"], hint: "Start politely: I wanted to understand..." },
+      professional: { id: "professional", label: "Workplace Speaking", title: "Share a short workplace update.", prompt: "Speak like you are giving a clear team update in a meeting.", points: ["What is done", "What is pending", "What help is needed"], hint: "Use: Completed, next step, support needed." },
+    };
+    const rolePrompt = rolePrompts[profile?.classGroup];
+    const items = [rolePrompt || currentMissionForToday(), activityPrompts.mirror, activityPrompts.picture, activityPrompts.story, activityPrompts.public];
     activitySelect.innerHTML = items.map((item) => `<option value="${item.id}">${item.label}: ${item.title}</option>`).join("");
     selectedMission = items[0];
     renderMission(selectedMission);
@@ -169,6 +197,12 @@
     topicLabel.textContent = mission.label;
     topicTitle.textContent = mission.title;
     topicPoints.innerHTML = mission.points.map((point) => `<li>${point}</li>`).join("");
+    if (prompterLine) {
+      const cue = mission.points?.length
+        ? `Say: ${mission.points.join("  •  ")}`
+        : mission.hint || "Speak slowly and share one clear idea.";
+      prompterLine.textContent = cue;
+    }
     hintOutput.hidden = true;
     hintOutput.textContent = mission.hint;
   }
@@ -208,8 +242,8 @@
     video.srcObject = stream;
     videoEmpty.hidden = true;
     video.classList.add("is-camera-on");
-    cameraOffButton.disabled = false;
-    cameraButton.textContent = "Camera On";
+    cameraOffButton && (cameraOffButton.disabled = false);
+    setSwitchState(cameraButton, true);
 
     const playPromise = video.play?.();
     if (playPromise?.catch) {
@@ -227,8 +261,8 @@
     video.classList.remove("is-camera-on");
     videoEmpty.hidden = false;
     videoEmpty.innerHTML = "<strong>Mirror Practice</strong><span>Camera preview will appear here.</span>";
-    cameraOffButton.disabled = true;
-    cameraButton.textContent = "Start Camera";
+    cameraOffButton && (cameraOffButton.disabled = true);
+    setSwitchState(cameraButton, false);
   }
 
   function createRecognition() {
@@ -268,9 +302,11 @@
 
   function startSpeaking() {
     seconds = 0;
+    interimText = "";
     timerNode.textContent = "00:00";
     progressBar.style.width = "0%";
     transcript.value = "";
+    if (quickResult) quickResult.hidden = true;
     recordingPill.hidden = false;
     bars.classList.add("is-listening");
     startButton.disabled = true;
@@ -294,7 +330,21 @@
     bars.classList.remove("is-listening");
     startButton.disabled = false;
     stopButton.disabled = true;
-    speechStatus.textContent = "Recording stopped. Check the transcript, edit if needed, then get feedback.";
+    const capturedText = (transcript.value || interimText || "").trim();
+    const scoringText = capturedText || "I started speaking practice and will try again with a clearer answer.";
+    renderQuickResult(fallbackFeedback(scoringText));
+    speechStatus.textContent = capturedText
+      ? "Quick score is ready. Click Full Confidence Report for detailed feedback."
+      : "Quick score is ready. If words were not captured, type your answer below before opening the full report.";
+  }
+
+  function renderQuickResult(feedback) {
+    if (!quickResult) return;
+    quickOverall.textContent = `${feedback.overallScore || 0}%`;
+    quickFluency.textContent = `${feedback.fluencyScore || 0}%`;
+    quickConfidence.textContent = `${feedback.confidenceScore || 0}%`;
+    quickDuration.textContent = `${seconds}s`;
+    quickResult.hidden = false;
   }
 
   function fallbackFeedback(text) {
@@ -333,6 +383,7 @@
       return;
     }
     feedbackButton.disabled = true;
+    if (quickReportButton) quickReportButton.disabled = true;
     feedbackButton.textContent = "Checking...";
     let feedback = fallbackFeedback(text);
     try {
@@ -355,7 +406,8 @@
       // Static/local previews use the built-in safe feedback.
     }
     feedbackButton.disabled = false;
-    feedbackButton.textContent = "Get Friendly Feedback";
+    if (quickReportButton) quickReportButton.disabled = false;
+    feedbackButton.textContent = "Get Confidence Feedback";
     saveSession(feedback);
     renderFeedback(feedback);
   }
@@ -453,8 +505,15 @@
   });
 
   activitySelect?.addEventListener("change", () => renderMission(findActivity(activitySelect.value)));
-  cameraButton?.addEventListener("click", startCamera);
+  cameraButton?.addEventListener("click", () => {
+    if (stream) stopCamera();
+    else startCamera();
+  });
   cameraOffButton?.addEventListener("click", stopCamera);
+  prompterToggle?.addEventListener("click", () => {
+    const isOff = page.classList.toggle("is-prompter-off");
+    setSwitchState(prompterToggle, !isOff);
+  });
   videoEmpty?.addEventListener("click", () => {
     if (!stream) {
       startCamera();
@@ -469,6 +528,15 @@
   });
   startButton?.addEventListener("click", startSpeaking);
   stopButton?.addEventListener("click", stopSpeaking);
+  quickReportButton?.addEventListener("click", () => {
+    if (!transcript.value.trim() && interimText.trim()) {
+      transcript.value = interimText.trim();
+    }
+    if (!transcript.value.trim()) {
+      transcript.value = "I started speaking practice and will try again with a clearer answer.";
+    }
+    getFeedback();
+  });
   hintButton?.addEventListener("click", () => {
     hintOutput.hidden = false;
   });
@@ -476,6 +544,7 @@
   retryButton?.addEventListener("click", () => {
     transcript.value = "";
     feedbackPanel.hidden = true;
+    if (quickResult) quickResult.hidden = true;
     document.querySelector("[data-smart-room]").scrollIntoView({ behavior: "smooth", block: "start" });
   });
   document.querySelector("[data-smart-reset-profile]")?.addEventListener("click", () => {
@@ -498,6 +567,21 @@
   document.querySelector("[data-smart-delete]")?.addEventListener("click", () => {
     localStorage.removeItem(progressKey);
     renderProfile();
+  });
+  document.querySelectorAll("[data-smart-tilt]").forEach((item) => {
+    item.addEventListener("pointermove", (event) => {
+      const rect = item.getBoundingClientRect();
+      const x = (event.clientX - rect.left) / rect.width - 0.5;
+      const y = (event.clientY - rect.top) / rect.height - 0.5;
+      item.style.setProperty("--smart-tilt-x", `${(-y * 7).toFixed(2)}deg`);
+      item.style.setProperty("--smart-tilt-y", `${(x * 9).toFixed(2)}deg`);
+      item.style.transform = `rotateX(var(--smart-tilt-x)) rotateY(var(--smart-tilt-y))`;
+    });
+    item.addEventListener("pointerleave", () => {
+      item.style.removeProperty("--smart-tilt-x");
+      item.style.removeProperty("--smart-tilt-y");
+      item.style.transform = "";
+    });
   });
   activityButtons.forEach((button) => {
     button.addEventListener("click", () => {
