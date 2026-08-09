@@ -196,7 +196,7 @@
 .speaksmart-page .smart-actions-grid button:nth-child(3)::before { content: "03"; }
 .speaksmart-page .smart-actions-grid button:nth-child(4)::before { content: "04"; }
 .speaksmart-page .smart-actions-grid button:nth-child(5)::before { content: "05"; }
-.speaksmart-page .smart-actions-grid button:nth-child(6)::before { content: "↗"; }
+.speaksmart-page .smart-actions-grid button:nth-child(6)::before { content: "â†—"; }
 
 .speaksmart-page .smart-actions-grid button:nth-child(1) {
   --action-glow: #ffd86f;
