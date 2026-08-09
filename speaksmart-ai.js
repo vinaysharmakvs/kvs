@@ -121,6 +121,58 @@
     }
   }
 
+  function cleanSpeechTranscript(text) {
+    const words = String(text || "").replace(/\s+/g, " ").trim().split(" ").filter(Boolean);
+    if (!words.length) return "";
+    const sameChunk = (startA, startB, size) => {
+      for (let offset = 0; offset < size; offset += 1) {
+        if (words[startA + offset].toLowerCase() !== words[startB + offset].toLowerCase()) return false;
+      }
+      return true;
+    };
+    const cleaned = [];
+    let index = 0;
+    while (index < words.length) {
+      let repeatSize = 0;
+      const maxSize = Math.min(80, Math.floor((words.length - index) / 2));
+      for (let size = maxSize; size >= 1; size -= 1) {
+        if (sameChunk(index, index + size, size)) {
+          repeatSize = size;
+          break;
+        }
+      }
+      if (!repeatSize) {
+        cleaned.push(words[index]);
+        index += 1;
+        continue;
+      }
+      cleaned.push(...words.slice(index, index + repeatSize));
+      index += repeatSize;
+      while (index + repeatSize <= words.length && sameChunk(index - repeatSize, index, repeatSize)) {
+        index += repeatSize;
+      }
+    }
+    return cleaned.join(" ");
+  }
+
+  function mergeSpeechTranscript(baseText, nextText) {
+    const baseWords = cleanSpeechTranscript(baseText).split(/\s+/).filter(Boolean);
+    const nextWords = cleanSpeechTranscript(nextText).split(/\s+/).filter(Boolean);
+    if (!baseWords.length) return nextWords.join(" ");
+    if (!nextWords.length) return baseWords.join(" ");
+    let overlap = 0;
+    const maxOverlap = Math.min(baseWords.length, nextWords.length);
+    for (let size = maxOverlap; size > 0; size -= 1) {
+      const baseChunk = baseWords.slice(baseWords.length - size).map((word) => word.toLowerCase()).join(" ");
+      const nextChunk = nextWords.slice(0, size).map((word) => word.toLowerCase()).join(" ");
+      if (baseChunk === nextChunk) {
+        overlap = size;
+        break;
+      }
+    }
+    return cleanSpeechTranscript([...baseWords, ...nextWords.slice(overlap)].join(" "));
+  }
+
   function getProfile() {
     return readJson(storageKey, null);
   }
@@ -283,7 +335,7 @@
         if (event.results[index].isFinal) finalText += `${text} `;
         else interimText += `${text} `;
       }
-      if (finalText) transcript.value = `${transcript.value.trim()} ${finalText}`.trim();
+      if (finalText) transcript.value = mergeSpeechTranscript(transcript.value, finalText);
       speechStatus.textContent = interimText ? `Listening: ${interimText}` : "Listening. Keep speaking clearly.";
     };
     instance.onerror = () => {
@@ -330,7 +382,7 @@
     bars.classList.remove("is-listening");
     startButton.disabled = false;
     stopButton.disabled = true;
-    const capturedText = (transcript.value || interimText || "").trim();
+    const capturedText = cleanSpeechTranscript(transcript.value || interimText || "");
     const scoringText = capturedText || "I started speaking practice and will try again with a clearer answer.";
     renderQuickResult(fallbackFeedback(scoringText));
     speechStatus.textContent = capturedText
@@ -530,7 +582,7 @@
   stopButton?.addEventListener("click", stopSpeaking);
   quickReportButton?.addEventListener("click", () => {
     if (!transcript.value.trim() && interimText.trim()) {
-      transcript.value = interimText.trim();
+      transcript.value = cleanSpeechTranscript(interimText);
     }
     if (!transcript.value.trim()) {
       transcript.value = "I started speaking practice and will try again with a clearer answer.";
