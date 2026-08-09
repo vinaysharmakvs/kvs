@@ -3568,7 +3568,7 @@ function cleanReadingTranscript(text) {
   let index = 0;
   while (index < words.length) {
     let repeatSize = 0;
-    const maxSize = Math.min(8, Math.floor((words.length - index) / 2));
+    const maxSize = Math.min(80, Math.floor((words.length - index) / 2));
     for (let size = maxSize; size >= 1; size -= 1) {
       if (sameChunk(index, index + size, size)) {
         repeatSize = size;
@@ -3604,7 +3604,7 @@ function mergeReadingTranscript(baseText, nextText) {
       break;
     }
   }
-  return [...baseWords, ...nextWords.slice(overlap)].join(" ");
+  return cleanReadingTranscript([...baseWords, ...nextWords.slice(overlap)].join(" "));
 }
 
 function getReadingDisplayTranscript(spokenText, expectedText, maxWords = 22) {
