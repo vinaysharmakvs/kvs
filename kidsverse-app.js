@@ -74,7 +74,32 @@ function renderGrade(key) {
 }
 
 function getRootPath() {
-  return window.location.pathname.includes("/after-school/") ? "../" : "";
+  if (window.location.pathname.includes("/after-school/")) return "../";
+  if (window.location.pathname.includes("/tests/")) return "../";
+  return "";
+}
+
+function enhanceSitewideTestLink() {
+  document.querySelectorAll(".nav-links").forEach((nav) => {
+    const root = getRootPath();
+    const testHref = `${root}tests/tense-test.html`;
+    const alreadyExists = [...nav.querySelectorAll("a")].some((link) => {
+      const href = link.getAttribute("href") || "";
+      return href === testHref || href.endsWith("/tests/tense-test.html") || link.textContent.trim().toLowerCase() === "english test";
+    });
+    if (alreadyExists) return;
+
+    const anchor = document.createElement("a");
+    anchor.href = testHref;
+    anchor.textContent = "English Test";
+
+    const faqLink = [...nav.querySelectorAll("a")].find((link) => link.textContent.trim().toLowerCase() === "faq");
+    if (faqLink) {
+      faqLink.insertAdjacentElement("beforebegin", anchor);
+    } else {
+      nav.appendChild(anchor);
+    }
+  });
 }
 
 function enhanceAfterSchoolMenu() {
@@ -114,6 +139,7 @@ function enhanceAfterSchoolMenu() {
 }
 
 enhanceAfterSchoolMenu();
+enhanceSitewideTestLink();
 
 menuButton?.addEventListener("click", () => {
   const open = siteHeader.classList.toggle("is-open");
@@ -174,6 +200,7 @@ function enhanceKiyaLearningLinks() {
       { href: `${labRoot}articles-a-an-the.html`, label: "A, An & The" },
       { href: `${labRoot}daily-routine-verbs.html`, label: "Daily Routine Verbs" },
       { href: `${labRoot}reading-fluency.html`, label: "Reading Fluency" },
+      { href: `${getRootPath()}tests/tense-test.html`, label: "Mixed Tenses Test" },
     ];
 
     learningLinks.forEach((item) => {
@@ -362,9 +389,11 @@ const studentRosters = {
       "Daksh Manhas",
       "Kiyansh Bhardwaj",
       "Kriday Sharma",
+      "Manya Sharma",
       "Rivaan Sharma",
       "Smarth Thakur",
       "Navikaa Dhiman",
+      "Avyukt Bhadwal",
     ],
   },
   "Nursery - Alpha": {
