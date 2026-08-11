@@ -345,9 +345,11 @@ const studentRosters = {
       "Daksh Manhas",
       "Kiyansh Bhardwaj",
       "Kriday Sharma",
+      "Manya Sharma",
       "Rivaan Sharma",
       "Smarth Thakur",
       "Navikaa Dhiman",
+      "Avyukt Bhadwal",
     ],
   },
   "Nursery - Alpha": {
