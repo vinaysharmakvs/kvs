@@ -678,6 +678,70 @@
   }
 }
 
+/* Mobile app-shell compatibility: keep learning content clear above fixed controls. */
+@media (max-width: 900px) {
+  .after-school-page .whatsapp-float,
+  .learning-lab-page .whatsapp-float,
+  .speaksmart-page .whatsapp-float {
+    left: 12px !important;
+    right: auto !important;
+    bottom: calc(86px + env(safe-area-inset-bottom, 0px)) !important;
+    z-index: 70 !important;
+    max-width: 116px !important;
+  }
+
+  .after-school-page .kiya-widget,
+  .learning-lab-page .kiya-widget,
+  .speaksmart-page .kiya-widget {
+    right: 12px !important;
+    bottom: calc(86px + env(safe-area-inset-bottom, 0px)) !important;
+    z-index: 70 !important;
+  }
+
+  .learning-lab-page .tense-card-grid button {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    grid-auto-rows: auto !important;
+    gap: 5px !important;
+    min-height: 0 !important;
+    padding: 14px !important;
+    overflow: visible !important;
+  }
+
+  .learning-lab-page .tense-card-grid button span,
+  .learning-lab-page .tense-card-grid button strong,
+  .learning-lab-page .tense-card-grid button code,
+  .learning-lab-page .tense-card-grid button em {
+    grid-column: 1 !important;
+    grid-row: auto !important;
+    width: auto !important;
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    line-height: 1.3 !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  .learning-lab-page .tense-card-grid button span {
+    justify-self: start !important;
+    padding: 4px 9px !important;
+    border-radius: 999px !important;
+    background: rgba(12, 117, 108, 0.1) !important;
+    font-size: 0.75rem !important;
+  }
+
+  .learning-lab-page .tense-card-grid button strong {
+    font-size: 1.05rem !important;
+  }
+
+  .learning-lab-page .tense-card-grid button code,
+  .learning-lab-page .tense-card-grid button em {
+    display: block !important;
+    font-size: 0.86rem !important;
+  }
+}
+
 /* SpeakSmart discovery and live activity cues */
 .after-school-page .live-feature-pill,
 .learning-lab-page .live-feature-pill,
@@ -815,5 +879,53 @@
     width: 100%;
     justify-content: flex-start;
     border-radius: 20px;
+  }
+}
+
+/* Must remain last so the mobile app bar wins over legacy floating-control rules. */
+@media (max-width: 900px) {
+  body.after-school-page .site-header .menu-button,
+  body.learning-lab-page .site-header .menu-button,
+  body.speaksmart-page .site-header .menu-button,
+  body.after-school-page .site-header.is-open .nav-links,
+  body.learning-lab-page .site-header.is-open .nav-links,
+  body.speaksmart-page .site-header.is-open .nav-links {
+    display: none !important;
+  }
+
+  body.after-school-page:not(.teacher-page):not(.staff-login-page) .whatsapp-float,
+  body.learning-lab-page:not(.teacher-page):not(.staff-login-page) .whatsapp-float,
+  body.speaksmart-page:not(.teacher-page):not(.staff-login-page) .whatsapp-float {
+    bottom: calc(86px + env(safe-area-inset-bottom, 0px)) !important;
+    z-index: 70 !important;
+    max-width: 116px !important;
+  }
+
+  body.after-school-page .kiya-widget,
+  body.learning-lab-page .kiya-widget,
+  body.speaksmart-page .kiya-widget {
+    bottom: calc(86px + env(safe-area-inset-bottom, 0px)) !important;
+    z-index: 70 !important;
+  }
+
+  body.learning-lab-page .tense-card-grid button {
+    grid-template-columns: 1fr !important;
+    grid-auto-rows: auto !important;
+    gap: 5px !important;
+    padding: 14px !important;
+    overflow: visible !important;
+  }
+
+  body.learning-lab-page .tense-card-grid button span,
+  body.learning-lab-page .tense-card-grid button strong,
+  body.learning-lab-page .tense-card-grid button code,
+  body.learning-lab-page .tense-card-grid button em {
+    grid-column: 1 !important;
+    grid-row: auto !important;
+    width: auto !important;
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    line-height: 1.3 !important;
   }
 }
