@@ -31,7 +31,7 @@
   hyphens: none;
 }
 
-@media (max-width: 760px) {
+@media (max-width: 600px) {
   .about-page {
     padding-bottom: 96px;
   }
@@ -195,7 +195,7 @@
   }
 }
 
-@media (max-width: 760px) {
+@media (max-width: 600px) {
   .about-page .why-grid {
     grid-template-columns: 1fr !important;
     gap: 10px !important;
@@ -230,5 +230,226 @@
   .about-page .why-grid article p {
     font-size: 0.88rem !important;
     line-height: 1.34 !important;
+  }
+}
+
+/* Premium mobile layout for About page. */
+@media (max-width: 600px) {
+  .about-page .about-story,
+  .about-page .founder-section {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+
+  .about-page .about-story > *,
+  .about-page .founder-section > * {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+
+  .about-page .about-stat-band,
+  .about-page .founder-grid,
+  .about-page .philosophy-grid,
+  .about-page .mission-vision,
+  .about-page .why-grid {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    width: calc(100% + 18px) !important;
+    margin-right: -9px !important;
+    margin-left: -9px !important;
+    padding: 3px 9px 12px !important;
+    gap: 10px !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-snap-type: x mandatory !important;
+    scroll-padding-inline: 9px !important;
+    scrollbar-width: none !important;
+    overscroll-behavior-inline: contain !important;
+  }
+
+  .about-page .about-stat-band::-webkit-scrollbar,
+  .about-page .founder-grid::-webkit-scrollbar,
+  .about-page .philosophy-grid::-webkit-scrollbar,
+  .about-page .mission-vision::-webkit-scrollbar,
+  .about-page .why-grid::-webkit-scrollbar { display: none !important; }
+
+  .about-page .about-stat-band article {
+    display: grid !important;
+    grid-template-columns: 70px minmax(0, 1fr) !important;
+    flex: 0 0 min(78vw, 285px) !important;
+    grid-column: auto !important;
+    align-items: center !important;
+    gap: 10px !important;
+    min-height: 105px !important;
+    padding: 14px !important;
+    scroll-snap-align: center !important;
+  }
+
+  .about-page .about-stat-band article strong {
+    font-size: 1.65rem !important;
+    white-space: nowrap !important;
+  }
+
+  .about-page .founder-grid article {
+    flex: 0 0 min(80vw, 295px) !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    scroll-snap-align: center !important;
+  }
+
+  .about-page .founder-grid img {
+    display: block !important;
+    width: 100% !important;
+    height: 330px !important;
+    min-height: 330px !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: 8px !important;
+    object-fit: contain !important;
+    object-position: center !important;
+    background: #fff !important;
+  }
+
+  .about-page .philosophy-grid article,
+  .about-page .why-grid article {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    grid-auto-rows: auto !important;
+    flex: 0 0 min(86vw, 318px) !important;
+    gap: 8px !important;
+    align-content: start !important;
+    min-height: 160px !important;
+    padding: 16px !important;
+    border-radius: 22px !important;
+    scroll-snap-align: center !important;
+  }
+
+  .about-page .philosophy-grid article:first-child,
+  .about-page .why-grid article:first-child { scroll-snap-align: start !important; }
+
+  .about-page .philosophy-grid article span,
+  .about-page .why-grid article span {
+    grid-column: 1 !important;
+    grid-row: auto !important;
+    align-self: start !important;
+    justify-self: start !important;
+    width: fit-content !important;
+    min-width: 0 !important;
+    height: auto !important;
+    min-height: 32px !important;
+    padding: 6px 10px !important;
+    white-space: nowrap !important;
+  }
+
+  .about-page .philosophy-grid article h3,
+  .about-page .philosophy-grid article p,
+  .about-page .why-grid article h3,
+  .about-page .why-grid article p {
+    grid-column: 1 !important;
+    grid-row: auto !important;
+    margin: 0 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+  }
+
+  .about-page .philosophy-grid article h3,
+  .about-page .why-grid article h3 { font-size: 1.05rem !important; }
+  .about-page .philosophy-grid article p,
+  .about-page .why-grid article p { font-size: .84rem !important; line-height: 1.42 !important; }
+
+  .about-page .mission-vision article {
+    flex: 0 0 min(86vw, 318px) !important;
+    min-height: 230px !important;
+    padding: 18px !important;
+    border-radius: 23px !important;
+    scroll-snap-align: center !important;
+  }
+
+  .about-page .mission-vision article h2 {
+    font-size: 1.45rem !important;
+    line-height: 1.08 !important;
+  }
+
+  .about-page .about-hero-visual img {
+    width: 100% !important;
+    height: 280px !important;
+    min-height: 280px !important;
+    max-height: none !important;
+    padding: 8px !important;
+    object-fit: contain !important;
+    object-position: center !important;
+    background: #fff !important;
+  }
+
+  .about-page .founder-points {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 7px !important;
+  }
+
+  .about-page .kiya-widget {
+    bottom: calc(86px + env(safe-area-inset-bottom, 0px)) !important;
+    z-index: 70 !important;
+  }
+
+  .about-page .whatsapp-float {
+    bottom: calc(86px + env(safe-area-inset-bottom, 0px)) !important;
+    z-index: 70 !important;
+    max-width: 116px !important;
+  }
+}
+
+/* Protect the desktop/tablet About design from phone-only swipe-card rules. */
+@media (min-width: 901px) {
+  .about-page .philosophy-grid {
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    gap: 14px !important;
+    overflow: visible !important;
+  }
+
+  .about-page .philosophy-grid article {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    min-width: 0 !important;
+    min-height: 210px !important;
+    padding: 22px !important;
+  }
+
+  .about-page .philosophy-grid article span {
+    width: fit-content !important;
+    height: auto !important;
+    min-height: 0 !important;
+    padding: 7px 10px !important;
+  }
+
+  .about-page .why-grid {
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    gap: 14px !important;
+    overflow: visible !important;
+  }
+}
+
+@media (min-width: 601px) and (max-width: 900px) {
+  .about-page .philosophy-grid,
+  .about-page .why-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    gap: 12px !important;
+    overflow: visible !important;
   }
 }
