@@ -79,67 +79,254 @@ function getRootPath() {
   return "";
 }
 
-function enhanceSitewideTestLink() {
-  document.querySelectorAll(".nav-links").forEach((nav) => {
-    const root = getRootPath();
-    const testHref = `${root}tests/tense-test.html`;
-    const alreadyExists = [...nav.querySelectorAll("a")].some((link) => {
-      const href = link.getAttribute("href") || "";
-      return href === testHref || href.endsWith("/tests/tense-test.html") || link.textContent.trim().toLowerCase() === "english test";
-    });
-    if (alreadyExists) return;
+function buildSubmenuLink(href, label, options = {}) {
+  const comingSoon = options.comingSoon ? '<small class="after-school-coming">Coming Soon</small>' : "";
+  const className = options.className ? ` class="${options.className}"` : "";
+  const safeHref = options.comingSoon ? "#" : href;
+  const prevent = options.comingSoon ? ' data-coming-soon="true"' : "";
+  return `<a${className} href="${safeHref}"${prevent}><span>${label}</span>${comingSoon}</a>`;
+}
 
-    const anchor = document.createElement("a");
-    anchor.href = testHref;
-    anchor.textContent = "English Test";
+function buildAfterSchoolMenu(root) {
+  return `
+    <div class="nav-dropdown after-school-nav-dropdown">
+      <a class="nav-parent" href="${root}after-school.html">After School</a>
+      <div class="nav-menu after-school-menu">
+        <div class="after-school-menu-main">
+          <section class="after-school-menu-section">
+            <span class="after-school-menu-caption">Quick Access</span>
+            <a class="after-school-primary-link" href="${root}after-school.html#english-learning-lab">
+              <span>Continue Learning</span>
+              <small data-continue-learning-label>English Learning Lab</small>
+            </a>
+            <a class="after-school-menu-link" href="${root}after-school.html">Learning Home</a>
+            <a class="after-school-menu-link" href="${root}learning-journey.html">My Progress</a>
+          </section>
 
-    const faqLink = [...nav.querySelectorAll("a")].find((link) => link.textContent.trim().toLowerCase() === "faq");
-    if (faqLink) {
-      faqLink.insertAdjacentElement("beforebegin", anchor);
-    } else {
-      nav.appendChild(anchor);
-    }
-  });
+          <section class="after-school-menu-section">
+            <span class="after-school-menu-caption">Learning Areas</span>
+
+            <div class="after-school-menu-group" data-after-school-group>
+              <button class="after-school-menu-button" type="button" data-after-school-toggle aria-expanded="false">
+                <span>Reading &amp; Phonics</span>
+              </button>
+              <div class="after-school-submenu">
+                ${buildSubmenuLink("#", "Phonics", { comingSoon: true })}
+                ${buildSubmenuLink("#", "Word Families", { comingSoon: true })}
+                ${buildSubmenuLink("#", "Consonant Blends", { comingSoon: true })}
+                ${buildSubmenuLink("#", "Vowel Teams", { comingSoon: true })}
+                ${buildSubmenuLink("#", "Pronunciation Practice", { comingSoon: true })}
+                ${buildSubmenuLink(`${root}after-school/reading-fluency.html`, "Reading Fluency")}
+                ${buildSubmenuLink(`${root}after-school/reading-fluency.html`, "View Reading Lab", { className: "after-school-submenu-highlight" })}
+              </div>
+            </div>
+
+            <div class="after-school-menu-group" data-after-school-group>
+              <button class="after-school-menu-button" type="button" data-after-school-toggle aria-expanded="false">
+                <span>English Grammar</span>
+              </button>
+              <div class="after-school-submenu">
+                ${buildSubmenuLink(`${root}after-school.html#english-learning-lab`, "Tenses")}
+                ${buildSubmenuLink(`${root}after-school/present-tense.html`, "Present Tense")}
+                ${buildSubmenuLink(`${root}after-school/past-tense.html`, "Past Tense")}
+                ${buildSubmenuLink(`${root}after-school/future-tense.html`, "Future Tense")}
+                ${buildSubmenuLink(`${root}after-school/articles-a-an-the.html`, "A, An & The")}
+                ${buildSubmenuLink(`${root}after-school/daily-routine-verbs.html`, "Daily Routine Verbs")}
+                ${buildSubmenuLink(`${root}after-school.html#english-learning-lab`, "View English Learning Lab", { className: "after-school-submenu-highlight" })}
+              </div>
+            </div>
+
+            <div class="after-school-menu-group" data-after-school-group>
+              <button class="after-school-menu-button" type="button" data-after-school-toggle aria-expanded="false">
+                <span>Speaking &amp; Vocabulary</span>
+              </button>
+              <div class="after-school-submenu">
+                ${buildSubmenuLink(`${root}after-school/speaksmart-ai.html`, "SpeakSmart AI")}
+                ${buildSubmenuLink("#", "Pronunciation", { comingSoon: true })}
+                ${buildSubmenuLink("#", "Daily Vocabulary", { comingSoon: true })}
+                ${buildSubmenuLink("#", "Picture Speaking", { comingSoon: true })}
+                ${buildSubmenuLink("#", "Storytelling", { comingSoon: true })}
+                ${buildSubmenuLink("#", "Public Speaking", { comingSoon: true })}
+              </div>
+            </div>
+
+            <div class="after-school-menu-group" data-after-school-group>
+              <button class="after-school-menu-button" type="button" data-after-school-toggle aria-expanded="false">
+                <span>Maths</span>
+              </button>
+              <div class="after-school-submenu">
+                ${buildSubmenuLink(`${root}after-school.html#maths-lab`, "Maths Learning Lab")}
+                ${buildSubmenuLink("#", "Mental Maths", { comingSoon: true })}
+                ${buildSubmenuLink("#", "Number Skills", { comingSoon: true })}
+                ${buildSubmenuLink("#", "Practice Challenges", { comingSoon: true })}
+              </div>
+            </div>
+
+            <div class="after-school-menu-group" data-after-school-group>
+              <button class="after-school-menu-button" type="button" data-after-school-toggle aria-expanded="false">
+                <span>Coding &amp; AI</span>
+              </button>
+              <div class="after-school-submenu">
+                ${buildSubmenuLink(`${root}after-school.html#future-skills`, "Coding Lab")}
+                ${buildSubmenuLink(`${root}after-school.html#future-skills`, "AI Learning")}
+                ${buildSubmenuLink("#", "Projects", { comingSoon: true })}
+                ${buildSubmenuLink("#", "Build With AI", { comingSoon: true })}
+              </div>
+            </div>
+
+            <div class="after-school-menu-group" data-after-school-group>
+              <button class="after-school-menu-button" type="button" data-after-school-toggle aria-expanded="false">
+                <span>Tests &amp; Challenges</span>
+              </button>
+              <div class="after-school-submenu">
+                ${buildSubmenuLink(`${root}tests/english-lab-tests.html`, "English Test")}
+                ${buildSubmenuLink(`${root}tests/tense-test.html`, "Mixed Tenses Test")}
+                ${buildSubmenuLink("#", "Reading Test", { comingSoon: true })}
+                ${buildSubmenuLink("#", "Skill Challenges", { comingSoon: true })}
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  `;
 }
 
 function enhanceAfterSchoolMenu() {
   document.querySelectorAll(".nav-links").forEach((nav) => {
-    const hasAfterSchoolDropdown = [...nav.querySelectorAll(".nav-dropdown .nav-parent")].some(
-      (link) => link.textContent.trim().toLowerCase() === "after school"
-    );
-    if (hasAfterSchoolDropdown) {
-      return;
-    }
-
-    const afterSchoolLink = [...nav.children].find(
-      (child) => child.matches?.("a") && child.textContent.trim().toLowerCase() === "after school"
-    );
-    if (!afterSchoolLink) return;
-
     const root = getRootPath();
-    const dropdown = document.createElement("div");
-    dropdown.className = "nav-dropdown after-school-nav-dropdown";
-    dropdown.innerHTML = `
-      <a class="nav-parent" href="${root}after-school.html">After School</a>
-      <div class="nav-menu nav-menu-learning">
-        <a href="${root}after-school.html">After School Overview</a>
-        <a class="nav-menu-label" href="${root}after-school/present-tense.html">English Learning Lab</a>
-        <a class="nav-sub-link" href="${root}after-school/present-tense.html">Present Tense</a>
-        <a class="nav-sub-link" href="${root}after-school/past-tense.html">Past Tense</a>
-        <a class="nav-sub-link" href="${root}after-school/future-tense.html">Future Tense</a>
-        <a class="nav-sub-link" href="${root}after-school/articles-a-an-the.html">A, An & The</a>
-        <a class="nav-sub-link" href="${root}after-school/daily-routine-verbs.html">Daily Routine Verbs</a>
-        <a class="nav-sub-link" href="${root}after-school/reading-fluency.html">Reading Fluency</a>
-        <a class="nav-sub-link" href="${root}after-school/speaksmart-ai.html">SpeakSmart AI</a>
-        <a class="nav-sub-link nav-test-link" href="${root}tests/english-lab-tests.html">Test Your Skills</a>
-      </div>
-    `;
-    afterSchoolLink.replaceWith(dropdown);
+    const afterSchoolItem = [...nav.children].find((child) => {
+      if (child.matches?.("a")) return child.textContent.trim().toLowerCase() === "after school";
+      if (child.matches?.(".nav-dropdown")) {
+        const parentLink = child.querySelector(".nav-parent");
+        return parentLink && parentLink.textContent.trim().toLowerCase() === "after school";
+      }
+      return false;
+    });
+    if (!afterSchoolItem) return;
+
+    const wrapper = document.createElement("div");
+    wrapper.innerHTML = buildAfterSchoolMenu(root).trim();
+    afterSchoolItem.replaceWith(wrapper.firstElementChild);
   });
 }
 
 enhanceAfterSchoolMenu();
-enhanceSitewideTestLink();
+
+function setupMobileAppShell() {
+  const excludedPages = [
+    "kvs-staff-access.html",
+    "teacher-assessment.html",
+    "teacher-reading-assessment.html",
+    "teacher-resource-center.html",
+    "student-assessment.html",
+  ];
+  const currentPage = window.location.pathname.split("/").pop() || "index.html";
+  if (excludedPages.includes(currentPage) || document.querySelector("[data-mobile-app-shell]")) return;
+
+  const root = getRootPath();
+  const path = window.location.pathname.toLowerCase();
+  const isHome = currentPage === "index.html" || window.location.pathname.endsWith("/");
+  const isProgram = ["playway.html", "playgroup.html", "nursery.html", "lkg.html", "ukg.html", "grade-1.html"].includes(currentPage);
+  const isLearning = path.includes("/after-school/") || ["after-school.html", "learning-journey.html", "quick-test.html"].includes(currentPage) || path.includes("/tests/");
+  const isParent = ["parent-hub.html", "reading-mission.html", "nursery-readiness.html", "parent-feedback.html", "why-parents-trust-kidsverse.html", "faq.html"].includes(currentPage);
+
+  const shell = document.createElement("div");
+  shell.dataset.mobileAppShell = "";
+  shell.innerHTML = `
+    <div class="mobile-drawer-backdrop" data-mobile-drawer-close></div>
+    <aside class="mobile-app-drawer" id="mobile-app-drawer" aria-label="Mobile navigation" aria-hidden="true">
+      <div class="mobile-drawer-head">
+        <a class="mobile-drawer-brand" href="${root}index.html">
+          <img src="${root}assets/logo.png" alt="" />
+          <span><strong>Kidsverse</strong><small>School Rehan</small></span>
+        </a>
+        <button class="mobile-drawer-close" type="button" aria-label="Close menu" data-mobile-drawer-close>&times;</button>
+      </div>
+      <div class="mobile-drawer-scroll">
+        <a class="mobile-drawer-primary" href="${root}index.html#admissions">Book a School Tour</a>
+        <nav class="mobile-drawer-links" aria-label="All website links">
+          <a href="${root}index.html">Home</a>
+          <a href="${root}about.html">About Kidsverse</a>
+          <a href="${root}activities.html">Activities</a>
+          <details data-mobile-drawer-programs${isProgram ? " open" : ""}>
+            <summary>Programs</summary>
+            <div>
+              <a href="${root}playway.html">Playway</a>
+              <a href="${root}nursery.html">Nursery</a>
+              <a href="${root}lkg.html">LKG</a>
+              <a href="${root}ukg.html">UKG</a>
+              <a href="${root}grade-1.html">Grade 1</a>
+            </div>
+          </details>
+          <details${isLearning ? " open" : ""}>
+            <summary>After School &amp; Learning</summary>
+            <div>
+              <a href="${root}after-school.html">Learning Home</a>
+              <a href="${root}learning-journey.html">My Progress</a>
+              <a href="${root}after-school/present-tense.html">English Learning Lab</a>
+              <a href="${root}after-school/reading-fluency.html">Reading Fluency</a>
+              <a href="${root}after-school/speaksmart-ai.html">SpeakSmart AI</a>
+              <a href="${root}tests/tense-test.html">Tests &amp; Challenges</a>
+            </div>
+          </details>
+          <details${isParent ? " open" : ""}>
+            <summary>Parent Hub</summary>
+            <div>
+              <a href="${root}parent-hub.html">Parent Hub Home</a>
+              <a href="${root}reading-mission.html">Reading Mission</a>
+              <a href="${root}nursery-readiness.html">Nursery Readiness</a>
+              <a href="${root}parent-feedback.html">Parent Feedback</a>
+              <a href="${root}why-parents-trust-kidsverse.html">Why Parents Trust Us</a>
+              <a href="${root}faq.html">Parent FAQ</a>
+            </div>
+          </details>
+          <a href="${root}contact.html">Contact</a>
+          <a href="${root}kvs-staff-access.html" rel="nofollow">Staff Login</a>
+        </nav>
+      </div>
+    </aside>
+    <nav class="mobile-bottom-nav" aria-label="Mobile quick navigation">
+      <a href="${root}index.html"${isHome ? ' class="is-active" aria-current="page"' : ""}><span aria-hidden="true">⌂</span><small>Home</small></a>
+      <button type="button" data-mobile-drawer-open="programs"${isProgram ? ' class="is-active"' : ""}><span aria-hidden="true">▦</span><small>Programs</small></button>
+      <a href="${root}after-school.html"${isLearning ? ' class="is-active" aria-current="page"' : ""}><span aria-hidden="true">✦</span><small>Learn</small></a>
+      <a href="${root}parent-hub.html"${isParent ? ' class="is-active" aria-current="page"' : ""}><span aria-hidden="true">♡</span><small>Parents</small></a>
+      <button type="button" data-mobile-drawer-open="all"><span aria-hidden="true">☰</span><small>More</small></button>
+    </nav>`;
+  document.body.appendChild(shell);
+
+  const drawer = shell.querySelector(".mobile-app-drawer");
+  const openButtons = shell.querySelectorAll("[data-mobile-drawer-open]");
+  const closeButtons = shell.querySelectorAll("[data-mobile-drawer-close]");
+  let lastTrigger = null;
+
+  const setDrawerOpen = (open, section = "all") => {
+    document.body.classList.toggle("mobile-drawer-is-open", open);
+    drawer.setAttribute("aria-hidden", String(!open));
+    openButtons.forEach((button) => button.setAttribute("aria-expanded", String(open && button === lastTrigger)));
+    if (open && section === "programs") {
+      shell.querySelector("[data-mobile-drawer-programs]").open = true;
+    }
+    if (open) drawer.querySelector(".mobile-drawer-close").focus();
+    else lastTrigger?.focus();
+  };
+
+  openButtons.forEach((button) => {
+    button.setAttribute("aria-controls", "mobile-app-drawer");
+    button.setAttribute("aria-expanded", "false");
+    button.addEventListener("click", () => {
+      lastTrigger = button;
+      setDrawerOpen(true, button.dataset.mobileDrawerOpen);
+    });
+  });
+  closeButtons.forEach((button) => button.addEventListener("click", () => setDrawerOpen(false)));
+  drawer.querySelectorAll("a").forEach((link) => link.addEventListener("click", () => setDrawerOpen(false)));
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && document.body.classList.contains("mobile-drawer-is-open")) setDrawerOpen(false);
+  });
+}
+
+setupMobileAppShell();
 
 menuButton?.addEventListener("click", () => {
   const open = siteHeader.classList.toggle("is-open");
@@ -221,6 +408,69 @@ function enhanceKiyaLearningLinks() {
 }
 
 enhanceKiyaLearningLinks();
+
+function setupAfterSchoolAccordions() {
+  document.querySelectorAll(".after-school-nav-dropdown").forEach((dropdown) => {
+    const releaseDropdownFocus = () => {
+      const activeElement = document.activeElement;
+      if (activeElement instanceof HTMLElement && dropdown.contains(activeElement)) {
+        activeElement.blur();
+      }
+    };
+
+    const closeAllGroups = () => {
+      dropdown.querySelectorAll("[data-after-school-group]").forEach((item) => {
+        item.classList.remove("is-open");
+        item.querySelector("[data-after-school-toggle]")?.setAttribute("aria-expanded", "false");
+      });
+    };
+
+    dropdown.querySelectorAll('[data-coming-soon="true"]').forEach((link) => {
+      link.addEventListener("click", (event) => {
+        event.preventDefault();
+        releaseDropdownFocus();
+        closeAllGroups();
+      });
+    });
+
+    dropdown.querySelectorAll("[data-after-school-group]").forEach((group) => {
+      group.addEventListener("mouseenter", () => {
+        if (window.innerWidth <= 1100) return;
+        releaseDropdownFocus();
+        closeAllGroups();
+        group.classList.add("is-open");
+        group.querySelector("[data-after-school-toggle]")?.setAttribute("aria-expanded", "true");
+      });
+    });
+
+    dropdown.addEventListener("mouseleave", () => {
+      if (window.innerWidth <= 1100) return;
+      closeAllGroups();
+    });
+
+    dropdown.querySelectorAll("[data-after-school-toggle]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const group = button.closest("[data-after-school-group]");
+        if (!group) return;
+        const shouldOpen = !group.classList.contains("is-open");
+        releaseDropdownFocus();
+        closeAllGroups();
+        if (shouldOpen) {
+          group.classList.add("is-open");
+          button.setAttribute("aria-expanded", "true");
+        }
+      });
+    });
+
+    dropdown.querySelectorAll(".after-school-submenu a, .after-school-menu-link, .after-school-primary-link").forEach((link) => {
+      link.addEventListener("click", () => {
+        closeAllGroups();
+      });
+    });
+  });
+}
+
+setupAfterSchoolAccordions();
 
 document.querySelectorAll(".kiya-links a").forEach((link) => {
   link.addEventListener("click", () => setKiyaOpen(false));
