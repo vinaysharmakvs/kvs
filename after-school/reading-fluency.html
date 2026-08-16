@@ -18,8 +18,8 @@
     <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="512x512" href="../assets/favicon.png" />
     <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png" />
-    <link rel="stylesheet" href="../styles.css?v=20260805-internal-fix2" />
-    <link rel="stylesheet" href="../after-school-fix.css?v=20260808-speaksmart-map" />
+<link rel="stylesheet" href="../styles.css?v=20260813-global-mobile-fix" />
+    <link rel="stylesheet" href="../after-school-fix.css?v=20260813-mobile-shell-fix2" />
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-0ZT634EM99"></script>
   <script>
@@ -97,7 +97,7 @@
           </p>
           <div class="hero-actions">
             <a class="primary-button" href="#reading-practice">Start Reading</a>
-            <a class="secondary-button" href="#word-helper">Practice Words</a>
+            <a class="secondary-button" href="#continue-reading">Choose My Next Mission</a>
           </div>
           <div class="live-feature-pill" aria-label="Live Reading Fluency usage">
             <strong data-live-feature-count="reading-fluency" data-live-feature-base="89">89</strong>
@@ -179,41 +179,57 @@
           </div>
           <div class="reading-theme-buttons" data-reading-theme-group>
             <button class="is-active" type="button" data-reading-theme="sports">
+              <span class="reading-theme-icon" aria-hidden="true">⚽</span>
               <strong>Sports</strong>
               <small>Matches, teamwork and practice energy</small>
             </button>
             <button type="button" data-reading-theme="adventure">
+              <span class="reading-theme-icon" aria-hidden="true">🧭</span>
               <strong>Adventure</strong>
               <small>Clues, journeys and brave choices</small>
             </button>
             <button type="button" data-reading-theme="history">
+              <span class="reading-theme-icon" aria-hidden="true">🏰</span>
               <strong>History</strong>
               <small>Forts, leaders and stories from the past</small>
             </button>
             <button type="button" data-reading-theme="science">
+              <span class="reading-theme-icon" aria-hidden="true">🔬</span>
               <strong>Science</strong>
               <small>Experiments, nature and curious thinking</small>
             </button>
             <button type="button" data-reading-theme="army">
+              <span class="reading-theme-icon" aria-hidden="true">⭐</span>
               <strong>Army</strong>
               <small>Discipline, service and courageous teamwork</small>
             </button>
           </div>
         </div>
 
-        <div class="reading-lab-shell">
+        <div class="reading-ready-banner" aria-live="polite">
+          <span aria-hidden="true">▶</span>
+          <div><strong>Your story is ready!</strong><small>Listen once, then press Start Reading and read aloud.</small></div>
+          <a href="#reading-story">Open story ↓</a>
+        </div>
+
+        <div class="reading-lab-shell" id="reading-story">
           <article class="reading-passage-card">
             <div class="reading-card-top">
               <span data-reading-level-label>UKG - Beginner | Sports</span>
               <strong data-reading-title>The Practice Ground</strong>
             </div>
-            <p class="reading-passage" data-reading-passage>
-              The children run on the ground. They pass the ball, cheer for friends and try again with a happy smile.
-            </p>
+            <div class="reading-passage-wrap">
+              <p class="reading-passage" data-reading-passage>
+                The children run on the ground. They pass the ball, cheer for friends and try again with a happy smile.
+              </p>
+              <button class="reading-passage-audio" type="button" data-reading-listen aria-label="Listen to this paragraph" title="Listen to this paragraph">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4Zm12.2-.8a5.4 5.4 0 0 1 0 7.6M18.8 5.6a9 9 0 0 1 0 12.8"/></svg>
+              </button>
+            </div>
             <div class="reading-controls">
-              <button class="tense-audio-button" type="button" data-reading-listen>Listen first</button>
               <button class="primary-button" type="button" data-reading-start>Start Reading</button>
               <button class="secondary-button" type="button" data-reading-stop hidden>Stop</button>
+              <button class="secondary-button" type="button" data-reading-previous hidden>Previous paragraph</button>
               <button class="secondary-button" type="button" data-reading-next>Next paragraph</button>
             </div>
             <div class="reading-listening-indicator" data-reading-listening hidden>
@@ -225,10 +241,19 @@
           </article>
 
           <aside class="reading-result-panel" aria-live="polite">
+            <div class="reading-result-intro" data-reading-result-intro>
+              <span aria-hidden="true">★</span>
+              <div><strong>Your reading result</strong><small>Finish the paragraph to unlock feedback and your next challenge.</small></div>
+            </div>
             <div class="reading-score-card">
               <span>Reading Accuracy</span>
               <strong data-reading-score>--</strong>
               <progress value="0" max="100" data-reading-progress></progress>
+            </div>
+            <div class="reading-result-coach" data-reading-result-coach hidden>
+              <span data-reading-coach-icon aria-hidden="true">↻</span>
+              <div><strong data-reading-coach-title>Let’s try once more</strong><p data-reading-coach-copy>Listen again and read slowly.</p></div>
+              <button class="primary-button" type="button" data-reading-coach-action>Try Again</button>
             </div>
             <div class="reading-transcript-card">
               <span>What we heard</span>
@@ -262,36 +287,34 @@
                 <small data-reading-certificate-streak>Streak 1 day</small>
               </div>
               <button class="primary-button" type="button" data-reading-share>Share Certificate</button>
+              <button class="reading-certificate-next" type="button" data-reading-certificate-next>
+                <span aria-hidden="true">→</span><strong>Ready for another story?</strong><small>Open the next paragraph</small>
+              </button>
               <p data-reading-share-note>Share with family or friends after completing the assessment.</p>
             </div>
           </aside>
         </div>
       </section>
 
-      <section class="section word-helper-section" id="word-helper">
+      <section class="section tense-next-section reading-next-section" id="continue-reading" aria-label="Choose the next English mission">
         <div class="section-heading">
-          <p class="eyebrow">Word Helper</p>
-          <h2>Tap a word before reading the paragraph.</h2>
-          <p>Children understand the word first, then read with more confidence.</p>
+          <p class="eyebrow">Choose Your Next Mission</p>
+          <h2>What would you like to do now?</h2>
+          <p>Pick one quick activity. Every choice opens immediately.</p>
         </div>
-        <div class="word-helper-grid" data-word-helper>
-          <button type="button" data-word="routine"><strong>routine</strong><span>Things you do every day.</span></button>
-          <button type="button" data-word="carefully"><strong>carefully</strong><span>Doing something with attention.</span></button>
-          <button type="button" data-word="confidence"><strong>confidence</strong><span>Feeling ready to try.</span></button>
-          <button type="button" data-word="responsible"><strong>responsible</strong><span>Doing your work properly.</span></button>
-        </div>
-      </section>
-
-      <section class="section tense-next-section" aria-label="Continue English Learning Lab">
-        <div class="section-heading">
-          <p class="eyebrow">Continue Learning</p>
-          <h2>Keep the English practice connected.</h2>
-        </div>
-        <div class="tense-next-grid">
-          <a href="present-tense.html"><span>01</span><strong>Present Tense</strong><p>Use reading sentences in present tense.</p></a>
-          <a href="daily-routine-verbs.html"><span>02</span><strong>Daily Routine Verbs</strong><p>Build words for everyday speaking.</p></a>
-          <a class="is-current" href="reading-fluency.html"><span>03</span><strong>Reading Fluency</strong><p>You are here now.</p></a>
-          <a href="speaksmart-ai.html"><span>04</span><strong>SpeakSmart AI</strong><p>Turn reading confidence into camera speaking practice.</p></a>
+        <div class="tense-next-grid reading-next-grid">
+          <a class="reading-mission-card is-practice" href="practice.html?topic=present">
+            <span aria-hidden="true">Aa</span><strong>Quick Grammar</strong><p>Answer three playful questions.</p><em>Start practice →</em>
+          </a>
+          <a class="reading-mission-card is-story" href="#reading-practice">
+            <span aria-hidden="true">▶</span><strong>Read Another Story</strong><p>Choose a fresh world and improve your score.</p><em>Choose story →</em>
+          </a>
+          <a class="reading-mission-card is-words" href="daily-routine-verbs.html">
+            <span aria-hidden="true">✦</span><strong>Build Useful Words</strong><p>Learn verbs used in daily speaking.</p><em>Build words →</em>
+          </a>
+          <a class="reading-mission-card is-speak" href="speaksmart-ai.html">
+            <span aria-hidden="true">🎤</span><strong>SpeakSmart Challenge</strong><p>Turn reading confidence into speaking.</p><em>Start speaking →</em>
+          </a>
         </div>
       </section>
 
