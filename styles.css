@@ -2168,7 +2168,7 @@ h3,
 .after-school-submenu {
   position: absolute;
   top: -2px;
-  left: calc(100% + 14px);
+  left: 100%;
   z-index: 32;
   display: grid;
   gap: 6px;
@@ -2187,7 +2187,7 @@ h3,
   backdrop-filter: blur(18px);
 }
 
-.after-school-menu-group:focus-within .after-school-submenu,
+.after-school-menu-group:hover .after-school-submenu,
 .after-school-menu-group.is-open .after-school-submenu {
   opacity: 1;
   pointer-events: auto;
@@ -2206,6 +2206,42 @@ h3,
   border-radius: 14px;
   background: rgba(255, 255, 255, 0.74);
   box-shadow: 0 10px 20px rgba(31, 49, 66, 0.05);
+}
+
+.after-school-submenu-caption {
+  display: block;
+  min-height: auto;
+  margin: 2px 2px 0;
+  padding: 6px 9px;
+  border: 0;
+  border-radius: 10px;
+  font-size: 0.66rem;
+  font-weight: 1000;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.after-school-submenu-caption.is-live {
+  color: #08786c;
+  background: linear-gradient(90deg, rgba(203, 244, 229, 0.94), rgba(232, 251, 244, 0.52));
+}
+
+.after-school-submenu-caption.is-soon {
+  margin-top: 7px;
+  color: #906a14;
+  background: linear-gradient(90deg, rgba(255, 229, 151, 0.82), rgba(255, 247, 221, 0.5));
+}
+
+.after-school-submenu a.after-school-submenu-live {
+  border-color: rgba(12, 117, 108, 0.14);
+  background: linear-gradient(135deg, rgba(226, 249, 241, 0.96), rgba(255, 255, 255, 0.92));
+}
+
+.after-school-submenu a.after-school-submenu-soon {
+  border-color: rgba(173, 130, 31, 0.12);
+  background: linear-gradient(135deg, rgba(255, 249, 231, 0.9), rgba(255, 255, 255, 0.78));
+  color: #65717d;
 }
 
 .after-school-submenu a:hover,
@@ -2233,6 +2269,47 @@ h3,
   font-weight: 900;
   text-transform: uppercase;
   white-space: nowrap;
+}
+
+@media (min-width: 1101px) {
+  .after-school-nav-dropdown .after-school-menu {
+    left: 50%;
+    width: min(600px, calc(100vw - 28px));
+    min-width: 600px;
+    transform: translate(-50%, 10px) scale(0.98);
+  }
+
+  .after-school-nav-dropdown:hover .after-school-menu,
+  .after-school-nav-dropdown:focus-within .after-school-menu {
+    transform: translate(-50%, 0) scale(1);
+  }
+
+  .after-school-menu-main {
+    grid-template-columns: 210px minmax(0, 1fr);
+    align-items: start;
+    gap: 12px;
+  }
+
+  .after-school-menu-section:nth-child(2) {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 7px;
+  }
+
+  .after-school-menu-section:nth-child(2) > .after-school-menu-caption {
+    grid-column: 1;
+  }
+
+  .after-school-menu-section:nth-child(2) .after-school-menu-button {
+    min-height: 46px;
+  }
+
+  .after-school-submenu {
+    width: 270px;
+    max-height: calc(100vh - 24px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+  }
 }
 
 .header-cta,
