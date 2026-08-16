@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Choose a Kidsverse After School topic and complete a short guided practice session." />
+    <title>Practice Hub | Kidsverse After School</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="shortcut icon" href="../favicon.ico" />
+    <link rel="stylesheet" href="../styles.css?v=20260813-global-mobile-fix" />
+    <link rel="stylesheet" href="../after-school-fix.css?v=20260813-mobile-shell-fix2" />
+    <link rel="stylesheet" href="practice-hub.css?v=20260816-practice-hub" />
+  </head>
+  <body class="after-school-practice-page">
+    <div class="practice-topbar">
+      <a href="../after-school.html">← After School Home</a>
+      <strong>Kidsverse Practice Hub</strong>
+      <a href="../learning-journey.html">My Progress</a>
+    </div>
+
+    <header class="practice-header">
+      <a class="brand" href="../after-school.html" aria-label="Kidsverse After School home">
+        <img src="../assets/logo.png" alt="Kidsverse School logo" />
+        <span><strong>Kidsverse</strong><small>After School</small></span>
+      </a>
+      <nav aria-label="Practice navigation">
+        <a class="is-active" href="practice.html">Practice</a>
+        <a href="reading-fluency.html">Reading</a>
+        <a href="speaksmart-ai.html">Speaking</a>
+        <a href="../learning-journey.html">Progress</a>
+      </nav>
+    </header>
+
+    <main class="practice-main">
+      <section class="practice-intro">
+        <div>
+          <p class="practice-eyebrow">One place. One clear next step.</p>
+          <h1>What would you like to practise today?</h1>
+          <p>Choose the child’s grade and topic. Kidsverse will open a short practice session without extra scrolling.</p>
+        </div>
+        <div class="practice-time"><strong>5</strong><span>minute<br />practice</span></div>
+      </section>
+
+      <section class="practice-picker" aria-labelledby="practice-picker-title">
+        <div class="practice-picker-heading">
+          <span>01</span>
+          <div><h2 id="practice-picker-title">Choose a practice path</h2><p>You can change the topic after every session.</p></div>
+        </div>
+        <div class="practice-fields">
+          <label>Child’s grade
+            <select data-practice-grade>
+              <option>UKG–Grade 2</option><option>Grade 3–5</option><option>Grade 6–8</option><option>Grade 9–10</option>
+            </select>
+          </label>
+          <label>Learning area
+            <select data-practice-area>
+              <option value="grammar">English Grammar</option>
+              <option value="vocabulary">Vocabulary</option>
+              <option value="reading">Reading</option>
+              <option value="tests">Tests & Challenges</option>
+            </select>
+          </label>
+          <label>Topic
+            <select data-practice-topic></select>
+          </label>
+        </div>
+        <button class="practice-start" type="button" data-practice-start>Start Practice <span>→</span></button>
+      </section>
+
+      <section class="practice-session" data-practice-session hidden aria-live="polite">
+        <div class="practice-session-head">
+          <div><span data-session-grade></span><h2 data-session-topic></h2></div>
+          <strong data-session-progress>Question 1 of 3</strong>
+        </div>
+        <div class="practice-progress"><i data-session-progress-bar></i></div>
+        <article class="practice-question-card">
+          <small data-question-label>Choose the correct answer</small>
+          <h3 data-question-text></h3>
+          <div class="practice-options" data-question-options></div>
+          <p class="practice-feedback" data-question-feedback hidden></p>
+          <button class="practice-next" type="button" data-practice-next disabled>Check Answer</button>
+        </article>
+      </section>
+
+      <section class="practice-result" data-practice-result hidden aria-live="polite">
+        <span>Session complete</span>
+        <strong data-result-score>0/3</strong>
+        <h2 data-result-title>Good start.</h2>
+        <p data-result-copy></p>
+        <div><button type="button" data-practice-again>Practise Again</button><button type="button" data-change-topic>Choose Another Topic</button></div>
+      </section>
+
+      <section class="practice-shortcuts" aria-labelledby="practice-shortcuts-title">
+        <div><p class="practice-eyebrow">Special practice rooms</p><h2 id="practice-shortcuts-title">Need speaking or reading practice?</h2></div>
+        <a href="reading-fluency.html"><span>Read aloud</span><strong>Reading Fluency</strong><small>Stories, words and confidence</small></a>
+        <a href="speaksmart-ai.html"><span>Speak for five minutes</span><strong>SpeakSmart AI</strong><small>Prompts and guided reflection</small></a>
+      </section>
+    </main>
+
+    <nav class="practice-mobile-nav" aria-label="Mobile practice navigation">
+      <a href="../after-school.html">Home</a><a class="is-active" href="practice.html">Practice</a><a href="reading-fluency.html">Reading</a><a href="../learning-journey.html">Progress</a>
+    </nav>
+    <script src="practice-hub.js?v=20260816-practice-hub"></script>
+  </body>
+</html>
