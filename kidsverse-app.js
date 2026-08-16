@@ -81,7 +81,9 @@ function getRootPath() {
 
 function buildSubmenuLink(href, label, options = {}) {
   const comingSoon = options.comingSoon ? '<small class="after-school-coming">Coming Soon</small>' : "";
-  const className = options.className ? ` class="${options.className}"` : "";
+  const stateClass = options.comingSoon ? "after-school-submenu-soon" : "after-school-submenu-live";
+  const classes = [stateClass, options.className].filter(Boolean).join(" ");
+  const className = ` class="${classes}"`;
   const safeHref = options.comingSoon ? "#" : href;
   const prevent = options.comingSoon ? ' data-coming-soon="true"' : "";
   return `<a${className} href="${safeHref}"${prevent}><span>${label}</span>${comingSoon}</a>`;
@@ -95,9 +97,9 @@ function buildAfterSchoolMenu(root) {
         <div class="after-school-menu-main">
           <section class="after-school-menu-section">
             <span class="after-school-menu-caption">Quick Access</span>
-            <a class="after-school-primary-link" href="${root}after-school.html#english-learning-lab">
-              <span>Continue Learning</span>
-              <small data-continue-learning-label>English Learning Lab</small>
+            <a class="after-school-primary-link" href="${root}after-school/practice.html">
+              <span>Start Practice</span>
+              <small data-continue-learning-label>Choose grade and topic</small>
             </a>
             <a class="after-school-menu-link" href="${root}after-school.html">Learning Home</a>
             <a class="after-school-menu-link" href="${root}learning-journey.html">My Progress</a>
@@ -111,13 +113,15 @@ function buildAfterSchoolMenu(root) {
                 <span>Reading &amp; Phonics</span>
               </button>
               <div class="after-school-submenu">
+                <span class="after-school-submenu-caption is-live">Available Now</span>
+                ${buildSubmenuLink(`${root}after-school/reading-fluency.html`, "Reading Fluency")}
+                ${buildSubmenuLink(`${root}after-school/reading-fluency.html`, "View Reading Lab", { className: "after-school-submenu-highlight" })}
+                <span class="after-school-submenu-caption is-soon">Coming Soon</span>
                 ${buildSubmenuLink("#", "Phonics", { comingSoon: true })}
                 ${buildSubmenuLink("#", "Word Families", { comingSoon: true })}
                 ${buildSubmenuLink("#", "Consonant Blends", { comingSoon: true })}
                 ${buildSubmenuLink("#", "Vowel Teams", { comingSoon: true })}
                 ${buildSubmenuLink("#", "Pronunciation Practice", { comingSoon: true })}
-                ${buildSubmenuLink(`${root}after-school/reading-fluency.html`, "Reading Fluency")}
-                ${buildSubmenuLink(`${root}after-school/reading-fluency.html`, "View Reading Lab", { className: "after-school-submenu-highlight" })}
               </div>
             </div>
 
@@ -126,6 +130,7 @@ function buildAfterSchoolMenu(root) {
                 <span>English Grammar</span>
               </button>
               <div class="after-school-submenu">
+                <span class="after-school-submenu-caption is-live">Available Now</span>
                 ${buildSubmenuLink(`${root}after-school.html#english-learning-lab`, "Tenses")}
                 ${buildSubmenuLink(`${root}after-school/present-tense.html`, "Present Tense")}
                 ${buildSubmenuLink(`${root}after-school/past-tense.html`, "Past Tense")}
@@ -141,7 +146,9 @@ function buildAfterSchoolMenu(root) {
                 <span>Speaking &amp; Vocabulary</span>
               </button>
               <div class="after-school-submenu">
+                <span class="after-school-submenu-caption is-live">Available Now</span>
                 ${buildSubmenuLink(`${root}after-school/speaksmart-ai.html`, "SpeakSmart AI")}
+                <span class="after-school-submenu-caption is-soon">Coming Soon</span>
                 ${buildSubmenuLink("#", "Pronunciation", { comingSoon: true })}
                 ${buildSubmenuLink("#", "Daily Vocabulary", { comingSoon: true })}
                 ${buildSubmenuLink("#", "Picture Speaking", { comingSoon: true })}
@@ -155,7 +162,7 @@ function buildAfterSchoolMenu(root) {
                 <span>Maths</span>
               </button>
               <div class="after-school-submenu">
-                ${buildSubmenuLink(`${root}after-school.html#maths-lab`, "Maths Learning Lab")}
+                <span class="after-school-submenu-caption is-soon">Coming Soon</span>
                 ${buildSubmenuLink("#", "Mental Maths", { comingSoon: true })}
                 ${buildSubmenuLink("#", "Number Skills", { comingSoon: true })}
                 ${buildSubmenuLink("#", "Practice Challenges", { comingSoon: true })}
@@ -167,8 +174,9 @@ function buildAfterSchoolMenu(root) {
                 <span>Coding &amp; AI</span>
               </button>
               <div class="after-school-submenu">
-                ${buildSubmenuLink(`${root}after-school.html#future-skills`, "Coding Lab")}
-                ${buildSubmenuLink(`${root}after-school.html#future-skills`, "AI Learning")}
+                <span class="after-school-submenu-caption is-soon">Coming Soon</span>
+                ${buildSubmenuLink("#", "Coding Lab", { comingSoon: true })}
+                ${buildSubmenuLink("#", "AI Learning", { comingSoon: true })}
                 ${buildSubmenuLink("#", "Projects", { comingSoon: true })}
                 ${buildSubmenuLink("#", "Build With AI", { comingSoon: true })}
               </div>
@@ -179,8 +187,10 @@ function buildAfterSchoolMenu(root) {
                 <span>Tests &amp; Challenges</span>
               </button>
               <div class="after-school-submenu">
+                <span class="after-school-submenu-caption is-live">Available Now</span>
                 ${buildSubmenuLink(`${root}tests/english-lab-tests.html`, "English Test")}
                 ${buildSubmenuLink(`${root}tests/tense-test.html`, "Mixed Tenses Test")}
+                <span class="after-school-submenu-caption is-soon">Coming Soon</span>
                 ${buildSubmenuLink("#", "Reading Test", { comingSoon: true })}
                 ${buildSubmenuLink("#", "Skill Challenges", { comingSoon: true })}
               </div>
@@ -411,11 +421,26 @@ enhanceKiyaLearningLinks();
 
 function setupAfterSchoolAccordions() {
   document.querySelectorAll(".after-school-nav-dropdown").forEach((dropdown) => {
-    const releaseDropdownFocus = () => {
-      const activeElement = document.activeElement;
-      if (activeElement instanceof HTMLElement && dropdown.contains(activeElement)) {
-        activeElement.blur();
+    const positionSubmenu = (group) => {
+      if (window.innerWidth <= 1100) return;
+      const submenu = group.querySelector(".after-school-submenu");
+      if (!submenu) return;
+
+      submenu.style.top = "-2px";
+      submenu.style.left = "100%";
+      submenu.style.right = "auto";
+
+      let rect = submenu.getBoundingClientRect();
+      if (rect.right > window.innerWidth - 12) {
+        submenu.style.left = "auto";
+        submenu.style.right = "100%";
+        rect = submenu.getBoundingClientRect();
       }
+
+      let top = -2;
+      if (rect.bottom > window.innerHeight - 12) top -= rect.bottom - (window.innerHeight - 12);
+      if (rect.top + (top + 2) < 12) top += 12 - (rect.top + top + 2);
+      submenu.style.top = `${Math.round(top)}px`;
     };
 
     const closeAllGroups = () => {
@@ -428,7 +453,6 @@ function setupAfterSchoolAccordions() {
     dropdown.querySelectorAll('[data-coming-soon="true"]').forEach((link) => {
       link.addEventListener("click", (event) => {
         event.preventDefault();
-        releaseDropdownFocus();
         closeAllGroups();
       });
     });
@@ -436,30 +460,32 @@ function setupAfterSchoolAccordions() {
     dropdown.querySelectorAll("[data-after-school-group]").forEach((group) => {
       group.addEventListener("mouseenter", () => {
         if (window.innerWidth <= 1100) return;
-        releaseDropdownFocus();
         closeAllGroups();
         group.classList.add("is-open");
         group.querySelector("[data-after-school-toggle]")?.setAttribute("aria-expanded", "true");
+        positionSubmenu(group);
       });
     });
 
-    dropdown.addEventListener("mouseleave", () => {
-      if (window.innerWidth <= 1100) return;
-      closeAllGroups();
-    });
-
     dropdown.querySelectorAll("[data-after-school-toggle]").forEach((button) => {
-      button.addEventListener("click", () => {
+      button.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
         const group = button.closest("[data-after-school-group]");
         if (!group) return;
-        const shouldOpen = !group.classList.contains("is-open");
-        releaseDropdownFocus();
+        const shouldOpen = window.innerWidth > 1100 || !group.classList.contains("is-open");
         closeAllGroups();
         if (shouldOpen) {
           group.classList.add("is-open");
           button.setAttribute("aria-expanded", "true");
+          positionSubmenu(group);
         }
       });
+
+    });
+
+    document.addEventListener("click", (event) => {
+      if (!dropdown.contains(event.target)) closeAllGroups();
     });
 
     dropdown.querySelectorAll(".after-school-submenu a, .after-school-menu-link, .after-school-primary-link").forEach((link) => {
@@ -3930,12 +3956,19 @@ function initReadingFluencyLab() {
   const listenButton = lab.querySelector("[data-reading-listen]");
   const startButton = lab.querySelector("[data-reading-start]");
   const stopButton = lab.querySelector("[data-reading-stop]");
+  const previousButton = lab.querySelector("[data-reading-previous]");
   const nextButton = lab.querySelector("[data-reading-next]");
   const listeningIndicator = lab.querySelector("[data-reading-listening]");
   const countdown = lab.querySelector("[data-reading-countdown]");
   const support = lab.querySelector("[data-reading-support]");
   const score = lab.querySelector("[data-reading-score]");
   const progress = lab.querySelector("[data-reading-progress]");
+  const resultIntro = lab.querySelector("[data-reading-result-intro]");
+  const resultCoach = lab.querySelector("[data-reading-result-coach]");
+  const coachIcon = lab.querySelector("[data-reading-coach-icon]");
+  const coachTitle = lab.querySelector("[data-reading-coach-title]");
+  const coachCopy = lab.querySelector("[data-reading-coach-copy]");
+  const coachAction = lab.querySelector("[data-reading-coach-action]");
   const transcript = lab.querySelector("[data-reading-transcript]");
   const missed = lab.querySelector("[data-reading-missed]");
   const extra = lab.querySelector("[data-reading-extra]");
@@ -3949,6 +3982,7 @@ function initReadingFluencyLab() {
   const certificateToday = lab.querySelector("[data-reading-certificate-today]");
   const certificateStreak = lab.querySelector("[data-reading-certificate-streak]");
   const shareButton = lab.querySelector("[data-reading-share]");
+  const certificateNextButton = lab.querySelector("[data-reading-certificate-next]");
   const shareNote = lab.querySelector("[data-reading-share-note]");
   const themeButtons = lab.querySelectorAll("[data-reading-theme]");
   const themeLabel = lab.querySelector("[data-reading-theme-label]");
@@ -4014,12 +4048,19 @@ function initReadingFluencyLab() {
     passage.textContent = data.text;
     score.textContent = "--";
     progress.value = 0;
+    if (resultIntro) {
+      resultIntro.className = "reading-result-intro";
+      resultIntro.querySelector("strong").textContent = "Your reading result";
+      resultIntro.querySelector("small").textContent = "Finish the paragraph to unlock feedback and your next challenge.";
+    }
+    if (resultCoach) resultCoach.hidden = true;
     transcript.textContent = "Click Start Reading and read the paragraph aloud.";
     missed.textContent = "Words will appear here after reading.";
     extra.textContent = "Extra spoken words will appear here.";
     tip.textContent = "Listen once, then read slowly and clearly.";
     if (certificateCard) certificateCard.hidden = true;
     stopButton.hidden = true;
+    if (previousButton) previousButton.hidden = passageIndex <= 0;
     if (countdown) countdown.hidden = true;
     if (listeningIndicator) listeningIndicator.hidden = true;
     startButton.disabled = false;
@@ -4057,6 +4098,25 @@ function initReadingFluencyLab() {
     } else {
       tip.textContent = "Listen once more, read one sentence at a time and try again.";
     }
+    const shouldRetry = accuracy < 60;
+    if (resultIntro) {
+      resultIntro.className = `reading-result-intro ${shouldRetry ? "is-retry" : "is-success"}`;
+      resultIntro.querySelector("strong").textContent = shouldRetry ? "Good try — let’s improve it!" : "Great reading — mission complete!";
+      resultIntro.querySelector("small").textContent = shouldRetry
+        ? "A slower second reading can quickly raise your score."
+        : "Your next paragraph is ready whenever you are.";
+    }
+    if (resultCoach) {
+      resultCoach.hidden = false;
+      resultCoach.classList.toggle("is-success", !shouldRetry);
+    }
+    if (coachIcon) coachIcon.textContent = shouldRetry ? "↻" : "→";
+    if (coachTitle) coachTitle.textContent = shouldRetry ? "Try this paragraph again" : "Ready for the next paragraph?";
+    if (coachCopy) coachCopy.textContent = shouldRetry
+      ? "Tap the speaker, listen once, then read one sentence at a time."
+      : "Keep your streak going with a fresh story.";
+    if (coachAction) coachAction.textContent = shouldRetry ? "↻ Try Again" : "Next Paragraph →";
+    if (coachAction) coachAction.dataset.readingAction = shouldRetry ? "retry" : "next";
     updateReadingCertificate(accuracy);
   }
 
@@ -4588,6 +4648,17 @@ function initReadingFluencyLab() {
 
   listenButton?.addEventListener("click", () => speakRoutineText(activePassage().text, listenButton));
 
+  coachAction?.addEventListener("click", () => {
+    if (coachAction.dataset.readingAction === "next") {
+      nextButton?.click();
+      return;
+    }
+    document.querySelector("#reading-story")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    startButton?.click();
+  });
+
+  certificateNextButton?.addEventListener("click", () => nextButton?.click());
+
   shareButton?.addEventListener("click", async () => {
     const labLink = window.location.href;
     const shareText = `${latestCertificateText || `${getStudentName()} completed Kidsverse Reading Fluency practice today.`}\nPractice here: ${labLink}`;
@@ -4653,6 +4724,18 @@ function initReadingFluencyLab() {
       nextPassageIndex: passageIndex,
       status: "Next paragraph opened"
     });
+    renderPassage();
+  });
+
+  previousButton?.addEventListener("click", () => {
+    if (passageIndex <= 0) return;
+    passageIndex -= 1;
+    if (isKidsverseParentLoggedIn()) {
+      syncReadingJourneyWithStreak({
+        nextPassageIndex: passageIndex,
+        status: "Previous paragraph opened"
+      });
+    }
     renderPassage();
   });
 
