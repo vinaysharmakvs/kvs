@@ -462,6 +462,22 @@
   grid-column: 2;
 }
 
+body.reading-fluency-page .reading-theme-panel[hidden] {
+  display: none !important;
+}
+
+.reading-fluency-page .ukg-topic-panel {
+  grid-template-columns: minmax(230px, 0.32fr) minmax(0, 1fr);
+}
+
+.reading-fluency-page .ukg-topic-buttons {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.reading-fluency-page .ukg-topic-buttons button {
+  min-height: 88px;
+}
+
 .reading-fluency-page .reading-ready-banner {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
