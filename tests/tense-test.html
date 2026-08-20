@@ -17,7 +17,7 @@
     />
     <link rel="shortcut icon" href="../favicon.ico" />
     <link rel="icon" type="image/png" sizes="512x512" href="../favicon.png" />
-    <link rel="stylesheet" href="../styles.css?v=20260805-internal-fix" />
+<link rel="stylesheet" href="../styles.css?v=20260813-global-mobile-fix" />
     <link rel="stylesheet" href="tense-test.css?v=20260811-mixed-tense" />
   </head>
   <body class="tense-test-page">
@@ -35,7 +35,6 @@
       <nav class="nav-links" aria-label="Primary navigation">
         <a href="../about.html">About</a>
         <a href="../activities.html">Activities</a>
-        <a href="../quick-test.html">Quick Test</a>
         <a href="../after-school.html">After School</a>
       </nav>
       <a class="header-cta" href="#test-zone">Start Test</a>
@@ -71,6 +70,14 @@
             <p class="test-note">This works like a test. Complete the full set first, then check and unlock solutions.</p>
           </div>
           <div class="test-controls">
+            <label>
+              Difficulty
+              <select data-test-difficulty>
+                <option value="beginner" selected>Beginner</option>
+                <option value="medium">Medium</option>
+                <option value="difficult">Difficult</option>
+              </select>
+            </label>
             <label>
               Questions
               <select data-question-count>
@@ -119,6 +126,7 @@
       >
     </footer>
     <script src="../kidsverse-app.js?v=20260811-tense-test-link"></script>
-    <script src="tense-test.js?v=20260811-mixed-tense"></script>
+    <script src="tense-test-question-banks.js?v=20260820-three-levels"></script>
+    <script src="tense-test.js?v=20260820-three-levels"></script>
   </body>
 </html>
