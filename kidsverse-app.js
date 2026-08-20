@@ -3696,28 +3696,113 @@ const readingThemePassages = {
   },
 };
 
-const ukgWordSets = [
-  ["cat", "bat", "mat", "hat", "rat"],
-  ["sun", "run", "fun", "bun", "cup"],
-  ["red", "bed", "pen", "hen", "ten"],
-  ["dog", "log", "fog", "box", "fox"],
-  ["bag", "tag", "rag", "cap", "map"],
-  ["pin", "tin", "win", "sit", "hit"],
-  ["top", "hop", "mop", "pot", "hot"],
-  ["jam", "ram", "yam", "van", "fan"],
-  ["fish", "dish", "ship", "shop", "shell"],
-  ["ball", "bell", "doll", "duck", "door"],
-  ["apple", "ant", "arrow", "arm", "ask"],
-  ["book", "bag", "bus", "boy", "box"],
-  ["cake", "cup", "cat", "car", "cap"],
-  ["milk", "moon", "mat", "man", "map"],
-  ["leaf", "lamp", "lion", "leg", "log"],
-  ["tree", "toy", "tap", "top", "ten"],
-  ["rain", "rose", "red", "rat", "run"],
-  ["kite", "king", "key", "kid", "kit"],
-  ["star", "sit", "sun", "sock", "seed"],
-  ["home", "hand", "hat", "hen", "hill"],
+// UKG uses its own 90-day curriculum at each level. It intentionally does not
+// inherit the longer themed passages used by Grade 1 and above.
+const ukgCvcFamilies = [
+  ["Short a · -at", ["cat", "bat", "mat", "rat", "sat", "hat"]],
+  ["Short a · -an", ["man", "fan", "van", "can", "pan", "ran"]],
+  ["Short a · -ap", ["cap", "map", "tap", "nap", "gap", "lap"]],
+  ["Short e · -et", ["pet", "jet", "net", "wet", "get", "set"]],
+  ["Short e · -en", ["hen", "pen", "ten", "den", "men", "yen"]],
+  ["Short e · -ed", ["red", "bed", "fed", "led", "wed", "zed"]],
+  ["Short i · -ig", ["pig", "dig", "wig", "fig", "big", "jig"]],
+  ["Short i · -in", ["pin", "tin", "win", "fin", "bin", "kin"]],
+  ["Short i · -it", ["sit", "hit", "fit", "bit", "kit", "pit"]],
+  ["Short o · -og", ["dog", "log", "fog", "hog", "jog", "cog"]],
+  ["Short o · -op", ["top", "hop", "mop", "pop", "cop", "bop"]],
+  ["Short o · -ot", ["hot", "pot", "cot", "dot", "lot", "not"]],
+  ["Short u · -ug", ["bug", "mug", "rug", "hug", "jug", "dug"]],
+  ["Short u · -un", ["sun", "fun", "run", "bun", "pun", "nun"]],
+  ["Short u · -ut", ["cut", "hut", "nut", "rut", "but", "gut"]],
 ];
+
+const ukgLongSoundFamilies = [
+  ["Long a · -ake", ["cake", "lake", "make", "bake", "rake", "wake"]],
+  ["Long a · -ame", ["game", "name", "same", "tame", "fame", "lame"]],
+  ["Long a · -ate", ["gate", "late", "date", "mate", "rate", "hate"]],
+  ["Long a · ai", ["rain", "mail", "tail", "sail", "wait", "pain"]],
+  ["Long a · ay", ["play", "stay", "clay", "tray", "gray", "pray"]],
+  ["Long e · ee", ["tree", "free", "feet", "seed", "deep", "keep"]],
+  ["Long e · ea", ["read", "leaf", "seat", "meat", "team", "meal"]],
+  ["Long e · more ee", ["week", "feel", "meet", "seen", "need", "been"]],
+  ["Long i · i-e", ["time", "bike", "kite", "five", "nine", "ride"]],
+  ["Long i · -ine", ["line", "pine", "mine", "fine", "nine", "dine"]],
+  ["Long o · o-e", ["home", "rope", "note", "rose", "bone", "nose"]],
+  ["Long o · oa", ["boat", "coat", "road", "soap", "goat", "loaf"]],
+  ["Long o · ow", ["snow", "grow", "slow", "glow", "show", "blow"]],
+  ["Long u · u-e", ["cube", "tube", "cute", "mule", "tune", "huge"]],
+  ["Long oo", ["moon", "food", "room", "boot", "cool", "pool"]],
+];
+
+const ukgPositionObjects = [
+  ["book", "books", "desk", "on"], ["ball", "balls", "box", "in"], ["cat", "cats", "chair", "under"],
+  ["cup", "cups", "mat", "on"], ["bag", "bags", "door", "near"], ["pen", "pens", "book", "beside"],
+  ["kite", "kites", "tree", "over"], ["shoe", "shoes", "bed", "under"], ["toy", "toys", "box", "in"],
+  ["hat", "hats", "hook", "on"], ["dog", "dogs", "gate", "near"], ["car", "cars", "house", "behind"],
+  ["duck", "ducks", "pond", "in"], ["fish", "fish", "tank", "in"], ["star", "stars", "moon", "near"],
+  ["plate", "plates", "table", "on"], ["sock", "socks", "shoe", "beside"], ["box", "boxes", "chair", "behind"],
+  ["bell", "bells", "door", "above"], ["clock", "clocks", "board", "above"], ["bus", "buses", "school", "near"],
+  ["bird", "birds", "tree", "in"], ["flower", "flowers", "pot", "in"], ["apple", "apples", "basket", "in"],
+  ["spoon", "spoons", "plate", "beside"], ["pencil", "pencils", "box", "in"], ["bottle", "bottles", "bag", "inside"],
+  ["rabbit", "rabbits", "tree", "behind"], ["boat", "boats", "bridge", "under"], ["child", "children", "slide", "near"],
+];
+
+const ukgConversationQuestions = [
+  ["What is your name?", "My name is Ria."], ["How old are you?", "I am five."], ["How are you today?", "I am happy."],
+  ["Where do you live?", "I live in Rehan."], ["What is your school?", "My school is Kidsverse."], ["Who is your teacher?", "She is my teacher."],
+  ["What is your color?", "I like blue."], ["What do you eat?", "I eat an apple."], ["What do you drink?", "I drink water."],
+  ["Can you read this?", "Yes, I can."], ["Can you see me?", "Yes, I can."], ["Do you like books?", "Yes, I do."],
+  ["Do you like school?", "Yes, I do."], ["May I come in?", "Yes, come in."], ["May I sit here?", "Yes, sit here."],
+  ["Where is your bag?", "My bag is here."], ["Where is your book?", "My book is here."], ["Who is your friend?", "Ria is my friend."],
+  ["What is this sound?", "It is a bell."], ["What is that sound?", "It is a bird."], ["Is this your pencil?", "Yes, it is."],
+  ["Is that your bottle?", "No, it is not."], ["Are these your books?", "Yes, they are."], ["Are those your shoes?", "Yes, they are."],
+  ["What can you see?", "I see a tree."], ["What can you hear?", "I hear a bell."], ["What can you do?", "I can read."],
+  ["When do you sleep?", "I sleep at night."], ["When do you play?", "I play after school."], ["Why do you smile?", "I feel happy."],
+];
+
+const ukgTopicDefinitions = {
+  "short-vowels": { label: "Short Vowels", description: "Short a, e, i, o and u words", icon: "🔤", level: "beginner" },
+  "long-vowels": { label: "Long Vowels", description: "Long a, e, i, o and u sounds", icon: "📣", level: "explorer" },
+  positions: { label: "Position Words", description: "in, on, under, near and behind", icon: "📍", level: "confident" },
+  actions: { label: "Action Words", description: "run, jump, read, write and more", icon: "🏃", level: "confident" },
+  demonstratives: { label: "This, That, These, Those", description: "One or many; near or far", icon: "👉", level: "confident" },
+  digraphs: { label: "Digraphs", description: "sh, ch, th, ph and wh", icon: "🔡", level: "explorer" },
+  blends: { label: "Blends", description: "cl, gl, pl, fl, br, tr and more", icon: "🧩", level: "explorer" },
+  "what-is": { label: "What is ...?", description: "Read and answer simple questions", icon: "❓", level: "challenge" },
+  "is-it": { label: "Is it ...?", description: "Yes or no question practice", icon: "✅", level: "challenge" },
+  articles: { label: "Articles", description: "Use a, an and the", icon: "🅰️", level: "confident" },
+  rhymes: { label: "Rhyming Words", description: "Read words with the same ending", icon: "🎵", level: "beginner" },
+};
+
+const ukgActionWords = [
+  ["run", "I can run."], ["jump", "I can jump."], ["walk", "We can walk."], ["hop", "I can hop."], ["skip", "We can skip."],
+  ["clap", "I clap twice."], ["sing", "We sing well."], ["dance", "I like dancing."], ["read", "I can read."], ["write", "I can write."],
+  ["draw", "I draw a sun."], ["paint", "We paint a tree."], ["eat", "I eat fruit."], ["drink", "I drink water."], ["sleep", "The baby sleeps."],
+  ["sit", "Please sit here."], ["stand", "Please stand tall."], ["open", "Open the book."], ["close", "Close the door."], ["look", "Look at this."],
+  ["listen", "Listen to me."], ["speak", "Speak very clearly."], ["smile", "I smile today."], ["laugh", "We laugh together."], ["play", "We play outside."],
+  ["kick", "Kick the ball."], ["throw", "Throw the ball."], ["catch", "Catch the red ball."], ["wash", "Wash your hands."], ["help", "I help mother."],
+];
+
+const ukgDigraphWords = {
+  sh: ["ship", "shop", "fish", "dish", "shell", "wish", "shut", "shed", "cash", "rush"],
+  ch: ["chin", "chat", "chop", "chip", "much", "rich", "chest", "chick", "lunch", "bench"],
+  th: ["this", "that", "thin", "thick", "bath", "moth", "then", "them", "path", "with"],
+  ph: ["phone", "photo", "graph", "phase", "sphere", "dolphin", "phonics", "trophy", "alphabet", "elephant"],
+  wh: ["what", "when", "where", "which", "whip", "wheel", "white", "whale", "why", "who"],
+};
+
+const ukgBlendWords = {
+  cl: ["clap", "clip", "clock", "clam", "club"], gl: ["glad", "glow", "glue", "glass", "globe"],
+  pl: ["plan", "play", "plug", "plum", "plate"], fl: ["flag", "flip", "flat", "fly", "flame"],
+  br: ["brick", "brush", "brown", "bread", "bring"], tr: ["trap", "trip", "tree", "train", "truck"],
+  bl: ["black", "blue", "blow", "block", "blank"], cr: ["crab", "crop", "cry", "crow", "cream"],
+  dr: ["drum", "drop", "dress", "drink", "drive"], fr: ["frog", "from", "fresh", "fruit", "frame"],
+  gr: ["grin", "grab", "grass", "green", "grape"], pr: ["pray", "press", "print", "prize", "proud"],
+  sc: ["scan", "scar", "scarf", "scale", "score"], sk: ["skip", "skin", "skate", "skirt", "sky"],
+  sl: ["slam", "slip", "slow", "sleep", "slide"], sm: ["small", "smell", "smile", "smart", "smoke"],
+  sn: ["snap", "snip", "snow", "snail", "snake"], sp: ["spin", "spot", "spoon", "spell", "sport"],
+  st: ["star", "step", "stop", "stone", "stick"], sw: ["swim", "swan", "sweet", "swing", "sweep"],
+};
 
 const gradeOneTopics = [
   ["My Daily Routine", "I wake up early. I brush my teeth. I eat breakfast. I go to school happily.", "What does the child do after waking up?", "Brush teeth"],
@@ -3782,22 +3867,132 @@ function titleCaseReadingTopic(topic) {
 }
 
 function buildUkgReadingLevels() {
-  return Object.fromEntries(
-    Object.entries(readingLevelLabels).map(([levelKey, label]) => [
-      levelKey,
-      ukgWordSets.map((words, index) => {
-        const levelWords =
-          levelKey === "beginner"
-            ? words.slice(0, 3)
-            : levelKey === "explorer"
-              ? words.slice(0, 4)
-              : levelKey === "confident"
-                ? words
-                : [...words, "read", "say"];
-        return makeReadingItem(label, `Word Reading ${index + 1}`, levelWords.join(". ") + ".", "Which word should the child read first?", levelWords[0], "school", "garden");
-      }),
-    ])
+  const makeUkgItem = (label, title, text, question, answer, wrongOne, wrongTwo, skill, topic) => ({
+    ...makeReadingItem(label, title, text, question, answer, wrongOne, wrongTwo, "ukg"),
+    skill,
+    topic,
+  });
+
+  const fillTopic = (items, topic) => Array.from({ length: 90 }, (_, index) => {
+    const source = items[index % items.length];
+    return { ...source, title: `${source.title.replace(/ · Day \d+$/, "")} · Day ${index + 1}`, topic };
+  });
+
+  const beginner = ukgCvcFamilies.flatMap(([family, words], familyIndex) =>
+    words.map((firstWord, wordIndex) => {
+      const practiceWords = Array.from({ length: 4 }, (_, offset) => words[(wordIndex + offset) % words.length]);
+      const day = familyIndex * words.length + wordIndex + 1;
+      return makeUkgItem(
+        "Beginner",
+        `Short Sound Words · Day ${day}`,
+        `${practiceWords.join(". ")}.`,
+        "Which word comes first?",
+        firstWord,
+        "tree",
+        "moon",
+        family,
+        "short-vowels"
+      );
+    })
   );
+
+  const explorer = ukgLongSoundFamilies.flatMap(([family, words], familyIndex) =>
+    words.map((firstWord, wordIndex) => {
+      const practiceWords = Array.from({ length: 4 }, (_, offset) => words[(wordIndex + offset) % words.length]);
+      const day = familyIndex * words.length + wordIndex + 1;
+      return makeUkgItem(
+        "Explorer",
+        `Four-Letter Words · Day ${day}`,
+        `${practiceWords.join(". ")}.`,
+        "Which word comes first?",
+        firstWord,
+        "cat",
+        "sun",
+        family,
+        "long-vowels"
+      );
+    })
+  );
+
+  const confident = ukgPositionObjects.flatMap(([one, many, place, position], objectIndex) => {
+    const itemNumber = objectIndex * 3;
+    const capitalOne = one.charAt(0).toUpperCase() + one.slice(1);
+    const pluralPrompt = objectIndex % 2 === 0 ? `These ${many} are here.` : `Those ${many} are there.`;
+    return [
+      makeUkgItem("Confident Reader", `This and That · Day ${itemNumber + 1}`, `This ${one} is here.`, "Which word starts the sentence?", "This", "Those", "Where", "This, that, these, those", "demonstratives"),
+      makeUkgItem("Confident Reader", `These and Those · Day ${itemNumber + 2}`, pluralPrompt, "Are the words about one or many?", "Many", "One", "None", "This, that, these, those", "demonstratives"),
+      makeUkgItem("Confident Reader", `Position Word · Day ${itemNumber + 3}`, `${capitalOne} is ${position} ${place}.`, `Where is the ${one}?`, `${position} ${place}`, "far away", "in the sky", `Position word: ${position}`, "positions"),
+    ];
+  });
+
+  const conversation = ukgConversationQuestions.map(([questionText, answerText], index) =>
+    makeUkgItem(
+      "Challenge Mode",
+      `Talk With Confidence · Day ${index + 1}`,
+      `${questionText} ${answerText}`,
+      "What should the child practise?",
+      "Read the question and answer",
+      "Skip the question",
+      "Read only one word",
+      "What is question",
+      "what-is"
+    )
+  );
+  const objectQuestions = ukgPositionObjects.flatMap(([one, , place, position], index) => {
+    const itemNumber = ukgConversationQuestions.length + index * 2;
+    const article = /^[aeiou]/i.test(one) ? "an" : "a";
+    return [
+      makeUkgItem("Challenge Mode", `What Is This? · Day ${itemNumber + 1}`, `What is this? This is ${article} ${one}.`, "What is this?", `${article} ${one}`, "a cloud", "a train", "What is question", "what-is"),
+      makeUkgItem("Challenge Mode", `Is It Here? · Day ${itemNumber + 2}`, `Is it ${position} the ${place}? Yes, it is.`, `Is it ${position} the ${place}?`, "Yes, it is", "No question", "Skip it", "Is it question", "is-it"),
+    ];
+  });
+
+  const actions = ukgActionWords.map(([word, sentence], index) =>
+    makeUkgItem("Confident Reader", `Action Word · Day ${index + 1}`, `${word}. ${sentence}`, "Which is the action word?", word, "the", "and", `Action word: ${word}`, "actions")
+  );
+  const digraphs = Object.entries(ukgDigraphWords).flatMap(([sound, words]) => words.map((word, index) => {
+    const group = Array.from({ length: 4 }, (_, offset) => words[(index + offset) % words.length]);
+    return makeUkgItem("Explorer", `Digraph ${sound} · Day ${index + 1}`, `${group.join(". ")}.`, "Which sound are we practising?", sound, "oo", "ai", `Digraph: ${sound}`, "digraphs");
+  }));
+  const blends = Object.entries(ukgBlendWords).flatMap(([sound, words]) => words.map((word, index) => {
+    const group = Array.from({ length: 4 }, (_, offset) => words[(index + offset) % words.length]);
+    return makeUkgItem("Explorer", `Blend ${sound} · Day ${index + 1}`, `${group.join(". ")}.`, "Which blend starts these words?", sound, "oo", "ai", `Blend: ${sound}`, "blends");
+  }));
+  const articles = ukgPositionObjects.flatMap(([one, , place], index) => {
+    const article = /^[aeiou]/i.test(one) ? "an" : "a";
+    return [
+      makeUkgItem("Confident Reader", `A or An · Day ${index * 2 + 1}`, `This is ${article} ${one}.`, "Which article comes before the word?", article, article === "a" ? "an" : "a", "thee", "Articles: a and an", "articles"),
+      makeUkgItem("Confident Reader", `The · Day ${index * 2 + 2}`, `The ${one} is near the ${place}.`, "Which article starts the sentence?", "The", "An", "This", "Article: the", "articles"),
+    ];
+  });
+  const rhymes = ukgCvcFamilies.flatMap(([family, words]) => words.map((word, index) => {
+    const rhyme = words[(index + 1) % words.length];
+    return makeUkgItem("Beginner", `Rhyming Words · Day ${index + 1}`, `${word}. ${rhyme}. ${word} and ${rhyme} rhyme.`, `Which word rhymes with ${word}?`, rhyme, "tree", "moon", `Rhyme family: ${family}`, "rhymes");
+  }));
+
+  const topics = {
+    "short-vowels": fillTopic(beginner, "short-vowels"),
+    "long-vowels": fillTopic(explorer, "long-vowels"),
+    positions: fillTopic(confident.filter((item) => item.topic === "positions"), "positions"),
+    demonstratives: fillTopic(confident.filter((item) => item.topic === "demonstratives"), "demonstratives"),
+    actions: fillTopic(actions, "actions"),
+    digraphs: fillTopic(digraphs, "digraphs"),
+    blends: fillTopic(blends, "blends"),
+    "what-is": fillTopic([...conversation, ...objectQuestions.filter((item) => item.topic === "what-is")], "what-is"),
+    "is-it": fillTopic(objectQuestions.filter((item) => item.topic === "is-it"), "is-it"),
+    articles: fillTopic(articles, "articles"),
+    rhymes: fillTopic(rhymes, "rhymes"),
+  };
+
+  const curriculum = {
+    beginner: [...topics["short-vowels"], ...topics.rhymes],
+    explorer: [...topics["long-vowels"], ...topics.digraphs, ...topics.blends],
+    confident: [...topics.positions, ...topics.actions, ...topics.demonstratives, ...topics.articles],
+    challenge: [...topics["what-is"], ...topics["is-it"]],
+  };
+  const incompleteLevel = Object.entries(curriculum).find(([, items]) => items.length < 90);
+  if (incompleteLevel) throw new Error(`UKG ${incompleteLevel[0]} needs at least 90 reading activities.`);
+  return curriculum;
 }
 
 function buildGradeOneReadingLevels() {
@@ -3984,12 +4179,17 @@ function initReadingFluencyLab() {
   const shareButton = lab.querySelector("[data-reading-share]");
   const certificateNextButton = lab.querySelector("[data-reading-certificate-next]");
   const shareNote = lab.querySelector("[data-reading-share-note]");
+  const themePanel = lab.querySelector("[data-reading-theme-panel]");
   const themeButtons = lab.querySelectorAll("[data-reading-theme]");
   const themeLabel = lab.querySelector("[data-reading-theme-label]");
+  const ukgTopicPanel = lab.querySelector("[data-ukg-topic-panel]");
+  const ukgTopicButtons = lab.querySelectorAll("[data-ukg-topic]");
+  const ukgTopicLabel = lab.querySelector("[data-ukg-topic-label]");
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   let grade = gradeSelect?.value || "ukg";
   let level = levelSelect?.value || "beginner";
   let readingTheme = "sports";
+  let ukgTopic = "short-vowels";
   let passageIndex = 0;
   let recognition = null;
   let currentReadingLevels = getReadingLevelsForGrade(grade);
@@ -4007,6 +4207,7 @@ function initReadingFluencyLab() {
     grade = savedJourney.reading.grade || grade;
     level = savedJourney.reading.level || level;
     readingTheme = savedJourney.reading.theme || readingTheme;
+    ukgTopic = savedJourney.reading.ukgTopic || ukgTopic;
     passageIndex = Number(savedJourney.reading.passageIndex) || 0;
     if (urlReadingParams.get("resume") === "1") {
       passageIndex = Number(savedJourney.reading.nextPassageIndex ?? savedJourney.reading.passageIndex) || passageIndex;
@@ -4018,6 +4219,10 @@ function initReadingFluencyLab() {
   }
 
   function getActivePassageList() {
+    if (grade === "ukg") {
+      const topicList = Object.values(currentReadingLevels).flat().filter((item) => item.topic === ukgTopic);
+      return topicList.length ? topicList : currentReadingLevels[level];
+    }
     const themedList = readingThemePassages[readingTheme]?.[level];
     return themedList?.length ? themedList : currentReadingLevels[level];
   }
@@ -4028,6 +4233,17 @@ function initReadingFluencyLab() {
   }
 
   function renderReadingThemeState() {
+    const isUkg = grade === "ukg";
+    if (themePanel) themePanel.hidden = isUkg;
+    if (ukgTopicPanel) ukgTopicPanel.hidden = !isUkg;
+    if (isUkg) {
+      const topic = ukgTopicDefinitions[ukgTopic] || ukgTopicDefinitions["short-vowels"];
+      if (ukgTopicLabel) ukgTopicLabel.textContent = `${topic.label} selected`;
+      ukgTopicButtons.forEach((button) => {
+        button.classList.toggle("is-active", button.dataset.ukgTopic === ukgTopic);
+      });
+      return;
+    }
     const selectedThemeLabel = readingInterestOptions[readingTheme] || "Reading stories";
     if (themeLabel) themeLabel.textContent = `${selectedThemeLabel} selected`;
     themeButtons.forEach((button) => {
@@ -4043,7 +4259,9 @@ function initReadingFluencyLab() {
     window.clearTimeout(readingTimer);
     window.clearTimeout(countdownTimer);
     renderReadingThemeState();
-    levelLabel.textContent = `${readingGradeLabels[grade]} - ${data.label} | ${readingInterestOptions[readingTheme] || "Reading"}`;
+    levelLabel.textContent = grade === "ukg"
+      ? `${readingGradeLabels[grade]} - ${data.label} | ${data.skill || "Early Reading"}`
+      : `${readingGradeLabels[grade]} - ${data.label} | ${readingInterestOptions[readingTheme] || "Reading"}`;
     title.textContent = data.title;
     passage.textContent = data.text;
     score.textContent = "--";
@@ -4184,6 +4402,8 @@ function initReadingFluencyLab() {
       gradeLabel: readingGradeLabels[grade],
       theme: readingTheme,
       themeLabel: readingInterestOptions[readingTheme] || "Reading stories",
+      ukgTopic,
+      ukgTopicLabel: ukgTopicDefinitions[ukgTopic]?.label || "Short Vowels",
       streak: Number(extra.streak ?? localStreak.streak) || 0,
       todayCount: Number(extra.todayCount ?? localStreak.todayCount) || 0,
       lastDate: extra.lastDate || localStreak.lastDate || "",
@@ -4624,8 +4844,23 @@ function initReadingFluencyLab() {
 
   levelSelect?.addEventListener("change", () => {
     level = levelSelect.value || "beginner";
+    if (grade === "ukg") {
+      const matchingTopic = Object.entries(ukgTopicDefinitions).find(([, topic]) => topic.level === level);
+      if (matchingTopic) ukgTopic = matchingTopic[0];
+    }
     passageIndex = 0;
     renderPassage();
+  });
+
+  ukgTopicButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      ukgTopic = button.dataset.ukgTopic || "short-vowels";
+      level = ukgTopicDefinitions[ukgTopic]?.level || "beginner";
+      if (levelSelect) levelSelect.value = level;
+      passageIndex = 0;
+      renderPassage();
+      if (isKidsverseParentLoggedIn()) syncReadingJourneyWithStreak({ status: "UKG reading topic selected" });
+    });
   });
 
   themeButtons.forEach((button) => {
@@ -4641,6 +4876,10 @@ function initReadingFluencyLab() {
 
   gradeSelect?.addEventListener("change", () => {
     grade = gradeSelect.value || "ukg";
+    if (grade === "ukg") {
+      level = ukgTopicDefinitions[ukgTopic]?.level || "beginner";
+      if (levelSelect) levelSelect.value = level;
+    }
     passageIndex = 0;
     currentReadingLevels = getReadingLevelsForGrade(grade);
     renderPassage();
