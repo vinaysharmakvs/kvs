@@ -171,7 +171,7 @@
           </label>
         </div>
 
-        <div class="reading-theme-panel" aria-label="Reading interest selector">
+        <div class="reading-theme-panel" data-reading-theme-panel aria-label="Reading interest selector" hidden>
           <div class="reading-theme-copy">
             <p class="eyebrow">Pick a reading world</p>
             <h3>What do you want to read today?</h3>
@@ -206,6 +206,27 @@
           </div>
         </div>
 
+        <div class="reading-theme-panel ukg-topic-panel" data-ukg-topic-panel aria-label="UKG reading topic selector">
+          <div class="reading-theme-copy">
+            <p class="eyebrow">Choose a UKG topic</p>
+            <h3>Start with sounds. Grow into sentences.</h3>
+            <span data-ukg-topic-label>Short Vowels selected</span>
+          </div>
+          <div class="reading-theme-buttons ukg-topic-buttons" data-ukg-topic-group>
+            <button class="is-active" type="button" data-ukg-topic="short-vowels"><span class="reading-theme-icon" aria-hidden="true">🔤</span><strong>Short Vowels</strong><small>Short a, e, i, o and u words</small></button>
+            <button type="button" data-ukg-topic="long-vowels"><span class="reading-theme-icon" aria-hidden="true">📣</span><strong>Long Vowels</strong><small>Long a, e, i, o and u sounds</small></button>
+            <button type="button" data-ukg-topic="positions"><span class="reading-theme-icon" aria-hidden="true">📍</span><strong>Position Words</strong><small>in, on, under, near and behind</small></button>
+            <button type="button" data-ukg-topic="actions"><span class="reading-theme-icon" aria-hidden="true">🏃</span><strong>Action Words</strong><small>run, jump, read, write and more</small></button>
+            <button type="button" data-ukg-topic="demonstratives"><span class="reading-theme-icon" aria-hidden="true">👉</span><strong>This, That, These, Those</strong><small>One or many; near or far</small></button>
+            <button type="button" data-ukg-topic="digraphs"><span class="reading-theme-icon" aria-hidden="true">🔡</span><strong>Digraphs</strong><small>sh, ch, th, ph and wh</small></button>
+            <button type="button" data-ukg-topic="blends"><span class="reading-theme-icon" aria-hidden="true">🧩</span><strong>Blends</strong><small>cl, gl, pl, fl, br, tr and more</small></button>
+            <button type="button" data-ukg-topic="what-is"><span class="reading-theme-icon" aria-hidden="true">❓</span><strong>What is ...?</strong><small>Read and answer simple questions</small></button>
+            <button type="button" data-ukg-topic="is-it"><span class="reading-theme-icon" aria-hidden="true">✅</span><strong>Is it ...?</strong><small>Yes or no question practice</small></button>
+            <button type="button" data-ukg-topic="articles"><span class="reading-theme-icon" aria-hidden="true">🅰️</span><strong>Articles</strong><small>Use a, an and the</small></button>
+            <button type="button" data-ukg-topic="rhymes"><span class="reading-theme-icon" aria-hidden="true">🎵</span><strong>Rhyming Words</strong><small>Words with the same ending sound</small></button>
+          </div>
+        </div>
+
         <div class="reading-ready-banner" aria-live="polite">
           <span aria-hidden="true">▶</span>
           <div><strong>Your story is ready!</strong><small>Listen once, then press Start Reading and read aloud.</small></div>
@@ -215,12 +236,12 @@
         <div class="reading-lab-shell" id="reading-story">
           <article class="reading-passage-card">
             <div class="reading-card-top">
-              <span data-reading-level-label>UKG - Beginner | Sports</span>
-              <strong data-reading-title>The Practice Ground</strong>
+              <span data-reading-level-label>UKG - Beginner | Short a · -at</span>
+              <strong data-reading-title>Short Sound Words · Day 1</strong>
             </div>
             <div class="reading-passage-wrap">
               <p class="reading-passage" data-reading-passage>
-                The children run on the ground. They pass the ball, cheer for friends and try again with a happy smile.
+                cat. bat. mat. rat.
               </p>
               <button class="reading-passage-audio" type="button" data-reading-listen aria-label="Listen to this paragraph" title="Listen to this paragraph">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4Zm12.2-.8a5.4 5.4 0 0 1 0 7.6M18.8 5.6a9 9 0 0 1 0 12.8"/></svg>
@@ -365,7 +386,7 @@
       <span>English Learning Lab for reading fluency, vocabulary and spoken confidence.</span>
       <span class="powered-by-tivoro"><a href="https://tivoro.in" target="_blank" rel="noopener noreferrer">Powered by Tivoro - Your digital growth partner</a></span>
     </footer>
-    <script src="../kidsverse-app.js?v=20260808-transcript-dedupe"></script>
+    <script src="../kidsverse-app.js?v=20260820-ukg-topics"></script>
     <script src="../live-feature-counter.js"></script>
   </body>
 </html>
