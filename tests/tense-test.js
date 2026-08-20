@@ -55,6 +55,18 @@
   const form = document.querySelector("[data-test-form]");
   if (!form) return;
 
+  const additionalBanks = window.KidsverseTenseQuestionBanks || {};
+  const questionBanks = {
+    beginner: questions,
+    medium: additionalBanks.medium || [],
+    difficult: additionalBanks.difficult || [],
+  };
+  Object.entries(questionBanks).forEach(([difficulty, bank]) => {
+    if (bank.length !== 50) throw new Error(`${difficulty} tense test must contain exactly 50 questions.`);
+  });
+
+  const difficultyLabels = { beginner: "Beginner", medium: "Medium", difficult: "Difficult" };
+  const difficultySelect = document.querySelector("[data-test-difficulty]");
   const countSelect = document.querySelector("[data-question-count]");
   const currentCount = document.querySelector("[data-current-count]");
   const answeredCount = document.querySelector("[data-answered-count]");
@@ -65,6 +77,7 @@
 
   let activeQuestions = [];
   let checkedResults = [];
+  let difficulty = difficultySelect?.value || "beginner";
 
   const normalize = (value) =>
     String(value || "")
@@ -138,8 +151,9 @@
   };
 
   const chooseBalancedQuestions = (count) => {
-    if (count >= questions.length) return shuffle(questions);
-    const groups = questions.reduce((map, question) => {
+    const selectedBank = questionBanks[difficulty] || questionBanks.beginner;
+    if (count >= selectedBank.length) return shuffle(selectedBank);
+    const groups = selectedBank.reduce((map, question) => {
       const key = question.tense.replace(/ Question| Negative|\s\+.*/g, "");
       if (!map.has(key)) map.set(key, []);
       map.get(key).push(question);
@@ -151,7 +165,7 @@
       if (selected.length < count) selected.push(shuffle(group)[0]);
     });
 
-    const remaining = shuffle(questions.filter((question) => !selected.includes(question)));
+    const remaining = shuffle(selectedBank.filter((question) => !selected.includes(question)));
     return shuffle([...selected, ...remaining.slice(0, count - selected.length)]);
   };
 
@@ -198,9 +212,9 @@
     updateProgress();
     resultCard.hidden = true;
     scorePreview.textContent = "--";
-    coverageLabel.textContent = count === 50 ? "All tenses" : "Mixed";
+    coverageLabel.textContent = `${difficultyLabels[difficulty]} · ${count === 50 ? "All tenses" : "Mixed"}`;
     testSizeLabels.forEach((label) => {
-      label.textContent = `${count} question${count === 1 ? "" : "s"}`;
+      label.textContent = `${count} ${difficultyLabels[difficulty]} question${count === 1 ? "" : "s"}`;
     });
   };
 
@@ -281,6 +295,10 @@
   });
 
   countSelect?.addEventListener("change", renderQuestions);
+  difficultySelect?.addEventListener("change", () => {
+    difficulty = difficultySelect.value || "beginner";
+    renderQuestions();
+  });
   form.addEventListener("input", updateProgress);
 
   renderQuestions();
