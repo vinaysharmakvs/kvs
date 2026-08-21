@@ -317,6 +317,64 @@
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
+.answer-entry-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.answer-mic-button {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 8px;
+  place-content: center;
+  min-width: 112px;
+  min-height: 62px;
+  padding: 10px 14px;
+  border: 1px solid rgba(12, 117, 108, 0.2);
+  border-radius: 18px;
+  color: #075f58;
+  background: linear-gradient(135deg, #e2fbf1, #fff2bd);
+  box-shadow: 0 10px 24px rgba(12, 117, 108, 0.1);
+  font: 900 0.92rem/1 "Nunito", sans-serif;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.answer-mic-button:hover,
+.answer-mic-button:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px rgba(12, 117, 108, 0.18);
+}
+
+.answer-mic-button.is-listening {
+  color: #ffffff;
+  background: linear-gradient(135deg, #ff725f, #ff9d5d);
+  animation: answerMicPulse 0.9s ease-in-out infinite alternate;
+}
+
+.answer-mic-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.answer-mic-icon {
+  font-size: 1.12rem;
+}
+
+.answer-mic-status {
+  margin: 7px 3px 0;
+  color: #68738b;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+@keyframes answerMicPulse {
+  from { box-shadow: 0 0 0 0 rgba(255, 114, 95, 0.28); }
+  to { box-shadow: 0 0 0 8px rgba(255, 114, 95, 0.08); }
+}
+
 .answer-input:focus {
   border-color: #219ebc;
   box-shadow: 0 0 0 5px rgba(33, 158, 188, 0.14);
@@ -514,6 +572,22 @@
 
   .question-topline {
     align-items: flex-start;
+  }
+
+  .answer-entry-row {
+    grid-template-columns: minmax(0, 1fr) 58px;
+    gap: 8px;
+  }
+
+  .answer-mic-button {
+    grid-template-columns: 1fr;
+    min-width: 58px;
+    padding: 8px 6px;
+    font-size: 0.68rem;
+  }
+
+  .answer-mic-button .answer-mic-icon {
+    font-size: 1.28rem;
   }
 
   .test-actions {
