@@ -1,1 +1,110 @@
 
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Kidsverse interactive Maths Lab for UKG and Grade 1 with visual explanations, guided examples and understanding checks." />
+    <title>Maths Learning Lab | Kidsverse</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="shortcut icon" href="../../favicon.ico" />
+    <link rel="stylesheet" href="../../styles.css?v=20260813-global-mobile-fix" />
+    <link rel="stylesheet" href="../../after-school-fix.css?v=20260813-mobile-shell-fix2" />
+    <link rel="stylesheet" href="maths-lab.css?v=20260821-first-release" />
+  </head>
+  <body class="maths-lab-page learning-lab-page">
+    <div class="top-strip"><span>Kidsverse Maths Lab</span><strong>See it. Play with it. Understand it.</strong><a href="#maths-curriculum">Start Learning</a></div>
+    <header class="site-header">
+      <a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="Kidsverse School logo" /><span><strong>Kidsverse</strong><small>After School Maths</small></span></a>
+      <nav class="nav-links" aria-label="Primary navigation"><a href="../../about.html">About</a><a href="../../activities.html">Activities</a><a href="../../programs.html">Programs</a><a href="../../after-school.html">After School</a><a href="../../parent-hub.html">Parent Hub</a></nav>
+      <a class="header-cta" href="#maths-curriculum">Choose Grade</a>
+      <button class="menu-button" type="button" aria-label="Open menu" data-menu-button>Menu</button>
+    </header>
+
+    <main>
+      <section class="maths-hero">
+        <div>
+          <p class="eyebrow">Interactive Maths Lab</p>
+          <h1>Don’t memorise maths. See how it works.</h1>
+          <p>Choose a grade, explore a concept with pictures, watch one simple example and solve a quick challenge. If one explanation does not click, try another way.</p>
+          <a class="primary-button" href="#maths-curriculum">Start a Maths Mission</a>
+        </div>
+        <div class="maths-hero-play" aria-label="Visual addition example">
+          <span>Put the groups together</span>
+          <div><b>🍎 🍎 🍎</b><i>+</i><b>🍎 🍎</b></div>
+          <strong>3 + 2 = <em>5</em></strong>
+          <small>Pictures first. Maths rule next.</small>
+        </div>
+      </section>
+
+      <section class="section maths-curriculum" id="maths-curriculum" data-maths-lab>
+        <div class="maths-curriculum-head">
+          <div><p class="eyebrow">Choose the right starting point</p><h2>What would you like to understand today?</h2></div>
+          <label class="maths-grade-select">Student grade<select data-maths-grade><option value="ukg">UKG</option><option value="1">Grade 1</option><option value="2">Grade 2</option><option value="3">Grade 3</option><option value="4">Grade 4</option><option value="5">Grade 5</option></select></label>
+        </div>
+
+        <div class="maths-progress-strip" aria-label="Maths progress">
+          <div><span data-progress-grade>UKG Journey</span><strong data-progress-count>0 of 30 concepts explored</strong></div>
+          <progress data-maths-progress max="30" value="0">0%</progress>
+          <span data-progress-message>Pick a topic to begin.</span>
+        </div>
+
+        <section class="maths-topic-section">
+          <div class="maths-section-title"><span>1</span><div><p class="eyebrow">Pick a topic</p><h3>Choose your maths world</h3></div></div>
+          <div class="maths-topic-grid" data-maths-topics></div>
+        </section>
+
+        <section class="maths-concept-section" data-concept-section hidden>
+          <div class="maths-section-title"><span>2</span><div><p class="eyebrow">Pick a concept</p><h3 data-concept-heading>Start with one small idea</h3></div></div>
+          <div class="maths-concept-list" data-maths-concepts></div>
+        </section>
+
+        <section class="maths-lesson" data-maths-lesson hidden>
+          <header class="maths-lesson-head">
+            <div><span data-lesson-path>UKG · Numbers</span><h2 data-lesson-title>Count objects</h2><p data-lesson-goal>Learn what counting means.</p></div>
+            <div class="maths-audio-choices" aria-label="Choose explanation language">
+              <span>🔊 Audio explanation</span>
+              <button type="button" class="maths-listen-button" data-maths-listen="english">English</button>
+              <button type="button" class="maths-listen-button is-hindi" data-maths-listen="hindi">हिंदी</button>
+              <small data-audio-status aria-live="polite">Choose a language</small>
+            </div>
+          </header>
+
+          <div class="maths-lesson-grid">
+            <article class="maths-understand-card">
+              <span class="maths-step-label">See the idea</span>
+              <div class="maths-visual" data-maths-visual></div>
+              <div class="maths-explanation"><h3 data-explanation-title>What does it mean?</h3><p data-explanation-copy></p></div>
+              <button class="maths-other-way" type="button" data-other-way>↻ Explain it another way</button>
+            </article>
+
+            <article class="maths-example-card">
+              <span class="maths-step-label">One simple example</span>
+              <h3 data-example-question></h3>
+              <div class="maths-example-steps" data-example-steps></div>
+              <button class="secondary-button" type="button" data-show-step>Show first step</button>
+            </article>
+          </div>
+
+          <article class="maths-check-card" data-check-card>
+            <div class="maths-check-intro"><span class="maths-step-label">Your turn</span><h3 data-check-question></h3><p>Choose an answer. A mistake only means we should try another way.</p></div>
+            <div class="maths-answer-options" data-answer-options></div>
+            <div class="maths-feedback" data-maths-feedback hidden></div>
+          </article>
+
+          <div class="maths-lesson-navigation">
+            <button class="secondary-button" type="button" data-previous-concept>← Previous concept</button>
+            <button class="primary-button" type="button" data-next-concept>Next concept →</button>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <a class="whatsapp-float" href="https://wa.me/918826758881?text=Hello%20Kidsverse%2C%20I%20need%20help%20with%20the%20Maths%20Lab" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+    <footer class="site-footer"><strong>Kidsverse School Rehan</strong><span>Visual, interactive and confidence-friendly maths learning.</span><span class="powered-by-tivoro"><a href="https://tivoro.in" target="_blank" rel="noopener noreferrer">Powered by Tivoro - Your digital growth partner</a></span></footer>
+    <script src="../../kidsverse-app.js?v=20260821-maths-folder"></script>
+    <script src="maths-lab.js?v=20260821-grade5-step-fix"></script>
+  </body>
+</html>
