@@ -74,6 +74,7 @@ function renderGrade(key) {
 }
 
 function getRootPath() {
+  if (window.location.pathname.includes("/after-school/maths-lab/")) return "../../";
   if (window.location.pathname.includes("/after-school/")) return "../";
   if (window.location.pathname.includes("/tests/")) return "../";
   return "";
@@ -162,6 +163,8 @@ function buildAfterSchoolMenu(root) {
                 <span>Maths</span>
               </button>
               <div class="after-school-submenu">
+                <span class="after-school-submenu-caption is-live">Available Now</span>
+                ${buildSubmenuLink(`${root}after-school/maths-lab/`, "Maths Learning Lab")}
                 <span class="after-school-submenu-caption is-soon">Coming Soon</span>
                 ${buildSubmenuLink("#", "Mental Maths", { comingSoon: true })}
                 ${buildSubmenuLink("#", "Number Skills", { comingSoon: true })}
@@ -276,6 +279,7 @@ function setupMobileAppShell() {
               <a href="${root}learning-journey.html">My Progress</a>
               <a href="${root}after-school/present-tense.html">English Learning Lab</a>
               <a href="${root}after-school/reading-fluency.html">Reading Fluency</a>
+              <a href="${root}after-school/maths-lab/">Maths Learning Lab</a>
               <a href="${root}after-school/speaksmart-ai.html">SpeakSmart AI</a>
               <a href="${root}tests/tense-test.html">Tests &amp; Challenges</a>
             </div>
