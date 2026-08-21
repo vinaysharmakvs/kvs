@@ -78,6 +78,9 @@
   let activeQuestions = [];
   let checkedResults = [];
   let difficulty = difficultySelect?.value || "beginner";
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  let activeRecognition = null;
+  let activeMicButton = null;
 
   const normalize = (value) =>
     String(value || "")
@@ -183,6 +186,11 @@
   };
 
   const renderQuestions = () => {
+    if (activeRecognition) {
+      try { activeRecognition.stop(); } catch { /* Recognition may already be stopping. */ }
+      activeRecognition = null;
+      activeMicButton = null;
+    }
     const count = Number(countSelect?.value || 20);
     activeQuestions = chooseBalancedQuestions(count);
     checkedResults = [];
@@ -193,7 +201,14 @@
           <span class="feedback-pill" data-feedback>Type your answer</span>
         </div>
         <p class="question-hindi">${question.hindi}</p>
-        <textarea class="answer-input" data-answer-input placeholder="Write the English translation here..." rows="2"></textarea>
+        <div class="answer-entry-row">
+          <textarea class="answer-input" data-answer-input placeholder="Type or speak the English translation here..." rows="2"></textarea>
+          <button class="answer-mic-button" type="button" data-answer-mic aria-label="Speak answer for question ${index + 1}" title="Speak your answer" ${SpeechRecognition ? "" : "disabled"}>
+            <span class="answer-mic-icon" aria-hidden="true">🎤</span>
+            <span data-mic-label>${SpeechRecognition ? "Speak" : "Not supported"}</span>
+          </button>
+        </div>
+        <p class="answer-mic-status" data-mic-status aria-live="polite">${SpeechRecognition ? "Tap Speak, then say the English answer clearly." : "Voice answers need Chrome or another browser with speech recognition."}</p>
         <div class="answer-feedback-row" data-answer-meta hidden>
           <span class="tense-pill">Tense: ${question.tense}</span>
           <span class="feedback-pill" data-score-pill>Score: --</span>
@@ -292,6 +307,78 @@
   document.addEventListener("click", (event) => {
     if (event.target.closest("[data-new-test]")) renderQuestions();
     if (event.target.closest("[data-check-test]")) checkTest();
+  });
+
+  const stopActiveRecognition = () => {
+    if (activeRecognition) {
+      try { activeRecognition.stop(); } catch { /* Recognition may already be stopping. */ }
+    }
+  };
+
+  form.addEventListener("click", (event) => {
+    const micButton = event.target.closest("[data-answer-mic]");
+    if (!micButton || !SpeechRecognition) return;
+    const card = micButton.closest("[data-question-index]");
+    const input = card?.querySelector("[data-answer-input]");
+    const status = card?.querySelector("[data-mic-status]");
+    const label = micButton.querySelector("[data-mic-label]");
+    if (!input || !status || !label) return;
+
+    if (micButton === activeMicButton && micButton.classList.contains("is-listening")) {
+      stopActiveRecognition();
+      return;
+    }
+    stopActiveRecognition();
+
+    const recognition = new SpeechRecognition();
+    activeRecognition = recognition;
+    activeMicButton = micButton;
+    recognition.lang = "en-IN";
+    recognition.interimResults = true;
+    recognition.continuous = false;
+    recognition.maxAlternatives = 1;
+    const originalAnswer = input.value.trim();
+
+    recognition.onstart = () => {
+      micButton.classList.add("is-listening");
+      label.textContent = "Listening...";
+      status.textContent = "Listening now — speak the complete English sentence.";
+      input.focus();
+    };
+    recognition.onresult = (recognitionEvent) => {
+      let spokenAnswer = "";
+      for (let index = recognitionEvent.resultIndex; index < recognitionEvent.results.length; index += 1) {
+        spokenAnswer += recognitionEvent.results[index][0].transcript;
+      }
+      spokenAnswer = spokenAnswer.trim();
+      if (!spokenAnswer) return;
+      input.value = originalAnswer ? `${originalAnswer} ${spokenAnswer}` : spokenAnswer;
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+      status.textContent = recognitionEvent.results[recognitionEvent.results.length - 1].isFinal
+        ? "Answer added. You can edit it before checking the test."
+        : "Listening... your words are appearing in the answer box.";
+    };
+    recognition.onerror = (recognitionEvent) => {
+      const messages = {
+        "not-allowed": "Microphone permission was blocked. Allow microphone access and try again.",
+        "audio-capture": "No microphone was found. Check your device microphone.",
+        "no-speech": "We could not hear an answer. Tap Speak and try again clearly.",
+        network: "Voice recognition is unavailable right now. Please type the answer.",
+      };
+      status.textContent = messages[recognitionEvent.error] || "Voice answer stopped. Please try again or type your answer.";
+    };
+    recognition.onend = () => {
+      micButton.classList.remove("is-listening");
+      label.textContent = "Speak";
+      if (activeRecognition === recognition) activeRecognition = null;
+      if (activeMicButton === micButton) activeMicButton = null;
+    };
+
+    try {
+      recognition.start();
+    } catch {
+      status.textContent = "The microphone is already active. Please wait a moment and try again.";
+    }
   });
 
   countSelect?.addEventListener("change", renderQuestions);
