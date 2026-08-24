@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="Kidsverse interactive Sentence Formation Lab teaches subjects, verbs, sentence building and confident description through visual props." />
+  <title>Sentence Formation Lab | Kidsverse</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="shortcut icon" href="../favicon.ico" />
+  <link rel="stylesheet" href="../styles.css?v=20260813-global-mobile-fix" />
+  <link rel="stylesheet" href="../after-school-fix.css?v=20260813-mobile-shell-fix2" />
+  <link rel="stylesheet" href="sentence-formation.css?v=20260824-first-release" />
+</head>
+<body class="learning-lab-page sentence-lab-page">
+  <div class="top-strip"><span>English Learning Lab</span><strong>See it · Build it · Say it</strong><a href="#sentence-builder">Start Building</a></div>
+  <header class="site-header">
+    <a class="brand" href="../index.html"><img src="../assets/logo.png" alt="Kidsverse School logo" /><span><strong>Kidsverse</strong><small>Sentence Formation Lab</small></span></a>
+    <nav class="nav-links" aria-label="Primary navigation"><a href="../about.html">About</a><a href="../activities.html">Activities</a><a href="../programs.html">Programs</a><a href="../after-school.html">After School</a><a href="../parent-hub.html">Parent Hub</a></nav>
+    <a class="header-cta" href="#sentence-builder">Build a Sentence</a>
+    <button class="menu-button" type="button" aria-label="Open menu" data-menu-button>Menu</button>
+  </header>
+
+  <main>
+    <section class="sentence-hero">
+      <div><p class="eyebrow">Sentence Formation Lab</p><h1>Turn an idea into a clear sentence.</h1><p>Children learn who or what the sentence is about, what happens, and how details make the meaning complete.</p><a class="primary-button" href="#sentence-basics">Start with the building blocks</a></div>
+      <div class="sentence-formula" aria-label="Sentence formula"><div><span>WHO?</span><strong>The girl</strong></div><b>+</b><div><span>DOES WHAT?</span><strong>reads</strong></div><b>+</b><div><span>MORE DETAIL</span><strong>a story.</strong></div><p>The girl reads a story.</p></div>
+    </section>
+
+    <section class="section sentence-basics" id="sentence-basics">
+      <div class="section-heading"><p class="eyebrow">Meet the sentence team</p><h2>Every clear sentence needs a subject and a verb.</h2><p>Tap each part to understand its job.</p></div>
+      <div class="sentence-part-cards">
+        <button type="button" data-part="subject"><span>👧</span><strong>Subject</strong><small>Who or what?</small></button>
+        <button type="button" data-part="verb"><span>🏃</span><strong>Verb</strong><small>What happens?</small></button>
+        <button type="button" data-part="detail"><span>📍</span><strong>Details</strong><small>What, where, when or how?</small></button>
+      </div>
+      <div class="part-explanation" data-part-explanation aria-live="polite"><strong>Subject</strong><p>The subject tells us who or what the sentence is about: <em>The boy</em>, <em>My dog</em>, <em>The sun</em>.</p></div>
+    </section>
+
+    <section class="section prop-builder" id="sentence-builder" data-sentence-lab>
+      <div class="section-heading"><p class="eyebrow">Build with visual props</p><h2>Choose one card from each row.</h2><p>Watch the words join into one meaningful sentence.</p></div>
+      <div class="sentence-build-layout">
+        <div class="prop-workspace">
+          <div class="prop-row"><strong>1. Who or what?</strong><div data-props="subject"></div></div>
+          <div class="prop-row"><strong>2. What happens?</strong><div data-props="verb"></div></div>
+          <div class="prop-row"><strong>3. Add a detail</strong><div data-props="detail"></div></div>
+        </div>
+        <aside class="built-sentence-card">
+          <span>Your sentence</span>
+          <div class="sentence-slots"><b data-slot="subject">The girl</b><b data-slot="verb">reads</b><b data-slot="detail">a story.</b></div>
+          <p data-built-sentence>The girl reads a story.</p>
+          <div class="built-actions"><button type="button" data-read-sentence>🔊 Listen</button><button type="button" data-new-sentence>↻ New sentence</button></div>
+          <small data-builder-tip>Complete thought ✓ Capital letter ✓ Full stop ✓</small>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section describe-lab">
+      <div class="section-heading"><p class="eyebrow">Explain it yourself</p><h2>Pick a character or topic and speak in your own words.</h2><p>The picture props and question prompts help children organise their ideas without giving them a paragraph to memorise.</p></div>
+      <div class="describe-layout">
+        <div class="character-picker" data-character-picker></div>
+        <article class="speaking-coach">
+          <div class="selected-character"><span data-character-icon>🦁</span><div><small>Your topic</small><strong data-character-name>Lion</strong></div></div>
+          <div class="prompt-strip" data-character-prompts></div>
+          <label for="child-description">My explanation</label>
+          <textarea id="child-description" data-description placeholder="Example: A lion is a strong wild animal. It has a mane. It lives in the forest."></textarea>
+          <div class="starter-chips" data-starters></div>
+          <div class="description-actions"><button type="button" data-check-description>Check my explanation</button><button type="button" data-read-description>🔊 Read it aloud</button><button type="button" data-speak-description>🎤 Speak</button></div>
+          <div class="description-feedback" data-description-feedback aria-live="polite"><strong>Ready when you are.</strong><p>Try to say at least three complete sentences.</p></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section sentence-check-section">
+      <div><p class="eyebrow">Quick understanding check</p><h2>Can you find the complete sentence?</h2></div>
+      <div class="sentence-choice-grid" data-sentence-check>
+        <button type="button">The bird</button><button type="button">flies in the sky</button><button type="button" data-correct>The bird flies in the sky.</button>
+      </div>
+      <p data-check-feedback>Choose the sentence that gives a complete thought.</p>
+    </section>
+  </main>
+
+  <a class="whatsapp-float" href="https://wa.me/918826758881?text=Hello%20Kidsverse%2C%20I%20need%20help%20with%20Sentence%20Formation" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+  <footer class="site-footer"><strong>Kidsverse School Rehan</strong><span>Clear sentences build confident speakers.</span><span class="powered-by-tivoro"><a href="https://tivoro.in" target="_blank" rel="noopener noreferrer">Powered by Tivoro</a></span></footer>
+  <script src="../kidsverse-app.js?v=20260824-sentence-lab"></script>
+  <script src="sentence-formation.js?v=20260824-self-introduction"></script>
+</body>
+</html>
