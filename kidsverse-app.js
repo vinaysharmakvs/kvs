@@ -138,6 +138,7 @@ function buildAfterSchoolMenu(root) {
                 ${buildSubmenuLink(`${root}after-school/future-tense.html`, "Future Tense")}
                 ${buildSubmenuLink(`${root}after-school/articles-a-an-the.html`, "A, An & The")}
                 ${buildSubmenuLink(`${root}after-school/daily-routine-verbs.html`, "Daily Routine Verbs")}
+                ${buildSubmenuLink(`${root}after-school/sentence-formation.html`, "Sentence Formation")}
                 ${buildSubmenuLink(`${root}after-school.html#english-learning-lab`, "View English Learning Lab", { className: "after-school-submenu-highlight" })}
               </div>
             </div>
@@ -400,6 +401,7 @@ function enhanceKiyaLearningLinks() {
       { href: `${labRoot}future-tense.html`, label: "Future Tense Lab" },
       { href: `${labRoot}articles-a-an-the.html`, label: "A, An & The" },
       { href: `${labRoot}daily-routine-verbs.html`, label: "Daily Routine Verbs" },
+      { href: `${labRoot}sentence-formation.html`, label: "Sentence Formation" },
       { href: `${labRoot}reading-fluency.html`, label: "Reading Fluency" },
       { href: `${getRootPath()}tests/tense-test.html`, label: "Mixed Tenses Test" },
     ];
