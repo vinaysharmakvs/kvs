@@ -11,7 +11,7 @@
 
   const loadVoices = () => {
     voices = synth?.getVoices() || [];
-    if (!voices.length) playButton.disabled = true;
+    playButton.disabled = false;
   };
 
   const finishPlayback = () => {
@@ -32,6 +32,7 @@
   const readPassage = (forceFallback = false) => {
     const text = passage?.textContent.trim().replace(/\s+/g, " ");
     if (!text || !synth) return;
+    if (!voices.length) voices = synth.getVoices() || [];
     synth.cancel();
     const googleHindi = voices.find((voice) => /google/i.test(voice.name) && /^hi-IN$/i.test(voice.lang));
     const hindi = voices.find((voice) => /^hi-IN$/i.test(voice.lang));
@@ -70,6 +71,7 @@
     readPassage();
   });
   if (synth && "SpeechSynthesisUtterance" in window) {
+    playButton.disabled = false;
     loadVoices();
     synth.addEventListener?.("voiceschanged", loadVoices);
   } else {
