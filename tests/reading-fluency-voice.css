@@ -1,0 +1,85 @@
+.reading-voice-settings {
+  display: grid;
+  grid-template-columns: minmax(230px, 1.35fr) minmax(190px, 1fr) minmax(190px, 1fr);
+  gap: 14px;
+  margin: 18px 0 20px;
+  padding: 16px;
+  border: 1px solid rgba(25, 65, 83, 0.1);
+  border-radius: 22px;
+  background: linear-gradient(135deg, rgba(230, 250, 239, 0.8), rgba(255, 247, 218, 0.72));
+}
+
+.reading-voice-settings label {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  color: #546b79;
+  font-size: 0.76rem;
+  font-weight: 1000;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.reading-voice-settings select {
+  width: 100%;
+  min-height: 46px;
+  padding: 0 12px;
+  color: #183247;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(25, 65, 83, 0.14);
+  border-radius: 14px;
+  outline: none;
+  font: 900 0.9rem "Nunito", sans-serif;
+  text-transform: none;
+}
+
+.reading-voice-settings select:focus {
+  border-color: #1aa996;
+  box-shadow: 0 0 0 3px rgba(26, 169, 150, 0.12);
+}
+
+.reading-voice-range {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 46px;
+  padding: 0 10px;
+  background: rgba(255, 255, 255, 0.68);
+  border: 1px solid rgba(25, 65, 83, 0.1);
+  border-radius: 14px;
+}
+
+.reading-voice-range input {
+  width: 100%;
+  min-width: 0;
+  accent-color: #1ebca6;
+}
+
+.reading-voice-range output {
+  min-width: 42px;
+  color: #d78b18;
+  font-size: 0.9rem;
+  font-weight: 1000;
+  text-align: right;
+  text-transform: none;
+}
+
+.reading-passage-audio.is-speaking {
+  background: linear-gradient(135deg, #22cbb3, #87df76);
+  box-shadow: 0 0 0 7px rgba(34, 203, 179, 0.15);
+  animation: reading-voice-pulse 1.25s infinite;
+}
+
+@keyframes reading-voice-pulse {
+  50% { transform: scale(0.94); }
+}
+
+@media (max-width: 900px) {
+  .reading-voice-settings { grid-template-columns: 1fr 1fr; }
+  .reading-voice-select-field { grid-column: 1 / -1; }
+}
+
+@media (max-width: 560px) {
+  .reading-voice-settings { grid-template-columns: 1fr; padding: 13px; border-radius: 18px; }
+  .reading-voice-select-field { grid-column: auto; }
+}
