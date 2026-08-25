@@ -18,8 +18,9 @@
     <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="512x512" href="../assets/favicon.png" />
     <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png" />
-<link rel="stylesheet" href="../styles.css?v=20260813-global-mobile-fix" />
+    <link rel="stylesheet" href="../styles.css?v=20260813-global-mobile-fix" />
     <link rel="stylesheet" href="../after-school-fix.css?v=20260813-mobile-shell-fix2" />
+    <link rel="stylesheet" href="../tests/reading-fluency-voice.css?v=20260825" />
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-0ZT634EM99"></script>
   <script>
@@ -234,7 +235,7 @@
         </div>
 
         <div class="reading-lab-shell" id="reading-story">
-          <article class="reading-passage-card">
+          <article class="reading-passage-card" data-fluency-voice-reader>
             <div class="reading-card-top">
               <span data-reading-level-label>UKG - Beginner | Short a · -at</span>
               <strong data-reading-title>Short Sound Words · Day 1</strong>
@@ -243,7 +244,7 @@
               <p class="reading-passage" data-reading-passage>
                 cat. bat. mat. rat.
               </p>
-              <button class="reading-passage-audio" type="button" data-reading-listen aria-label="Listen to this paragraph" title="Listen to this paragraph">
+              <button class="reading-passage-audio" type="button" data-fluency-voice-play aria-label="Listen to this paragraph" title="Listen to this paragraph">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4Zm12.2-.8a5.4 5.4 0 0 1 0 7.6M18.8 5.6a9 9 0 0 1 0 12.8"/></svg>
               </button>
             </div>
@@ -387,6 +388,7 @@
       <span class="powered-by-tivoro"><a href="https://tivoro.in" target="_blank" rel="noopener noreferrer">Powered by Tivoro - Your digital growth partner</a></span>
     </footer>
     <script src="../kidsverse-app.js?v=20260820-ukg-topics"></script>
+    <script src="../tests/reading-fluency-voice.js?v=20260825c"></script>
     <script src="../live-feature-counter.js"></script>
   </body>
 </html>
