@@ -173,6 +173,69 @@ const ADDITIONAL_PARAGRAPHS = {
   }
 };
 
+const PARAGRAPH_SOLUTIONS = {
+  easy: {
+    300: [
+      "I wake up early every morning. I make my bed and then brush my teeth. My mother prepares breakfast for me. I go to school on time and study attentively in class. I enjoy studying English and Mathematics. At school, I play with my friends and listen carefully to my teachers. After returning home, I rest for a while and then complete my homework. In the evening, I spend time with my family. I want to learn something new every day and improve in my studies.",
+      "Everyone in my family wakes up early in the morning. First, I greet my parents and then clean my study table. My sister prepares her schoolbooks. We have breakfast together and leave for school on time. At school, I study attentively, behave well with my friends and raise my hand to answer in class. In the evening, I play and then complete my homework. I like learning good habits because they make me responsible."
+    ],
+    400: [
+      "Our school is a very important part of our lives. At school, children learn to read, write and speak, as well as develop good values. Every morning, we pray and greet our teachers. Our classroom remains clean and beautiful. Teachers use stories, activities and examples to make learning easier. We also take part in sports, music, art and group activities. These activities build our confidence. If a child makes a mistake, the teachers explain it lovingly. I love my school because it gives me opportunities to learn, speak and grow.",
+      "Sunday is my favourite day. I wake up a little late on Sunday, but I complete my work on time. In the morning, I have breakfast with my family and then arrange my books. In the afternoon, I read a story or draw pictures. In the evening, I go to the park and play with my friends. Sometimes, we play a small game together at home. At night, I prepare for the coming week. Sunday gives me both rest and fresh energy."
+    ],
+    500: [
+      "My daily routine makes me disciplined. After waking up, I drink water first and then prepare for my studies. Before going to school, I check my bag, books and lunch box. At school, I try my best to listen carefully to the teacher and complete my work on time. I play with my friends during the break, but remain quiet in class. After returning home, I tell my parents about my day. Then I do my homework and practise difficult words. At night, I prepare for the next day. Good habits make us responsible and confident.",
+      "My class follows very good learning habits. When the teacher enters, we greet the teacher. We keep our books properly and try to keep the classroom clean. If a child cannot answer, the other children do not make fun of them. The teacher explains that learning requires patience. We listen to stories, read words, speak sentences and then practise. I believe every child can learn confidently in such a classroom."
+    ],
+    600: ["A good student learns not only from books but also through good behaviour. A student should respect time, listen to teachers and help friends. When we speak politely to others, people appreciate us. At school, we should also learn about cleanliness, saving water and electricity, and taking care of our belongings. Sports and creative activities are as important as studies because they refresh our minds. If we practise a little every day, our English, handwriting and confidence in speaking can gradually improve."]
+  },
+  medium: {
+    300: [
+      "A special activity took place at our school yesterday. All the children sat with their teams, and the teacher told us a story. After listening to it, we had to speak about the story. At first, I was a little nervous, but when my turn came, I began speaking slowly. My friends listened attentively. The teacher said that our confidence would grow if we practised speaking every day. At home, I told my parents that I had tried to speak in class. They were very happy.",
+      "Last week, our class prepared a short presentation about cleanliness. First, we discussed the topic, and then every child received a role. Some children made posters, some wrote slogans and others practised speaking. When the presentation began, I spoke softly at first, but later my confidence increased. The teacher said that preparation and practice make speaking easier. That day, I understood that we can learn a great deal from one another while working in a group."
+    ],
+    400: [
+      "Last month, I decided to improve my studies. Earlier, I used to stop whenever I saw difficult words and avoided speaking. Now, I practise reading for ten minutes and speaking five sentences every day. My teacher gave me small goals. I read several stories, learned new words and tried to improve my sentences. When I read a complete paragraph without stopping for the first time, I felt very happy. I now understand that regular practice can help every child improve.",
+      "When I was younger, I found it difficult to read English. I would stop at long words and give up quickly. This year, my teacher asked me to read short paragraphs every day. I read slowly in the beginning, but now both my speed and understanding are improving. I have also learned to break difficult words into sounds. Whenever I read a new story now, I first look at the title, identify the key words and then read the complete paragraph."
+    ],
+    500: [
+      "When children only memorise answers, they may forget them quickly. However, learning becomes stronger when they explain an idea in their own words. That is why our teacher gives us opportunities to speak, write and discuss in class. Sometimes we work in groups, and sometimes we write answers independently. If a child does not understand, the teacher explains the idea again. This method reduces fear and increases curiosity. I believe the real purpose of education is not merely to score marks but to develop the ability to think and communicate correctly.",
+      "One day, our school organised a science activity. The teacher explained plants and then allowed us to sow seeds in small pots. We added soil, watered the seeds and placed the pots in sunlight. We observed them over the next few days. The whole class was delighted when small leaves appeared. The activity taught us that plants need water, sunlight and care. We also learned that protecting nature is our responsibility. Such activities make learning memorable."
+    ],
+    600: ["Good education prepares a child not only for examinations but also for life. Along with studies, a student should develop confidence, discipline, responsibility and communication skills. Today, a child who can speak clearly, ask suitable questions and explain ideas may receive better opportunities in the future. Therefore, we should read, write, listen and speak every day. We should not feel ashamed when we make mistakes because mistakes are a part of learning. Gradual practice strengthens language and teaches a child to express ideas clearly."]
+  },
+  hard: {
+    300: [
+      "If a student is afraid to speak English, it does not mean that the student is weak. Children often remain silent because they fear making mistakes. Teachers and parents should not scold them; instead, they should encourage them to begin with short sentences. When a child feels safe, the child gradually starts speaking—first one sentence, then two, and finally a complete paragraph. Confidence is not built in a day, but the right environment and regular practice can help every child speak better.",
+      "One of the greatest challenges children face today is maintaining concentration. Mobile phones, videos and games can distract them quickly. Therefore, simply making studies longer and harder will not improve results. Children need small goals, clear instructions and engaging activities. A child pays greater attention when a teacher connects a lesson with stories, examples and practice. Parents can also help by creating a quiet environment at home. Concentration develops gradually and requires regular practice."
+    ],
+    400: [
+      "The use of technology in education is increasing, but the teacher's role is still the most important. An app can provide practice, while a teacher understands a child's hesitation, emotions and pace of learning. Learning can become more effective when technology and teachers work together. For example, a child may practise reading on a website while the teacher observes pronunciation, speed and confidence in class. Parents can then view the progress and provide appropriate support at home.",
+      "Leadership does not simply mean speaking on a stage. It means accepting responsibility, helping others and making good decisions. Children can learn leadership at school through small duties such as checking classroom cleanliness, distributing books or guiding teammates during a group activity. Such tasks develop confidence and cooperation. If teachers give every child an opportunity, even a quiet child can gradually come forward. Good leadership teaches children both discipline and sensitivity."
+    ],
+    500: [
+      "Good examination marks are important, but they do not show a child's complete potential. Some children write well, some speak well, some excel in Mathematics and others in creative activities. Therefore, a school should not focus only on marks. It should also observe reading speed, understanding, behaviour, curiosity, confidence and problem-solving ability. A complete report helps parents understand their child better. When the report explains both the child's strengths and the areas requiring practice, the direction for improvement becomes clear.",
+      "Memorising grammar alone is not enough for learning a language. Students must understand words, use them in sentences and connect their ideas. Many children know the rules but hesitate while speaking because they lack practice. Therefore, there should be short speaking tasks every day. A child may speak five sentences about the day, describe a picture or summarise a story. Repeated speaking improves fluency and helps the child stop fearing mistakes."
+    ],
+    600: ["A child's development is a long journey. In the beginning, a child recognises letters, then understands sounds, reads words, forms sentences and finally learns to express ideas. It is not right to hurry through this journey. Further learning becomes difficult when the foundation is weak. Practice, feedback and encouragement are necessary at every stage. Parents should understand that comparisons may reduce a child's confidence, whereas appreciating small improvements encourages greater effort. A positive learning environment takes a child beyond fear and towards independent thinking."]
+  },
+  expert: {
+    300: [
+      "Education in the future will not depend only on textbooks. Children will need to learn language, technology, creativity and problem-solving together. A student who can express ideas clearly in writing and speech can progress in any field. Therefore, English is not merely a subject; it is also a means of gaining confidence and opportunities. If children practise reading, speaking and thinking from the right age, they can gradually become independent learners.",
+      "In the digital age, education is no longer limited to providing information because information is available everywhere. The real challenge is helping students understand, analyse and apply it in the right situation. Critical thinking, communication and creativity are therefore essential in modern learning. When schools allow children to ask questions, discuss ideas and write their thoughts, students become better prepared for the future. Education should guide a child's curiosity rather than suppress it."
+    ],
+    400: [
+      "A modern school's responsibility is not limited to teaching lessons; it must also understand every child's learning journey. Some children require more time to read, some hesitate to speak, and others understand quickly but make mistakes while writing. If a school measures these signs regularly, teachers and parents can provide suitable support together. Learning must therefore be visible, measurable and personal. When children can see their progress, they recognise that their effort is producing results.",
+      "An effective learning system identifies a child's difficulty at the right time. A child who repeatedly pauses while reading needs fluency support. A child who knows the answer but cannot speak needs confidence practice. A fast reader who does not understand the meaning needs comprehension work. When teachers, parents and technology observe these signs together, they can create a personal plan for the child. Such a system moves beyond marks and supports genuine development."
+    ],
+    500: [
+      "We often expect only correct answers from children, but real learning happens when a child tries to explain an idea. Even an incorrect sentence can be the beginning of learning if a teacher corrects it and provides direction. Listening, reading, speaking and writing are interconnected language skills. A child who reads daily, uses new words and speaks on short topics develops better expression. Parental support is very important in this process. Even five minutes of conversation at home can greatly improve a child's confidence.",
+      "The progress of any society depends on the education of its children. If children learn only to follow instructions, they may grow up with limited thinking. However, opportunities to think, question, communicate and find solutions can help them become responsible citizens. Schools should not make children fear failure. They should teach them that every mistake is an opportunity to improve. When children practise in a safe environment, their confidence grows and they become ready to accept new ideas."
+    ],
+    600: ["Education in India is changing rapidly. Children must move beyond memorisation towards understanding, questioning, communication and creative problem-solving. A good school recognises a child's ability early and provides appropriate guidance. A child with low reading fluency needs extra practice. A child who understands ideas but cannot express them needs confidence-building activities. A quick learner needs challenging work. In this way, an individual learning plan helps every child progress at a suitable pace."]
+  }
+};
+
 const levels = ["easy", "medium", "hard", "expert"];
 const paragraphLengths = [300, 400, 500, 600];
 let activeTopic = "present";
@@ -202,6 +265,10 @@ function paragraphOptions(level = activeLevel, words = activeParagraphWords) {
   const base = PARAGRAPH_TEST_BANK.levels[level].hindi[words];
   const extra = ADDITIONAL_PARAGRAPHS[level]?.[words] || [];
   return [base, ...extra].filter(Boolean);
+}
+function paragraphSolution(level = activeLevel, words = activeParagraphWords, variant = activeParagraphVariant) {
+  const solutions = PARAGRAPH_SOLUTIONS[level]?.[words] || [];
+  return solutions[variant] || solutions[0] || "A model translation is not available for this passage yet.";
 }
 function questionSet(topic = activeTopic, level = activeLevel) {
   if (isParagraphTopic(topic)) return [];
@@ -320,7 +387,15 @@ function renderParagraphTest() {
         <p>${percent >= 70 ? "Good work. Your translation includes the main meaning and enough connected English." : "Add more complete sentences, key ideas from the Hindi paragraph and connectors like because, then, after and therefore."}</p>
         <small>Auto-check looks at meaning coverage, target length and sentence connection. Teacher review is still best for final grammar correction.</small>
       </div>
-    </div>` : ""}
+    </div>
+    <details class="paragraph-solution">
+      <summary><span>✓</span><div><strong>View Model Translation</strong><small>Compare it with your answer and learn a clearer way to write.</small></div><b>Show solution</b></summary>
+      <div class="paragraph-solution-body">
+        <div class="solution-heading"><span>Reference answer</span><button type="button" data-listen-solution>🔊 Listen</button></div>
+        <p>${paragraphSolution()}</p>
+        <small>This is one correct model answer. The same meaning can also be expressed using different correct English sentences.</small>
+      </div>
+    </details>` : ""}
   </article>`;
 
   $$("[data-paragraph-length]").forEach((button) => button.addEventListener("click", () => {
@@ -346,6 +421,14 @@ function renderParagraphTest() {
     renderProgress();
     const row = $(".paragraph-live-row span");
     if (row) row.textContent = `${wordCount(textarea.value)} words written`;
+  });
+  $("[data-listen-solution]")?.addEventListener("click", () => {
+    if (!("speechSynthesis" in window)) return;
+    window.speechSynthesis.cancel();
+    const speech = new SpeechSynthesisUtterance(paragraphSolution());
+    speech.lang = "en-IN";
+    speech.rate = 0.88;
+    window.speechSynthesis.speak(speech);
   });
 }
 
