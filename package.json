@@ -3,9 +3,18 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "check": "node --check kidsverse-app.js && node --check speaksmart-ai.js && node --check api/speaking-feedback.js && node --check api/staff-login.js"
+    "check": "node --check kidsverse-app.js && node --check speaksmart-ai.js && node --check api/speaking-feedback.js && node --check api/staff-login.js && node --check attendance.js && node --check api/attendance.js && node --check lib/attendance-core.js && node --check lib/attendance-db.js",
+    "test:attendance": "node --test tests/attendance-core.test.js tests/attendance-api.test.js",
+    "test:attendance:browser": "node --test tests/attendance-browser.test.js",
+    "attendance:preview": "node scripts/attendance-preview.js",
+    "attendance:admin": "node scripts/attendance-admin.js",
+    "attendance:migrate": "node scripts/attendance-migrate.js"
   },
   "dependencies": {
     "pg": "^8.13.1"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.5.8",
+    "playwright": "^1.63.0"
   }
 }
