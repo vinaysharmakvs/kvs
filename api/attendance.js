@@ -1,7 +1,20 @@
-import { randomUUID, randomBytes } from 'node:crypto';
+import { randomUUID, randomBytes, createHmac, timingSafeEqual } from 'node:crypto';
 import { database } from '../lib/attendance-db.js';
 import { PublicError, insist, digest, lookupCode, hashCode, verifyCode, newCode, schoolDay, dateValue, timeValue, graceValue, uuid, locationValue, classify, scheduleDays } from '../lib/attendance-core.js';
 const cookieName='kv_attendance';
+// Dedicated single-school admin identity; existing code-based admins remain unchanged.
+const passwordAdminId='aa4d9e86-f402-4728-83b8-a6c7e82516c2';
+function sameSecret(a,b) {return timingSafeEqual(Buffer.from(digest(a),'hex'),Buffer.from(digest(b),'hex'));}
+function adminToken(password,codeSecret,nonce=randomBytes(32).toString('hex')) {
+ const key=createHmac('sha256',codeSecret).update(password).digest();
+ return `${nonce}.${createHmac('sha256',key).update(nonce).digest('hex')}`;
+}
+function validAdminSession(token,codeSecret) {
+ const password=process.env.ATTENDANCE_ADMIN_PASSWORD;
+ if(!password || password.length<12 || password.length>200 || !/^[a-f0-9]{64}\.[a-f0-9]{64}$/.test(token))return false;
+ return sameSecret(token,adminToken(password,codeSecret,token.split('.')[0]));
+}
+
 const safeStaff=s=>({id:s.id,name:s.name,role:s.role,active:s.active});
 const secret=()=>{ const value=process.env.ATTENDANCE_CODE_SECRET; insist(value && value.length>=32,'Attendance setup is incomplete. Contact your administrator.',503); return value; };
 function cookie(res,value,maxAge) {res.setHeader('Set-Cookie',`${cookieName}=${value}; HttpOnly; SameSite=Strict; Path=/; Max-Age=${maxAge}${process.env.NODE_ENV==='production'?'; Secure':''}`);}
@@ -34,6 +47,25 @@ return async function handler(req,res) {
   if(req.headers.origin){const configured=(process.env.ATTENDANCE_ALLOWED_ORIGINS||'').split(',').filter(Boolean);const origin=new URL(req.headers.origin);insist(configured.length?configured.includes(origin.origin):origin.host===req.headers.host,'Request origin is not allowed.',403);}
   const body=typeof req.body==='string'?JSON.parse(req.body):req.body;insist(body && typeof body.action==='string','Action required.');
   const pool=getDatabase();const codeSecret=secret();const now=clock();const today=schoolDay(now);
+  if(body.action==='adminLogin') {
+   const password=process.env.ATTENDANCE_ADMIN_PASSWORD;
+   insist(typeof password==='string' && password.length>=12 && password.length<=200,'Admin password is not configured. Add ATTENDANCE_ADMIN_PASSWORD in Vercel (12ā€“200 characters), then redeploy.',503);
+   insist(typeof body.password==='string' && body.password.length<=200,'Enter your admin password.');
+   const ip=process.env.ATTENDANCE_TRUST_PROXY==='true'?String(req.headers['x-forwarded-for']||'unknown').split(',')[0]:req.socket?.remoteAddress||'shared';
+   const buckets=[digest(`admin-ip:${ip}`),digest('admin-password-login')];
+   await rateLimit(pool,buckets);
+   insist(sameSecret(body.password,password),'Incorrect admin password.',401);
+   const token=adminToken(password,codeSecret);
+   const loggedIn=await transaction(pool,async db=>{
+    const created=await db.query("INSERT INTO kv_attendance.staff(id,name,role,code_lookup,code_hash) VALUES($1,'School Administrator','admin','environment-admin-password','disabled') ON CONFLICT(id) DO NOTHING RETURNING id",[passwordAdminId]);
+    const record=(await db.query('SELECT * FROM kv_attendance.staff WHERE id=$1 FOR UPDATE',[passwordAdminId])).rows[0];
+    insist(record?.active && record.role==='admin','Administrator access is disabled.',403);
+    if(created.rows.length)await audit(db,record,'password_admin_created',record.id,{});
+    await db.query("INSERT INTO kv_attendance.sessions(token_hash,staff_id,expires_at) VALUES($1,$2,now()+interval '12 hours')",[digest(token),record.id]);return record;
+   });
+   await pool.query('UPDATE kv_attendance.login_limits SET attempts=GREATEST(0,attempts-1) WHERE bucket=ANY($1::text[])',[buckets]);
+   cookie(res,token,43200);return res.status(200).json({staff:safeStaff(loggedIn)});
+  }
   if(body.action==='login') {
    insist(typeof body.code==='string' && body.code.length<=100,'Enter your staff code.');
    const lookup=lookupCode(body.code,codeSecret);
@@ -53,6 +85,7 @@ return async function handler(req,res) {
   const token=String(req.headers.cookie||'').split(';').map(s=>s.trim()).find(s=>s.startsWith(cookieName+'='))?.slice(cookieName.length+1)||'';
   const staff=(await pool.query('SELECT s.* FROM kv_attendance.sessions t JOIN kv_attendance.staff s ON s.id=t.staff_id WHERE t.token_hash=$1 AND t.expires_at>now() AND s.active=true',[digest(token)])).rows[0];
   insist(staff,'Please sign in to continue.',401);
+  if(staff.id===passwordAdminId)insist(validAdminSession(token,codeSecret),'Please sign in again with the current admin password.',401);
   if(body.action==='logout'){await pool.query('DELETE FROM kv_attendance.sessions WHERE token_hash=$1',[digest(token)]);cookie(res,'',0);return res.status(200).json({ok:true});}
   if(body.action==='me')return res.status(200).json({staff:safeStaff(staff),today,serverTime:now.toISOString(),schedule:staff.role==='teacher'?await schedule(pool,staff.id,today):null,entry:staff.role==='teacher'?await entry(pool,staff.id,today):null});
   if(body.action==='history'){insist(staff.role==='teacher','Teacher access required.',403);return res.status(200).json({entries:(await pool.query('SELECT *,day::text FROM kv_attendance.entries WHERE teacher_id=$1 ORDER BY kv_attendance.entries.day DESC LIMIT 60',[staff.id])).rows});}
