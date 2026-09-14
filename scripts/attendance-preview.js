@@ -8,6 +8,7 @@ import {randomUUID} from 'node:crypto';
 import {createHandler} from '../api/attendance.js';
 import {hashCode,lookupCode,schoolDay} from '../lib/attendance-core.js';
 process.env.ATTENDANCE_CODE_SECRET='isolated-preview-only-not-for-production';
+process.env.ATTENDANCE_ADMIN_PASSWORD='DemoAdminPreview2026!';
 const db=new PGlite();await db.exec(await readFile(new URL('../database/attendance-schema.sql',import.meta.url),'utf8'));
 for(const [name,role,code] of [['Demo Admin','admin','DEMOADMIN'],['Ananya Sharma','teacher','DEMOTEACHER']]){
  const id=randomUUID();await db.query('INSERT INTO kv_attendance.staff(id,name,role,code_lookup,code_hash) VALUES($1,$2,$3,$4,$5)',[id,name,role,lookupCode(code,process.env.ATTENDANCE_CODE_SECRET),hashCode(code)]);
@@ -22,4 +23,4 @@ createServer(async(req,res)=>{try{
  if(!file.startsWith(root+'/')||!['teacher-attendance.html','admin-attendance.html','attendance.js','attendance.css'].includes(file.slice(root.length+1))){res.writeHead(404).end();return;}
  res.setHeader('Content-Type',({'.html':'text/html','.js':'application/javascript','.css':'text/css'})[extname(file)]);let content=await readFile(file,'utf8');if(extname(file)==='.html')content=content.replace('<body>','<body><div style="padding:10px;text-align:center;background:#fff0bd;font:14px system-ui">DEMO ONLY · Sample teacher and location · No real attendance data</div><script>navigator.geolocation.getCurrentPosition=function(success){success({coords:{latitude:28.6,longitude:77.2,accuracy:15},timestamp:Date.now()})}</script>');res.end(content);
  }catch{res.writeHead(500).end('Preview unavailable');}
-}).listen(8765,'127.0.0.1',()=>console.log('Isolated attendance preview: http://127.0.0.1:8765 · Demo codes: DEMOADMIN / DEMOTEACHER. No real school data.'));
+}).listen(Number(process.env.ATTENDANCE_PREVIEW_PORT||8765),'127.0.0.1',()=>console.log('Isolated attendance preview: http://127.0.0.1:8765 · Demo codes: DEMOADMIN / DEMOTEACHER. No real school data.'));
