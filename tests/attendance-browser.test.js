@@ -10,6 +10,7 @@ import {createHandler} from '../api/attendance.js';
 import {hashCode,lookupCode} from '../lib/attendance-core.js';
 test('admin setup and mobile teacher check-in through real API',async()=>{
  process.env.ATTENDANCE_CODE_SECRET='isolated-browser-test-secret-at-least-32';
+ process.env.ATTENDANCE_ADMIN_PASSWORD='BrowserAdminPassword2026!';
  const db=new PGlite();await db.exec(await readFile('database/attendance-schema.sql','utf8'));
  await db.query("INSERT INTO kv_attendance.staff(id,name,role,code_lookup,code_hash) VALUES($1,'School Admin','admin',$2,$3)",[randomUUID(),lookupCode('BROWSERADMIN',process.env.ATTENDANCE_CODE_SECRET),hashCode('BROWSERADMIN')]);
  const handler=createHandler({getDatabase:()=>({query:(...a)=>db.query(...a),connect:async()=>({query:(...a)=>db.query(...a),release(){}})})});
@@ -20,7 +21,7 @@ test('admin setup and mobile teacher check-in through real API',async()=>{
  const page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));
  const out=process.env.ATTENDANCE_SCREENSHOT_DIR||'/private/tmp/kidsverse-attendance-screens';await mkdir(out,{recursive:true});
  try{
- await page.goto(url+'/admin-attendance.html');await page.locator('#code').fill('BROWSERADMIN');await page.getByRole('button',{name:'Sign in →'}).click();await page.getByRole('heading',{name:'Teacher attendance',exact:true}).waitFor();
+ await page.goto(url+'/admin-attendance.html');await page.locator('#code').fill('BrowserAdminPassword2026!');await page.getByRole('button',{name:'Sign in →'}).click();await page.getByRole('heading',{name:'Teacher attendance',exact:true}).waitFor();
  await page.locator('#add-teacher input').fill('Ananya Sharma');await page.getByRole('button',{name:'Create teacher & code'}).click();await page.locator('#new-code code').waitFor();const code=await page.locator('#new-code code').textContent();
  await page.getByRole('heading',{name:'Ananya Sharma',exact:true}).waitFor();const weekday=new Date().toLocaleDateString('en-US',{timeZone:'Asia/Kolkata',weekday:'short'});const index=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].indexOf(weekday)+1;
  await page.locator(`#day${index}`).check();await page.locator(`[name=arrival${index}]`).fill('23:59');await page.getByRole('button',{name:'Save approved timings'}).click();await page.getByText('Approved timings saved.',{exact:true}).waitFor();
