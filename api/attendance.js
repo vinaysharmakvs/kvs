@@ -1,6 +1,6 @@
-import { randomUUID, randomBytes, createHmac, timingSafeEqual } from 'node:crypto';
+import { randomUUID, randomBytes, randomInt, createHmac, timingSafeEqual } from 'node:crypto';
 import { database } from '../lib/attendance-db.js';
-import { PublicError, insist, digest, lookupCode, hashCode, verifyCode, newCode, schoolDay, dateValue, timeValue, graceValue, uuid, locationValue, classify, scheduleDays } from '../lib/attendance-core.js';
+import { PublicError, insist, digest, lookupCode, hashCode, verifyCode, schoolDay, dateValue, timeValue, graceValue, uuid, locationValue, classify, scheduleDays } from '../lib/attendance-core.js';
 const cookieName='kv_attendance';
 // Dedicated single-school admin identity; existing code-based admins remain unchanged.
 const passwordAdminId='aa4d9e86-f402-4728-83b8-a6c7e82516c2';
@@ -32,6 +32,19 @@ async function schedule(db,id,day) {
  return rule?{...rule,kind:'scheduled',source:'weekly'}:{kind:'day_off'};
 }
 async function entry(db,id,day) {return (await db.query('SELECT *,day::text FROM kv_attendance.entries WHERE teacher_id=$1 AND day=$2',[id,day])).rows[0]||null;}
+async function allocateTeacherCode(db,codeSecret,requested) {
+ // Serialize code allocation across all API instances; uniqueness also holds in SQL.
+ await db.query('SELECT pg_advisory_xact_lock(72643109)');
+ const used=new Set((await db.query('SELECT code_lookup FROM kv_attendance.staff')).rows.map(s=>s.code_lookup));
+ if(requested!==undefined){
+  insist(typeof requested==='string' && /^\d{4}$/.test(requested),'Enter exactly four digits (for example, 0427).');
+  insist(!used.has(lookupCode(requested,codeSecret)),'That code is already in use. Choose another four-digit code.',409);
+  return requested;
+ }
+ const start=randomInt(10000);
+ for(let i=0;i<10000;i++){const code=String((start+i)%10000).padStart(4,'0');if(!used.has(lookupCode(code,codeSecret)))return code;}
+ throw new PublicError('All four-digit codes are in use. Contact your administrator.',409);
+}
 async function rateLimit(db,keys) {
  for(const key of keys){const {rows}=await db.query(`INSERT INTO kv_attendance.login_limits(bucket,attempts) VALUES($1,1)
  ON CONFLICT(bucket) DO UPDATE SET attempts=CASE WHEN kv_attendance.login_limits.window_start<now()-interval '15 minutes' THEN 1 ELSE kv_attendance.login_limits.attempts+1 END,
@@ -49,7 +62,7 @@ return async function handler(req,res) {
   const pool=getDatabase();const codeSecret=secret();const now=clock();const today=schoolDay(now);
   if(body.action==='adminLogin') {
    const password=process.env.ATTENDANCE_ADMIN_PASSWORD;
-   insist(typeof password==='string' && password.length>=12 && password.length<=200,'Admin password is not configured. Add ATTENDANCE_ADMIN_PASSWORD in Vercel (12ā€“200 characters), then redeploy.',503);
+   insist(typeof password==='string' && password.length>=12 && password.length<=200,'Admin password is not configured. Add ATTENDANCE_ADMIN_PASSWORD in Vercel (12–200 characters), then redeploy.',503);
    insist(typeof body.password==='string' && body.password.length<=200,'Enter your admin password.');
    const ip=process.env.ATTENDANCE_TRUST_PROXY==='true'?String(req.headers['x-forwarded-for']||'unknown').split(',')[0]:req.socket?.remoteAddress||'shared';
    const buckets=[digest(`admin-ip:${ip}`),digest('admin-password-login')];
@@ -111,13 +124,13 @@ return async function handler(req,res) {
    return res.status(200).json({day,teachers:rows});
   }
   if(body.action==='createTeacher') {
-   const name=String(body.name||'').trim();insist(name.length>0&&name.length<=120,'Enter a teacher name (up to 120 characters).');const code=newCode();const id=randomUUID();
-   await transaction(pool,async db=>{await db.query("INSERT INTO kv_attendance.staff(id,name,role,code_lookup,code_hash) VALUES($1,$2,'teacher',$3,$4)",[id,name,lookupCode(code,codeSecret),hashCode(code)]);await audit(db,staff,'teacher_created',id,{name});});
+   const name=String(body.name||'').trim();insist(name.length>0&&name.length<=120,'Enter a teacher name (up to 120 characters).');const id=randomUUID();
+   const code=await transaction(pool,async db=>{const code=await allocateTeacherCode(db,codeSecret,body.code);await db.query("INSERT INTO kv_attendance.staff(id,name,role,code_lookup,code_hash) VALUES($1,$2,'teacher',$3,$4)",[id,name,lookupCode(code,codeSecret),hashCode(code)]);await audit(db,staff,'teacher_created',id,{name});return code;});
    return res.status(200).json({id,code});
   }
   const target=await teacher(pool,body.teacherId);
   if(body.action==='resetCode') {
-   const code=newCode();await transaction(pool,async db=>{await lockTeacher(db,target.id);await db.query('UPDATE kv_attendance.staff SET code_lookup=$2,code_hash=$3 WHERE id=$1',[target.id,lookupCode(code,codeSecret),hashCode(code)]);await db.query('DELETE FROM kv_attendance.sessions WHERE staff_id=$1',[target.id]);await audit(db,staff,'code_reset',target.id,{});});return res.status(200).json({code});
+   const code=await transaction(pool,async db=>{const code=await allocateTeacherCode(db,codeSecret,body.code);await lockTeacher(db,target.id);await db.query('UPDATE kv_attendance.staff SET code_lookup=$2,code_hash=$3 WHERE id=$1',[target.id,lookupCode(code,codeSecret),hashCode(code)]);await db.query('DELETE FROM kv_attendance.sessions WHERE staff_id=$1',[target.id]);await audit(db,staff,'code_reset',target.id,{});return code;});return res.status(200).json({code});
   }
   if(body.action==='setActive') {
    insist(typeof body.active==='boolean','Choose an active status.');await transaction(pool,async db=>{await lockTeacher(db,target.id);await db.query('UPDATE kv_attendance.staff SET active=$2 WHERE id=$1',[target.id,body.active]);await db.query('DELETE FROM kv_attendance.sessions WHERE staff_id=$1',[target.id]);await audit(db,staff,'active_changed',target.id,{active:body.active});});return res.status(200).json({ok:true});
