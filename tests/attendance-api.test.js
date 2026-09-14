@@ -44,3 +44,35 @@ test('full attendance API against an isolated PostgreSQL engine',async()=>{
  assert.ok((await db.query('SELECT count(*)::int AS n FROM kv_attendance.audit')).rows[0].n>=6);
  await db.close();
 });
+
+test('simple admin password creates one admin, rejects invalid attempts and revokes old sessions on password change',async()=>{
+ const previousSecret=process.env.ATTENDANCE_CODE_SECRET,previousPassword=process.env.ATTENDANCE_ADMIN_PASSWORD;
+ process.env.ATTENDANCE_CODE_SECRET='simple-admin-test-secret-at-least-32-characters';
+ const db=new PGlite();await db.exec(await readFile(new URL('../database/attendance-schema.sql',import.meta.url),'utf8'));
+ const handler=createHandler({getDatabase:()=>({query:(...a)=>db.query(...a),connect:async()=>({query:(...a)=>db.query(...a),release(){}})})});
+ async function call(action,data={},cookie='') {let status,body;const headers={};const req={method:'POST',headers:{'content-type':'application/json',host:'localhost',origin:'http://localhost',cookie},body:{action,...data},socket:{remoteAddress:'admin-test'}};const res={setHeader:(k,v)=>headers[k]=v,status(c){status=c;return this;},json(v){body=v;}};await handler(req,res);return {status,body,cookie:headers['Set-Cookie']?.split(';')[0]};}
+ try{
+ delete process.env.ATTENDANCE_ADMIN_PASSWORD;
+ assert.equal((await call('adminLogin',{password:'anything'})).status,503);
+ process.env.ATTENDANCE_ADMIN_PASSWORD='Short';assert.equal((await call('adminLogin',{password:'Short'})).status,503);
+ process.env.ATTENDANCE_ADMIN_PASSWORD='Private Admin Password 2026!';
+ assert.equal((await call('adminLogin',{password:'WrongPassword2026!'})).status,401);
+ assert.equal((await call('adminLogin',{password:'private admin password 2026!'})).status,401);
+ assert.equal((await db.query('SELECT count(*)::int n FROM kv_attendance.staff')).rows[0].n,0);
+ const logged=await call('adminLogin',{password:process.env.ATTENDANCE_ADMIN_PASSWORD});assert.equal(logged.status,200);assert.equal(logged.body.staff.role,'admin');
+ assert.equal((await call('dashboard',{},logged.cookie)).status,200);
+ await call('adminLogin',{password:process.env.ATTENDANCE_ADMIN_PASSWORD});assert.equal((await db.query('SELECT count(*)::int n FROM kv_attendance.staff')).rows[0].n,1);
+ assert.equal((await db.query("SELECT count(*)::int n FROM kv_attendance.audit WHERE action='password_admin_created'")).rows[0].n,1);
+ assert.equal((await call('login',{code:process.env.ATTENDANCE_ADMIN_PASSWORD})).status,401);
+ const created=await call('createTeacher',{name:'Teacher Test'},logged.cookie);assert.equal(created.status,200);
+ const teacherLogin=await call('login',{code:created.body.code});assert.equal(teacherLogin.status,200);assert.equal((await call('dashboard',{},teacherLogin.cookie)).status,403);
+ process.env.ATTENDANCE_ADMIN_PASSWORD='Changed Private Admin Password 2026!';
+ assert.equal((await call('me',{},logged.cookie)).status,401);
+ const updated=await call('adminLogin',{password:process.env.ATTENDANCE_ADMIN_PASSWORD});assert.equal(updated.status,200);
+ assert.equal((await call('me',{},teacherLogin.cookie)).status,200);
+ delete process.env.ATTENDANCE_ADMIN_PASSWORD;assert.equal((await call('me',{},updated.cookie)).status,401);
+ process.env.ATTENDANCE_ADMIN_PASSWORD='Changed Private Admin Password 2026!';
+ await db.query('UPDATE kv_attendance.staff SET active=false WHERE id=$1',[logged.body.staff.id]);assert.equal((await call('adminLogin',{password:process.env.ATTENDANCE_ADMIN_PASSWORD})).status,403);
+ for(let i=0;i<16;i++){const r=await call('adminLogin',{password:'invalid'});if(i===15)assert.equal(r.status,429);}
+ }finally{await db.close();if(previousSecret===undefined)delete process.env.ATTENDANCE_CODE_SECRET;else process.env.ATTENDANCE_CODE_SECRET=previousSecret;if(previousPassword===undefined)delete process.env.ATTENDANCE_ADMIN_PASSWORD;else process.env.ATTENDANCE_ADMIN_PASSWORD=previousPassword;}
+});
