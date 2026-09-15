@@ -6,7 +6,7 @@ import {resolve,extname} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {randomUUID} from 'node:crypto';
 import {createHandler} from '../api/attendance.js';
-import {hashCode,lookupCode,schoolDay} from '../lib/attendance-core.js';
+import {hashCode,lookupCode,schoolDay,CAMPUS} from '../lib/attendance-core.js';
 process.env.ATTENDANCE_CODE_SECRET='isolated-preview-only-not-for-production';
 process.env.ATTENDANCE_ADMIN_PASSWORD='DemoAdminPreview2026!';
 const db=new PGlite();await db.exec(await readFile(new URL('../database/attendance-schema.sql',import.meta.url),'utf8'));
@@ -21,6 +21,6 @@ createServer(async(req,res)=>{try{
  if(req.url==='/api/attendance'){let body='';for await(const c of req){body+=c;if(body.length>20000){res.writeHead(413).end();return;}}req.body=JSON.parse(body);res.status=s=>{res.statusCode=s;return res;};res.json=o=>{res.setHeader('Content-Type','application/json');res.end(JSON.stringify(o));};queue=queue.then(()=>handler(req,res));await queue;return;}
  const pathname=decodeURIComponent(new URL(req.url,'http://localhost').pathname);const file=resolve(root,'.'+(pathname==='/'?'/teacher-attendance.html':pathname));
  if(!file.startsWith(root+'/')||!['teacher-attendance.html','admin-attendance.html','attendance.js','attendance.css'].includes(file.slice(root.length+1))){res.writeHead(404).end();return;}
- res.setHeader('Content-Type',({'.html':'text/html','.js':'application/javascript','.css':'text/css'})[extname(file)]);let content=await readFile(file,'utf8');if(extname(file)==='.html')content=content.replace('<body>','<body><div style="padding:10px;text-align:center;background:#fff0bd;font:14px system-ui">DEMO ONLY · Sample teacher and location · No real attendance data</div><script>navigator.geolocation.getCurrentPosition=function(success){success({coords:{latitude:28.6,longitude:77.2,accuracy:15},timestamp:Date.now()})}</script>');res.end(content);
+ res.setHeader('Content-Type',({'.html':'text/html','.js':'application/javascript','.css':'text/css'})[extname(file)]);let content=await readFile(file,'utf8');if(extname(file)==='.html')content=content.replace('<body>','<body><div style="padding:10px;text-align:center;background:#fff0bd;font:14px system-ui">DEMO ONLY · Sample teacher and location · No real attendance data</div><script>navigator.geolocation.watchPosition=function(success){const id=setTimeout(()=>success({coords:{latitude:32.1580283,longitude:75.9101877,accuracy:2},timestamp:Date.now()}),20);return id;};navigator.geolocation.clearWatch=function(id){clearTimeout(id);};</script>');res.end(content);
  }catch{res.writeHead(500).end('Preview unavailable');}
 }).listen(Number(process.env.ATTENDANCE_PREVIEW_PORT||8765),'127.0.0.1',()=>console.log('Isolated attendance preview: http://127.0.0.1:8765 · Demo codes: DEMOADMIN / DEMOTEACHER. No real school data.'));
