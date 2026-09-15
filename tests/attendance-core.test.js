@@ -26,15 +26,15 @@ test('attendance database configuration is isolated from the portal',async()=>{
  }finally{if(pool)await pool.end();for(const name of names){if(saved[name]===undefined)delete process.env[name];else process.env[name]=saved[name];}}
 });
 
-test('school boundary uses a strict five-metre radius and accuracy limit',()=>{
+test('school boundary uses a strict 100-metre radius and accuracy limit',()=>{
  const delta=metres=>metres/6371008.8*180/Math.PI;
  const fix={latitude:CAMPUS.latitude,longitude:CAMPUS.longitude,accuracy:2};
  assert.equal(distanceMeters(fix.latitude,fix.longitude),0);
  assert.equal(campusLocation(fix),fix);
- assert.ok(distanceMeters(fix.latitude+delta(4.99),fix.longitude)<5);
- assert.doesNotThrow(()=>campusLocation({...fix,latitude:fix.latitude+delta(4.99)}));
- assert.throws(()=>campusLocation({...fix,latitude:fix.latitude+delta(5.01)}),/within 5 m/);
- assert.doesNotThrow(()=>campusLocation({...fix,accuracy:5}));
- assert.throws(()=>campusLocation({...fix,accuracy:5.01}),/accuracy of 5 m/);
- assert.throws(()=>campusLocation({...fix,latitude:32,longitude:75}),/within 5 m/);
+ assert.ok(distanceMeters(fix.latitude+delta(99.99),fix.longitude)<100);
+ assert.doesNotThrow(()=>campusLocation({...fix,latitude:fix.latitude+delta(99.99)}));
+ assert.throws(()=>campusLocation({...fix,latitude:fix.latitude+delta(100.01)}),/within 100 m/);
+ assert.doesNotThrow(()=>campusLocation({...fix,accuracy:100}));
+ assert.throws(()=>campusLocation({...fix,accuracy:100.01}),/accuracy of 100 m/);
+ assert.throws(()=>campusLocation({...fix,latitude:32,longitude:75}),/within 100 m/);
 });
