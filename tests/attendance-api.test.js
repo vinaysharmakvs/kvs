@@ -4,7 +4,7 @@ import {readFile} from 'node:fs/promises';
 import {randomUUID} from 'node:crypto';
 import {PGlite} from '@electric-sql/pglite';
 import {createHandler} from '../api/attendance.js';
-import {hashCode,lookupCode,schoolDay} from '../lib/attendance-core.js';
+import {hashCode,lookupCode,schoolDay,CAMPUS} from '../lib/attendance-core.js';
 test('full attendance API against an isolated PostgreSQL engine',async()=>{
  process.env.ATTENDANCE_CODE_SECRET='test-secret-with-at-least-thirty-two-characters';
  const db=new PGlite();await db.exec(await readFile(new URL('../database/attendance-schema.sql',import.meta.url),'utf8'));
@@ -12,20 +12,25 @@ test('full attendance API against an isolated PostgreSQL engine',async()=>{
  let now=new Date(`${schoolDay()}T08:05:00+05:30`);const day=schoolDay(now);const weekday=new Date(day+'T12:00:00Z').getUTCDay()||7;
  const handler=createHandler({getDatabase:()=>pool,clock:()=>now});
  const adminId=randomUUID();await db.query("INSERT INTO kv_attendance.staff(id,name,role,code_lookup,code_hash) VALUES($1,'Admin','admin',$2,$3)",[adminId,lookupCode('ADMINCODE',process.env.ATTENDANCE_CODE_SECRET),hashCode('ADMINCODE')]);
- async function call(action,data={},cookie='',origin='http://localhost:8765') {let status,body;const headers={};const req={method:'POST',headers:{'content-type':'application/json',host:'localhost:8765',origin,cookie},body:{action,...data},socket:{remoteAddress:'test'}};const res={setHeader:(k,v)=>headers[k]=v,status(code){status=code;return this;},json(value){body=value;return this;}};await handler(req,res);return{status,body,cookie:headers['Set-Cookie']?.split(';')[0],headers};}
+ async function call(action,data={},cookie='',origin='http://localhost:8765') {let status,body;const headers={};const req={method:'POST',headers:{'content-type':'application/json',host:'localhost:8765',origin,cookie},body:{action,session:cookie.includes('kv_attendance_admin=')?'admin':'teacher',...data},socket:{remoteAddress:'test'}};const res={setHeader:(k,v)=>headers[k]=v,status(code){status=code;return this;},json(value){body=value;return this;}};await handler(req,res);return{status,body,cookie:headers['Set-Cookie']?.split(';')[0],headers};}
  assert.equal((await call('me')).status,401);
  assert.equal((await call('login',{code:'ADMINCODE'},'','https://evil.example')).status,403);
- const adminLogin=await call('login',{code:'ADMINCODE'});assert.equal(adminLogin.status,200);const admin=adminLogin.cookie;assert.match(adminLogin.headers['Set-Cookie'],/HttpOnly; SameSite=Strict/);
+ process.env.ATTENDANCE_ADMIN_PASSWORD='IntegrationAdminPassword2026!';
+ assert.equal((await call('login',{code:'ADMINCODE'})).status,403);
+ const adminLogin=await call('adminLogin',{password:process.env.ATTENDANCE_ADMIN_PASSWORD});assert.equal(adminLogin.status,200);const admin=adminLogin.cookie;assert.match(adminLogin.headers['Set-Cookie'],/HttpOnly; SameSite=Strict/);
  const created=await call('createTeacher',{name:'Ananya'},admin);assert.equal(created.status,200);const id=created.body.id;
  const login=await call('login',{code:created.body.code});const teacherCookie=login.cookie;assert.equal(login.status,200);
  assert.equal((await call('createTeacher',{name:'Intruder'},teacherCookie)).status,403);
  assert.equal((await call('dashboard',{},teacherCookie)).status,403);
- const loc=()=>({latitude:28.6,longitude:77.2,accuracy:15,capturedAt:now.toISOString()});
+ const loc=()=>({latitude:CAMPUS.latitude,longitude:CAMPUS.longitude,accuracy:2,capturedAt:now.toISOString()});
  assert.equal((await call('checkin',{location:loc()},teacherCookie)).status,409);
  assert.equal((await call('saveTiming',{teacherId:id,effectiveFrom:day,days:[{weekday,arrival:'08:00',grace:5}]},admin)).status,200);
  assert.equal((await call('getTiming',{teacherId:id},admin)).status,200);
  assert.equal((await call('checkin',{location:{...loc(),accuracy:1001}},teacherCookie)).status,400);
  assert.equal((await call('checkin',{location:{...loc(),capturedAt:new Date(now-180000).toISOString()}},teacherCookie)).status,400);
+ assert.equal((await call('checkin',{location:{...loc(),latitude:CAMPUS.latitude+0.0001}},teacherCookie)).status,403);
+ assert.equal((await call('checkin',{location:{...loc(),accuracy:6}},teacherCookie)).status,422);
+ assert.equal((await db.query('SELECT count(*)::int n FROM kv_attendance.entries')).rows[0].n,0);
  const marked=await call('checkin',{location:loc()},teacherCookie);assert.equal(marked.status,200);assert.equal(marked.body.entry.status,'on_time');
  assert.equal((await call('history',{},teacherCookie)).body.entries.length,1);
  now=new Date(+now+60000);
@@ -50,7 +55,7 @@ test('simple admin password creates one admin, rejects invalid attempts and revo
  process.env.ATTENDANCE_CODE_SECRET='simple-admin-test-secret-at-least-32-characters';
  const db=new PGlite();await db.exec(await readFile(new URL('../database/attendance-schema.sql',import.meta.url),'utf8'));
  const handler=createHandler({getDatabase:()=>({query:(...a)=>db.query(...a),connect:async()=>({query:(...a)=>db.query(...a),release(){}})})});
- async function call(action,data={},cookie='') {let status,body;const headers={};const req={method:'POST',headers:{'content-type':'application/json',host:'localhost',origin:'http://localhost',cookie},body:{action,...data},socket:{remoteAddress:'admin-test'}};const res={setHeader:(k,v)=>headers[k]=v,status(c){status=c;return this;},json(v){body=v;}};await handler(req,res);return {status,body,cookie:headers['Set-Cookie']?.split(';')[0]};}
+ async function call(action,data={},cookie='') {let status,body;const headers={};const req={method:'POST',headers:{'content-type':'application/json',host:'localhost',origin:'http://localhost',cookie},body:{action,session:cookie.includes('kv_attendance_admin=')?'admin':'teacher',...data},socket:{remoteAddress:'admin-test'}};const res={setHeader:(k,v)=>headers[k]=v,status(c){status=c;return this;},json(v){body=v;}};await handler(req,res);return {status,body,cookie:headers['Set-Cookie']?.split(';')[0]};}
  try{
  delete process.env.ATTENDANCE_ADMIN_PASSWORD;
  assert.equal((await call('adminLogin',{password:'anything'})).status,503);
@@ -65,11 +70,41 @@ test('simple admin password creates one admin, rejects invalid attempts and revo
  assert.equal((await db.query("SELECT count(*)::int n FROM kv_attendance.audit WHERE action='password_admin_created'")).rows[0].n,1);
  assert.equal((await call('login',{code:process.env.ATTENDANCE_ADMIN_PASSWORD})).status,401);
  const created=await call('createTeacher',{name:'Teacher Test'},logged.cookie);assert.equal(created.status,200);
+ assert.match(created.body.code,/^\d{4}$/);
+ assert.equal((await call('createTeacher',{name:'Duplicate',code:created.body.code},logged.cookie)).status,409);
+ for(const code of ['123','12345','ab12',1234])assert.equal((await call('resetCode',{teacherId:created.body.id,code},logged.cookie)).status,400);
+ // Choose a leading-zero code different from the randomly allocated one.
+ const chosen=created.body.code==='0042'?'0043':'0042';
+ const changed=await call('resetCode',{teacherId:created.body.id,code:chosen},logged.cookie);assert.equal(changed.status,200);assert.equal(changed.body.code,chosen);
+ assert.equal((await call('login',{code:created.body.code})).status,401);created.body.code=chosen;
+ const second=await call('createTeacher',{name:'Second Teacher',code:'0987'},logged.cookie);assert.equal(second.status,200);assert.equal(second.body.code,'0987');
+ assert.equal((await call('resetCode',{teacherId:second.body.id,code:chosen},logged.cookie)).status,409);
+ 
  const teacherLogin=await call('login',{code:created.body.code});assert.equal(teacherLogin.status,200);assert.equal((await call('dashboard',{},teacherLogin.cookie)).status,403);
+ assert.match(logged.cookie,/^kv_attendance_admin=/);assert.match(teacherLogin.cookie,/^kv_attendance_teacher=/);
+ const both=`${logged.cookie}; ${teacherLogin.cookie}`;
+ assert.equal((await call('me',{session:'admin'},both)).body.staff.role,'admin');
+ assert.equal((await call('me',{session:'teacher'},both)).body.staff.role,'teacher');
+ assert.equal((await call('dashboard',{session:'teacher'},both)).status,403);
+ assert.equal((await call('me',{session:'admin'},teacherLogin.cookie)).status,401);
+ assert.equal((await call('me',{session:'teacher'},logged.cookie)).status,401);
+ assert.equal((await call('me',{session:'teacher'},logged.cookie.replace('kv_attendance_admin=','kv_attendance_teacher='))).status,403);
+ assert.equal((await call('me',{session:'teacher'},teacherLogin.cookie.replace('kv_attendance_teacher=','kv_attendance='))).status,401);
+ const otherAdmin=await call('adminLogin',{password:process.env.ATTENDANCE_ADMIN_PASSWORD});
+ const logout=await call('logout',{session:'admin'},`${otherAdmin.cookie}; ${teacherLogin.cookie}`);assert.equal(logout.cookie,'kv_attendance_admin=');
+ assert.equal((await call('me',{},otherAdmin.cookie)).status,401);
+ assert.equal((await call('me',{},teacherLogin.cookie)).status,200);
+
  process.env.ATTENDANCE_ADMIN_PASSWORD='Changed Private Admin Password 2026!';
  assert.equal((await call('me',{},logged.cookie)).status,401);
  const updated=await call('adminLogin',{password:process.env.ATTENDANCE_ADMIN_PASSWORD});assert.equal(updated.status,200);
  assert.equal((await call('me',{},teacherLogin.cookie)).status,200);
+ assert.equal((await call('resetCode',{teacherId:created.body.id,code:'0099'},teacherLogin.cookie)).status,403);
+ const replacement=await call('resetCode',{teacherId:created.body.id},updated.cookie);assert.equal(replacement.status,200);assert.match(replacement.body.code,/^\d{4}$/);assert.notEqual(replacement.body.code,chosen);
+ assert.equal((await call('me',{},teacherLogin.cookie)).status,401);
+ assert.equal((await call('login',{code:chosen})).status,401);
+ assert.equal((await call('login',{code:replacement.body.code})).status,200);
+ 
  delete process.env.ATTENDANCE_ADMIN_PASSWORD;assert.equal((await call('me',{},updated.cookie)).status,401);
  process.env.ATTENDANCE_ADMIN_PASSWORD='Changed Private Admin Password 2026!';
  await db.query('UPDATE kv_attendance.staff SET active=false WHERE id=$1',[logged.body.staff.id]);assert.equal((await call('adminLogin',{password:process.env.ATTENDANCE_ADMIN_PASSWORD})).status,403);
