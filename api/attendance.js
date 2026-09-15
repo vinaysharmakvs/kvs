@@ -1,7 +1,7 @@
 import { randomUUID, randomBytes, randomInt, createHmac, timingSafeEqual } from 'node:crypto';
 import { database } from '../lib/attendance-db.js';
-import { PublicError, insist, digest, lookupCode, hashCode, verifyCode, schoolDay, dateValue, timeValue, graceValue, uuid, locationValue, classify, scheduleDays } from '../lib/attendance-core.js';
-const cookieName='kv_attendance';
+import { PublicError, insist, digest, lookupCode, hashCode, verifyCode, schoolDay, dateValue, timeValue, graceValue, uuid, locationValue, campusLocation, CAMPUS, classify, scheduleDays } from '../lib/attendance-core.js';
+const cookieNames={admin:'kv_attendance_admin',teacher:'kv_attendance_teacher'};
 // Dedicated single-school admin identity; existing code-based admins remain unchanged.
 const passwordAdminId='aa4d9e86-f402-4728-83b8-a6c7e82516c2';
 function sameSecret(a,b) {return timingSafeEqual(Buffer.from(digest(a),'hex'),Buffer.from(digest(b),'hex'));}
@@ -17,7 +17,7 @@ function validAdminSession(token,codeSecret) {
 
 const safeStaff=s=>({id:s.id,name:s.name,role:s.role,active:s.active});
 const secret=()=>{ const value=process.env.ATTENDANCE_CODE_SECRET; insist(value && value.length>=32,'Attendance setup is incomplete. Contact your administrator.',503); return value; };
-function cookie(res,value,maxAge) {res.setHeader('Set-Cookie',`${cookieName}=${value}; HttpOnly; SameSite=Strict; Path=/; Max-Age=${maxAge}${process.env.NODE_ENV==='production'?'; Secure':''}`);}
+function cookie(res,value,maxAge,role) {const cookieName=cookieNames[role];res.setHeader('Set-Cookie',`${cookieName}=${value}; HttpOnly; SameSite=Strict; Path=/; Max-Age=${maxAge}${process.env.NODE_ENV==='production'?'; Secure':''}`);}
 async function audit(db,actor,action,target,details) {await db.query('INSERT INTO kv_attendance.audit(actor_id,action,target_id,details) VALUES($1,$2,$3,$4)',[actor.id,action,target,JSON.stringify(details)]);}
 async function transaction(pool,fn) {const db=await pool.connect();try{await db.query('BEGIN');const result=await fn(db);await db.query('COMMIT');return result;}catch(e){await db.query('ROLLBACK');throw e;}finally{db.release();}}
 async function lockTeacher(db,id) {await db.query('SELECT id FROM kv_attendance.staff WHERE id=$1 FOR UPDATE',[id]);}
@@ -77,7 +77,7 @@ return async function handler(req,res) {
     await db.query("INSERT INTO kv_attendance.sessions(token_hash,staff_id,expires_at) VALUES($1,$2,now()+interval '12 hours')",[digest(token),record.id]);return record;
    });
    await pool.query('UPDATE kv_attendance.login_limits SET attempts=GREATEST(0,attempts-1) WHERE bucket=ANY($1::text[])',[buckets]);
-   cookie(res,token,43200);return res.status(200).json({staff:safeStaff(loggedIn)});
+   cookie(res,token,43200,'admin');return res.status(200).json({staff:safeStaff(loggedIn)});
   }
   if(body.action==='login') {
    insist(typeof body.code==='string' && body.code.length<=100,'Enter your staff code.');
@@ -88,19 +88,23 @@ return async function handler(req,res) {
    const loggedIn=await transaction(pool,async db=>{
     const record=(await db.query('SELECT * FROM kv_attendance.staff WHERE code_lookup=$1 AND active=true FOR UPDATE',[lookup])).rows[0];
     insist(record && verifyCode(body.code,record.code_hash),'Code not recognized. Contact your administrator.',401);
+    insist(record.role==='teacher','Use your admin password on the administrator sign-in page.',403);
     await db.query("INSERT INTO kv_attendance.sessions(token_hash,staff_id,expires_at) VALUES($1,$2,now()+interval '12 hours')",[digest(token),record.id]);return record;
    });
    // Successful staff sign-ins must not exhaust a shared school network's failure budget.
    await pool.query('UPDATE kv_attendance.login_limits SET attempts=GREATEST(0,attempts-1) WHERE bucket=ANY($1::text[])',[[digest(`ip:${ip}`),digest(`code:${lookup}`)]]);
-   cookie(res,token,43200);
+   cookie(res,token,43200,'teacher');
    return res.status(200).json({staff:safeStaff(loggedIn)});
   }
+  insist(body.session==='admin' || body.session==='teacher','Choose the admin or teacher sign-in page.',400);
+  const sessionKind=body.session;const cookieName=cookieNames[sessionKind];
   const token=String(req.headers.cookie||'').split(';').map(s=>s.trim()).find(s=>s.startsWith(cookieName+'='))?.slice(cookieName.length+1)||'';
   const staff=(await pool.query('SELECT s.* FROM kv_attendance.sessions t JOIN kv_attendance.staff s ON s.id=t.staff_id WHERE t.token_hash=$1 AND t.expires_at>now() AND s.active=true',[digest(token)])).rows[0];
   insist(staff,'Please sign in to continue.',401);
+  insist(staff.role===sessionKind,'Please sign in on the correct attendance page.',403);
   if(staff.id===passwordAdminId)insist(validAdminSession(token,codeSecret),'Please sign in again with the current admin password.',401);
-  if(body.action==='logout'){await pool.query('DELETE FROM kv_attendance.sessions WHERE token_hash=$1',[digest(token)]);cookie(res,'',0);return res.status(200).json({ok:true});}
-  if(body.action==='me')return res.status(200).json({staff:safeStaff(staff),today,serverTime:now.toISOString(),schedule:staff.role==='teacher'?await schedule(pool,staff.id,today):null,entry:staff.role==='teacher'?await entry(pool,staff.id,today):null});
+  if(body.action==='logout'){await pool.query('DELETE FROM kv_attendance.sessions WHERE token_hash=$1',[digest(token)]);cookie(res,'',0,sessionKind);return res.status(200).json({ok:true});}
+  if(body.action==='me')return res.status(200).json({staff:safeStaff(staff),today,serverTime:now.toISOString(),locationPolicy:CAMPUS,schedule:staff.role==='teacher'?await schedule(pool,staff.id,today):null,entry:staff.role==='teacher'?await entry(pool,staff.id,today):null});
   if(body.action==='history'){insist(staff.role==='teacher','Teacher access required.',403);return res.status(200).json({entries:(await pool.query('SELECT *,day::text FROM kv_attendance.entries WHERE teacher_id=$1 ORDER BY kv_attendance.entries.day DESC LIMIT 60',[staff.id])).rows});}
   if(body.action==='checkin') {
    insist(staff.role==='teacher','Teacher access required.',403);
@@ -110,7 +114,7 @@ return async function handler(req,res) {
     insist((await db.query('SELECT token_hash FROM kv_attendance.sessions WHERE token_hash=$1 AND expires_at>now()',[digest(token)])).rows.length,'Please sign in again.',401);
     // Recompute after locking: a queued request must use the actual server date/time.
     const received=clock();const day=schoolDay(received);const existing=await entry(db,staff.id,day);if(existing)return existing;
-    const loc=locationValue(body.location,received);const plan=await schedule(db,staff.id,day);
+    const loc=campusLocation(locationValue(body.location,received));const plan=await schedule(db,staff.id,day);
     insist(plan.kind==='scheduled',plan.kind==='missing'?'Your schedule has not been configured. Contact admin.':'No attendance is required today.',409);
     const timing=classify(day,plan.arrival,plan.grace_minutes,received);
     const {rows}=await db.query(`INSERT INTO kv_attendance.entries(id,teacher_id,day,checked_in_at,approved_arrival_at,grace_minutes,late_after_at,status,late_seconds,latitude,longitude,accuracy_meters,location_captured_at)
