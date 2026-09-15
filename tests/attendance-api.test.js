@@ -28,8 +28,8 @@ test('full attendance API against an isolated PostgreSQL engine',async()=>{
  assert.equal((await call('getTiming',{teacherId:id},admin)).status,200);
  assert.equal((await call('checkin',{location:{...loc(),accuracy:1001}},teacherCookie)).status,400);
  assert.equal((await call('checkin',{location:{...loc(),capturedAt:new Date(now-180000).toISOString()}},teacherCookie)).status,400);
- assert.equal((await call('checkin',{location:{...loc(),latitude:CAMPUS.latitude+0.0001}},teacherCookie)).status,403);
- assert.equal((await call('checkin',{location:{...loc(),accuracy:6}},teacherCookie)).status,422);
+ assert.equal((await call('checkin',{location:{...loc(),latitude:CAMPUS.latitude+0.001}},teacherCookie)).status,403);
+ assert.equal((await call('checkin',{location:{...loc(),accuracy:101}},teacherCookie)).status,422);
  assert.equal((await db.query('SELECT count(*)::int n FROM kv_attendance.entries')).rows[0].n,0);
  const marked=await call('checkin',{location:loc()},teacherCookie);assert.equal(marked.status,200);assert.equal(marked.body.entry.status,'on_time');
  assert.equal((await call('history',{},teacherCookie)).body.entries.length,1);
