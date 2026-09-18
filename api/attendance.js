@@ -39,6 +39,28 @@ function requestedCheckIn(day,value) {
  insist(Number.isFinite(instant.getTime()),'Choose a valid requested attendance time.');
  return instant;
 }
+function monthValue(value) {insist(typeof value==='string' && /^\d{4}-(0[1-9]|1[0-2])$/.test(value),'Choose a valid month.');return value;}
+async function monthlySummary(db,teacherId,month) {
+ const start=`${month}-01`;
+ const {rows:[totals]}=await db.query(`SELECT count(*)::int AS present, count(*) FILTER(WHERE status='late')::int AS late
+   FROM kv_attendance.entries WHERE teacher_id=$1 AND day >= $2::date AND day < ($2::date + interval '1 month')`,[teacherId,start]);
+ const {rows:[deductions]}=await db.query('SELECT count(*)::int AS automatic_leaves FROM kv_attendance.automatic_leave_deductions WHERE teacher_id=$1 AND month=$2',[teacherId,start]);
+ return {month,present:totals.present,late:totals.late,allowedLeaves:1,automaticLeaves:deductions.automatic_leaves};
+}
+async function syncAutomaticLeaveDeductions(db,teacherId,day) {
+ const month=day.slice(0,7),start=`${month}-01`;
+ const {rows:[count]}=await db.query(`SELECT count(*)::int AS total FROM kv_attendance.entries
+   WHERE teacher_id=$1 AND status='late' AND day >= $2::date AND day < ($2::date + interval '1 month')`,[teacherId,start]);
+ const groups=Math.floor(count.total/3);
+ for(let group=1;group<=groups;group++){
+  const {rows:[trigger]}=await db.query(`SELECT id,day::text FROM kv_attendance.entries WHERE teacher_id=$1 AND status='late'
+    AND day >= $2::date AND day < ($2::date + interval '1 month') ORDER BY checked_in_at,id OFFSET $3 LIMIT 1`,[teacherId,start,group*3-1]);
+  await db.query(`INSERT INTO kv_attendance.automatic_leave_deductions(id,teacher_id,month,late_group,triggered_by_entry,leave_date)
+    VALUES($1,$2,$3,$4,$5,$6) ON CONFLICT(teacher_id,month,late_group) DO UPDATE SET triggered_by_entry=excluded.triggered_by_entry,leave_date=excluded.leave_date`,[randomUUID(),teacherId,start,group,trigger.id,trigger.day]);
+ }
+ await db.query('DELETE FROM kv_attendance.automatic_leave_deductions WHERE teacher_id=$1 AND month=$2 AND late_group>$3',[teacherId,start,groups]);
+ return groups;
+}
 async function allocateTeacherCode(db,codeSecret,requested) {
  // Serialize code allocation across all API instances; uniqueness also holds in SQL.
  await db.query('SELECT pg_advisory_xact_lock(72643109)');
@@ -115,7 +137,7 @@ return async function handler(req,res) {
    const currentEntry=staff.role==='teacher'?await entry(pool,staff.id,today):null;
    return res.status(200).json({staff:safeStaff(staff),today,serverTime:now.toISOString(),locationPolicy:CAMPUS,schedule:staff.role==='teacher'?await schedule(pool,staff.id,today):null,entry:currentEntry,correction:currentEntry?await pendingRequest(pool,currentEntry.id):null});
   }
-  if(body.action==='history'){insist(staff.role==='teacher','Teacher access required.',403);return res.status(200).json({entries:(await pool.query('SELECT *,day::text FROM kv_attendance.entries WHERE teacher_id=$1 ORDER BY kv_attendance.entries.day DESC LIMIT 60',[staff.id])).rows});}
+  if(body.action==='history'){insist(staff.role==='teacher','Teacher access required.',403);const month=monthValue(body.month||today.slice(0,7));const start=`${month}-01`;return res.status(200).json({month,summary:await monthlySummary(pool,staff.id,month),entries:(await pool.query(`SELECT *,day::text FROM kv_attendance.entries WHERE teacher_id=$1 AND day >= $2::date AND day < ($2::date + interval '1 month') ORDER BY day DESC LIMIT 60`,[staff.id,start])).rows});}
   if(body.action==='checkin') {
    insist(staff.role==='teacher','Teacher access required.',403);
    const result=await transaction(pool,async db=>{
@@ -128,7 +150,7 @@ return async function handler(req,res) {
     insist(plan.kind==='scheduled',plan.kind==='missing'?'Your schedule has not been configured. Contact admin.':'No attendance is required today.',409);
     const timing=classify(day,plan.arrival,plan.grace_minutes,received);
     const {rows}=await db.query(`INSERT INTO kv_attendance.entries(id,teacher_id,day,checked_in_at,approved_arrival_at,grace_minutes,late_after_at,status,late_seconds,latitude,longitude,accuracy_meters,location_captured_at)
-    VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13) RETURNING *,day::text`,[randomUUID(),staff.id,day,received,timing.approved,plan.grace_minutes,timing.cutoff,timing.status,timing.lateSeconds,loc.latitude,loc.longitude,loc.accuracy,loc.capturedAt]);return rows[0];
+    VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13) RETURNING *,day::text`,[randomUUID(),staff.id,day,received,timing.approved,plan.grace_minutes,timing.cutoff,timing.status,timing.lateSeconds,loc.latitude,loc.longitude,loc.accuracy,loc.capturedAt]);if(rows[0].status==='late'){const automaticLeaves=await syncAutomaticLeaveDeductions(db,staff.id,day);if(automaticLeaves)await audit(db,staff,'automatic_leave_checked',rows[0].id,{month:day.slice(0,7),automaticLeaves});}return rows[0];
    });return res.status(200).json({entry:result});
   }
   if(body.action==='requestOnTime') {
@@ -152,15 +174,15 @@ return async function handler(req,res) {
   }
   insist(staff.role==='admin','Administrator access required.',403);
   if(body.action==='dashboard') {
-   const day=dateValue(body.day||today);const teachers=(await pool.query("SELECT id,name,active FROM kv_attendance.staff WHERE role='teacher' AND (created_at AT TIME ZONE 'Asia/Kolkata')::date<=$1 ORDER BY name",[day])).rows;
-   const rows=await Promise.all(teachers.map(async t=>({...t,schedule:await schedule(pool,t.id,day),entry:await entry(pool,t.id,day)})));
+   const day=dateValue(body.day||today),month=monthValue(body.month||day.slice(0,7));const teachers=(await pool.query("SELECT id,name,active FROM kv_attendance.staff WHERE role='teacher' AND (created_at AT TIME ZONE 'Asia/Kolkata')::date<=$1 ORDER BY name",[day])).rows;
+   const rows=await Promise.all(teachers.map(async t=>({...t,schedule:await schedule(pool,t.id,day),entry:await entry(pool,t.id,day),monthly:await monthlySummary(pool,t.id,month)})));
    const requests=(await pool.query(`SELECT r.*, r.requested_checked_in_at AT TIME ZONE 'Asia/Kolkata' AS requested_local_time,
       e.day::text, e.checked_in_at AS original_checked_in_at, e.status AS original_status, s.name AS teacher_name
       FROM kv_attendance.on_time_requests r
       JOIN kv_attendance.entries e ON e.id=r.entry_id
       JOIN kv_attendance.staff s ON s.id=r.teacher_id
       WHERE r.status='pending' ORDER BY r.created_at ASC`)).rows;
-   return res.status(200).json({day,teachers:rows,requests});
+   return res.status(200).json({day,month,teachers:rows,requests});
   }
   if(body.action==='reviewOnTimeRequest') {
    const decision=String(body.decision||'');
@@ -177,6 +199,7 @@ return async function handler(req,res) {
     const reviewedAt=clock();
     if(decision==='approved'){
       await db.query("UPDATE kv_attendance.entries SET checked_in_at=$2,status='on_time',late_seconds=0 WHERE id=$1",[request.entry_id,request.requested_checked_in_at]);
+      await syncAutomaticLeaveDeductions(db,request.teacher_id,request.day);
     }
     const {rows}=await db.query(`UPDATE kv_attendance.on_time_requests
       SET status=$2, reviewed_by=$3, reviewed_at=$4, review_note=$5 WHERE id=$1
