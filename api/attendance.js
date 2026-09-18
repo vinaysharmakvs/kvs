@@ -32,6 +32,13 @@ async function schedule(db,id,day) {
  return rule?{...rule,kind:'scheduled',source:'weekly'}:{kind:'day_off'};
 }
 async function entry(db,id,day) {return (await db.query('SELECT *,day::text FROM kv_attendance.entries WHERE teacher_id=$1 AND day=$2',[id,day])).rows[0]||null;}
+async function pendingRequest(db,entryId) {return (await db.query("SELECT *, requested_checked_in_at AT TIME ZONE 'Asia/Kolkata' AS requested_local_time FROM kv_attendance.on_time_requests WHERE entry_id=$1 AND status='pending' ORDER BY created_at DESC LIMIT 1",[entryId])).rows[0]||null;}
+function requestedCheckIn(day,value) {
+ const requestedTime=timeValue(value);
+ const instant=new Date(`${day}T${requestedTime}:00+05:30`);
+ insist(Number.isFinite(instant.getTime()),'Choose a valid requested attendance time.');
+ return instant;
+}
 async function allocateTeacherCode(db,codeSecret,requested) {
  // Serialize code allocation across all API instances; uniqueness also holds in SQL.
  await db.query('SELECT pg_advisory_xact_lock(72643109)');
@@ -104,7 +111,10 @@ return async function handler(req,res) {
   insist(staff.role===sessionKind,'Please sign in on the correct attendance page.',403);
   if(staff.id===passwordAdminId)insist(validAdminSession(token,codeSecret),'Please sign in again with the current admin password.',401);
   if(body.action==='logout'){await pool.query('DELETE FROM kv_attendance.sessions WHERE token_hash=$1',[digest(token)]);cookie(res,'',0,sessionKind);return res.status(200).json({ok:true});}
-  if(body.action==='me')return res.status(200).json({staff:safeStaff(staff),today,serverTime:now.toISOString(),locationPolicy:CAMPUS,schedule:staff.role==='teacher'?await schedule(pool,staff.id,today):null,entry:staff.role==='teacher'?await entry(pool,staff.id,today):null});
+  if(body.action==='me'){
+   const currentEntry=staff.role==='teacher'?await entry(pool,staff.id,today):null;
+   return res.status(200).json({staff:safeStaff(staff),today,serverTime:now.toISOString(),locationPolicy:CAMPUS,schedule:staff.role==='teacher'?await schedule(pool,staff.id,today):null,entry:currentEntry,correction:currentEntry?await pendingRequest(pool,currentEntry.id):null});
+  }
   if(body.action==='history'){insist(staff.role==='teacher','Teacher access required.',403);return res.status(200).json({entries:(await pool.query('SELECT *,day::text FROM kv_attendance.entries WHERE teacher_id=$1 ORDER BY kv_attendance.entries.day DESC LIMIT 60',[staff.id])).rows});}
   if(body.action==='checkin') {
    insist(staff.role==='teacher','Teacher access required.',403);
@@ -121,11 +131,60 @@ return async function handler(req,res) {
     VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13) RETURNING *,day::text`,[randomUUID(),staff.id,day,received,timing.approved,plan.grace_minutes,timing.cutoff,timing.status,timing.lateSeconds,loc.latitude,loc.longitude,loc.accuracy,loc.capturedAt]);return rows[0];
    });return res.status(200).json({entry:result});
   }
+  if(body.action==='requestOnTime') {
+   insist(staff.role==='teacher','Teacher access required.',403);
+   const request=await transaction(pool,async db=>{
+    const entryId=uuid(body.entryId);
+    const record=(await db.query('SELECT *,day::text FROM kv_attendance.entries WHERE id=$1 AND teacher_id=$2 FOR UPDATE',[entryId,staff.id])).rows[0];
+    insist(record,'Attendance record not found.',404);
+    insist(record.status==='late','Only a late attendance record can be submitted for approval.',409);
+    const existing=await pendingRequest(db,record.id);
+    insist(!existing,'Your request is already waiting for admin approval.',409);
+    const reason=String(body.reason||'').trim();
+    insist(reason.length>=3 && reason.length<=500,'Enter a reason between 3 and 500 characters.');
+    const requestedAt=requestedCheckIn(record.day,body.requestedTime);
+    const {rows}=await db.query(`INSERT INTO kv_attendance.on_time_requests(id,entry_id,teacher_id,requested_checked_in_at,reason)
+      VALUES($1,$2,$3,$4,$5) RETURNING *, requested_checked_in_at AT TIME ZONE 'Asia/Kolkata' AS requested_local_time`,[randomUUID(),record.id,staff.id,requestedAt,reason]);
+    await audit(db,staff,'on_time_requested',record.id,{requestedCheckedInAt:requestedAt.toISOString(),reason});
+    return rows[0];
+   });
+   return res.status(200).json({request});
+  }
   insist(staff.role==='admin','Administrator access required.',403);
   if(body.action==='dashboard') {
    const day=dateValue(body.day||today);const teachers=(await pool.query("SELECT id,name,active FROM kv_attendance.staff WHERE role='teacher' AND (created_at AT TIME ZONE 'Asia/Kolkata')::date<=$1 ORDER BY name",[day])).rows;
    const rows=await Promise.all(teachers.map(async t=>({...t,schedule:await schedule(pool,t.id,day),entry:await entry(pool,t.id,day)})));
-   return res.status(200).json({day,teachers:rows});
+   const requests=(await pool.query(`SELECT r.*, r.requested_checked_in_at AT TIME ZONE 'Asia/Kolkata' AS requested_local_time,
+      e.day::text, e.checked_in_at AS original_checked_in_at, e.status AS original_status, s.name AS teacher_name
+      FROM kv_attendance.on_time_requests r
+      JOIN kv_attendance.entries e ON e.id=r.entry_id
+      JOIN kv_attendance.staff s ON s.id=r.teacher_id
+      WHERE r.status='pending' ORDER BY r.created_at ASC`)).rows;
+   return res.status(200).json({day,teachers:rows,requests});
+  }
+  if(body.action==='reviewOnTimeRequest') {
+   const decision=String(body.decision||'');
+   insist(decision==='approved' || decision==='rejected','Choose approval or rejection.');
+   const reviewNote=String(body.reviewNote||'').trim();
+   insist(reviewNote.length<=500,'Admin note must be 500 characters or fewer.');
+   const result=await transaction(pool,async db=>{
+    const requestId=uuid(body.requestId);
+    const request=(await db.query(`SELECT r.*, e.day::text, e.checked_in_at, e.status AS entry_status, e.late_seconds
+      FROM kv_attendance.on_time_requests r JOIN kv_attendance.entries e ON e.id=r.entry_id
+      WHERE r.id=$1 FOR UPDATE`,[requestId])).rows[0];
+    insist(request,'Approval request not found.',404);
+    insist(request.status==='pending','This request has already been reviewed.',409);
+    const reviewedAt=clock();
+    if(decision==='approved'){
+      await db.query("UPDATE kv_attendance.entries SET checked_in_at=$2,status='on_time',late_seconds=0 WHERE id=$1",[request.entry_id,request.requested_checked_in_at]);
+    }
+    const {rows}=await db.query(`UPDATE kv_attendance.on_time_requests
+      SET status=$2, reviewed_by=$3, reviewed_at=$4, review_note=$5 WHERE id=$1
+      RETURNING *`,[request.id,decision,staff.id,reviewedAt,reviewNote||null]);
+    await audit(db,staff,`on_time_${decision}`,request.entry_id,{requestId:request.id,originalCheckedInAt:request.checked_in_at,requestedCheckedInAt:request.requested_checked_in_at,originalStatus:request.entry_status,reason:request.reason,reviewNote:reviewNote||null});
+    return rows[0];
+   });
+   return res.status(200).json({request:result});
   }
   if(body.action==='createTeacher') {
    const name=String(body.name||'').trim();insist(name.length>0&&name.length<=120,'Enter a teacher name (up to 120 characters).');const id=randomUUID();
