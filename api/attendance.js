@@ -42,7 +42,6 @@ function requestedCheckIn(day,value) {
 function monthValue(value) {insist(typeof value==='string' && /^\d{4}-(0[1-9]|1[0-2])$/.test(value),'Choose a valid month.');return value;}
 async function monthlySummary(db,teacherId,month) {
  const start=`${month}-01`;
- const {rows:[totals]}=await db.query(`SELECT count(*)::int AS present, count(*) FILTER(WHERE status='late')::int AS late
  const {rows:[totals]}=await db.query(`SELECT count(*)::int AS present, COALESCE(SUM(CASE WHEN status='late' THEN 1 ELSE 0 END),0)::int AS late
    FROM kv_attendance.entries WHERE teacher_id=$1 AND day >= $2::date AND day < ($2::date + interval '1 month')`,[teacherId,start]);
  let automaticLeaves=0;
@@ -100,7 +99,7 @@ return async function handler(req,res) {
   const pool=getDatabase();const codeSecret=secret();const now=clock();const today=schoolDay(now);
   if(body.action==='adminLogin') {
    const password=process.env.ATTENDANCE_ADMIN_PASSWORD;
-   insist(typeof password==='string' && password.length>=12 && password.length<=200,'Admin password is not configured. Add ATTENDANCE_ADMIN_PASSWORD in Vercel (12–200 characters), then redeploy.',503);
+   insist(typeof password==='string' && password.length>=12 && password.length<=200,'Admin password is not configured. Add ATTENDANCE_ADMIN_PASSWORD in Vercel (12ā€“200 characters), then redeploy.',503);
    insist(typeof body.password==='string' && body.password.length<=200,'Enter your admin password.');
    const ip=process.env.ATTENDANCE_TRUST_PROXY==='true'?String(req.headers['x-forwarded-for']||'unknown').split(',')[0]:req.socket?.remoteAddress||'shared';
    const buckets=[digest(`admin-ip:${ip}`),digest('admin-password-login')];
@@ -146,7 +145,6 @@ return async function handler(req,res) {
    const currentEntry=staff.role==='teacher'?await entry(pool,staff.id,today):null;
    return res.status(200).json({staff:safeStaff(staff),today,serverTime:now.toISOString(),locationPolicy:CAMPUS,schedule:staff.role==='teacher'?await schedule(pool,staff.id,today):null,entry:currentEntry,correction:currentEntry?await pendingRequest(pool,currentEntry.id):null});
   }
-  if(body.action==='history'){insist(staff.role==='teacher','Teacher access required.',403);const month=monthValue(body.month||today.slice(0,7));const start=`${month}-01`;return res.status(200).json({month,summary:await monthlySummary(pool,staff.id,month),entries:(await pool.query(`SELECT *,day::text FROM kv_attendance.entries WHERE teacher_id=$1 AND day >= $2::date AND day < ($2::date + interval '1 month') ORDER BY day DESC LIMIT 60`,[staff.id,start])).rows});}
   if(body.action==='history'){
    insist(staff.role==='teacher','Teacher access required.',403);
    const month=monthValue(body.month||today.slice(0,7)),start=`${month}-01`;
