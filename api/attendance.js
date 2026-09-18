@@ -43,6 +43,7 @@ function monthValue(value) {insist(typeof value==='string' && /^\d{4}-(0[1-9]|1[
 async function monthlySummary(db,teacherId,month) {
  const start=`${month}-01`;
  const {rows:[totals]}=await db.query(`SELECT count(*)::int AS present, count(*) FILTER(WHERE status='late')::int AS late
+ const {rows:[totals]}=await db.query(`SELECT count(*)::int AS present, COALESCE(SUM(CASE WHEN status='late' THEN 1 ELSE 0 END),0)::int AS late
    FROM kv_attendance.entries WHERE teacher_id=$1 AND day >= $2::date AND day < ($2::date + interval '1 month')`,[teacherId,start]);
  let automaticLeaves=0;
  try{
@@ -146,6 +147,14 @@ return async function handler(req,res) {
    return res.status(200).json({staff:safeStaff(staff),today,serverTime:now.toISOString(),locationPolicy:CAMPUS,schedule:staff.role==='teacher'?await schedule(pool,staff.id,today):null,entry:currentEntry,correction:currentEntry?await pendingRequest(pool,currentEntry.id):null});
   }
   if(body.action==='history'){insist(staff.role==='teacher','Teacher access required.',403);const month=monthValue(body.month||today.slice(0,7));const start=`${month}-01`;return res.status(200).json({month,summary:await monthlySummary(pool,staff.id,month),entries:(await pool.query(`SELECT *,day::text FROM kv_attendance.entries WHERE teacher_id=$1 AND day >= $2::date AND day < ($2::date + interval '1 month') ORDER BY day DESC LIMIT 60`,[staff.id,start])).rows});}
+  if(body.action==='history'){
+   insist(staff.role==='teacher','Teacher access required.',403);
+   const month=monthValue(body.month||today.slice(0,7)),start=`${month}-01`;
+   const entries=(await pool.query(`SELECT *,day::text FROM kv_attendance.entries WHERE teacher_id=$1 AND day >= $2::date AND day < ($2::date + interval '1 month') ORDER BY day DESC LIMIT 60`,[staff.id,start])).rows;
+   let automaticLeaves=0;
+   try{automaticLeaves=(await pool.query('SELECT count(*)::int AS total FROM kv_attendance.automatic_leave_deductions WHERE teacher_id=$1 AND month=$2',[staff.id,start])).rows[0].total;}catch(error){if(error?.code!=='42P01')console.error('Monthly automatic leave lookup failed:',error.code||error.name);}
+   return res.status(200).json({month,summary:{month,present:entries.length,late:entries.filter(record=>record.status==='late').length,allowedLeaves:1,automaticLeaves},entries});
+  }
   if(body.action==='checkin') {
    insist(staff.role==='teacher','Teacher access required.',403);
    const result=await transaction(pool,async db=>{
