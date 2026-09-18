@@ -44,8 +44,16 @@ async function monthlySummary(db,teacherId,month) {
  const start=`${month}-01`;
  const {rows:[totals]}=await db.query(`SELECT count(*)::int AS present, count(*) FILTER(WHERE status='late')::int AS late
    FROM kv_attendance.entries WHERE teacher_id=$1 AND day >= $2::date AND day < ($2::date + interval '1 month')`,[teacherId,start]);
- const {rows:[deductions]}=await db.query('SELECT count(*)::int AS automatic_leaves FROM kv_attendance.automatic_leave_deductions WHERE teacher_id=$1 AND month=$2',[teacherId,start]);
- return {month,present:totals.present,late:totals.late,allowedLeaves:1,automaticLeaves:deductions.automatic_leaves};
+ let automaticLeaves=0;
+ try{
+  const {rows:[deductions]}=await db.query('SELECT count(*)::int AS automatic_leaves FROM kv_attendance.automatic_leave_deductions WHERE teacher_id=$1 AND month=$2',[teacherId,start]);
+  automaticLeaves=deductions.automatic_leaves;
+ }catch(error){
+  // Let teachers continue to view attendance if an older database branch has
+  // not yet received the optional automatic-leave migration.
+  if(error?.code!=='42P01')throw error;
+ }
+ return {month,present:totals.present,late:totals.late,allowedLeaves:1,automaticLeaves};
 }
 async function syncAutomaticLeaveDeductions(db,teacherId,day) {
  const month=day.slice(0,7),start=`${month}-01`;
