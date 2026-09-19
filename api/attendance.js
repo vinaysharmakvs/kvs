@@ -1,6 +1,6 @@
 import { randomUUID, randomBytes, randomInt, createHmac, timingSafeEqual } from 'node:crypto';
 import { database } from '../lib/attendance-db.js';
-import { PublicError, insist, digest, lookupCode, hashCode, verifyCode, schoolDay, dateValue, timeValue, graceValue, uuid, locationValue, campusLocation, CAMPUS, classify, scheduleDays } from '../lib/attendance-core.js';
+import { PublicError, insist, digest, lookupCode, hashCode, verifyCode, schoolDay, dateValue, timeValue, graceValue, uuid, locationValue, campusLocation, CAMPUS, classify, scheduleDays, isSecondSaturday } from '../lib/attendance-core.js';
 const cookieNames={admin:'kv_attendance_admin',teacher:'kv_attendance_teacher'};
 // Dedicated single-school admin identity; existing code-based admins remain unchanged.
 const passwordAdminId='aa4d9e86-f402-4728-83b8-a6c7e82516c2';
@@ -23,6 +23,9 @@ async function transaction(pool,fn) {const db=await pool.connect();try{await db.
 async function lockTeacher(db,id) {await db.query('SELECT id FROM kv_attendance.staff WHERE id=$1 FOR UPDATE',[id]);}
 async function teacher(db,id) {const {rows}=await db.query("SELECT * FROM kv_attendance.staff WHERE id=$1 AND role='teacher'",[uuid(id)]);insist(rows[0],'Teacher not found.',404);return rows[0];}
 async function schedule(db,id,day) {
+ if(isSecondSaturday(day))return {kind:'day_off',source:'school_closure',reason:'School closed — second Saturday'};
+ const leave=(await db.query(`SELECT * FROM kv_attendance.leave_requests WHERE teacher_id=$1 AND status='approved' AND start_day <= $2 AND end_day >= $2 ORDER BY start_day DESC LIMIT 1`,[id,day])).rows[0];
+ if(leave)return {kind:'day_off',source:'approved_leave',reason:'Approved leave'};
  const over=(await db.query('SELECT *,day::text FROM kv_attendance.overrides WHERE teacher_id=$1 AND day=$2',[id,day])).rows[0];
  if(over) return {...over,kind:over.day_off?'day_off':'scheduled',source:'override'};
  const version=(await db.query('SELECT id FROM kv_attendance.schedule_versions WHERE teacher_id=$1 AND effective_from<=$2 ORDER BY effective_from DESC LIMIT 1',[id,day])).rows[0];
@@ -40,6 +43,17 @@ function requestedCheckIn(day,value) {
  return instant;
 }
 function monthValue(value) {insist(typeof value==='string' && /^\d{4}-(0[1-9]|1[0-2])$/.test(value),'Choose a valid month.');return value;}
+function leaveRange(startValue,endValue,today) {
+ const start=dateValue(startValue),end=dateValue(endValue);
+ insist(start>=today,'Leave dates must start today or later.');insist(end>=start,'Leave end date must be the same as or after the start date.');
+ insist(start.slice(0,7)===end.slice(0,7),'Apply separately for each calendar month.');
+ const continuousDays=Math.floor((new Date(`${end}T00:00:00Z`)-new Date(`${start}T00:00:00Z`))/86400000)+1;
+ insist(continuousDays<=31,'A leave request can be up to 31 days.');return {start,end,continuousDays,month:start.slice(0,7)};
+}
+async function paidLeaveUsed(db,teacherId,month,excludeId=null) {
+ const start=`${month}-01`;const {rows:[total]}=await db.query(`SELECT COALESCE(SUM(paid_days),0)::int AS days FROM kv_attendance.leave_requests
+  WHERE teacher_id=$1 AND status='approved' AND start_day >= $2::date AND start_day < ($2::date + interval '1 month')${excludeId?' AND id <> $3':''}`,[teacherId,start,...(excludeId?[excludeId]:[])]);return total.days;
+}
 async function monthlySummary(db,teacherId,month) {
  const start=`${month}-01`;
  const {rows:[totals]}=await db.query(`SELECT count(*)::int AS present, COALESCE(SUM(CASE WHEN status='late' THEN 1 ELSE 0 END),0)::int AS late
@@ -99,7 +113,7 @@ return async function handler(req,res) {
   const pool=getDatabase();const codeSecret=secret();const now=clock();const today=schoolDay(now);
   if(body.action==='adminLogin') {
    const password=process.env.ATTENDANCE_ADMIN_PASSWORD;
-   insist(typeof password==='string' && password.length>=12 && password.length<=200,'Admin password is not configured. Add ATTENDANCE_ADMIN_PASSWORD in Vercel (12ā€“200 characters), then redeploy.',503);
+   insist(typeof password==='string' && password.length>=12 && password.length<=200,'Admin password is not configured. Add ATTENDANCE_ADMIN_PASSWORD in Vercel (12–200 characters), then redeploy.',503);
    insist(typeof body.password==='string' && body.password.length<=200,'Enter your admin password.');
    const ip=process.env.ATTENDANCE_TRUST_PROXY==='true'?String(req.headers['x-forwarded-for']||'unknown').split(',')[0]:req.socket?.remoteAddress||'shared';
    const buckets=[digest(`admin-ip:${ip}`),digest('admin-password-login')];
@@ -153,6 +167,24 @@ return async function handler(req,res) {
    try{automaticLeaves=(await pool.query('SELECT count(*)::int AS total FROM kv_attendance.automatic_leave_deductions WHERE teacher_id=$1 AND month=$2',[staff.id,start])).rows[0].total;}catch(error){if(error?.code!=='42P01')console.error('Monthly automatic leave lookup failed:',error.code||error.name);}
    return res.status(200).json({month,summary:{month,present:entries.length,late:entries.filter(record=>record.status==='late').length,allowedLeaves:1,automaticLeaves},entries});
   }
+  if(body.action==='leaveHistory'){
+   insist(staff.role==='teacher','Teacher access required.',403);
+   return res.status(200).json({requests:(await pool.query('SELECT *,start_day::text,end_day::text FROM kv_attendance.leave_requests WHERE teacher_id=$1 ORDER BY created_at DESC LIMIT 30',[staff.id])).rows});
+  }
+  if(body.action==='applyLeave'){
+   insist(staff.role==='teacher','Teacher access required.',403);
+   const range=leaveRange(body.startDay,body.endDay,today),reason=String(body.reason||'').trim();
+   insist(reason.length>=3&&reason.length<=500,'Enter a reason between 3 and 500 characters.');
+   const request=await transaction(pool,async db=>{
+    const overlap=(await db.query(`SELECT id FROM kv_attendance.leave_requests WHERE teacher_id=$1 AND status IN ('pending','approved')
+      AND start_day <= $3::date AND end_day >= $2::date LIMIT 1`,[staff.id,range.start,range.end])).rows[0];
+    insist(!overlap,'You already have a leave request for one or more of these dates.',409);
+    const {rows}=await db.query(`INSERT INTO kv_attendance.leave_requests(id,teacher_id,start_day,end_day,reason,continuous_days)
+      VALUES($1,$2,$3,$4,$5,$6) RETURNING *,start_day::text,end_day::text`,[randomUUID(),staff.id,range.start,range.end,reason,range.continuousDays]);
+    await audit(db,staff,'leave_requested',rows[0].id,{startDay:range.start,endDay:range.end,continuousDays:range.continuousDays,reason});return rows[0];
+   });
+   return res.status(200).json({request});
+  }
   if(body.action==='checkin') {
    insist(staff.role==='teacher','Teacher access required.',403);
    const result=await transaction(pool,async db=>{
@@ -197,7 +229,20 @@ return async function handler(req,res) {
       JOIN kv_attendance.entries e ON e.id=r.entry_id
       JOIN kv_attendance.staff s ON s.id=r.teacher_id
       WHERE r.status='pending' ORDER BY r.created_at ASC`)).rows;
-   return res.status(200).json({day,month,teachers:rows,requests});
+   const leaveRequests=(await pool.query(`SELECT l.*,l.start_day::text,l.end_day::text,s.name AS teacher_name FROM kv_attendance.leave_requests l
+      JOIN kv_attendance.staff s ON s.id=l.teacher_id WHERE l.status='pending' ORDER BY l.created_at ASC`)).rows;
+   return res.status(200).json({day,month,teachers:rows,requests,leaveRequests});
+  }
+  if(body.action==='reviewLeaveRequest'){
+   const decision=String(body.decision||'');insist(decision==='approved'||decision==='rejected','Choose approval or rejection.');
+   const reviewNote=String(body.reviewNote||'').trim();insist(reviewNote.length<=500,'Admin note must be 500 characters or fewer.');
+   const result=await transaction(pool,async db=>{
+    const requestId=uuid(body.requestId);const request=(await db.query('SELECT *,start_day::text,end_day::text FROM kv_attendance.leave_requests WHERE id=$1 FOR UPDATE',[requestId])).rows[0];
+    insist(request,'Leave request not found.',404);insist(request.status==='pending','This leave request has already been reviewed.',409);
+    let paidDays=0,deductionDays=0;if(decision==='approved'){const used=await paidLeaveUsed(db,request.teacher_id,request.start_day.slice(0,7),request.id);paidDays=Math.min(Math.max(0,1-used),request.continuous_days);deductionDays=request.continuous_days-paidDays;}
+    const {rows}=await db.query(`UPDATE kv_attendance.leave_requests SET status=$2,paid_days=$3,salary_deduction_days=$4,reviewed_by=$5,reviewed_at=$6,review_note=$7 WHERE id=$1 RETURNING *,start_day::text,end_day::text`,[request.id,decision,paidDays,deductionDays,staff.id,clock(),reviewNote||null]);
+    await audit(db,staff,`leave_${decision}`,request.id,{startDay:request.start_day,endDay:request.end_day,continuousDays:request.continuous_days,paidDays,deductionDays,reviewNote:reviewNote||null});return rows[0];
+   });return res.status(200).json({request:result});
   }
   if(body.action==='reviewOnTimeRequest') {
    const decision=String(body.decision||'');
