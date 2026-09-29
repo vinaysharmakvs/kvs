@@ -23,6 +23,8 @@ async function transaction(pool,fn) {const db=await pool.connect();try{await db.
 async function lockTeacher(db,id) {await db.query('SELECT id FROM kv_attendance.staff WHERE id=$1 FOR UPDATE',[id]);}
 async function teacher(db,id) {const {rows}=await db.query("SELECT * FROM kv_attendance.staff WHERE id=$1 AND role='teacher'",[uuid(id)]);insist(rows[0],'Teacher not found.',404);return rows[0];}
 async function schedule(db,id,day) {
+ const holiday=(await db.query('SELECT reason FROM kv_attendance.school_holidays WHERE day=$1',[day])).rows[0];
+ if(holiday)return {kind:'day_off',source:'school_holiday',reason:holiday.reason};
  if(isSecondSaturday(day))return {kind:'day_off',source:'school_closure',reason:'School closed — second Saturday'};
  const leave=(await db.query(`SELECT * FROM kv_attendance.leave_requests WHERE teacher_id=$1 AND status='approved' AND start_day <= $2 AND end_day >= $2 ORDER BY start_day DESC LIMIT 1`,[id,day])).rows[0];
  if(leave)return {kind:'day_off',source:'approved_leave',reason:'Approved leave'};
@@ -45,7 +47,8 @@ function requestedCheckIn(day,value) {
 function monthValue(value) {insist(typeof value==='string' && /^\d{4}-(0[1-9]|1[0-2])$/.test(value),'Choose a valid month.');return value;}
 function leaveRange(startValue,endValue,today) {
  const start=dateValue(startValue),end=dateValue(endValue);
- insist(start>=today,'Leave dates must start today or later.');insist(end>=start,'Leave end date must be the same as or after the start date.');
+ const minimumStart=new Date(`${today}T00:00:00Z`);minimumStart.setUTCDate(minimumStart.getUTCDate()+7);
+ insist(start>=minimumStart.toISOString().slice(0,10),'Leave must be applied for at least 7 days in advance.');insist(end>=start,'Leave end date must be the same as or after the start date.');
  insist(start.slice(0,7)===end.slice(0,7),'Apply separately for each calendar month.');
  const continuousDays=Math.floor((new Date(`${end}T00:00:00Z`)-new Date(`${start}T00:00:00Z`))/86400000)+1;
  insist(continuousDays<=31,'A leave request can be up to 31 days.');return {start,end,continuousDays,month:start.slice(0,7)};
@@ -247,7 +250,15 @@ return async function handler(req,res) {
    const upcomingLeaves=(await pool.query(`SELECT l.start_day::text,l.end_day::text,s.name AS teacher_name FROM kv_attendance.leave_requests l
       JOIN kv_attendance.staff s ON s.id=l.teacher_id WHERE l.status='approved' AND l.end_day >= $1::date AND l.start_day < ($1::date + interval '14 days')
       ORDER BY l.start_day,s.name`,[today])).rows;
-   return res.status(200).json({day,month,teachers:rows,requests,leaveRequests,upcomingLeaves});
+   const holidays=(await pool.query('SELECT day::text,reason FROM kv_attendance.school_holidays WHERE day >= $1 ORDER BY day LIMIT 30',[today])).rows;
+   return res.status(200).json({day,month,teachers:rows,requests,leaveRequests,upcomingLeaves,holidays});
+  }
+  if(body.action==='saveHoliday'){
+   const day=dateValue(body.day);insist(day>=today,'Holidays must be today or later.');const reason=String(body.reason||'').trim();insist(reason.length>0&&reason.length<=300,'Enter a holiday reason (up to 300 characters).');
+   await transaction(pool,async db=>{await db.query(`INSERT INTO kv_attendance.school_holidays(day,reason,created_by) VALUES($1,$2,$3) ON CONFLICT(day) DO UPDATE SET reason=excluded.reason,created_by=excluded.created_by`,[day,reason,staff.id]);await audit(db,staff,'holiday_saved',staff.id,{day,reason});});return res.status(200).json({ok:true});
+  }
+  if(body.action==='deleteHoliday'){
+   const day=dateValue(body.day);insist(day>=today,'Past holidays cannot be deleted.');await transaction(pool,async db=>{const deleted=(await db.query('DELETE FROM kv_attendance.school_holidays WHERE day=$1 RETURNING reason',[day])).rows[0];if(deleted)await audit(db,staff,'holiday_deleted',staff.id,{day,reason:deleted.reason});});return res.status(200).json({ok:true});
   }
   if(body.action==='reviewLeaveRequest'){
    const decision=String(body.decision||'');insist(decision==='approved'||decision==='rejected','Choose approval or rejection.');
